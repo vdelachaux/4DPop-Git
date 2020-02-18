@@ -1,0 +1,2 @@
+Resources/bin/gh filter=lfs diff=lfs merge=lfs -text
+Resources/bin/gh.exe filter=lfs diff=lfs merge=lfs -text

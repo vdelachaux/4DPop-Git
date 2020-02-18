@@ -1,0 +1,33 @@
+# Ignore invisible files/folders except me
+.*
+!.gitignore
+
+# Ignore data file
+Data/
+DATA/
+data/
+*.4DD
+*.journal
+*.4DIndx
+*symbols.txt
+
+# Ignore derived data
+DerivedData/
+
+# Ignore logs
+Logs/*
+
+# Ignore settings & preferences
+Settings/
+!buildApp.4DSettings
+
+Preferences/
+!4DPop AppMaker.xml
+
+userPreferences.*/
+
+# Miscellaneous
+DEV/
+*__Orphan__*
+ehthumbs.db
+Thumbs.db
