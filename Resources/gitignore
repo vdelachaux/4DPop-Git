@@ -9,13 +9,14 @@ data/
 *.4DD
 *.journal
 *.4DIndx
+*.Match
 *symbols.txt
 
 # Ignore derived data
 DerivedData/
 
 # Ignore logs
-Logs/*
+Logs/
 
 # Ignore settings & preferences
 Settings/
