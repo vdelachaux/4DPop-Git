@@ -28,7 +28,7 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 	
 	$o:=New object:C1471(\
 		"";"git";\
-		"chnges";New collection:C1472;\
+		"changes";New collection:C1472;\
 		"success";True:C214;\
 		"error";"";\
 		"errors";New collection:C1472;\
@@ -42,7 +42,10 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"stage";Formula:C1597(git ("stage"));\
 		"commit";Formula:C1597(git ("commit";$1));\
 		"version";Formula:C1597(git ("version").result);\
-		"execute";Formula:C1597(git ("execute";$1).result)\
+		"execute";Formula:C1597(git ("execute";$1).result);\
+		"diff";Formula:C1597(git ("diff";New object:C1471("path";String:C10($1);"options";String:C10($2))).result);\
+		"diffTool";Formula:C1597(git ("diffTool";$1).result);\
+		"revert";Formula:C1597(git ("revert";$1).result)\
 		)
 	
 	$o.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
@@ -74,6 +77,8 @@ Else
 				$tCMD:=String:C10($2)
 				
 			End if 
+			
+			  // Voir -q
 			
 			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE";"true")
 			
@@ -122,17 +127,14 @@ Else
 					
 					If ($o.success)
 						
-						
 						$o.commit()
 						
 					End if 
-					
 				End if 
-				
 			End if 
 			
 			  //______________________________________________________
-		: ($1="status")
+		: ($1="diff")
 			
 			If (Not:C34(Bool:C1537($o.git.exists)))
 				
@@ -142,8 +144,64 @@ Else
 			
 			If ($o.success)
 				
-				$o.execute("status -s")
+				If ($2.option#Null:C1517)
+					
+					$o.execute("diff "+$2.option+" '"+$2.path+"'")
+					
+				Else 
+					
+					$o.execute("diff '"+$2.path+"'")
+					
+				End if 
 				
+				If ($o.success)
+					
+				End if 
+			End if 
+			
+			  //______________________________________________________
+		: ($1="diffTool")
+			
+			If (Not:C34(Bool:C1537($o.git.exists)))
+				
+				$o.init()
+				
+			End if 
+			
+			If ($o.success)
+				
+				$o.execute("difftool -y '"+$2+"'")
+				
+			End if 
+			
+			  //______________________________________________________
+		: ($1="status")
+			
+			$o.changes.clear()
+			
+			If (Not:C34(Bool:C1537($o.git.exists)))
+				
+				$o.init()
+				
+			End if 
+			
+			If ($o.success)
+				
+				$o.execute("status -s -uall")
+				
+				If ($o.success)
+					
+					If (Position:C15("\n";String:C10($o.result))>0)
+						
+						For each ($t;Split string:C1554($o.result;"\n";sk ignore empty strings:K86:1))
+							
+							$o.changes.push(New object:C1471(\
+								"status";$t[[1]]+$t[[2]];\
+								"path";Delete string:C232($t;1;3)))
+							
+						End for each 
+					End if 
+				End if 
 			End if 
 			
 			  //______________________________________________________
@@ -167,8 +225,6 @@ Else
 		: ($1="add")
 			
 			If (Value type:C1509($2)=Is collection:K8:32)
-				
-				
 				
 			Else 
 				
@@ -235,23 +291,6 @@ Else
 			
 			  //______________________________________________________
 	End case 
-	
-	If ($o.success)
-		
-		If (Position:C15("\n";String:C10($o.result))>0)
-			
-			  // As list
-			$o.changes:=Split string:C1554($o.result;"\n";sk ignore empty strings:K86:1)
-			
-		Else 
-			
-			$o.changes:=New collection:C1472
-			
-		End if 
-		
-		  //
-		
-	End if 
 End if 
 
   // ----------------------------------------------------
