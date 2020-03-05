@@ -1,5 +1,10 @@
 ﻿{
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+>>>>>>> gitlab
 	"_component": {
 		"methods": [
 			"ACTIONS",
@@ -16,6 +21,10 @@
 	},
 =======
 >>>>>>> gitlab
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
+>>>>>>> gitlab
 	"(Default Classes)": {},
 	"(Default Folder)": {
 		"groups": [
@@ -29,6 +38,11 @@
 	"(Default Forms)": {},
 	"(Default Project Methods)": {},
 	"(Default Tables)": {},
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 	"00_DEV": {
 		"methods": [
 			"00_RUN",
@@ -42,13 +56,26 @@
 	"(Default Project Methods)": {},
 	"(Default Tables)": {},
 >>>>>>> gitlab
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
+>>>>>>> gitlab
 	"classes": {
 		"methods": [
 			"button",
 			"COMPILER_classes",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"git",
 =======
+>>>>>>> gitlab
+=======
+=======
+<<<<<<< HEAD
+			"git",
+=======
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 			"group",
 			"listbox",

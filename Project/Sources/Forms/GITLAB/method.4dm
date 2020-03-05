@@ -4,8 +4,17 @@
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 C_PICTURE:C286($p)
+=======
+C_PICTURE:C286($p)
+=======
+<<<<<<< HEAD
+=======
+C_PICTURE:C286($p)
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 C_OBJECT:C1216($event;$o)
 
@@ -19,6 +28,7 @@ Case of
 		  //______________________________________________________
 	: ($event.code=On Load:K2:1)
 		
+<<<<<<< HEAD
 <<<<<<< HEAD
 		  // Widgets definition
 		Form:C1466.$:=New object:C1471(\
@@ -43,6 +53,32 @@ Case of
 		Form:C1466.$.unstage.bestSize(Align right:K42:4).disable()
 		Form:C1466.$.commit.bestSize(Align right:K42:4).disable()
 		
+=======
+		Form:C1466.ƒ:=New object:C1471(\
+=======
+<<<<<<< HEAD
+		  // Widgets definition
+		Form:C1466.$:=New object:C1471(\
+>>>>>>> gitlab
+			"stage";button ("stage");\
+			"unstage";button ("unstage");\
+			"commit";button ("commit");\
+			"switch";listbox ("switch");\
+			"toStage";listbox ("unstaged");\
+			"toComit";listbox ("staged");\
+			"diff";widget ("diff")\
+			)
+		
+		Form:C1466.project:=File:C1566(Structure file:C489(*);fk platform path:K87:2)
+		
+		Form:C1466.git:=git ()
+		
+		Form:C1466.redraw:=Formula:C1597(SET TIMER:C645(-1))
+		Form:C1466.refresh:=Formula:C1597(UPDATE )
+		
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 		Form:C1466.ƒ.update()
 =======
 		Form:C1466.ƒ:=New object:C1471(\
@@ -62,6 +98,7 @@ Case of
 		Form:C1466.redraw:=Formula:C1597(SET TIMER:C645(-1))
 		Form:C1466.refresh:=Formula:C1597(UPDATE )
 		
+>>>>>>> gitlab
 		Form:C1466.unstaged:=New collection:C1472
 		Form:C1466.staged:=New collection:C1472
 		
@@ -85,6 +122,12 @@ Case of
 		Form:C1466.ƒ.commit.bestSize(Align right:K42:4).disable()
 		
 		Form:C1466.redraw()
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 		
 		  //______________________________________________________
@@ -98,14 +141,41 @@ Case of
 		Case of 
 				
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				  //______________________________________________________
+=======
+<<<<<<< HEAD
+>>>>>>> gitlab
 				  //———————————————————————————————————
 =======
 				  //______________________________________________________
+>>>>>>> gitlab
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 >>>>>>> gitlab
 			: (FORM Get current page:C276=1)  // Changes
 				
 				$o:=Form:C1466.git
 				
+<<<<<<< HEAD
+<<<<<<< HEAD
+				  // Update file lists
+				If ($o.changes.length>0)
+					
+					Form:C1466.unstaged:=$o.changes.query("status IN :1";New collection:C1472("?@";"@M";"@D")).orderBy("path")
+					Form:C1466.staged:=$o.changes.query("status = :1";"@ ").orderBy("path")
+=======
+=======
+>>>>>>> gitlab
+				If ($o.changes.length>0)
+					
+					Form:C1466.unstaged:=$o.changes.query("status IN :1";New collection:C1472("?@";"@M"))
+					Form:C1466.staged:=$o.changes.query("status = :1";"@ ")
+<<<<<<< HEAD
+=======
+=======
 <<<<<<< HEAD
 				  // Update file lists
 				If ($o.changes.length>0)
@@ -118,10 +188,13 @@ Case of
 					Form:C1466.unstaged:=$o.changes.query("status IN :1";New collection:C1472("?@";"@M"))
 					Form:C1466.staged:=$o.changes.query("status = :1";"@ ")
 >>>>>>> gitlab
+>>>>>>> gitlab
+>>>>>>> gitlab
 					
 				Else 
 					
 					Form:C1466.unstaged.clear()
+<<<<<<< HEAD
 <<<<<<< HEAD
 					Form:C1466.$.stage.disable()
 					
@@ -153,6 +226,38 @@ Case of
 				
 				  //———————————————————————————————————
 =======
+=======
+=======
+<<<<<<< HEAD
+					Form:C1466.$.stage.disable()
+					
+>>>>>>> gitlab
+>>>>>>> gitlab
+					Form:C1466.staged.clear()
+					
+					Form:C1466.ƒ.stage.disable()
+					Form:C1466.ƒ.unstage.disable()
+					
+				End if 
+				
+				Form:C1466.ƒ.commit.setEnabled(Bool:C1537(Form:C1466.staged.length))
+				
+				Form:C1466.refresh()
+				
+				  //______________________________________________________
+			: (FORM Get current page:C276=2)  // Commits
+				
+				  //______________________________________________________
+			Else 
+				
+<<<<<<< HEAD
+				  // A "Case of" statement should never omit "Else"
+				  //______________________________________________________
+<<<<<<< HEAD
+=======
+=======
+				  //———————————————————————————————————
+=======
 					Form:C1466.staged.clear()
 					
 					Form:C1466.ƒ.stage.disable()
@@ -173,21 +278,40 @@ Case of
 				  // A "Case of" statement should never omit "Else"
 				  //______________________________________________________
 >>>>>>> gitlab
+>>>>>>> gitlab
+>>>>>>> gitlab
 		End case 
 		
 		  //______________________________________________________
 	: ($event.code=On Page Change:K2:54)
 		
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Form:C1466.ƒ.update()
 =======
 		Form:C1466.redraw()
+=======
+		Form:C1466.redraw()
+=======
+<<<<<<< HEAD
+		Form:C1466.ƒ.update()
+=======
+		Form:C1466.redraw()
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 		
 		  //______________________________________________________
 	: ($event.code=On Activate:K2:9)
 		
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		$o:=Form:C1466.git.status()
+		
+=======
+<<<<<<< HEAD
+>>>>>>> gitlab
 		  // Get status
 		$o:=Form:C1466.git.status()
 		
@@ -200,6 +324,7 @@ Case of
 =======
 		$o:=Form:C1466.git.status()
 		
+>>>>>>> gitlab
 		If ($o.changes.length>0)
 			
 			Form:C1466.switch[0].label:="Changes ("+String:C10($o.changes.length)+")"
@@ -216,6 +341,12 @@ Case of
 		
 		Form:C1466.redraw()
 		Form:C1466.refresh()
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 		
 		  //______________________________________________________

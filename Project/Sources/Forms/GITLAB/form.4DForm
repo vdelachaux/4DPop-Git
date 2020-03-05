@@ -1,4 +1,4 @@
-﻿{
+{
 	"$4d": {
 		"version": "1",
 		"kind": "form"
@@ -35,18 +35,26 @@
 					"strokeWidth": 0
 				},
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"menu": {
 =======
 				"switch": {
+>>>>>>> gitlab
+=======
+				"menu": {
 >>>>>>> gitlab
 					"type": "listbox",
 					"left": 0,
 					"top": 23,
 					"width": 180,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"height": 773,
 =======
 					"height": 70,
+>>>>>>> gitlab
+=======
+					"height": 773,
 >>>>>>> gitlab
 					"events": [],
 					"action": "gotoPage",
@@ -57,9 +65,13 @@
 					"scrollbarVertical": "hidden",
 					"listboxType": "collection",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"dataSource": "Form:C1466.menu",
 =======
 					"dataSource": "Form:C1466.switch",
+>>>>>>> gitlab
+=======
+					"dataSource": "Form:C1466.menu",
 >>>>>>> gitlab
 					"hideFocusRing": true,
 					"hideSystemHighlight": false,
@@ -122,6 +134,7 @@
 				"Static Picture1": {
 					"type": "picture",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"top": 809,
 					"left": 139,
 					"width": 32,
@@ -133,6 +146,13 @@
 					"width": 32,
 					"height": 32,
 					"picture": "Images/octocat-spinner-128.gif",
+>>>>>>> gitlab
+=======
+					"top": 809,
+					"left": 139,
+					"width": 32,
+					"height": 32,
+					"picture": "/RESOURCES/Images/octocat-spinner-128.gif",
 >>>>>>> gitlab
 					"pictureFormat": "scaled",
 					"sizingY": "move"
@@ -159,6 +179,9 @@
 					"stroke": "#808080",
 					"right": 1120
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 				},
 				"Input2": {
 					"type": "input",
@@ -175,6 +198,9 @@
 					"focusable": false,
 					"fontSize": 10,
 					"sizingY": "move"
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 =======
 >>>>>>> gitlab
 				}
@@ -185,9 +211,13 @@
 				"Text1": {
 					"type": "text",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"text": "WORKSPACE",
 =======
 					"text": "Unstaged Changes",
+>>>>>>> gitlab
+=======
+					"text": "WORKSPACE",
 >>>>>>> gitlab
 					"top": 29,
 					"left": 185,
@@ -224,8 +254,12 @@
 					"sortable": false,
 					"method": "ACTIONS",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"metaSource": "listUI",
 =======
+>>>>>>> gitlab
+=======
+					"metaSource": "listUI",
 >>>>>>> gitlab
 					"columns": [
 						{
@@ -248,9 +282,13 @@
 					"top": 719,
 					"width": 299,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"height": 130,
 =======
 					"height": 131,
+>>>>>>> gitlab
+=======
+					"height": 130,
 >>>>>>> gitlab
 					"events": [
 						"onClick",
@@ -275,8 +313,12 @@
 					"selectedItemsSource": "Form:C1466.selectedStaged",
 					"method": "ACTIONS",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"metaSource": "listUI ",
 =======
+>>>>>>> gitlab
+=======
+					"metaSource": "listUI ",
 >>>>>>> gitlab
 					"columns": [
 						{
@@ -316,6 +358,7 @@
 					"style": "regular",
 					"sizingX": "move",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"method": "ObjectMethods/stage.4dm"
 				},
 				"Text3": {
@@ -327,6 +370,13 @@
 				"Text3": {
 					"type": "text",
 					"text": "Staged Changes",
+>>>>>>> gitlab
+=======
+					"method": "ObjectMethods/stage.4dm"
+				},
+				"Text3": {
+					"type": "text",
+					"text": "INDEX",
 >>>>>>> gitlab
 					"top": 696,
 					"left": 185,
@@ -347,10 +397,15 @@
 					],
 					"style": "regular",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"sizingX": "move",
 					"method": "ObjectMethods/unstage.4dm"
 =======
 					"sizingX": "move"
+>>>>>>> gitlab
+=======
+					"sizingX": "move",
+					"method": "ObjectMethods/unstage.4dm"
 >>>>>>> gitlab
 				},
 				"Button": {
@@ -430,9 +485,13 @@
 					"borderStyle": "none",
 					"sizingX": "grow",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"splitterMode": "resize"
 =======
 					"splitterMode": "move"
+>>>>>>> gitlab
+=======
+					"splitterMode": "resize"
 >>>>>>> gitlab
 				},
 				"diff": {
@@ -493,11 +552,15 @@
 					"sizingX": "grow",
 					"sizingY": "move",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 					"hideFocusRing": true,
 					"events": [
 						"onAfterEdit"
 					],
 					"method": "ObjectMethods/commitSubject.4dm"
+<<<<<<< HEAD
 				},
 				"commitDescription": {
 =======
@@ -505,15 +568,23 @@
 				},
 				"commitSecription": {
 >>>>>>> gitlab
+=======
+				},
+				"commitDescription": {
+>>>>>>> gitlab
 					"type": "input",
 					"left": 494,
 					"top": 789,
 					"width": 609,
 					"height": 17,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"dataSource": "Form:C1466.commitDescription",
 =======
 					"dataSource": "Form:C1466.commitSecription",
+>>>>>>> gitlab
+=======
+					"dataSource": "Form:C1466.commitDescription",
 >>>>>>> gitlab
 					"placeholder": "Description",
 					"sizingX": "grow",
@@ -534,6 +605,9 @@
 					"sizingX": "move",
 					"focusable": true,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 					"sizingY": "move",
 					"method": "ObjectMethods/commit.4dm"
 				},
@@ -552,8 +626,11 @@
 					"sizingY": "move",
 					"method": "ObjectMethods/comitAmend.4dm",
 					"focusable": false
+<<<<<<< HEAD
 =======
 					"sizingY": "move"
+>>>>>>> gitlab
+=======
 >>>>>>> gitlab
 				}
 			}

@@ -40,6 +40,7 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"status";Formula:C1597(git ("status"));\
 		"add";Formula:C1597(git ("add";$1));\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"checkout";Formula:C1597(git ("checkout";$1));\
 		"stageAll";Formula:C1597(git ("stageAll"));\
 		"unstage";Formula:C1597(git ("unstage";$1));\
@@ -48,6 +49,22 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"stage";Formula:C1597(git ("stage"));\
 		"commit";Formula:C1597(git ("commit";$1));\
 		"version";Formula:C1597(git ("version").result);\
+=======
+		"stage";Formula:C1597(git ("stage"));\
+		"commit";Formula:C1597(git ("commit";$1));\
+		"version";Formula:C1597(git ("version").result);\
+=======
+<<<<<<< HEAD
+		"checkout";Formula:C1597(git ("checkout";$1));\
+		"stageAll";Formula:C1597(git ("stageAll"));\
+		"unstage";Formula:C1597(git ("unstage";$1));\
+		"commit";Formula:C1597(git ("commit";New object:C1471("message";$1;"amend";Bool:C1537($2))));\
+=======
+		"stage";Formula:C1597(git ("stage"));\
+		"commit";Formula:C1597(git ("commit";$1));\
+		"version";Formula:C1597(git ("version").result);\
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 		"execute";Formula:C1597(git ("execute";$1).result);\
 		"diff";Formula:C1597(git ("diff";New object:C1471("path";String:C10($1);"options";String:C10($2))).result);\
@@ -164,9 +181,19 @@ Else
 		: ($1="diff")
 			
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+			If (Not:C34(Bool:C1537($o.git.exists)))
+=======
+<<<<<<< HEAD
+>>>>>>> gitlab
 			If (Not:C34($o.success))
 =======
 			If (Not:C34(Bool:C1537($o.git.exists)))
+>>>>>>> gitlab
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 >>>>>>> gitlab
 				
 				$o.init()
@@ -194,9 +221,19 @@ Else
 		: ($1="diffTool")
 			
 <<<<<<< HEAD
+<<<<<<< HEAD
 			If (Not:C34($o.success))
 =======
 			If (Not:C34(Bool:C1537($o.git.exists)))
+=======
+			If (Not:C34(Bool:C1537($o.git.exists)))
+=======
+<<<<<<< HEAD
+			If (Not:C34($o.success))
+=======
+			If (Not:C34(Bool:C1537($o.git.exists)))
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 				
 				$o.init()
@@ -206,9 +243,18 @@ Else
 			If ($o.success)
 				
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+>>>>>>> gitlab
 				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS";"false")
 				
 =======
+>>>>>>> gitlab
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 >>>>>>> gitlab
 				$o.execute("difftool -y '"+$2+"'")
 				
@@ -220,9 +266,19 @@ Else
 			$o.changes.clear()
 			
 <<<<<<< HEAD
+<<<<<<< HEAD
 			If (Not:C34($o.success))
 =======
 			If (Not:C34(Bool:C1537($o.git.exists)))
+=======
+			If (Not:C34(Bool:C1537($o.git.exists)))
+=======
+<<<<<<< HEAD
+			If (Not:C34($o.success))
+=======
+			If (Not:C34(Bool:C1537($o.git.exists)))
+>>>>>>> gitlab
+>>>>>>> gitlab
 >>>>>>> gitlab
 				
 				$o.init()
@@ -271,9 +327,18 @@ Else
 			If (Value type:C1509($2)=Is collection:K8:32)
 				
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+>>>>>>> gitlab
 				  //
 				
 =======
+>>>>>>> gitlab
+<<<<<<< HEAD
+=======
+>>>>>>> gitlab
 >>>>>>> gitlab
 			Else 
 				
