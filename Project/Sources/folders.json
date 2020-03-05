@@ -1,4 +1,5 @@
 ﻿{
+<<<<<<< HEAD
 	"_component": {
 		"methods": [
 			"ACTIONS",
@@ -13,6 +14,8 @@
 			"GITLAB"
 		]
 	},
+=======
+>>>>>>> gitlab
 	"(Default Classes)": {},
 	"(Default Folder)": {
 		"groups": [
@@ -20,6 +23,7 @@
 			"(Default Forms)",
 			"(Default Project Methods)",
 			"(Default Tables)"
+<<<<<<< HEAD
 		]
 	},
 	"(Default Forms)": {},
@@ -31,11 +35,21 @@
 			"00_TEST"
 		]
 	},
+=======
+		]
+	},
+	"(Default Forms)": {},
+	"(Default Project Methods)": {},
+	"(Default Tables)": {},
+>>>>>>> gitlab
 	"classes": {
 		"methods": [
 			"button",
 			"COMPILER_classes",
+<<<<<<< HEAD
 			"git",
+=======
+>>>>>>> gitlab
 			"group",
 			"listbox",
 			"menu",
