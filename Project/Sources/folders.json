@@ -1,15 +1,34 @@
 ﻿{
-	"Default Classes": {},
-	"Default Folder": {
+	"(Default Classes)": {},
+	"(Default Folder)": {
 		"groups": [
-			"Default Classes",
-			"Default Forms",
-			"Default Project Methods",
-			"Default Tables"
+			"(Default Classes)",
+			"(Default Forms)",
+			"(Default Project Methods)",
+			"(Default Tables)"
 		]
 	},
-	"Default Forms": {},
-	"Default Project Methods": {},
-	"Default Tables": {},
-	"trash": {}
+	"(Default Forms)": {},
+	"(Default Project Methods)": {},
+	"(Default Tables)": {},
+	"classes": {
+		"methods": [
+			"button",
+			"COMPILER_classes",
+			"group",
+			"listbox",
+			"menu",
+			"picture",
+			"static",
+			"subform",
+			"thermometer",
+			"webArea",
+			"widget"
+		]
+	},
+	"trash": {
+		"groups": [
+			"(Default Folder)"
+		]
+	}
 }
