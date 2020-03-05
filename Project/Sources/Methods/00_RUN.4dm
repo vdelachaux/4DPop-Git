@@ -11,10 +11,14 @@
 C_TEXT:C284($1)
 
 C_LONGINT:C283($Lon_parameters;$Win_hdl)
+<<<<<<< HEAD
 C_PICTURE:C286($p)
 C_TEXT:C284($Mnu_bar;$Mnu_edit;$Txt_entryPoint;$Txt_methodName)
 C_OBJECT:C1216($o;$oForm)
 C_COLLECTION:C1488($c)
+=======
+C_TEXT:C284($Mnu_bar;$Mnu_edit;$Txt_entryPoint;$Txt_methodName)
+>>>>>>> gitlab
 
 If (False:C215)
 	C_TEXT:C284(00_RUN ;$1)
@@ -32,28 +36,46 @@ End if
 
   // ----------------------------------------------------
 Case of 
+<<<<<<< HEAD
 		
+=======
+>>>>>>> gitlab
 		  //___________________________________________________________
 	: (Length:C16($Txt_entryPoint)=0)
 		
 		$Txt_methodName:=Current method name:C684
 		
 		Case of 
+<<<<<<< HEAD
 				
 				  //……………………………………………………………………
 			: (Method called on error:C704=$Txt_methodName)
 				
 				  // Error handling manager
+=======
+				  //……………………………………………………………………
+			: (Method called on error:C704=$Txt_methodName)
+				
+				  //Error handling manager
+>>>>>>> gitlab
 				
 				  //……………………………………………………………………
 				  //: (Method called on event=$Txt_methodName)
 				
+<<<<<<< HEAD
 				  // Event manager - disabled for a component method
+=======
+				  //Event manager - disabled for a component method
+>>>>>>> gitlab
 				
 				  //……………………………………………………………………
 			Else 
 				
+<<<<<<< HEAD
 				  // This method must be executed in a unique new process
+=======
+				  //This method must be executed in a unique new process
+>>>>>>> gitlab
 				BRING TO FRONT:C326(New process:C317($Txt_methodName;0;"$"+$Txt_methodName;"_run";*))
 				
 				  //……………………………………………………………………
@@ -61,6 +83,7 @@ Case of
 		
 		  //___________________________________________________________
 	: ($Txt_entryPoint="_run")
+<<<<<<< HEAD
 		
 		  // First launch of this method executed in a new process
 		00_RUN ("_declarations")
@@ -119,12 +142,24 @@ Case of
 		
 		00_RUN ("_deinit")
 		
+=======
+		  //First launch of this method executed in a new process
+		00_RUN ("_declarations")
+		00_RUN ("_init")
+		
+		$Win_hdl:=Open form window:C675("GITLAB";Plain form window:K39:10;Horizontally centered:K39:1;Vertically centered:K39:4;*)
+		DIALOG:C40("GITLAB")
+		CLOSE WINDOW:C154
+		
+		00_RUN ("_deinit")
+>>>>>>> gitlab
 		  //___________________________________________________________
 	: ($Txt_entryPoint="_declarations")
 		
 		  //___________________________________________________________
 	: ($Txt_entryPoint="_init")
 		
+<<<<<<< HEAD
 		$o:=menu \
 			.append(":xliff:CommonMenuFile";menu .file())\
 			.append(":xliff:CommonMenuEdit";menu .edit())
@@ -137,6 +172,49 @@ Case of
 		  //End if 
 		
 		$o.setBar()
+=======
+		$Mnu_bar:=Create menu:C408
+		$Mnu_edit:=Create menu:C408
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuItemUndo")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak undo:K76:51)
+		SET MENU ITEM SHORTCUT:C423($Mnu_edit;-1;"Z";Command key mask:K16:1)
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuRedo")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak redo:K76:52)
+		SET MENU ITEM SHORTCUT:C423($Mnu_edit;-1;"Z";Shift key mask:K16:3)
+		
+		APPEND MENU ITEM:C411($Mnu_edit;"-")
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuItemCut")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak cut:K76:53)
+		SET MENU ITEM SHORTCUT:C423($Mnu_edit;-1;"X";Command key mask:K16:1)
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuItemCopy")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak copy:K76:54)
+		SET MENU ITEM SHORTCUT:C423($Mnu_edit;-1;"C";Command key mask:K16:1)
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuItemPaste")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak paste:K76:55)
+		SET MENU ITEM SHORTCUT:C423($Mnu_edit;-1;"V";Command key mask:K16:1)
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuItemClear")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak clear:K76:56)
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuItemSelectAll")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak select all:K76:57)
+		SET MENU ITEM SHORTCUT:C423($Mnu_edit;-1;"A";Command key mask:K16:1)
+		
+		APPEND MENU ITEM:C411($Mnu_edit;"(-")
+		
+		APPEND MENU ITEM:C411($Mnu_edit;":xliff:CommonMenuItemShowClipboard")
+		SET MENU ITEM PROPERTY:C973($Mnu_edit;-1;Associated standard action:K28:8;ak show clipboard:K76:58)
+		
+		APPEND MENU ITEM:C411($Mnu_bar;":xliff:CommonMenuEdit";$Mnu_edit)
+		RELEASE MENU:C978($Mnu_edit)
+		
+		SET MENU BAR:C67($Mnu_bar)
+>>>>>>> gitlab
 		
 		  //___________________________________________________________
 	: ($Txt_entryPoint="_deinit")

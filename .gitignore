@@ -34,4 +34,7 @@ ehthumbs.db
 Thumbs.db
 
 Resources/php.ini
+<<<<<<< HEAD
 Project/Trash/
+=======
+>>>>>>> gitlab
