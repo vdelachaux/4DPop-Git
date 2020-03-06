@@ -161,7 +161,7 @@
 			"objects": {
 				"Text1": {
 					"type": "text",
-					"text": "Unstaged Changes",
+					"text": "WORKSPACE",
 					"top": 29,
 					"left": 185,
 					"width": 154,
@@ -282,7 +282,7 @@
 				},
 				"Text3": {
 					"type": "text",
-					"text": "Staged Changes",
+					"text": "INDEX",
 					"top": 696,
 					"left": 185,
 					"width": 154,

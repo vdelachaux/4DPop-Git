@@ -7,8 +7,7 @@
 			"GIT LAB",
 			"listUI",
 			"REFRESH",
-			"resolvePath",
-			"UPDATE"
+			"resolvePath"
 		],
 		"forms": [
 			"GITLAB"
