@@ -1,7 +1,7 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : UPDATE
-  // ID[9BABF27ABE474385B2C7B3CAC62A6343]
+  // Project method : REFRESH
+  // ID[E7E96C5C8639422BA12B4632C5637E46]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
   // Description:
@@ -11,7 +11,7 @@
 C_BOOLEAN:C305($b)
 C_LONGINT:C283($l;$length;$pos)
 C_TEXT:C284($t;$tBuffer)
-C_OBJECT:C1216($ƒ;$o;$oButton;$oTarget)
+C_OBJECT:C1216($o;$oButton;$oTarget)
 C_COLLECTION:C1488($c)
 C_VARIANT:C1683($v)
 
@@ -20,50 +20,55 @@ C_VARIANT:C1683($v)
 
   // <NO PARAMETERS REQUIRED>
 
+  // Optional parameters
+If (Count parameters:C259>=1)
+	
+	  // <NONE>
+	
+End if 
+
 $t:=OBJECT Get name:C1087(Object with focus:K67:3)
-$ƒ:=Form:C1466.ƒ
 
 ASSERT:C1129(Not:C34(Shift down:C543))
 
   // ----------------------------------------------------
-
 Case of 
 		
-		  //______________________________________________________
+		  //———————————————————————————————————
 	: (Form:C1466.currentStaged=Null:C1517)\
 		 & (Form:C1466.currentUnstaged=Null:C1517)
 		
 		  // <NOTHING MORE TO DO>
 		
-		  //______________________________________________________
+		  //———————————————————————————————————
 	: ($t="unstaged")
 		
-		$ƒ.toComit.deselect()
-		$ƒ.unstage.disable()
+		Form:C1466.$.toComit.deselect()
+		Form:C1466.$.unstage.disable()
 		
 		If (Form:C1466.currentUnstaged#Null:C1517)
 			
 			$c:=Form:C1466.selectedUnstaged
 			$oTarget:=Form:C1466.currentUnstaged
-			$oButton:=$ƒ.stage
+			$oButton:=Form:C1466.$.stage
 			
 		End if 
 		
-		  //______________________________________________________
+		  //———————————————————————————————————
 	: ($t="staged")
 		
-		$ƒ.toStage.deselect()
-		$ƒ.stage.disable()
+		Form:C1466.$.toStage.deselect()
+		Form:C1466.$.stage.disable()
 		
 		If (Form:C1466.currentStaged#Null:C1517)
 			
 			$c:=Form:C1466.selectedStaged
 			$oTarget:=Form:C1466.currentStaged
-			$oButton:=$ƒ.unstage
+			$oButton:=Form:C1466.$.unstage
 			
 		End if 
 		
-		  //______________________________________________________
+		  //———————————————————————————————————
 End case 
 
 If ($oButton#Null:C1517)
@@ -73,13 +78,20 @@ If ($oButton#Null:C1517)
 		Case of 
 				
 				  //––––––––––––––––––––––––––––––––––––––––––––––––
+			: (Position:C15("D";$oTarget.status)>0)
+				
+				ST SET TEXT:C1115($t;"deleted";ST Start text:K78:15;ST End text:K78:16)
+				ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
+					Attribute text color:K65:7;"red")
+				
+				  //––––––––––––––––––––––––––––––––––––––––––––––––
 			: ($oTarget.status="??")
 				
 				$v:=resolvePath ($oTarget.path)
 				
 				Case of 
 						
-						  //______________________________________________________
+						  //———————————————————————————————————
 					: (Value type:C1509($v)=Is object:K8:27)  // File
 						
 						If (Bool:C1537($v.exists))
@@ -95,17 +107,18 @@ If ($oButton#Null:C1517)
 							End if 
 						End if 
 						
-						  //______________________________________________________
+						  //———————————————————————————————————
 					: (Value type:C1509($v)=Is text:K8:3)  // Method
 						
 						METHOD GET CODE:C1190($v;$tBuffer;*)
 						
-						  //______________________________________________________
+						
+						  //———————————————————————————————————
 					Else 
 						
 						  //
 						
-						  //______________________________________________________
+						  //———————————————————————————————————
 				End case 
 				
 				If (Length:C16($tBuffer)>0)
@@ -138,7 +151,7 @@ If ($oButton#Null:C1517)
 					  // Delete the initial lines
 					$b:=True:C214
 					
-					While ($c.length>0) & $b
+					While $b & ($c.length>0)
 						
 						$b:=(Position:C15("@";String:C10($c[0]))#1)
 						
@@ -157,41 +170,38 @@ If ($oButton#Null:C1517)
 							
 							Case of 
 									
-									  //…………………………………………………………………………………………………
+									  //———————————————————————————————————
 								: (Length:C16($t)=0)
 									
 									  // <NOTHING MORE TO DO>
 									
-									  //…………………………………………………………………………………………………
+									  //———————————————————————————————————
 								: ($t[[1]]="-")
 									
-									$t:=Delete string:C232($t;1;1)
 									ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
-										Attribute text color:K65:7;"red";\
-										Attribute strikethrough style:K65:3;1)
+										Attribute text color:K65:7;"red")
 									
-									  //…………………………………………………………………………………………………
+									  //———————————————————————————————————
 								: ($t[[1]]="+")
 									
-									$t:=Delete string:C232($t;1;1)
 									ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
 										Attribute text color:K65:7;"green")
 									
-									  //…………………………………………………………………………………………………
+									  //———————————————————————————————————
 								: (Character code:C91($t[[1]])=Character code:C91("@"))
 									
 									$t:="\n"+$t
 									ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
 										Attribute text color:K65:7;"gray")
 									
-									  //…………………………………………………………………………………………………
+									  //———————————————————————————————————
 								: ($t[[1]]="\\")
 									
 									$t:=Delete string:C232($t;1;1)
 									ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
 										Attribute text color:K65:7;"gray")
 									
-									  //…………………………………………………………………………………………………
+									  //———————————————————————————————————
 							End case 
 							
 							$c[$l]:=$t
@@ -241,12 +251,12 @@ If ($oButton#Null:C1517)
 Else 
 	
 	Form:C1466.diff:=""
-	$ƒ.stage.disable()
-	$ƒ.unstage.disable()
+	Form:C1466.$.stage.disable()
+	Form:C1466.$.unstage.disable()
 	
 End if 
 
-$ƒ.diff.setVisible(Length:C16(String:C10(Form:C1466.diff))>0)
+Form:C1466.$.diff.setVisible(Length:C16(String:C10(Form:C1466.diff))>0)
 
   // ----------------------------------------------------
   // Return

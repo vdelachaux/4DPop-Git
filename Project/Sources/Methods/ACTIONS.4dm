@@ -1,10 +1,26 @@
 //%attributes = {"invisible":true}
+  // ----------------------------------------------------
+  // Project method : ACTIONS
+  // ID[729EF4A4ABD24823A8476241DAF87DE2]
+  // Created 6-3-2020 by Vincent de Lachaux
+  // ----------------------------------------------------
+  // Description:
+  //
+  // ----------------------------------------------------
+  // Declarations
 C_OBJECT:C1216($event;$menu;$oTarget)
+C_COLLECTION:C1488($cTarget)
 C_VARIANT:C1683($v)
+
+  // ----------------------------------------------------
+  // Initialisations
+
+  // <NO PARAMETERS REQUIRED>
 
 $event:=FORM Event:C1606
 
 $oTarget:=Choose:C955($event.objectName="staged";Form:C1466.currentStaged;Form:C1466.currentUnstaged)
+$cTarget:=Choose:C955($event.objectName="staged";Form:C1466.selectedStaged;Form:C1466.selectedUnstaged)
 
   // ----------------------------------------------------
 Case of 
@@ -16,76 +32,93 @@ Case of
 			
 			$menu:=menu 
 			
+			If ($cTarget.length=1)
+				
+				$menu.append("Open";"open")
+				
+				If (New collection:C1472("??";" D";"A ").indexOf($oTarget.status)=-1)
+					
+					$menu.append("External Diff";"diffTool").shortcut("D")
+					
+				End if 
+				
+				If (New collection:C1472(" D").indexOf($oTarget.status)=-1)
+					
+					$menu.append("Show in Finder";"show")
+					
+				End if 
+				
+				$menu.line()
+				
+			End if 
+			
 			Case of 
 					
-					  //______________________________________________________
+					  //———————————————————————————————————————
 				: ($event.objectName="unstaged")
 					
-					If (Form:C1466.selectedUnstaged.length=1)
+					If ($cTarget.length>0)
 						
-						$menu.append("Open";"open")
-						$menu.append("External Diff";"diffTool").shortcut("D")
-						$menu.append("Show in Finder";"show")
-						$menu.line()
-						
-					End if 
-					
-					If (Form:C1466.selectedUnstaged.length>0)
-						
-						$menu.append("Stage";"stage").shortcut("S";512)
-						$menu.append("Discard Changes…";"discard")
-						$menu.line()
+						$menu.append("Stage";"stage").shortcut("S";512)\
+							.append("Discard Changes…";"discard")\
+							.line()
 						
 					End if 
 					
 					$menu.append("Stage All";"stageAll").shortcut("S";512+2048)
 					
-					  //______________________________________________________
+					  //———————————————————————————————————————
 				: ($event.objectName="staged")
 					
-					If (Form:C1466.selectedStaged.length=1)
+					If ($cTarget.length>0)
 						
-						$menu.append("Open";"open")
-						$menu.append("External Diff";"diffTool").shortcut("D")
-						$menu.append("Show in Finder";"show")
-						$menu.line()
+						$menu.append("Unstage";"unstage").shortcut("S";512)\
+							.line()
 						
 					End if 
 					
-					If (Form:C1466.selectedStaged.length>0)
-						
-						$menu.append("Unstage";"unstage").shortcut("S";512)
-						$menu.line()
-						
-					End if 
+					$menu.append("Unstage All";"unStageAll").shortcut("S";512+2048)
 					
-					$menu.append("Unstage All";"stageAll").shortcut("S";512+2048)
-					
-					  //______________________________________________________
-				: (False:C215)
-					
-					  //______________________________________________________
+					  //———————————————————————————————————————
 				Else 
 					
 					  // A "Case of" statement should never omit "Else"
-					  //______________________________________________________
+					  //———————————————————————————————————————
 			End case 
 			
 			If ($menu.popup().selected)
 				
-				
-				
 				Case of 
 						
-						  //______________________________________________________
+						  //———————————————————————————————————————
+					: ($menu.choice="show")
+						
+						SHOW ON DISK:C922(File:C1566(Form:C1466.project.parent.parent.path+$oTarget.path).platformPath)
+						
+						  //———————————————————————————————————————
 					: ($menu.choice="stage")
 						
-						STAGE 
+						Form:C1466.ƒ.stage()
 						
-						  //______________________________________________________
+						  //———————————————————————————————————————
+					: ($menu.choice="stageAll")
+						
+						Form:C1466.ƒ.stageAll()
+						
+						  //———————————————————————————————————————
+					: ($menu.choice="unstage")
+						
+						Form:C1466.ƒ.unstage()
+						
+						  //———————————————————————————————————————
+					: ($menu.choice="discard")
+						
+						Form:C1466.ƒ.discard()
+						
+						  //———————————————————————————————————————
 					: ($menu.choice="open")
 						
-						$v:=convertPath ($oTarget.path)
+						$v:=resolvePath ($oTarget.path)
 						
 						Case of 
 								
@@ -111,23 +144,23 @@ Case of
 								  //——————————————————————————————————
 						End case 
 						
-						  //______________________________________________________
+						  //———————————————————————————————————————
 					: ($menu.choice="diffTool")
 						
 						Form:C1466.git.diffTool($oTarget.path)
 						
-						  //______________________________________________________
+						  //———————————————————————————————————————
 					Else 
 						
-						ALERT:C41("Unmanaged tool: \""+$menu.choice+"\"…\r\rWe are goint tout doux ;-)")
+						ALERT:C41("Unmanaged tool: \""+$menu.choice+"\"…\r\rWe are going tout doux ;-)")
 						
-						  //______________________________________________________
+						  //———————————————————————————————————————
 				End case 
 			End if 
 			
 		Else 
 			
-			Form:C1466.refresh()
+			Form:C1466.ƒ.refresh()
 			
 		End if 
 		
@@ -136,22 +169,28 @@ Case of
 		
 		Case of 
 				
-				  //______________________________________________________
+				  //———————————————————————————————————————
 			: ($event.objectName="unstaged")
 				
-				STAGE 
+				Form:C1466.ƒ.stage()
 				
+				  //———————————————————————————————————————
+			: ($event.objectName="staged")
+				
+				Form:C1466.ƒ.unstage()
+				
+				  //———————————————————————————————————————
 			Else 
 				
-				ALERT:C41("We are goint tout doux ;-)")
+				ALERT:C41("We are going tout doux ;-)")
 				
+				  //———————————————————————————————————————
 		End case 
-		
 		
 		  //______________________________________________________
 	: ($event.code=On Selection Change:K2:29)
 		
-		Form:C1466.refresh()
+		Form:C1466.ƒ.refresh()
 		
 		  //______________________________________________________
 	Else 
@@ -160,3 +199,9 @@ Case of
 		
 		  //______________________________________________________
 End case 
+
+  // ----------------------------------------------------
+  // Return
+  // <NONE>
+  // ----------------------------------------------------
+  // End

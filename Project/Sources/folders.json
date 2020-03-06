@@ -1,4 +1,19 @@
 ﻿{
+	"_component": {
+		"methods": [
+			"ACTIONS",
+			"COMPILER_main",
+			"EXECUTE",
+			"GIT LAB",
+			"listUI",
+			"REFRESH",
+			"resolvePath",
+			"UPDATE"
+		],
+		"forms": [
+			"GITLAB"
+		]
+	},
 	"(Default Classes)": {},
 	"(Default Folder)": {
 		"groups": [
@@ -11,10 +26,17 @@
 	"(Default Forms)": {},
 	"(Default Project Methods)": {},
 	"(Default Tables)": {},
+	"00_DEV": {
+		"methods": [
+			"00_RUN",
+			"00_TEST"
+		]
+	},
 	"classes": {
 		"methods": [
 			"button",
 			"COMPILER_classes",
+			"git",
 			"group",
 			"listbox",
 			"menu",
