@@ -10,6 +10,11 @@ End if
 Case of 
 		
 		  //———————————————————————————————————————————
+	: (Position:C15(")";$1)>0)  // Trash
+		
+		$0:=File:C1566(Form:C1466.project.parent.parent.path+$1)
+		
+		  //———————————————————————————————————————————
 	: ($1="Documentation/@")  // Documentation
 		
 		$0:=File:C1566(Form:C1466.project.parent.parent.path+$1)
