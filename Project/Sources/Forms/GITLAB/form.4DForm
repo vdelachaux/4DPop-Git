@@ -34,12 +34,12 @@
 					"visibility": "visible",
 					"strokeWidth": 0
 				},
-				"switch": {
+				"menu": {
 					"type": "listbox",
 					"left": 0,
 					"top": 23,
 					"width": 180,
-					"height": 70,
+					"height": 773,
 					"events": [],
 					"action": "gotoPage",
 					"showHeaders": false,
@@ -48,7 +48,7 @@
 					"scrollbarHorizontal": "hidden",
 					"scrollbarVertical": "hidden",
 					"listboxType": "collection",
-					"dataSource": "Form:C1466.switch",
+					"dataSource": "Form:C1466.menu",
 					"hideFocusRing": true,
 					"hideSystemHighlight": false,
 					"horizontalLineStroke": "transparent",
@@ -109,11 +109,11 @@
 				},
 				"Static Picture1": {
 					"type": "picture",
-					"top": 804,
-					"left": 12,
+					"top": 809,
+					"left": 139,
 					"width": 32,
 					"height": 32,
-					"picture": "Images/octocat-spinner-128.gif",
+					"picture": "/RESOURCES/Images/octocat-spinner-128.gif",
 					"pictureFormat": "scaled",
 					"sizingY": "move"
 				},
@@ -138,6 +138,22 @@
 					"sizingX": "grow",
 					"stroke": "#808080",
 					"right": 1120
+				},
+				"Input2": {
+					"type": "input",
+					"left": 5,
+					"top": 833,
+					"width": 137,
+					"height": 17,
+					"dataSource": "\"git \"+Form:C1466.git.version",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"contextMenu": "none",
+					"enterable": false,
+					"focusable": false,
+					"fontSize": 10,
+					"sizingY": "move"
 				}
 			}
 		},
@@ -180,6 +196,7 @@
 					"sizingX": "grow",
 					"sortable": false,
 					"method": "ACTIONS",
+					"metaSource": "listUI",
 					"columns": [
 						{
 							"header": {
@@ -200,7 +217,7 @@
 					"left": 180,
 					"top": 719,
 					"width": 299,
-					"height": 131,
+					"height": 130,
 					"events": [
 						"onClick",
 						"onDoubleClick",
@@ -223,6 +240,7 @@
 					"currentItemPositionSource": "Form:C1466.itemPositionStaged",
 					"selectedItemsSource": "Form:C1466.selectedStaged",
 					"method": "ACTIONS",
+					"metaSource": "listUI ",
 					"columns": [
 						{
 							"header": {
@@ -260,7 +278,7 @@
 					],
 					"style": "regular",
 					"sizingX": "move",
-					"method": "STAGE"
+					"method": "ObjectMethods/stage.4dm"
 				},
 				"Text3": {
 					"type": "text",
@@ -283,7 +301,8 @@
 						"onClick"
 					],
 					"style": "regular",
-					"sizingX": "move"
+					"sizingX": "move",
+					"method": "ObjectMethods/unstage.4dm"
 				},
 				"Button": {
 					"type": "button",
@@ -361,7 +380,7 @@
 					"height": 1,
 					"borderStyle": "none",
 					"sizingX": "grow",
-					"splitterMode": "move"
+					"splitterMode": "resize"
 				},
 				"diff": {
 					"type": "input",
@@ -420,15 +439,19 @@
 					"placeholder": "Commit Subject",
 					"sizingX": "grow",
 					"sizingY": "move",
-					"hideFocusRing": true
+					"hideFocusRing": true,
+					"events": [
+						"onAfterEdit"
+					],
+					"method": "ObjectMethods/commitSubject.4dm"
 				},
-				"commitSecription": {
+				"commitDescription": {
 					"type": "input",
 					"left": 494,
 					"top": 789,
 					"width": 609,
 					"height": 17,
-					"dataSource": "Form:C1466.commitSecription",
+					"dataSource": "Form:C1466.commitDescription",
 					"placeholder": "Description",
 					"sizingX": "grow",
 					"sizingY": "move",
@@ -447,7 +470,24 @@
 					"style": "regular",
 					"sizingX": "move",
 					"focusable": true,
-					"sizingY": "move"
+					"sizingY": "move",
+					"method": "ObjectMethods/commit.4dm"
+				},
+				"comitAmend": {
+					"type": "checkbox",
+					"text": "Amend",
+					"top": 812,
+					"left": 494,
+					"width": 78,
+					"height": 16,
+					"events": [
+						"onClick"
+					],
+					"dataSource": "Form:C1466.amend",
+					"dataSourceTypeHint": "boolean",
+					"sizingY": "move",
+					"method": "ObjectMethods/comitAmend.4dm",
+					"focusable": false
 				}
 			}
 		},

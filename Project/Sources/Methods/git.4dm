@@ -14,7 +14,7 @@ C_VARIANT:C1683($2)
 
 C_BLOB:C604($x)
 C_LONGINT:C283($end;$start)
-C_TEXT:C284($t;$tCMD;$tERROR;$tIN;$tMessage;$tOUT)
+C_TEXT:C284($t;$tCMD;$tERROR;$tIN;$tOUT)
 C_OBJECT:C1216($file;$o)
 
 If (False:C215)
@@ -39,9 +39,10 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"init";Formula:C1597(git ("init"));\
 		"status";Formula:C1597(git ("status"));\
 		"add";Formula:C1597(git ("add";$1));\
-		"stage";Formula:C1597(git ("stage"));\
-		"commit";Formula:C1597(git ("commit";$1));\
-		"version";Formula:C1597(git ("version").result);\
+		"checkout";Formula:C1597(git ("checkout";$1));\
+		"stageAll";Formula:C1597(git ("stageAll"));\
+		"unstage";Formula:C1597(git ("unstage";$1));\
+		"commit";Formula:C1597(git ("commit";New object:C1471("message";$1;"amend";Bool:C1537($2))));\
 		"execute";Formula:C1597(git ("execute";$1).result);\
 		"diff";Formula:C1597(git ("diff";New object:C1471("path";String:C10($1);"options";String:C10($2))).result);\
 		"diffTool";Formula:C1597(git ("diffTool";$1).result);\
@@ -51,9 +52,29 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 	$o.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
 	$o.git:=$o.workingDirectory.folder(".git")
 	
+	$o.execute("version")
+	
+	If ($o.success)
+		
+		$o.success:=Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?";$o.result;1;$start;$end)
+		
+		If ($o.success)
+			
+			$o.version:=Substring:C12($o.result;$start;$end)
+			
+		Else 
+			
+			  // Error
+			$o.error:="Failed to get version in "+$o.result
+			$o.errors.push($o.error)
+			
+		End if 
+	End if 
+	
 Else 
 	
 	$o:=This:C1470
+	$o.success:=Bool:C1537($o.git.exists)
 	
 	Case of 
 			
@@ -136,7 +157,7 @@ Else
 			  //______________________________________________________
 		: ($1="diff")
 			
-			If (Not:C34(Bool:C1537($o.git.exists)))
+			If (Not:C34($o.success))
 				
 				$o.init()
 				
@@ -162,13 +183,15 @@ Else
 			  //______________________________________________________
 		: ($1="diffTool")
 			
-			If (Not:C34(Bool:C1537($o.git.exists)))
+			If (Not:C34($o.success))
 				
 				$o.init()
 				
 			End if 
 			
 			If ($o.success)
+				
+				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS";"false")
 				
 				$o.execute("difftool -y '"+$2+"'")
 				
@@ -179,7 +202,7 @@ Else
 			
 			$o.changes.clear()
 			
-			If (Not:C34(Bool:C1537($o.git.exists)))
+			If (Not:C34($o.success))
 				
 				$o.init()
 				
@@ -205,9 +228,9 @@ Else
 			End if 
 			
 			  //______________________________________________________
-		: ($1="stage")
+		: ($1="stageAll")
 			
-			If (Not:C34(Bool:C1537($o.git.exists)))
+			If (Not:C34($o.success))
 				
 				$o.init()
 				
@@ -226,6 +249,8 @@ Else
 			
 			If (Value type:C1509($2)=Is collection:K8:32)
 				
+				  //
+				
 			Else 
 				
 				$o.execute("add "+Char:C90(Quote:K15:44)+String:C10($2)+Char:C90(Quote:K15:44))
@@ -233,9 +258,35 @@ Else
 			End if 
 			
 			  //______________________________________________________
+		: ($1="unstage")
+			
+			If (Value type:C1509($2)=Is collection:K8:32)
+				
+				  //
+				
+			Else 
+				
+				$o.execute("reset HEAD "+Char:C90(Quote:K15:44)+String:C10($2)+Char:C90(Quote:K15:44))
+				
+			End if 
+			
+			  //______________________________________________________
+		: ($1="checkout")
+			
+			If (Value type:C1509($2)=Is collection:K8:32)
+				
+				  //
+				
+			Else 
+				
+				$o.execute("checkout -- "+Char:C90(Quote:K15:44)+String:C10($2)+Char:C90(Quote:K15:44))
+				
+			End if 
+			
+			  //______________________________________________________
 		: ($1="commit")
 			
-			If (Not:C34(Bool:C1537($o.git.exists)))
+			If (Not:C34($o.success))
 				
 				$o.init()
 				
@@ -245,13 +296,15 @@ Else
 			
 			If ($o.changes.length>0)
 				
-				$o.stage()
+				$t:=Choose:C955(Length:C16($2.message)=0;"Initial commit";$2.message)
 				
-				If ($o.success)
+				If ($2.amend)
 					
-					$tMessage:=Choose:C955($2=Null:C1517;"Initial commit";String:C10($2))
+					$o.execute("commit --amend --no-edit")
 					
-					$o.execute("commit -m "+Char:C90(Quote:K15:44)+$tMessage+Char:C90(Quote:K15:44))
+				Else 
+					
+					$o.execute("commit -m "+Char:C90(Quote:K15:44)+$t+Char:C90(Quote:K15:44))
 					
 				End if 
 				
@@ -263,30 +316,9 @@ Else
 			End if 
 			
 			  //______________________________________________________
-		: ($1="version")
-			
-			$o.execute("version")
-			
-			If ($o.success)
-				
-				$o.success:=Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?";$o.result;1;$start;$end)
-				
-				If ($o.success)
-					
-					$o.result:=Substring:C12($o.result;$start;$end)
-					
-				Else 
-					
-					  // Error
-					$o.error:="Failed to get version in "+$o.result
-					$o.errors.push($o.error)
-					
-				End if 
-			End if 
-			
-			  //______________________________________________________
 		Else 
 			
+			$o.success:=False:C215
 			ASSERT:C1129(False:C215;"Unknown entry point: \""+$1+"\"")
 			
 			  //______________________________________________________
@@ -295,7 +327,6 @@ End if
 
   // ----------------------------------------------------
   // Return
-
 $0:=$o
 
   // ----------------------------------------------------
