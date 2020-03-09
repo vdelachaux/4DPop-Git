@@ -37,39 +37,17 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"workingDirectory";Null:C1517;\
 		"git";Null:C1517;\
 		"init";Formula:C1597(git ("init"));\
-		"status";Formula:C1597(git ("status"));\
 		"add";Formula:C1597(git ("add";$1));\
-<<<<<<< HEAD
-<<<<<<< HEAD
 		"checkout";Formula:C1597(git ("checkout";$1));\
-		"stageAll";Formula:C1597(git ("stageAll"));\
-		"unstage";Formula:C1597(git ("unstage";$1));\
 		"commit";Formula:C1597(git ("commit";New object:C1471("message";$1;"amend";Bool:C1537($2))));\
-=======
-		"stage";Formula:C1597(git ("stage"));\
-		"commit";Formula:C1597(git ("commit";$1));\
-		"version";Formula:C1597(git ("version").result);\
-=======
-		"stage";Formula:C1597(git ("stage"));\
-		"commit";Formula:C1597(git ("commit";$1));\
-		"version";Formula:C1597(git ("version").result);\
-=======
-<<<<<<< HEAD
-		"checkout";Formula:C1597(git ("checkout";$1));\
-		"stageAll";Formula:C1597(git ("stageAll"));\
-		"unstage";Formula:C1597(git ("unstage";$1));\
-		"commit";Formula:C1597(git ("commit";New object:C1471("message";$1;"amend";Bool:C1537($2))));\
-=======
-		"stage";Formula:C1597(git ("stage"));\
-		"commit";Formula:C1597(git ("commit";$1));\
-		"version";Formula:C1597(git ("version").result);\
->>>>>>> gitlab
->>>>>>> gitlab
->>>>>>> gitlab
-		"execute";Formula:C1597(git ("execute";$1).result);\
 		"diff";Formula:C1597(git ("diff";New object:C1471("path";String:C10($1);"options";String:C10($2))).result);\
 		"diffTool";Formula:C1597(git ("diffTool";$1).result);\
-		"revert";Formula:C1597(git ("revert";$1).result)\
+		"execute";Formula:C1597(git ("execute";$1).result);\
+		"revert";Formula:C1597(git ("revert";$1).result);\
+		"stage";Formula:C1597(git ("stage"));\
+		"stageAll";Formula:C1597(git ("stageAll"));\
+		"status";Formula:C1597(git ("status"));\
+		"unstage";Formula:C1597(git ("unstage";$1))\
 		)
 	
 	$o.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
@@ -180,21 +158,7 @@ Else
 			  //______________________________________________________
 		: ($1="diff")
 			
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
-=======
-<<<<<<< HEAD
->>>>>>> gitlab
 			If (Not:C34($o.success))
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
->>>>>>> gitlab
-<<<<<<< HEAD
-=======
->>>>>>> gitlab
->>>>>>> gitlab
 				
 				$o.init()
 				
@@ -219,22 +183,8 @@ Else
 			
 			  //______________________________________________________
 		: ($1="diffTool")
-			
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 			If (Not:C34($o.success))
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
-=======
-<<<<<<< HEAD
-			If (Not:C34($o.success))
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
->>>>>>> gitlab
->>>>>>> gitlab
->>>>>>> gitlab
 				
 				$o.init()
 				
@@ -242,20 +192,8 @@ Else
 			
 			If ($o.success)
 				
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
->>>>>>> gitlab
 				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS";"false")
 				
-=======
->>>>>>> gitlab
-<<<<<<< HEAD
-=======
->>>>>>> gitlab
->>>>>>> gitlab
 				$o.execute("difftool -y '"+$2+"'")
 				
 			End if 
@@ -265,21 +203,8 @@ Else
 			
 			$o.changes.clear()
 			
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 			If (Not:C34($o.success))
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
-=======
-<<<<<<< HEAD
-			If (Not:C34($o.success))
-=======
-			If (Not:C34(Bool:C1537($o.git.exists)))
->>>>>>> gitlab
->>>>>>> gitlab
->>>>>>> gitlab
 				
 				$o.init()
 				
@@ -325,21 +250,9 @@ Else
 		: ($1="add")
 			
 			If (Value type:C1509($2)=Is collection:K8:32)
-				
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
->>>>>>> gitlab
+
 				  //
-				
-=======
->>>>>>> gitlab
-<<<<<<< HEAD
-=======
->>>>>>> gitlab
->>>>>>> gitlab
+
 			Else 
 				
 				$o.execute("add "+Char:C90(Quote:K15:44)+String:C10($2)+Char:C90(Quote:K15:44))
