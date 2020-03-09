@@ -37,21 +37,6 @@ If (False:C215)
 	C_OBJECT:C1216(static ;$2)
 	
 	  //…………………………………………………………………………………………………
-	C_OBJECT:C1216(subform ;$0)
-	C_TEXT:C284(subform ;$1)
-	C_OBJECT:C1216(subform ;$2)
-	
-	  //…………………………………………………………………………………………………
-	C_OBJECT:C1216(thermometer ;$0)
-	C_TEXT:C284(thermometer ;$1)
-	C_OBJECT:C1216(thermometer ;$2)
-	
-	  //…………………………………………………………………………………………………
-	C_OBJECT:C1216(webArea ;$0)
-	C_TEXT:C284(webArea ;$1)
-	C_OBJECT:C1216(webArea ;$2)
-	
-	  //…………………………………………………………………………………………………
 	C_OBJECT:C1216(widget ;$0)
 	C_TEXT:C284(widget ;$1)
 	C_OBJECT:C1216(widget ;$2)

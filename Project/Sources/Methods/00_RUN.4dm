@@ -87,15 +87,13 @@ Case of
 		  // Methods definitions
 		$o:=New object:C1471(\
 			"update";Formula:C1597(SET TIMER:C645(-1));\
-			"refresh";Formula:C1597(REFRESH );\
-			"stage";Formula:C1597(EXECUTE ("stage"));\
-			"stageAll";Formula:C1597(EXECUTE ("stageAll"));\
-			"unstage";Formula:C1597(EXECUTE ("unstage"));\
-			"discard";Formula:C1597(EXECUTE ("discard"));\
-			"commit";Formula:C1597(EXECUTE (New object:C1471(\
-			"action";"commit";\
-			"message";Form:C1466.commitSubject;\
-			"amend";Bool:C1537(Form:C1466.amend))))\
+			"refresh";Formula:C1597(GITLAB_REFRESH );\
+			"stage";Formula:C1597(GITLAB_EXECUTE ("stage"));\
+			"stageAll";Formula:C1597(GITLAB_EXECUTE ("stageAll"));\
+			"unstage";Formula:C1597(GITLAB_EXECUTE ("unstage"));\
+			"discard";Formula:C1597(GITLAB_EXECUTE ("discard"));\
+			"path";Formula:C1597(GITLAB_resolvePath );\
+			"commit";Formula:C1597(GITLAB_EXECUTE (New object:C1471("action";"commit";"message";Form:C1466.commitSubject;"amend";Bool:C1537(Form:C1466.amend))))\
 			)
 		
 		$oForm.ƒ:=$o

@@ -1,7 +1,7 @@
 ﻿{
+	"(Private)": {},
 	"00_DEV": {
 		"methods": [
-			"00_RUN",
 			"00_TEST"
 		]
 	},
@@ -15,11 +15,39 @@
 			"menu",
 			"picture",
 			"static",
-			"subform",
-			"thermometer",
-			"webArea",
 			"widget"
 		]
 	},
-	"trash": {}
+	"Component": {
+		"groups": [
+			"GITLAB",
+			"Shared"
+		],
+		"methods": [
+			"00_RUN",
+			"COMPILER_main"
+		]
+	},
+	"GITLAB": {
+		"methods": [
+			"GITLAB_EXECUTE",
+			"GITLAB_metas",
+			"GITLAB_OBJECTS",
+			"GITLAB_REFRESH",
+			"GITLAB_resolvePath"
+		],
+		"forms": [
+			"GITLAB"
+		]
+	},
+	"Shared": {
+		"methods": [
+			"4DPop_GIT"
+		]
+	},
+	"trash": {
+		"groups": [
+			"(Private)"
+		]
+	}
 }
