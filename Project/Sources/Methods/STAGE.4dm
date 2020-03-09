@@ -1,4 +1,4 @@
-//%attributes = {}
+//%attributes = {"invisible":true}
 C_OBJECT:C1216($o)
 
 For each ($o;Form:C1466.selectedUnstaged)
