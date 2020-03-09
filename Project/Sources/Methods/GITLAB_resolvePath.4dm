@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : resolvePath
+  // Project method : GITLAB_resolvePath
   // ID[D8FCE09C5AE341AA9189F5C8DCFFEBCE]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -16,8 +16,8 @@ C_TEXT:C284($t_path)
 C_VARIANT:C1683($v_resolved)
 
 If (False:C215)
-	C_VARIANT:C1683(resolvePath ;$0)
-	C_TEXT:C284(resolvePath ;$1)
+	C_VARIANT:C1683(GITLAB_resolvePath ;$0)
+	C_TEXT:C284(GITLAB_resolvePath ;$1)
 End if 
 
   // ----------------------------------------------------

@@ -3,7 +3,7 @@
   // ID[65871C4C423A4C31913CD88C79275F61]
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
-C_PICTURE:C286($p)
+C_TEXT:C284($t)
 C_OBJECT:C1216($event;$o)
 C_COLLECTION:C1488($c)
 
@@ -21,14 +21,18 @@ Case of
 		Form:C1466.$:=New object:C1471(\
 			"stage";button ("stage");\
 			"unstage";button ("unstage");\
-			"commit";button ("commit");\
 			"menu";listbox ("menu");\
 			"toStage";listbox ("unstaged");\
 			"toComit";listbox ("staged");\
 			"diff";widget ("diff");\
+			"diffTool";button ("diffTool");\
+			"stageAll";button ("stageAll");\
 			"subject";widget ("commitSubject");\
 			"description";widget ("commitDecription");\
-			"commitment";widget ("commit@")\
+			"commit";button ("commit");\
+			"amend";button ("comitAmend");\
+			"commitment";widget ("commit@");\
+			"commits";listbox ("commits")\
 			)
 		
 		  // Default is  changes page
@@ -37,12 +41,12 @@ Case of
 		  // Trick
 		Form:C1466.$.toStage.setScrollbar(0;2)
 		Form:C1466.$.toComit.setScrollbar(0;2)
+		Form:C1466.$.commits.setScrollbar(0;2)
 		
 		  // Adapt UI to localization
 		Form:C1466.$.stage.bestSize(Align right:K42:4).disable()
 		Form:C1466.$.unstage.bestSize(Align right:K42:4).disable()
 		Form:C1466.$.commit.bestSize(Align right:K42:4).disable()
-		
 		
 		Form:C1466.ƒ.update()
 		
@@ -69,7 +73,6 @@ Case of
 					
 				Else 
 					
-					
 					Form:C1466.staged.clear()
 					Form:C1466.$.unstage.disable()
 					
@@ -88,6 +91,11 @@ Case of
 					Form:C1466.commitSubject:=""
 					
 				End if 
+				
+				Form:C1466.$.toStage.deselect()
+				Form:C1466.$.toComit.deselect()
+				
+				Form:C1466.$.diff.hide()
 				
 				Form:C1466.ƒ.refresh()
 				

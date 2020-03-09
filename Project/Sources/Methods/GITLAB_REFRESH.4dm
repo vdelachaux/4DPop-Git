@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : UPDATE
+  // Project method : GITLAB_REFRESH
   // ID[9BABF27ABE474385B2C7B3CAC62A6343]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -74,16 +74,9 @@ If ($oTarget.button#Null:C1517)
 		Case of 
 				
 				  //––––––––––––––––––––––––––––––––––––––––––––––––
-			: ($oTarget.current.status="@D@")
-				
-				$t:="deleted"
-				ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
-					Attribute text color:K65:7;"red")
-				
-				  //––––––––––––––––––––––––––––––––––––––––––––––––
 			: ($oTarget.current.status="??")
 				
-				$v:=resolvePath ($oTarget.current.path)
+				$v:=Form:C1466.ƒ.path($oTarget.current.path)
 				
 				Case of 
 						
@@ -129,15 +122,27 @@ If ($oTarget.button#Null:C1517)
 				
 				$o:=Form:C1466.git
 				
-				If ($oTarget.name="staged")
-					
-					$o.diff($oTarget.current.path;"--cached")
-					
-				Else 
-					
-					$o.diff($oTarget.current.path)
-					
-				End if 
+				Case of 
+						
+						  //______________________________________________________
+					: ($oTarget.current.status="@D@")
+						
+						$o.execute("diff HEAD^ -- "+$oTarget.current.path)
+						
+						  //$o.diff($oTarget.current.path;"diff HEAD^ -- ")
+						
+						  //______________________________________________________
+					: ($oTarget.name="staged")
+						
+						$o.diff($oTarget.current.path;"--cached")
+						
+						  //______________________________________________________
+					Else 
+						
+						$o.diff($oTarget.current.path)
+						
+						  //______________________________________________________
+				End case 
 				
 				If ($o.success)
 					
@@ -207,6 +212,8 @@ If ($oTarget.button#Null:C1517)
 							
 							$t:=$c.join("\n")
 							
+							$t:=Replace string:C233($t;"<br/>";"")
+							
 							  // Separate blocks
 							$l:=1
 							
@@ -229,6 +236,12 @@ If ($oTarget.button#Null:C1517)
 								$t:=Replace string:C233($t;"\n\n";"\n")
 								
 							End while 
+							
+							If (Position:C15("\n";$t)=1)
+								
+								$t:=Delete string:C232($t;1;1)
+								
+							End if 
 						End if 
 					End if 
 					

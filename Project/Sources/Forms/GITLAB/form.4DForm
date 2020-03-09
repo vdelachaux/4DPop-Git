@@ -195,8 +195,8 @@
 					"selectedItemsSource": "Form:C1466.selectedUnstaged",
 					"sizingX": "grow",
 					"sortable": false,
-					"method": "ACTIONS",
-					"metaSource": "listUI",
+					"method": "GITLAB_OBJECTS",
+					"metaSource": "GITLAB_metas",
 					"columns": [
 						{
 							"header": {
@@ -239,8 +239,8 @@
 					"currentItemSource": "Form:C1466.currentStaged",
 					"currentItemPositionSource": "Form:C1466.itemPositionStaged",
 					"selectedItemsSource": "Form:C1466.selectedStaged",
-					"method": "ACTIONS",
-					"metaSource": "listUI ",
+					"method": "GITLAB_OBJECTS",
+					"metaSource": "GITLAB_metas",
 					"columns": [
 						{
 							"header": {
@@ -278,7 +278,13 @@
 					],
 					"style": "regular",
 					"sizingX": "move",
-					"method": "STAGE"
+					"shortcutAccel": true,
+					"shortcutControl": false,
+					"shortcutShift": true,
+					"shortcutAlt": false,
+					"shortcutKey": "s",
+					"focusable": false,
+					"method": "GITLAB_OBJECTS"
 				},
 				"Text3": {
 					"type": "text",
@@ -302,9 +308,15 @@
 					],
 					"style": "regular",
 					"sizingX": "move",
-					"method": "ObjectMethods/unstage.4dm"
+					"shortcutAccel": true,
+					"shortcutControl": false,
+					"shortcutShift": true,
+					"shortcutAlt": false,
+					"shortcutKey": "s",
+					"focusable": false,
+					"method": "GITLAB_OBJECTS"
 				},
-				"Button": {
+				"diffTool": {
 					"type": "button",
 					"text": "diffTool",
 					"top": 881,
@@ -314,14 +326,15 @@
 					"events": [
 						"onClick"
 					],
-					"method": "ObjectMethods/Button.4dm",
 					"shortcutAccel": true,
 					"shortcutControl": false,
 					"shortcutShift": false,
 					"shortcutAlt": false,
 					"shortcutKey": "d",
 					"sizingY": "move",
-					"style": "flat"
+					"style": "flat",
+					"method": "GITLAB_OBJECTS",
+					"focusable": false
 				},
 				"vSplitter_2": {
 					"type": "splitter",
@@ -443,7 +456,7 @@
 					"events": [
 						"onAfterEdit"
 					],
-					"method": "ObjectMethods/commitSubject.4dm"
+					"method": "GITLAB_OBJECTS"
 				},
 				"commitDescription": {
 					"hideFocusRing": true,
@@ -471,7 +484,7 @@
 					"sizingX": "move",
 					"focusable": true,
 					"sizingY": "move",
-					"method": "ObjectMethods/commit.4dm"
+					"method": "GITLAB_OBJECTS"
 				},
 				"comitAmend": {
 					"type": "checkbox",
@@ -486,14 +499,34 @@
 					"dataSource": "Form:C1466.amend",
 					"dataSourceTypeHint": "boolean",
 					"sizingY": "move",
-					"method": "ObjectMethods/comitAmend.4dm",
+					"focusable": false,
+					"method": "GITLAB_OBJECTS"
+				},
+				"stageAll": {
+					"type": "button",
+					"text": "stageAll",
+					"top": 881,
+					"left": 108,
+					"width": 87,
+					"height": 38,
+					"events": [
+						"onClick"
+					],
+					"shortcutAccel": true,
+					"shortcutControl": false,
+					"shortcutShift": true,
+					"shortcutAlt": true,
+					"shortcutKey": "s",
+					"sizingY": "move",
+					"style": "flat",
+					"method": "GITLAB_OBJECTS",
 					"focusable": false
 				}
 			}
 		},
 		{
 			"objects": {
-				"List Box": {
+				"commits": {
 					"type": "listbox",
 					"left": 180,
 					"top": 24,
@@ -513,9 +546,10 @@
 					"verticalLineStroke": "transparent",
 					"selectionMode": "single",
 					"scrollbarHorizontal": "hidden",
-					"scrollbarVertical": "automatic",
+					"scrollbarVertical": "visible",
 					"sizingX": "grow",
 					"hideFocusRing": true,
+					"sizingY": "grow",
 					"columns": [
 						{
 							"header": {
@@ -554,6 +588,16 @@
 							"width": 90
 						}
 					]
+				},
+				"Splitter1": {
+					"type": "splitter",
+					"left": 180,
+					"top": 483,
+					"width": 959,
+					"height": 1,
+					"borderStyle": "none",
+					"sizingX": "grow",
+					"splitterMode": "resize"
 				}
 			}
 		}

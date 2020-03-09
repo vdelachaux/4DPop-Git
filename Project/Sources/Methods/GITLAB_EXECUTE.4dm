@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : EXECUTE
+  // Project method : GITLAB_EXECUTE
   // ID[DBC17A31DBA047DEBC0BEA1F2BADF817]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -14,7 +14,7 @@ C_TEXT:C284($t_action)
 C_OBJECT:C1216($o;$o_IN)
 
 If (False:C215)
-	C_VARIANT:C1683(EXECUTE ;$1)
+	C_VARIANT:C1683(GITLAB_EXECUTE ;$1)
 End if 
 
   // ----------------------------------------------------
