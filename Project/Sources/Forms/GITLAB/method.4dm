@@ -112,11 +112,14 @@ Case of
 					
 					$c:=Split string:C1554($t;",")
 					
-					Form:C1466.commits.push(New object:C1471(\
-						"title";$c[0];\
-						"author";$c[1];\
-						"ref";$c[2]))
-					
+					If ($c.length>=3)
+						
+						Form:C1466.commits.push(New object:C1471(\
+							"title";$c[0];\
+							"author";$c[1];\
+							"ref";$c[2]))
+						
+					End if 
 				End for each 
 				
 				  //______________________________________________________
