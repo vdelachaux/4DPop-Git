@@ -32,7 +32,11 @@ Case of
 			"commit";button ("commit");\
 			"amend";button ("comitAmend");\
 			"commitment";widget ("commit@");\
-			"commits";listbox ("commits")\
+			"commits";listbox ("commits");\
+			"fetch";button ("fetch");\
+			"pull";button ("pull");\
+			"push";button ("push");\
+			"open";button ("open")\
 			)
 		
 		  // Default is  changes page
@@ -47,6 +51,10 @@ Case of
 		Form:C1466.$.stage.bestSize(Align right:K42:4).disable()
 		Form:C1466.$.unstage.bestSize(Align right:K42:4).disable()
 		Form:C1466.$.commit.bestSize(Align right:K42:4).disable()
+		
+		group ("fetch;pull;push").distributeHorizontally(New object:C1471("start";20;"gap";10;"minWidth";50))
+		
+		Form:C1466.$.open.bestSize(Align right:K42:4)
 		
 		Form:C1466.ƒ.update()
 		
@@ -159,8 +167,8 @@ Case of
 			
 		End if 
 		
-		  //touch
-		  //Form.menu:=Form.menu
+		  // Touch
+		  // Form.menu:=Form.menu
 		
 		Form:C1466.ƒ.refresh()
 		

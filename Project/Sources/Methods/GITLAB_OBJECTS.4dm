@@ -8,7 +8,8 @@
   //
   // ----------------------------------------------------
   // Declarations
-C_OBJECT:C1216($event;$menu;$oCurrent)
+C_TEXT:C284($t)
+C_OBJECT:C1216($event;$file;$menu;$o;$oCurrent)
 C_COLLECTION:C1488($cSelected)
 C_VARIANT:C1683($v)
 
@@ -119,6 +120,19 @@ Case of
 							  //———————————————————————————————————————
 					End case 
 					
+					If ($oCurrent#Null:C1517)
+						
+						$o:=File:C1566($oCurrent.path)
+						
+						$menu.line()\
+							.append("Ignore";menu \
+							.append("Ignore \""+$o.fullName+"\"";"ignoreFile")\
+							.append("Ignore All \""+$o.extension+"\" files";"ignoreExtension")\
+							.line()\
+							.append("Custom Patern…";"ignoreCustom"))
+						
+					End if 
+					
 					If ($menu.popup().selected)
 						
 						Case of 
@@ -178,9 +192,50 @@ Case of
 								Form:C1466.ƒ.unstage()
 								
 								  //———————————————————————————————————————
+							: ($menu.choice="ignore@")
+								
+								$o:=File:C1566($oCurrent.path)
+								
+								$file:=Form:C1466.git.workingDirectory.file(".gitignore")
+								$t:=$file.getText("UTF-8";Document with CR:K24:21)
+								
+								Case of 
+										  //____________________________
+									: ($menu.choice="ignoreFile")
+										
+										If ($oCurrent.status#"??")
+											
+											Form:C1466.git.untrack($oCurrent.path)
+											
+										End if 
+										
+										$t:=$t+"\r"+$oCurrent.path
+										
+										  //____________________________
+									: ($menu.choice="ignoreExtension")
+										
+										  // #TO_DO: Must unstack all indexed files with this extension
+										
+										$t:=$t+"\r*"+$o.extension
+										
+										  //____________________________
+									Else 
+										
+										ALERT:C41("Unmanaged tool: \""+$menu.choice+"\"…\r\rWe are going tout doux ;-)")
+										
+										  //____________________________
+								End case 
+								
+								$file.setText($t;"UTF-8";Document with CRLF:K24:20)
+								
+								Form:C1466.git.status()
+								Form:C1466.ƒ.update()
+								Form:C1466.ƒ.refresh()
+								
+								  //———————————————————————————————————————
 							Else 
 								
-								ALERT:C41("Unmanaged tool: \""+$menu.choice+"\"…\r\rWe are goint tout doux ;-)")
+								ALERT:C41("Unmanaged tool: \""+$menu.choice+"\"…\r\rWe are going tout doux ;-)")
 								
 								  //———————————————————————————————————————
 						End case 
@@ -202,8 +257,40 @@ Case of
 				
 				ASSERT:C1129(False:C215;"Form event activated unnecessarily ("+$event.description+")")
 				
-				  //________________________________________
+				  //______________________________________________________
 		End case 
+		
+		  //______________________________________________________
+	: ($event.objectName=Form:C1466.$.open.name)
+		
+		$menu:=menu \
+			.append("Open in Terminal";"terminal").icon("/RESOURCES/Images/terminal.png")\
+			.append("Open in Finder";"show").icon("/RESOURCES/Images/finder.png")\
+			.line()\
+			.append("View on Github";"github").icon("/RESOURCES/Images/gitHub.png").disable()
+		
+		If ($menu.popup().selected)
+			
+			Case of 
+					
+					  //———————————————————————————————————————
+				: ($menu.choice="terminal")
+					
+					Form:C1466.git.terminal()
+					
+					  //———————————————————————————————————————
+				: ($menu.choice="show")
+					
+					Form:C1466.git.show()
+					
+					  //———————————————————————————————————————
+				Else 
+					
+					  // A "Case of" statement should never omit "Else"
+					
+					  //———————————————————————————————————————
+			End case 
+		End if 
 		
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.stage.name)
