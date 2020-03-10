@@ -598,6 +598,30 @@
 					"borderStyle": "none",
 					"sizingX": "grow",
 					"splitterMode": "resize"
+				},
+				"showCommit": {
+					"type": "button",
+					"text": "Commit",
+					"top": 493,
+					"left": 192,
+					"width": 97,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"focusable": false
+				},
+				"showChanges": {
+					"type": "button",
+					"text": "Changes",
+					"top": 493,
+					"left": 309,
+					"width": 97,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"focusable": false
 				}
 			}
 		}
