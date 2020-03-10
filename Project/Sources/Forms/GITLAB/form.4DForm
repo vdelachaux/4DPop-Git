@@ -583,11 +583,11 @@
 				},
 				"stageAll": {
 					"type": "button",
-					"text": "stageAll",
-					"top": 941,
-					"left": 108,
-					"width": 87,
-					"height": 38,
+					"text": "",
+					"top": 60,
+					"left": 458,
+					"width": 22,
+					"height": 22,
 					"events": [
 						"onClick"
 					],
@@ -596,10 +596,13 @@
 					"shortcutShift": true,
 					"shortcutAlt": true,
 					"shortcutKey": "s",
-					"sizingY": "move",
-					"style": "flat",
+					"sizingY": "fixed",
+					"style": "toolbar",
 					"method": "GITLAB_OBJECTS",
-					"focusable": false
+					"focusable": false,
+					"icon": "/RESOURCES/Images/stageAll.png",
+					"sizingX": "move",
+					"tooltip": "Stage All"
 				}
 			}
 		},
