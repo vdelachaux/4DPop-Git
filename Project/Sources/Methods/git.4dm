@@ -47,7 +47,10 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"stage";Formula:C1597(git ("stage"));\
 		"stageAll";Formula:C1597(git ("stageAll"));\
 		"status";Formula:C1597(git ("status"));\
-		"unstage";Formula:C1597(git ("unstage";$1))\
+		"unstage";Formula:C1597(git ("unstage";$1));\
+		"untrack";Formula:C1597(git ("untrack";$1));\
+		"terminal";Formula:C1597(git ("open";"terminal"));\
+		"show";Formula:C1597(git ("open";"finder"))\
 		)
 	
 	$o.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
@@ -115,18 +118,61 @@ Else
 			
 			Case of 
 					
-					  //______________________________________________________
+					  //——————————————————————
 				: ($o.success)
 					
 					$o.result:=$tOUT
 					
-					  //______________________________________________________
+					  //——————————————————————
 				: (Length:C16($tERROR)>0)
 					
 					$o.error:=$tERROR
 					$o.errors.push($o.error)
 					
-					  //______________________________________________________
+					  //——————————————————————
+			End case 
+			
+			  //______________________________________________________
+		: ($1="open")
+			
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE";"true")
+			
+			Case of 
+					
+					  //——————————————————————
+				: ($2="terminal")
+					
+					LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+$o.workingDirectory.path+"'";$tIN;$tOUT;$tERROR)
+					
+					  //——————————————————————
+				: ($2="finder")
+					
+					SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY";String:C10($o.workingDirectory.platformPath))
+					LAUNCH EXTERNAL PROCESS:C811("open .";$tIN;$tOUT;$tERROR)
+					
+					  //——————————————————————
+				Else 
+					
+					  // A "Case of" statement should never omit "Else"
+					  //——————————————————————
+			End case 
+			
+			$o.success:=Bool:C1537(OK) & (Length:C16($tERROR)=0)
+			
+			Case of 
+					
+					  //——————————————————————
+				: ($o.success)
+					
+					  //$o.result:=$tOUT
+					
+					  //——————————————————————
+				: (Length:C16($tERROR)>0)
+					
+					$o.error:=$tERROR
+					$o.errors.push($o.error)
+					
+					  //——————————————————————
 			End case 
 			
 			  //______________________________________________________
@@ -183,7 +229,7 @@ Else
 			
 			  //______________________________________________________
 		: ($1="diffTool")
-
+			
 			If (Not:C34($o.success))
 				
 				$o.init()
@@ -203,7 +249,6 @@ Else
 			
 			$o.changes.clear()
 			
-
 			If (Not:C34($o.success))
 				
 				$o.init()
@@ -250,9 +295,9 @@ Else
 		: ($1="add")
 			
 			If (Value type:C1509($2)=Is collection:K8:32)
-
+				
 				  //
-
+				
 			Else 
 				
 				$o.execute("add "+Char:C90(Quote:K15:44)+String:C10($2)+Char:C90(Quote:K15:44))
@@ -269,6 +314,19 @@ Else
 			Else 
 				
 				$o.execute("reset HEAD "+Char:C90(Quote:K15:44)+String:C10($2)+Char:C90(Quote:K15:44))
+				
+			End if 
+			
+			  //______________________________________________________
+		: ($1="untrack")
+			
+			If (Value type:C1509($2)=Is collection:K8:32)
+				
+				  //
+				
+			Else 
+				
+				$o.execute("rm --cached "+Char:C90(Quote:K15:44)+String:C10($2)+Char:C90(Quote:K15:44))
 				
 			End if 
 			

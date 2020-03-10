@@ -26,7 +26,7 @@
 					"top": 0,
 					"left": 0,
 					"width": 1120,
-					"height": 850,
+					"height": 910,
 					"sizingX": "grow",
 					"sizingY": "grow",
 					"stroke": "transparent",
@@ -37,7 +37,7 @@
 				"menu": {
 					"type": "listbox",
 					"left": 0,
-					"top": 23,
+					"top": 83,
 					"width": 180,
 					"height": 773,
 					"events": [],
@@ -96,7 +96,7 @@
 				"Input": {
 					"type": "input",
 					"left": 9,
-					"top": 3,
+					"top": 63,
 					"width": 137,
 					"height": 17,
 					"dataSource": "Form:C1466.project.name",
@@ -105,11 +105,12 @@
 					"fontWeight": "bold",
 					"hideFocusRing": true,
 					"sizingX": "fixed",
-					"textAlign": "left"
+					"textAlign": "left",
+					"stroke": "#696969"
 				},
 				"Static Picture1": {
 					"type": "picture",
-					"top": 809,
+					"top": 869,
 					"left": 139,
 					"width": 32,
 					"height": 32,
@@ -119,30 +120,30 @@
 				},
 				"vSeparator_1": {
 					"type": "line",
-					"top": 0,
+					"top": 60,
 					"left": 179,
 					"width": 0,
 					"height": 850,
-					"stroke": "#808080",
+					"stroke": "#c0c0c0",
 					"startPoint": "topLeft",
 					"class": " ",
 					"sizingY": "grow"
 				},
 				"Line": {
 					"type": "line",
-					"top": 22,
+					"top": 82,
 					"left": 0,
 					"width": 1120,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#808080",
+					"stroke": "#c0c0c0",
 					"right": 1120
 				},
 				"Input2": {
 					"type": "input",
 					"left": 5,
-					"top": 833,
+					"top": 893,
 					"width": 137,
 					"height": 17,
 					"dataSource": "\"git \"+Form:C1466.git.version",
@@ -154,6 +155,84 @@
 					"focusable": false,
 					"fontSize": 10,
 					"sizingY": "move"
+				},
+				"Line5": {
+					"type": "line",
+					"top": 59,
+					"left": 0,
+					"width": 1120,
+					"height": 0,
+					"startPoint": "topLeft",
+					"sizingX": "grow",
+					"stroke": "#c0c0c0",
+					"right": 1120
+				},
+				"fetch": {
+					"type": "button",
+					"text": "Fetch",
+					"top": 8,
+					"left": 9,
+					"width": 52,
+					"height": 44,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/fetch.png",
+					"textPlacement": "bottom",
+					"fontSize": 11,
+					"borderStyle": "none",
+					"stroke": "#696969"
+				},
+				"pull": {
+					"type": "button",
+					"text": "Pull",
+					"top": 8,
+					"left": 65,
+					"width": 52,
+					"height": 44,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/pull.png",
+					"textPlacement": "bottom",
+					"fontSize": 11,
+					"borderStyle": "none",
+					"stroke": "#696969"
+				},
+				"push": {
+					"type": "button",
+					"text": "Push",
+					"top": 8,
+					"left": 121,
+					"width": 52,
+					"height": 44,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/push.png",
+					"textPlacement": "bottom",
+					"fontSize": 11,
+					"borderStyle": "none",
+					"stroke": "#696969"
+				},
+				"open": {
+					"type": "button",
+					"text": "Open in",
+					"top": 4,
+					"left": 1014,
+					"width": 86,
+					"height": 52,
+					"events": [
+						"onClick"
+					],
+					"method": "GITLAB_OBJECTS",
+					"focusable": false,
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/openWith.png",
+					"sizingX": "move"
 				}
 			}
 		},
@@ -162,7 +241,7 @@
 				"Text1": {
 					"type": "text",
 					"text": "WORKSPACE",
-					"top": 29,
+					"top": 89,
 					"left": 185,
 					"width": 154,
 					"height": 16,
@@ -171,7 +250,7 @@
 				"unstaged": {
 					"type": "listbox",
 					"left": 180,
-					"top": 52,
+					"top": 112,
 					"width": 299,
 					"height": 636,
 					"events": [
@@ -215,7 +294,7 @@
 				"staged": {
 					"type": "listbox",
 					"left": 180,
-					"top": 719,
+					"top": 779,
 					"width": 299,
 					"height": 130,
 					"events": [
@@ -258,18 +337,18 @@
 				},
 				"vSeparator_2": {
 					"type": "line",
-					"top": 0,
+					"top": 60,
 					"left": 480,
 					"width": 0,
 					"height": 850,
-					"stroke": "#808080",
+					"stroke": "#c0c0c0",
 					"startPoint": "topLeft",
 					"sizingY": "grow"
 				},
 				"stage": {
 					"type": "button",
 					"text": "Stage",
-					"top": 26,
+					"top": 86,
 					"left": 370,
 					"width": 108,
 					"height": 22,
@@ -289,7 +368,7 @@
 				"Text3": {
 					"type": "text",
 					"text": "INDEX",
-					"top": 696,
+					"top": 756,
 					"left": 185,
 					"width": 154,
 					"height": 16,
@@ -299,7 +378,7 @@
 				"unstage": {
 					"type": "button",
 					"text": "Unstage",
-					"top": 693,
+					"top": 753,
 					"left": 370,
 					"width": 106,
 					"height": 22,
@@ -319,7 +398,7 @@
 				"diffTool": {
 					"type": "button",
 					"text": "diffTool",
-					"top": 881,
+					"top": 941,
 					"left": 12,
 					"width": 87,
 					"height": 38,
@@ -339,7 +418,7 @@
 				"vSplitter_2": {
 					"type": "splitter",
 					"left": 480,
-					"top": 0,
+					"top": 60,
 					"width": 1,
 					"height": 850,
 					"borderStyle": "none",
@@ -347,38 +426,38 @@
 				},
 				"Line1": {
 					"type": "line",
-					"top": 52,
+					"top": 112,
 					"left": 180,
 					"width": 300,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#808080"
+					"stroke": "#c0c0c0"
 				},
 				"Line2": {
 					"type": "line",
-					"top": 689,
+					"top": 749,
 					"left": 180,
 					"width": 299,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#808080"
+					"stroke": "#c0c0c0"
 				},
 				"Line3": {
 					"type": "line",
-					"top": 719,
+					"top": 779,
 					"left": 180,
 					"width": 299,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#808080"
+					"stroke": "#c0c0c0"
 				},
 				"hAirbag": {
 					"type": "button",
 					"text": "Button",
-					"top": 0,
+					"top": 60,
 					"left": 180,
 					"width": 220,
 					"height": 6,
@@ -388,7 +467,7 @@
 				"Splitter": {
 					"type": "splitter",
 					"left": 180,
-					"top": 688,
+					"top": 748,
 					"width": 299,
 					"height": 1,
 					"borderStyle": "none",
@@ -398,7 +477,7 @@
 				"diff": {
 					"type": "input",
 					"left": 486,
-					"top": 24,
+					"top": 84,
 					"width": 617,
 					"height": 719,
 					"dataSource": "Form:C1466.diff",
@@ -418,7 +497,7 @@
 				"Input1": {
 					"type": "input",
 					"left": 482,
-					"top": 0,
+					"top": 60,
 					"width": 636,
 					"height": 17,
 					"dataSource": "Form:C1466.currentUnstaged.path",
@@ -433,19 +512,19 @@
 				},
 				"Line4": {
 					"type": "line",
-					"top": 758,
+					"top": 818,
 					"left": 481,
 					"width": 639,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#808080",
+					"stroke": "#c0c0c0",
 					"sizingY": "move"
 				},
 				"commitSubject": {
 					"type": "input",
 					"left": 494,
-					"top": 770,
+					"top": 830,
 					"width": 609,
 					"height": 17,
 					"dataSource": "Form:C1466.commitSubject",
@@ -462,7 +541,7 @@
 					"hideFocusRing": true,
 					"type": "input",
 					"left": 494,
-					"top": 789,
+					"top": 849,
 					"width": 609,
 					"height": 17,
 					"dataSource": "Form:C1466.commitDescription",
@@ -473,7 +552,7 @@
 				"commit": {
 					"type": "button",
 					"text": "Commit",
-					"top": 820,
+					"top": 880,
 					"left": 841,
 					"width": 264,
 					"height": 22,
@@ -489,7 +568,7 @@
 				"comitAmend": {
 					"type": "checkbox",
 					"text": "Amend",
-					"top": 812,
+					"top": 872,
 					"left": 494,
 					"width": 78,
 					"height": 16,
@@ -505,7 +584,7 @@
 				"stageAll": {
 					"type": "button",
 					"text": "stageAll",
-					"top": 881,
+					"top": 941,
 					"left": 108,
 					"width": 87,
 					"height": 38,
@@ -529,7 +608,7 @@
 				"commits": {
 					"type": "listbox",
 					"left": 180,
-					"top": 24,
+					"top": 60,
 					"width": 940,
 					"height": 459,
 					"events": [
@@ -550,6 +629,7 @@
 					"sizingX": "grow",
 					"hideFocusRing": true,
 					"sizingY": "grow",
+					"borderStyle": "none",
 					"columns": [
 						{
 							"header": {
@@ -592,17 +672,18 @@
 				"Splitter1": {
 					"type": "splitter",
 					"left": 180,
-					"top": 483,
-					"width": 959,
+					"top": 520,
+					"width": 940,
 					"height": 1,
 					"borderStyle": "none",
 					"sizingX": "grow",
-					"splitterMode": "resize"
+					"splitterMode": "resize",
+					"right": 1120
 				},
 				"showCommit": {
 					"type": "button",
 					"text": "Commit",
-					"top": 493,
+					"top": 533,
 					"left": 192,
 					"width": 97,
 					"height": 22,
@@ -614,7 +695,7 @@
 				"showChanges": {
 					"type": "button",
 					"text": "Changes",
-					"top": 493,
+					"top": 533,
 					"left": 309,
 					"width": 97,
 					"height": 22,
@@ -622,11 +703,23 @@
 						"onClick"
 					],
 					"focusable": false
+				},
+				"Line6": {
+					"type": "line",
+					"top": 519,
+					"left": 180,
+					"width": 940,
+					"height": 0,
+					"startPoint": "topLeft",
+					"sizingX": "grow",
+					"stroke": "#c0c0c0",
+					"right": 1120,
+					"sizingY": "move"
 				}
 			}
 		}
 	],
 	"method": "method.4dm",
 	"width": 1120,
-	"height": 850
+	"height": 910
 }

@@ -1,4 +1,5 @@
 ﻿{
+	"(Component)": {},
 	"(Private)": {},
 	"00_DEV": {
 		"methods": [
@@ -16,16 +17,6 @@
 			"picture",
 			"static",
 			"widget"
-		]
-	},
-	"Component": {
-		"groups": [
-			"GITLAB",
-			"Shared"
-		],
-		"methods": [
-			"00_RUN",
-			"COMPILER_main"
 		]
 	},
 	"GITLAB": {
@@ -47,6 +38,7 @@
 	},
 	"trash": {
 		"groups": [
+			"(Component)",
 			"(Private)"
 		]
 	}

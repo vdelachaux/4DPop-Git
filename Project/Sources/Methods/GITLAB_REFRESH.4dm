@@ -196,6 +196,10 @@ If ($oTarget.button#Null:C1517)
 											$tBuffer:=Delete string:C232($tBuffer;1;1)
 											$tColor:="gray"
 											
+										Else 
+											
+											$tColor:="gray"
+											
 											  //…………………………………………………………………………………………………
 									End case 
 									
