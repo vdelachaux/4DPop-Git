@@ -24,8 +24,6 @@ $oTarget:=New object:C1471(\
 "name";OBJECT Get name:C1087(Object with focus:K67:3))
 $ƒ:=Form:C1466.ƒ
 
-ASSERT:C1129(Not:C34(Shift down:C543))
-
   // ----------------------------------------------------
 
 Case of 
