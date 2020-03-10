@@ -623,7 +623,6 @@
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commits",
 					"showHeaders": false,
-					"resizingMode": "legacy",
 					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
 					"selectionMode": "single",
@@ -633,6 +632,7 @@
 					"hideFocusRing": true,
 					"sizingY": "grow",
 					"borderStyle": "none",
+					"textAlign": "left",
 					"columns": [
 						{
 							"header": {
@@ -644,7 +644,9 @@
 								"name": "Footer5"
 							},
 							"dataSource": "This:C1470.title",
-							"width": 600
+							"width": 400,
+							"enterable": false,
+							"minWidth": 400
 						},
 						{
 							"header": {
@@ -656,7 +658,9 @@
 							"footer": {
 								"name": "Footer6"
 							},
-							"width": 230
+							"width": 230,
+							"enterable": false,
+							"minWidth": 200
 						},
 						{
 							"header": {
@@ -668,7 +672,26 @@
 							"footer": {
 								"name": "Footer7"
 							},
-							"width": 90
+							"width": 90,
+							"resizable": false,
+							"enterable": false,
+							"maxWidth": 90
+						},
+						{
+							"header": {
+								"name": "Header8",
+								"text": "Header8"
+							},
+							"name": "Column8",
+							"dataSource": "This:C1470.stamp",
+							"footer": {
+								"name": "Footer8"
+							},
+							"dataSourceTypeHint": "text",
+							"enterable": false,
+							"width": 200,
+							"minWidth": 200,
+							"maxWidth": 400
 						}
 					]
 				},

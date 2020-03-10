@@ -113,19 +113,20 @@ Case of
 				  // Update commit list
 				Form:C1466.commits:=New collection:C1472
 				
-				$o.execute("log --abbrev-commit --format=%s,%an,%h,%aD")  // Message, author, ref, time
+				$o.execute("log --abbrev-commit --format=%s,%an,%h,%aI")  // Message, author, ref, time
 				
 				  // One commit per line
 				For each ($t;Split string:C1554($o.result;"\n";sk ignore empty strings:K86:1))
 					
 					$c:=Split string:C1554($t;",")
 					
-					If ($c.length>=3)
+					If ($c.length>=4)
 						
 						Form:C1466.commits.push(New object:C1471(\
 							"title";$c[0];\
 							"author";$c[1];\
-							"ref";$c[2]))
+							"ref";$c[2];\
+							"stamp";String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?)))
 						
 					End if 
 				End for each 
