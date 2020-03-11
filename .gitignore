@@ -32,6 +32,6 @@ DEV/
 *__Orphan__*
 ehthumbs.db
 Thumbs.db
-
 Resources/php.ini
 Project/Trash/
+*.bbprojectd/

@@ -212,11 +212,11 @@ Else
 				
 				If ($2.option#Null:C1517)
 					
-					$o.execute("diff "+$2.option+" '"+$2.path+"'")
+					$o.execute("diff "+$2.option+" -- "+$2.path)
 					
 				Else 
 					
-					$o.execute("diff '"+$2.path+"'")
+					$o.execute("diff -- "+$2.path)
 					
 				End if 
 				

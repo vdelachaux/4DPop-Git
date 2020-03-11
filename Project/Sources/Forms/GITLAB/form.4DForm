@@ -286,7 +286,7 @@
 							"footer": {
 								"name": "Footer2"
 							},
-							"dataSource": "This:C1470.path",
+							"dataSource": "Replace string:C233(This:C1470.path;\"\\\"\";\"\")",
 							"enterable": false
 						}
 					]
