@@ -1,4 +1,4 @@
-# Ignore invisible files/folders except me
+﻿# Ignore invisible files/folders except me
 .*
 !.gitignore
 

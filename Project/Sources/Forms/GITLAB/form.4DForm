@@ -171,7 +171,7 @@
 					"type": "button",
 					"text": ":xliff:fetch",
 					"top": 8,
-					"left": 9,
+					"left": 7,
 					"width": 52,
 					"height": 44,
 					"events": [
@@ -528,7 +528,7 @@
 					"width": 609,
 					"height": 17,
 					"dataSource": "Form:C1466.commitSubject",
-					"placeholder": "Commit Subject",
+					"placeholder": ":xliff:commitSubject",
 					"sizingX": "grow",
 					"sizingY": "move",
 					"hideFocusRing": true,
@@ -545,7 +545,7 @@
 					"width": 609,
 					"height": 17,
 					"dataSource": "Form:C1466.commitDescription",
-					"placeholder": "Description",
+					"placeholder": ":xliff:description",
 					"sizingX": "grow",
 					"sizingY": "move"
 				},
@@ -723,5 +723,6 @@
 	],
 	"method": "method.4dm",
 	"width": 1120,
-	"height": 910
+	"height": 910,
+	"memorizeGeometry": true
 }
