@@ -13,22 +13,23 @@ data/
 *symbols.txt
 
 # Ignore derived data
-DerivedData/
+Project/DerivedData/
 
 # Ignore logs
 Logs/
 
 # Ignore settings & preferences
+userPreferences.*/
+
 Settings/
 !buildApp.4DSettings
 
 Preferences/
-!4DPop AppMaker.xml
-
-userPreferences.*/
+!4DPop AppMaker.*
 
 # Miscellaneous
 DEV/
 *__Orphan__*
 ehthumbs.db
 Thumbs.db
+*.bbprojectd/

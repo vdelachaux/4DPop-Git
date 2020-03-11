@@ -194,17 +194,8 @@ Else
 				If (Not:C34($file.exists))
 					
 					  // Create default gitignore
-					$t:=File:C1566("/RESOURCES/gitignore").getText()
-					TEXT TO BLOB:C554($t;$x;UTF8 text without length:K22:17)
-					$file.setContent($x)
+					$file.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with CRLF:K24:20)
 					
-					$o.add(".gitignore")
-					
-					If ($o.success)
-						
-						$o.commit()
-						
-					End if 
 				End if 
 			End if 
 			
