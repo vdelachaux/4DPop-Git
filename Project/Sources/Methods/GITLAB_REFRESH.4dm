@@ -253,7 +253,8 @@ If ($oTarget.button#Null:C1517)
 					
 				Else 
 					
-					ST SET TEXT:C1115($t;String:C10($o.error);ST Start text:K78:15;ST End text:K78:16)
+					$o:=$o.history.pop()
+					ST SET TEXT:C1115($t;String:C10($o.cmd)+"\r\r"+String:C10($o.error);ST Start text:K78:15;ST End text:K78:16)
 					ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
 						Attribute text color:K65:7;"red")
 					
