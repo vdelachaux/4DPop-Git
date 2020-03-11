@@ -126,7 +126,7 @@ Case of
 						
 						$menu.line()\
 							.append("ignore";menu \
-							.append(Get localized string:C991("ignore")+"\""+$o.fullName+"\"";"ignoreFile")\
+							.append(Replace string:C233(Get localized string:C991("ignoreFile");"{file}";$o.fullName);"ignoreFile")\
 							.append(Replace string:C233(Get localized string:C991("ignoreAllExtensionFiles");"{extension}";$o.extension);"ignoreExtension")\
 							.line()\
 							.append("customPattern";"ignoreCustom"))
@@ -217,6 +217,25 @@ Case of
 										  // #TO_DO: Must unstack all indexed files with this extension
 										
 										$t:=$t+"\r*"+$o.extension
+										
+										  //____________________________
+									: ($menu.choice="ignoreCustom")
+										
+										$o:=New object:C1471(\
+											"window";Open form window:C675("ADD_PATTERN";\
+											Plain form window:K39:10;Horizontally centered:K39:1;\
+											Vertically centered:K39:4;*);\
+											"pattern";$oCurrent.path;\
+											"files";Form:C1466.git.changes)
+										
+										DIALOG:C40("ADD_PATTERN";$o)
+										CLOSE WINDOW:C154
+										
+										If (Bool:C1537(OK))
+											
+											$t:=$t+"\r"+$o.pattern
+											
+										End if 
 										
 										  //____________________________
 									Else 

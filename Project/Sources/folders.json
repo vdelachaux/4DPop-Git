@@ -28,6 +28,7 @@
 			"GITLAB_resolvePath"
 		],
 		"forms": [
+			"ADD_PATTERN",
 			"GITLAB"
 		]
 	},

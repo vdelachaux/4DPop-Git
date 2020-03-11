@@ -52,7 +52,7 @@ Case of
 		Form:C1466.$.unstage.bestSize(Align right:K42:4).disable()
 		Form:C1466.$.commit.bestSize(Align right:K42:4).disable()
 		
-		group ("fetch;pull;push").distributeHorizontally(New object:C1471("start";20;"gap";10;"minWidth";50))
+		group ("fetch;pull;push").distributeHorizontally(New object:C1471("start";10;"gap";10;"minWidth";50))
 		
 		Form:C1466.$.open.bestSize(Align right:K42:4)
 		
