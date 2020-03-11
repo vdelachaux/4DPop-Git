@@ -100,7 +100,7 @@ If ($oTarget.button#Null:C1517)
 						ARRAY TEXT:C222($aMethods;0x0000)
 						METHOD GET PATHS:C1163(Path all objects:K72:16;$aMethods;*)
 						
-						If (Find in array:C230($aMethods;$v))
+						If (Find in array:C230($aMethods;$v)>0)
 							
 							METHOD GET CODE:C1190($v;$tBuffer;*)
 							
