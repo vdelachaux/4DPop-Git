@@ -157,7 +157,7 @@ Case of
 										  //——————————————————————————————————
 									: (Value type:C1509($v)=Is text:K8:3)  // Method
 										
-										METHOD OPEN PATH:C1213($v)
+										METHOD OPEN PATH:C1213($v;*)
 										
 										  //——————————————————————————————————
 									: (Value type:C1509($v)=Is object:K8:27)  // File
