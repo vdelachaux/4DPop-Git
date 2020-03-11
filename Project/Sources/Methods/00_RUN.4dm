@@ -71,9 +71,9 @@ Case of
 		
 		  // Selector definition
 		$c:=New collection:C1472(\
-			New object:C1471("label";"Changes");\
+			New object:C1471("label";Get localized string:C991("changes"));\
 			New object:C1471(\
-			"label";"All commits"))
+			"label";Get localized string:C991("allCommits")))
 		
 		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/changes.png").platformPath;$p)
 		TRANSFORM PICTURE:C988($p;Scale:K61:2;0.4;0.4)
@@ -126,6 +126,8 @@ Case of
 		  //dev_Menu($o.ref)
 		
 		  // End if
+		
+		$o.setBar()
 		
 		  //___________________________________________________________
 	: ($Txt_entryPoint="_deinit")

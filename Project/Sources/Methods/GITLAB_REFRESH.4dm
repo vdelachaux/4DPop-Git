@@ -22,6 +22,7 @@ C_VARIANT:C1683($v)
 
 $oTarget:=New object:C1471(\
 "name";OBJECT Get name:C1087(Object with focus:K67:3))
+
 $ƒ:=Form:C1466.ƒ
 
   // ----------------------------------------------------
@@ -177,6 +178,8 @@ If ($oTarget.button#Null:C1517)
 								
 								If (Length:C16($tBuffer)>0)
 									
+									$tColor:="gray"
+									
 									Case of 
 											
 											  //…………………………………………………………………………………………………
@@ -193,17 +196,11 @@ If ($oTarget.button#Null:C1517)
 										: (Character code:C91($tBuffer[[1]])=Character code:C91("@"))
 											
 											$tBuffer:="\n"+$tBuffer
-											$tColor:="gray"
 											
 											  //…………………………………………………………………………………………………
 										: ($tBuffer[[1]]="\\")
 											
 											$tBuffer:=Delete string:C232($tBuffer;1;1)
-											$tColor:="gray"
-											
-										Else 
-											
-											$tColor:="gray"
 											
 											  //…………………………………………………………………………………………………
 									End case 
