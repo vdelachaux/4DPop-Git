@@ -30,6 +30,7 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"";"git";\
 		"changes";New collection:C1472;\
 		"success";True:C214;\
+		"history";New collection:C1472;\
 		"error";"";\
 		"errors";New collection:C1472;\
 		"warning";"";\
@@ -115,6 +116,12 @@ Else
 			
 			LAUNCH EXTERNAL PROCESS:C811("git "+$tCMD;$tIN;$tOUT;$tERROR)
 			$o.success:=Bool:C1537(OK) & (Length:C16($tERROR)=0)
+			
+			$o.history.push(New object:C1471(\
+				"cmd";"$ git "+$tCMD;\
+				"success";$o.success;\
+				"out";$tOUT;\
+				"error";$tERROR))
 			
 			Case of 
 					
