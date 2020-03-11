@@ -63,7 +63,7 @@ Case of
 		  //______________________________________________________
 	: ($t_action="discard")
 		
-		CONFIRM:C162("Do you want to discard all changes in the selected files?\r\rAll uncommitted changes will be lost.";"Discard")
+		CONFIRM:C162(Get localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles");Get localized string:C991("discard"))
 		
 		If (Bool:C1537(OK))
 			
@@ -96,11 +96,11 @@ Form:C1466.ƒ.update()
   // Update menu label
 If ($o.changes.length>0)
 	
-	Form:C1466.menu[0].label:="Changes ("+String:C10($o.changes.length)+")"
+	Form:C1466.menu[0].label:=Get localized string:C991("changes")+" ("+String:C10($o.changes.length)+")"
 	
 Else 
 	
-	Form:C1466.menu[0].label:="Changes"
+	Form:C1466.menu[0].label:=Get localized string:C991("changes")
 	
 	Form:C1466.unstaged.clear()
 	Form:C1466.staged.clear()

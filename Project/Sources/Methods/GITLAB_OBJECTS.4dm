@@ -67,13 +67,13 @@ Case of
 						
 						If (New collection:C1472("??";" D";"A ").indexOf($oCurrent.status)=-1)
 							
-							$menu.append("External Diff";"diffTool").shortcut("D")
+							$menu.append("externalDiff";"diffTool").shortcut("D")
 							
 						End if 
 						
 						If (New collection:C1472(" D").indexOf($oCurrent.status)=-1)
 							
-							$menu.append("Show in Finder";"show")
+							$menu.append("showInFinder";"show")
 							
 						End if 
 						
@@ -88,13 +88,13 @@ Case of
 								  //———————————————————————————————————————
 							: ($event.objectName="unstaged")
 								
-								$menu.append("Stage";"stage").shortcut("S";512)
-								$menu.append("Discard Changes…";"discard")
+								$menu.append("stage";"stage").shortcut("S";512)
+								$menu.append("discardChanges";"discard")
 								
 								  //———————————————————————————————————————
 							: ($event.objectName="staged")
 								
-								$menu.append("Unstage";"unstage").shortcut("S";512)
+								$menu.append("unstage";"unstage").shortcut("S";512)
 								
 								  //———————————————————————————————————————
 						End case 
@@ -109,13 +109,13 @@ Case of
 						: ($event.objectName="unstaged")\
 							 & (Form:C1466.unstaged.length>0)
 							
-							$menu.append("Stage All";"stageAll").shortcut("S";512+2048)
+							$menu.append("stageAll";"stageAll").shortcut("S";512+2048)
 							
 							  //———————————————————————————————————————
 						: ($event.objectName="staged")\
 							 & (Form:C1466.staged.length>0)
 							
-							$menu.append("Unstage All";"unStageAll").shortcut("S";512+2048)
+							$menu.append("unstageAll";"unStageAll").shortcut("S";512+2048)
 							
 							  //———————————————————————————————————————
 					End case 
@@ -125,11 +125,11 @@ Case of
 						$o:=File:C1566($oCurrent.path)
 						
 						$menu.line()\
-							.append("Ignore";menu \
-							.append("Ignore \""+$o.fullName+"\"";"ignoreFile")\
-							.append("Ignore All \""+$o.extension+"\" files";"ignoreExtension")\
+							.append("ignore";menu \
+							.append(Get localized string:C991("ignore")+"\""+$o.fullName+"\"";"ignoreFile")\
+							.append(Replace string:C233(Get localized string:C991("ignoreAllExtensionFiles");"{extension}";$o.extension);"ignoreExtension")\
 							.line()\
-							.append("Custom Patern…";"ignoreCustom"))
+							.append("customPattern";"ignoreCustom"))
 						
 					End if 
 					
@@ -264,10 +264,10 @@ Case of
 	: ($event.objectName=Form:C1466.$.open.name)
 		
 		$menu:=menu \
-			.append("Open in Terminal";"terminal").icon("/RESOURCES/Images/terminal.png")\
-			.append("Open in Finder";"show").icon("/RESOURCES/Images/finder.png")\
+			.append("openInTerminal";"terminal").icon("/RESOURCES/Images/terminal.png")\
+			.append("openInFinder";"show").icon("/RESOURCES/Images/finder.png")\
 			.line()\
-			.append("View on Github";"github").icon("/RESOURCES/Images/gitHub.png").disable()
+			.append("viewOnGithub";"github").icon("/RESOURCES/Images/gitHub.png").disable()
 		
 		If ($menu.popup().selected)
 			

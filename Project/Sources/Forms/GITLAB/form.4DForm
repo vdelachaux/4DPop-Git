@@ -169,7 +169,7 @@
 				},
 				"fetch": {
 					"type": "button",
-					"text": "Fetch",
+					"text": ":xliff:fetch",
 					"top": 8,
 					"left": 9,
 					"width": 52,
@@ -186,7 +186,7 @@
 				},
 				"pull": {
 					"type": "button",
-					"text": "Pull",
+					"text": ":xliff:pull",
 					"top": 8,
 					"left": 65,
 					"width": 52,
@@ -203,7 +203,7 @@
 				},
 				"push": {
 					"type": "button",
-					"text": "Push",
+					"text": ":xliff:push",
 					"top": 8,
 					"left": 121,
 					"width": 52,
@@ -220,7 +220,7 @@
 				},
 				"open": {
 					"type": "button",
-					"text": "Open in",
+					"text": ":xliff:open",
 					"top": 4,
 					"left": 1014,
 					"width": 86,
@@ -240,10 +240,10 @@
 			"objects": {
 				"Text1": {
 					"type": "text",
-					"text": "WORKSPACE",
+					"text": ":xliff:workspace",
 					"top": 89,
 					"left": 185,
-					"width": 154,
+					"width": 182,
 					"height": 16,
 					"fontWeight": "bold"
 				},
@@ -347,7 +347,7 @@
 				},
 				"stage": {
 					"type": "button",
-					"text": "Stage",
+					"text": ":xliff:stage",
 					"top": 86,
 					"left": 370,
 					"width": 108,
@@ -367,17 +367,17 @@
 				},
 				"Text3": {
 					"type": "text",
-					"text": "INDEX",
+					"text": ":xliff:index",
 					"top": 756,
 					"left": 185,
-					"width": 154,
+					"width": 177,
 					"height": 16,
 					"sizingY": "fixed",
 					"fontWeight": "bold"
 				},
 				"unstage": {
 					"type": "button",
-					"text": "Unstage",
+					"text": ":xliff:unstage",
 					"top": 753,
 					"left": 370,
 					"width": 106,
@@ -551,7 +551,7 @@
 				},
 				"commit": {
 					"type": "button",
-					"text": "Commit",
+					"text": ":xliff:commit",
 					"top": 880,
 					"left": 841,
 					"width": 264,
@@ -567,10 +567,10 @@
 				},
 				"comitAmend": {
 					"type": "checkbox",
-					"text": "Amend",
+					"text": ":xliff:amend",
 					"top": 872,
 					"left": 494,
-					"width": 78,
+					"width": 318,
 					"height": 16,
 					"events": [
 						"onClick"
@@ -602,7 +602,7 @@
 					"focusable": false,
 					"icon": "/RESOURCES/Images/stageAll.png",
 					"sizingX": "move",
-					"tooltip": "Stage All"
+					"tooltip": ":xliff:stageAll"
 				}
 			}
 		},
@@ -705,30 +705,6 @@
 					"sizingX": "grow",
 					"splitterMode": "resize",
 					"right": 1120
-				},
-				"showCommit": {
-					"type": "button",
-					"text": "Commit",
-					"top": 533,
-					"left": 192,
-					"width": 97,
-					"height": 22,
-					"events": [
-						"onClick"
-					],
-					"focusable": false
-				},
-				"showChanges": {
-					"type": "button",
-					"text": "Changes",
-					"top": 533,
-					"left": 309,
-					"width": 97,
-					"height": 22,
-					"events": [
-						"onClick"
-					],
-					"focusable": false
 				},
 				"Line6": {
 					"type": "line",
