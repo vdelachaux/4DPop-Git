@@ -149,13 +149,10 @@ Case of
 		  // Get status
 		$o:=Form:C1466.git.status()
 		
-		  // Update menu label
-		Form:C1466.menu[0].label:=Choose:C955($o.changes.length>0;"Changes ("+String:C10($o.changes.length)+")";"Changes")
-		Form:C1466.menu:=Form:C1466.menu
-		
 		  // Update UI
 		Form:C1466.ƒ.update()
 		
+		  // Update menu label
 		If ($o.changes.length>0)
 			
 			Form:C1466.menu[0].label:="Changes ("+String:C10($o.changes.length)+")"
@@ -163,13 +160,14 @@ Case of
 		Else 
 			
 			Form:C1466.menu[0].label:="Changes"
+			
 			Form:C1466.unstaged.clear()
 			Form:C1466.staged.clear()
 			
 		End if 
 		
 		  // Touch
-		  // Form.menu:=Form.menu
+		Form:C1466.menu:=Form:C1466.menu
 		
 		Form:C1466.ƒ.refresh()
 		

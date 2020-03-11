@@ -97,7 +97,14 @@ If ($oTarget.button#Null:C1517)
 						  //______________________________________________________
 					: (Value type:C1509($v)=Is text:K8:3)  // Method
 						
-						METHOD GET CODE:C1190($v;$tBuffer;*)
+						ARRAY TEXT:C222($aMethods;0x0000)
+						METHOD GET PATHS:C1163(Path all objects:K72:16;$aMethods;*)
+						
+						If (Find in array:C230($aMethods;$v))
+							
+							METHOD GET CODE:C1190($v;$tBuffer;*)
+							
+						End if 
 						
 						  //______________________________________________________
 					Else 
