@@ -108,16 +108,6 @@
 					"textAlign": "left",
 					"stroke": "#696969"
 				},
-				"Static Picture1": {
-					"type": "picture",
-					"top": 869,
-					"left": 139,
-					"width": 32,
-					"height": 32,
-					"picture": "/RESOURCES/Images/octocat-spinner-128.gif",
-					"pictureFormat": "scaled",
-					"sizingY": "move"
-				},
 				"vSeparator_1": {
 					"type": "line",
 					"top": 60,
@@ -140,12 +130,12 @@
 					"stroke": "#c0c0c0",
 					"right": 1120
 				},
-				"Input2": {
+				"gitVersion": {
 					"type": "input",
-					"left": 5,
+					"left": 22,
 					"top": 893,
-					"width": 137,
-					"height": 17,
+					"width": 117,
+					"height": 14,
 					"dataSource": "\"git \"+Form:C1466.git.version",
 					"fill": "transparent",
 					"borderStyle": "none",
@@ -233,6 +223,16 @@
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/openWith.png",
 					"sizingX": "move"
+				},
+				"gitLogo": {
+					"type": "picture",
+					"top": 892,
+					"left": 3,
+					"width": 16,
+					"height": 16,
+					"picture": "/RESOURCES/4DPop.png",
+					"pictureFormat": "scaled",
+					"sizingY": "move"
 				}
 			}
 		},
