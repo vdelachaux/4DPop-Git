@@ -87,9 +87,30 @@ Case of
 		  //______________________________________________________
 End case 
 
-Form:C1466.git.status()
-Form:C1466.ƒ.refresh()
+  // Get status
+$o:=Form:C1466.git.status()
+
+  // Update UI
 Form:C1466.ƒ.update()
+
+  // Update menu label
+If ($o.changes.length>0)
+	
+	Form:C1466.menu[0].label:="Changes ("+String:C10($o.changes.length)+")"
+	
+Else 
+	
+	Form:C1466.menu[0].label:="Changes"
+	
+	Form:C1466.unstaged.clear()
+	Form:C1466.staged.clear()
+	
+End if 
+
+  // Touch
+Form:C1466.menu:=Form:C1466.menu
+
+Form:C1466.ƒ.refresh()
 
   // ----------------------------------------------------
   // Return
