@@ -27,7 +27,7 @@ End if
 If (This:C1470[""]=Null:C1517)  // Constructor
 	
 	$o:=New object:C1471(\
-		"";"git";\
+		"";New object:C1471("";"git";"local";False:C215);\
 		"changes";New collection:C1472;\
 		"success";True:C214;\
 		"history";New collection:C1472;\
@@ -58,6 +58,8 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"terminal";Formula:C1597(git ("open";"terminal"));\
 		"show";Formula:C1597(git ("open";"finder"))\
 		)
+	
+	$o[""].local:=File:C1566("/usr/local/bin/git").exists
 	
 	$o.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
 	$o.git:=$o.workingDirectory.folder(".git")
@@ -119,11 +121,32 @@ Else
 				
 			End if 
 			
-			LAUNCH EXTERNAL PROCESS:C811("git "+$tCMD;$tIN;$tOUT;$tERROR)
+			Case of 
+					
+					  //———————————————————————————————
+				: ($o[""].local)
+					
+					$tCMD:="/usr/local/bin/git "+$tCMD
+					
+					  //———————————————————————————————
+				: (Is Windows:C1573)
+					
+					$tCMD:="Resources/git/git "+$tCMD
+					
+					  //———————————————————————————————
+				Else 
+					
+					$tCMD:="git "+$tCMD
+					
+					  //———————————————————————————————
+			End case 
+			
+			
+			LAUNCH EXTERNAL PROCESS:C811($tCMD;$tIN;$tOUT;$tERROR)
 			$o.success:=Bool:C1537(OK) & (Length:C16($tERROR)=0)
 			
-			$o.history.push(New object:C1471(\
-				"cmd";"$ git "+$tCMD;\
+			$o.history.insert(0;New object:C1471(\
+				"cmd";"$ "+$tCMD;\
 				"success";$o.success;\
 				"out";$tOUT;\
 				"error";$tERROR))

@@ -34,7 +34,7 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"parameter";Formula:C1597(list ("parameter";New object:C1471("key";String:C10($1);"value";String:C10($2);"target";$3)));\
 		"icon";Formula:C1597(list ("icon";New object:C1471("icon";$1;"target";$2)));\
 		"empty";Formula:C1597(list ("empty"));\
-		"setReference";Formula:C1597(list ("setReference";New object:C1471("ref";Num:C11($1))))\
+		"setReference";Formula:C1597(list ("setReference";New object:C1471("ref";Num:C11($1);"clear";Bool:C1537($2))))\
 		)
 	
 	If (Count parameters:C259>=1)
@@ -135,8 +135,11 @@ Else
 			
 			If ($o.success)
 				
-				CLEAR LIST:C377($o.ref;*)
-				
+				If ($2.clear)
+					
+					CLEAR LIST:C377($o.ref;*)
+					
+				End if 
 			End if 
 			
 			$o[""].uid:=0

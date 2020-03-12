@@ -101,7 +101,7 @@ Case of
 			
 			For each ($o;Form:C1466.git.remotes)
 				
-				$oList.append($o.name).parameter("url";$o.url).icon(Form:C1466.icons.github)
+				$oList.append($o.name).parameter("url";$o.url).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
 				
 			End for each 
 			

@@ -105,6 +105,9 @@ Case of
 		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/folder.png").platformPath;$p)
 		CREATE THUMBNAIL:C679($p;$p;20;20)
 		$oForm.icons.fix:=$p
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/cloud.png").platformPath;$p)
+		CREATE THUMBNAIL:C679($p;$p;20;20)
+		$oForm.icons.cloud:=$p
 		
 		  // Selector definition
 		$oForm.selector:=New list:C375
@@ -114,7 +117,7 @@ Case of
 		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
 		
 		APPEND TO LIST:C376($oForm.selector;"Remotes";-22;New list:C375;True:C214)
-		$p:=$oForm.icons.github
+		$p:=$oForm.icons.cloud
 		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
 		
 		APPEND TO LIST:C376($oForm.selector;"Tags";-23;New list:C375;True:C214)
