@@ -63,9 +63,7 @@ Case of
 		
 		  // Branch list
 		Form:C1466.git.branch()
-		
 		GET LIST ITEM:C378(Form:C1466.selector;List item position:C629(Form:C1466.selector;-21);$index;$tLabel;$list;$b)
-		
 		$oList:=list ($list).empty()
 		
 		If (Form:C1466.git.branches.length>0)
@@ -96,10 +94,8 @@ Case of
 		
 		  // Remote list
 		Form:C1466.git.remote()
-		
 		GET LIST ITEM:C378(Form:C1466.selector;List item position:C629(Form:C1466.selector;-22);$index;$tLabel;$list;$b)
-		
-		$oList:=list ($list).empty()
+		$oList:=$oList.setReference($list).empty()
 		
 		If (Form:C1466.git.remotes.length>0)
 			
