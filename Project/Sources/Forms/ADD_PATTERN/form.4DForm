@@ -3,7 +3,7 @@
 		"version": "1",
 		"kind": "form"
 	},
-	"windowSizingX": "variable",
+	"windowSizingX": "fixed",
 	"windowSizingY": "variable",
 	"windowMinWidth": 0,
 	"windowMinHeight": 0,
@@ -15,7 +15,7 @@
 		"onTimer",
 		"onAfterEdit"
 	],
-	"windowTitle": "window title",
+	"windowTitle": ":xliff:addPatternToGitignore",
 	"destination": "detailScreen",
 	"pages": [
 		{
@@ -25,17 +25,19 @@
 			"objects": {
 				"Text": {
 					"type": "text",
-					"text": "Add Pattern to .gitignore",
-					"top": 10,
+					"text": ":xliff:gitUsesGlobbingPatternsToMatchAgainstFileNames",
+					"top": 21,
 					"left": 84,
 					"width": 570,
 					"height": 16,
-					"fontTheme": "main"
+					"fontTheme": "main",
+					"fontWeight": "normal",
+					"borderStyle": "none"
 				},
 				"pattern": {
 					"type": "input",
 					"left": 84,
-					"top": 108,
+					"top": 98,
 					"width": 570,
 					"height": 17,
 					"dataSource": "Form:C1466.pattern",
@@ -54,45 +56,47 @@
 					"picture": "/RESOURCES/4DPop.png",
 					"pictureFormat": "scaled"
 				},
-				"ok": {
+				"done": {
 					"type": "button",
-					"text": "OK",
+					"text": ":xliff:validate",
 					"top": 296,
-					"left": 573,
-					"width": 81,
+					"left": 533,
+					"width": 121,
 					"height": 22,
 					"events": [
 						"onClick"
 					],
-					"action": "accept"
+					"action": "accept",
+					"sizingY": "move"
 				},
 				"cancel": {
 					"type": "button",
-					"text": "Cancel",
+					"text": ":xliff:cancel",
 					"top": 296,
-					"left": 472,
+					"left": 403,
 					"width": 81,
 					"height": 22,
 					"events": [
 						"onClick"
 					],
-					"action": "cancel"
+					"action": "cancel",
+					"sizingY": "move"
 				},
 				"Text1": {
 					"type": "text",
-					"text": "A gitignore file specifies intentionally untracked files that Git should ignore. Files already tracked are not affected.",
-					"top": 34,
+					"text": ":xliff:clicHelpButtonToGetMoreInformationsAboutThePatternFormats",
+					"top": 43,
 					"left": 84,
 					"width": 570,
-					"height": 46,
-					"fontTheme": "normal",
+					"height": 26,
+					"fontTheme": "additional",
 					"textAlign": "justify",
 					"borderStyle": "none"
 				},
 				"Text2": {
 					"type": "text",
-					"text": "Pattern",
-					"top": 87,
+					"text": ":xliff:pattern",
+					"top": 77,
 					"left": 84,
 					"width": 568,
 					"height": 16,
@@ -101,7 +105,7 @@
 				},
 				"Text3": {
 					"type": "text",
-					"text": "Preview",
+					"text": ":xliff:preview",
 					"top": 142,
 					"left": 84,
 					"width": 83,
@@ -126,6 +130,7 @@
 					"hideFocusRing": true,
 					"scrollbarHorizontal": "hidden",
 					"scrollbarVertical": "automatic",
+					"sizingY": "grow",
 					"columns": [
 						{
 							"header": {
@@ -146,13 +151,27 @@
 					"top": 145,
 					"width": 256,
 					"height": 15,
-					"dataSource": "String:C10(Form:C1466.preview.length)+\" file matches\"",
+					"dataSource": "Replace string:C233(Get localized string:C991(\"filesMatches\");\"{count}\";String:C10(Form:C1466.preview.length))",
 					"contextMenu": "none",
 					"enterable": false,
 					"borderStyle": "none",
 					"textAlign": "right",
 					"fontSize": 11,
 					"fill": "transparent",
+					"focusable": false
+				},
+				"Button": {
+					"type": "button",
+					"text": "Button",
+					"top": 20,
+					"left": 632,
+					"width": 22,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"style": "help",
+					"method": "ObjectMethods/Button.4dm",
 					"focusable": false
 				}
 			}
