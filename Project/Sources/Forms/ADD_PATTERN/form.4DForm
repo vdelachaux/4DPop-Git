@@ -73,7 +73,7 @@
 					"type": "button",
 					"text": ":xliff:cancel",
 					"top": 296,
-					"left": 403,
+					"left": 432,
 					"width": 81,
 					"height": 22,
 					"events": [

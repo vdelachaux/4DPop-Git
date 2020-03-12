@@ -81,6 +81,13 @@ Case of
 		Form:C1466.git.commit($o_IN.message;Form:C1466.amend)
 		
 		  //______________________________________________________
+	: ($t_action="fetch")
+		
+		Form:C1466.git.execute("fetch --verbose --tags")
+		
+		
+		
+		  //______________________________________________________
 	Else 
 		
 		  // A "Case of" statement should never omit "Else"

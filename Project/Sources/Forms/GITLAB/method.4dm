@@ -3,8 +3,10 @@
   // ID[65871C4C423A4C31913CD88C79275F61]
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
-C_TEXT:C284($t)
-C_OBJECT:C1216($event;$o)
+C_BOOLEAN:C305($b)
+C_LONGINT:C283($index;$list)
+C_TEXT:C284($t;$tLabel)
+C_OBJECT:C1216($event;$o;$oList)
 C_COLLECTION:C1488($c)
 
   // ----------------------------------------------------
@@ -52,9 +54,68 @@ Case of
 		Form:C1466.$.unstage.bestSize(Align right:K42:4).disable()
 		Form:C1466.$.commit.bestSize(Align right:K42:4).disable()
 		
-		group ("fetch;pull;push").distributeHorizontally(New object:C1471("start";10;"gap";10;"minWidth";50))
+		group ("fetch;pull;push").distributeHorizontally(New object:C1471(\
+			"start";10;\
+			"gap";10;\
+			"minWidth";50))
 		
 		Form:C1466.$.open.bestSize(Align right:K42:4)
+		
+		  // Branch list
+		Form:C1466.git.branch()
+		
+		GET LIST ITEM:C378(Form:C1466.selector;List item position:C629(Form:C1466.selector;-21);$index;$tLabel;$list;$b)
+		
+		$oList:=list ($list).empty()
+		
+		If (Form:C1466.git.branches.length>0)
+			
+			For each ($o;Form:C1466.git.branches)
+				
+				$oList.append($o.name).parameter("ref";$o.ref)
+				
+			End for each 
+			
+			If (Form:C1466.git.branches.length=1)
+				
+				$oList.icon(Form:C1466.icons.checked)
+				
+			Else 
+				
+				  // #TO_DO
+				
+			End if 
+			
+		Else 
+			
+			  //
+			
+		End if 
+		
+		SET LIST ITEM:C385(Form:C1466.selector;$index;$tLabel;$index;$list;True:C214)
+		
+		  // Remote list
+		Form:C1466.git.remote()
+		
+		GET LIST ITEM:C378(Form:C1466.selector;List item position:C629(Form:C1466.selector;-22);$index;$tLabel;$list;$b)
+		
+		$oList:=list ($list).empty()
+		
+		If (Form:C1466.git.remotes.length>0)
+			
+			For each ($o;Form:C1466.git.remotes)
+				
+				$oList.append($o.name).parameter("url";$o.url).icon(Form:C1466.icons.github)
+				
+			End for each 
+			
+		Else 
+			
+			  // #TO_DO
+			
+		End if 
+		
+		SET LIST ITEM:C385(Form:C1466.selector;$index;$tLabel;$index;$list;True:C214)
 		
 		Form:C1466.ƒ.update()
 		
@@ -168,6 +229,8 @@ Case of
 		
 		  // Touch
 		Form:C1466.menu:=Form:C1466.menu
+		
+		  // GITLAB_EXECUTE(new object("action";"fetch"))
 		
 		Form:C1466.ƒ.refresh()
 		
