@@ -33,7 +33,8 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"append";Formula:C1597(list ("append";New object:C1471("label";String:C10($1);"ref";$2)));\
 		"parameter";Formula:C1597(list ("parameter";New object:C1471("key";String:C10($1);"value";String:C10($2);"target";$3)));\
 		"icon";Formula:C1597(list ("icon";New object:C1471("icon";$1;"target";$2)));\
-		"empty";Formula:C1597(list ("empty"))\
+		"empty";Formula:C1597(list ("empty"));\
+		"setReference";Formula:C1597(list ("setReference";New object:C1471("ref";Num:C11($1))))\
 		)
 	
 	If (Count parameters:C259>=1)
@@ -80,7 +81,7 @@ Else
 			ASSERT:C1129(False:C215;"OOPS, this method must be called from a member method")
 			
 			  //______________________________________________________
-		: (Not:C34($o.success))
+			  //: (Not($o.success))
 			
 			  // #TO_DO
 			
@@ -128,6 +129,20 @@ Else
 				DELETE FROM LIST:C624($o.ref;$listItem;*)
 				
 			End for 
+			
+			  //______________________________________________________
+		: ($1="setReference")
+			
+			If ($o.success)
+				
+				CLEAR LIST:C377($o.ref;*)
+				
+			End if 
+			
+			$o[""].uid:=0
+			
+			$o.ref:=$2.ref
+			$o.success:=Is a list:C621($o.ref)
 			
 			  //______________________________________________________
 		Else 
