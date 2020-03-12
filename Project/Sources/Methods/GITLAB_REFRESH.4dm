@@ -140,9 +140,8 @@ If ($oTarget.button#Null:C1517)
 						  //______________________________________________________
 					: ($oTarget.current.status="@D@")
 						
-						$o.execute("diff HEAD^ -- "+$oTarget.current.path)
-						
 						  //$o.diff($oTarget.current.path;"diff HEAD^ -- ")
+						$o.execute("diff HEAD^ -- "+$oTarget.current.path)
 						
 						  //______________________________________________________
 					: ($oTarget.name="staged")

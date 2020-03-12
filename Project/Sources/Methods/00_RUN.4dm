@@ -10,7 +10,7 @@
   // Declarations
 C_TEXT:C284($1)
 
-C_LONGINT:C283($Lon_parameters;$Win_hdl)
+C_LONGINT:C283($Lon_parameters)
 C_PICTURE:C286($p)
 C_TEXT:C284($Txt_entryPoint;$Txt_methodName)
 C_OBJECT:C1216($o;$oForm)
@@ -61,6 +61,7 @@ Case of
 		00_RUN ("_init")
 		
 		$oForm:=New object:C1471(\
+			"window";Open form window:C675("GITLAB";Plain form window:K39:10;Horizontally centered:K39:1;Vertically centered:K39:4;*);\
 			"project";File:C1566(Structure file:C489(*);fk platform path:K87:2);\
 			"git";git ();\
 			"unstaged";New collection:C1472;\
@@ -69,7 +70,7 @@ Case of
 			"commitDescription";""\
 			)
 		
-		  // Selector definition
+		  // Page menu definition
 		$c:=New collection:C1472(\
 			New object:C1471("label";Get localized string:C991("changes"));\
 			New object:C1471(\
@@ -83,6 +84,44 @@ Case of
 		$c[1].icon:=$p
 		
 		$oForm.menu:=$c
+		
+		  // Preload icons
+		$oForm.icons:=New object:C1471
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/checked.png").platformPath;$p)
+		CREATE THUMBNAIL:C679($p;$p;20;20)
+		$oForm.icons.checked:=$p
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/gitHub.png").platformPath;$p)
+		CREATE THUMBNAIL:C679($p;$p;20;20)
+		$oForm.icons.github:=$p
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/gitLab.png").platformPath;$p)
+		CREATE THUMBNAIL:C679($p;$p;20;20)
+		$oForm.icons.gitlab:=$p
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/branch.png").platformPath;$p)
+		CREATE THUMBNAIL:C679($p;$p;20;20)
+		$oForm.icons.branch:=$p
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/tag.png").platformPath;$p)
+		CREATE THUMBNAIL:C679($p;$p;20;20)
+		$oForm.icons.tag:=$p
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/folder.png").platformPath;$p)
+		CREATE THUMBNAIL:C679($p;$p;20;20)
+		$oForm.icons.fix:=$p
+		
+		  // Selector definition
+		$oForm.selector:=New list:C375
+		
+		APPEND TO LIST:C376($oForm.selector;"Branches";-21;New list:C375;True:C214)
+		$p:=$oForm.icons.branch
+		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+		
+		APPEND TO LIST:C376($oForm.selector;"Remotes";-22;New list:C375;True:C214)
+		$p:=$oForm.icons.github
+		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+		
+		APPEND TO LIST:C376($oForm.selector;"Tags";-23;New list:C375;True:C214)
+		$p:=$oForm.icons.tag
+		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+		
+		SET LIST PROPERTIES:C387($oForm.selector;0;0;25)
 		
 		  // Methods definitions
 		$o:=New object:C1471(\
@@ -105,9 +144,10 @@ Case of
 			"new";"honeydew"\
 			)
 		
-		$Win_hdl:=Open form window:C675("GITLAB";Plain form window:K39:10;Horizontally centered:K39:1;Vertically centered:K39:4;*)
 		DIALOG:C40("GITLAB";$oForm)
 		CLOSE WINDOW:C154
+		
+		CLEAR LIST:C377($oForm.selector;*)
 		
 		00_RUN ("_deinit")
 		

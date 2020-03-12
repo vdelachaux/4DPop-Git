@@ -12,10 +12,10 @@ C_OBJECT:C1216($0)
 C_VARIANT:C1683($1)
 C_VARIANT:C1683($2)
 
-C_BLOB:C604($x)
 C_LONGINT:C283($end;$start)
 C_TEXT:C284($t;$tCMD;$tERROR;$tIN;$tOUT)
 C_OBJECT:C1216($file;$o)
+C_COLLECTION:C1488($c)
 
 If (False:C215)
 	C_OBJECT:C1216(git ;$0)
@@ -37,13 +37,18 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"warnings";New collection:C1472;\
 		"workingDirectory";Null:C1517;\
 		"git";Null:C1517;\
+		"branches";New collection:C1472;\
+		"remotes";New collection:C1472;\
 		"init";Formula:C1597(git ("init"));\
 		"add";Formula:C1597(git ("add";$1));\
+		"branch";Formula:C1597(git ("branch"));\
 		"checkout";Formula:C1597(git ("checkout";$1));\
 		"commit";Formula:C1597(git ("commit";New object:C1471("message";$1;"amend";Bool:C1537($2))));\
 		"diff";Formula:C1597(git ("diff";New object:C1471("path";String:C10($1);"options";String:C10($2))).result);\
 		"diffTool";Formula:C1597(git ("diffTool";$1).result);\
 		"execute";Formula:C1597(git ("execute";$1).result);\
+		"fetch";Formula:C1597(git ("fetch"));\
+		"remote";Formula:C1597(git ("remote"));\
 		"revert";Formula:C1597(git ("revert";$1).result);\
 		"stage";Formula:C1597(git ("stage"));\
 		"stageAll";Formula:C1597(git ("stageAll"));\
@@ -104,7 +109,7 @@ Else
 				
 			End if 
 			
-			  // Voir -q
+			  //$tCMD:=$tCMD+" -q"
 			
 			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE";"true")
 			
@@ -221,6 +226,9 @@ Else
 				End if 
 				
 				If ($o.success)
+					
+					$o.result:=Replace string:C233($o.result;"\r\n";"\n")
+					$o.result:=Replace string:C233($o.result;"\r";"\n")
 					
 				End if 
 			End if 
@@ -370,6 +378,84 @@ Else
 				
 				$o.warning:="Nothing to commit"
 				$o.warnings.push($o.warning)
+				
+			End if 
+			
+			  //______________________________________________________
+		: ($1="branch")
+			
+			If (Not:C34($o.success))
+				
+				$o.init()
+				
+			End if 
+			
+			$o.branches:=New collection:C1472
+			
+			$o.execute("branch --list -v")
+			
+			If ($o.success)
+				
+				For each ($t;Split string:C1554($o.result;"\n";sk ignore empty strings:K86:1))
+					
+					$c:=Split string:C1554($t;" ";sk ignore empty strings:K86:1)
+					
+					$o.branches.push(New object:C1471(\
+						"name";$c[1];\
+						"ref";$c[2]))
+					
+				End for each 
+			End if 
+			
+			  //______________________________________________________
+		: ($1="remote")
+			
+			If (Not:C34($o.success))
+				
+				$o.init()
+				
+			End if 
+			
+			$o.remotes:=New collection:C1472
+			
+			$o.execute("remote -v")
+			
+			If ($o.success)
+				
+				For each ($t;Split string:C1554($o.result;"\n";sk ignore empty strings:K86:1))
+					
+					$c:=Split string:C1554($t;"\t";sk ignore empty strings:K86:1)
+					
+					If ($o.remotes.query("name=:1";$c[0]).length=0)
+						
+						$o.remotes.push(New object:C1471(\
+							"name";$c[0];\
+							"url";Substring:C12($c[1];1;Position:C15(" (";$c[1])-1)))
+						
+					End if 
+				End for each 
+			End if 
+			
+			  //______________________________________________________
+		: ($1="fetch")
+			
+			If (Not:C34($o.success))
+				
+				$o.init()
+				
+			End if 
+			
+			$o.execute("fetch --verbose --tags")
+			
+			  // Result is on the error part!
+			$o.success:=(OK=1)
+			
+			If ($o.success)
+				
+				$o.error:=""
+				
+				  // Parse result
+				$t:=$o.errors.pop()
 				
 			End if 
 			

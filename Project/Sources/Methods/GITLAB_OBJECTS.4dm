@@ -71,11 +71,15 @@ Case of
 							
 						End if 
 						
+						$menu.line()
+						
 						If (New collection:C1472(" D").indexOf($oCurrent.status)=-1)
 							
 							$menu.append("showInFinder";"show")
 							
 						End if 
+						
+						$menu.append("copyPath";"copy")
 						
 						$menu.line()
 						
@@ -136,6 +140,11 @@ Case of
 					If ($menu.popup().selected)
 						
 						Case of 
+								
+								  //———————————————————————————————————————
+							: ($menu.choice="copy")
+								
+								SET TEXT TO PASTEBOARD:C523($oCurrent.path)
 								
 								  //———————————————————————————————————————
 							: ($menu.choice="diffTool")
@@ -349,6 +358,11 @@ Case of
 			Form:C1466.git.diffTool(Form:C1466.currentUnstaged.path)
 			
 		End if 
+		
+		  //______________________________________________________
+	: ($event.objectName="selector")
+		
+		
 		
 		  //______________________________________________________
 	Else 

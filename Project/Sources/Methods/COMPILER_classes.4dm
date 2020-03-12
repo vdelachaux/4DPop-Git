@@ -7,11 +7,6 @@ If (False:C215)
 	C_OBJECT:C1216(button ;$2)
 	
 	  //…………………………………………………………………………………………………
-	C_OBJECT:C1216(git ;$0)
-	C_VARIANT:C1683(git ;$1)
-	C_VARIANT:C1683(git ;$2)
-	
-	  //…………………………………………………………………………………………………
 	C_OBJECT:C1216(group ;$0)
 	C_TEXT:C284(group ;$1)
 	C_OBJECT:C1216(group ;$2)
@@ -40,6 +35,21 @@ If (False:C215)
 	C_OBJECT:C1216(widget ;$0)
 	C_TEXT:C284(widget ;$1)
 	C_OBJECT:C1216(widget ;$2)
+	
+	  //…………………………………………………………………………………………………
+End if 
+
+If (False:C215)
+	
+	  //…………………………………………………………………………………………………
+	C_OBJECT:C1216(git ;$0)
+	C_VARIANT:C1683(git ;$1)
+	C_VARIANT:C1683(git ;$2)
+	
+	  //…………………………………………………………………………………………………
+	C_OBJECT:C1216(list ;$0)
+	C_VARIANT:C1683(list ;$1)
+	C_OBJECT:C1216(list ;$2)
 	
 	  //…………………………………………………………………………………………………
 End if 

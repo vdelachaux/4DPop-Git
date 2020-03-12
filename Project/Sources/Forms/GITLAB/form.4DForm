@@ -39,7 +39,7 @@
 					"left": 0,
 					"top": 83,
 					"width": 180,
-					"height": 773,
+					"height": 69,
 					"events": [],
 					"action": "gotoPage",
 					"showHeaders": false,
@@ -53,13 +53,14 @@
 					"hideSystemHighlight": false,
 					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
-					"sizingY": "grow",
+					"sizingY": "fixed",
 					"borderStyle": "none",
 					"sortable": false,
 					"visibility": "visible",
 					"sizingX": "fixed",
 					"rowHeight": "2em",
 					"verticalAlign": "middle",
+					"focusable": false,
 					"columns": [
 						{
 							"header": {
@@ -106,7 +107,10 @@
 					"hideFocusRing": true,
 					"sizingX": "fixed",
 					"textAlign": "left",
-					"stroke": "#696969"
+					"stroke": "#696969",
+					"enterable": false,
+					"focusable": false,
+					"contextMenu": "none"
 				},
 				"vSeparator_1": {
 					"type": "line",
@@ -233,6 +237,36 @@
 					"picture": "/RESOURCES/4DPop.png",
 					"pictureFormat": "scaled",
 					"sizingY": "move"
+				},
+				"Line7": {
+					"type": "line",
+					"top": 152,
+					"left": 0,
+					"width": 180,
+					"height": 0,
+					"startPoint": "topLeft",
+					"sizingX": "fixed",
+					"stroke": "#c0c0c0",
+					"right": 180
+				},
+				"selector": {
+					"type": "list",
+					"left": 0,
+					"top": 154,
+					"width": 179,
+					"height": 720,
+					"events": [
+						"onClick",
+						"onSelectionChange"
+					],
+					"scrollbarVertical": "hidden",
+					"scrollbarHorizontal": "hidden",
+					"focusable": true,
+					"enterable": false,
+					"borderStyle": "none",
+					"sizingY": "grow",
+					"dataSource": "$oForm.selector",
+					"method": "GITLAB_OBJECTS"
 				}
 			}
 		},

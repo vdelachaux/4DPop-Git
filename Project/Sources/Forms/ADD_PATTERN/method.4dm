@@ -3,7 +3,6 @@
   // ID[F480A3B6285F424087B017C3B2CADCA1]
   // Created 11-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
-C_LONGINT:C283($l)
 C_TEXT:C284($tPattern)
 C_OBJECT:C1216($event;$o)
 
@@ -17,12 +16,8 @@ Case of
 		  //______________________________________________________
 	: ($event.code=On Load:K2:1)
 		
-		Form:C1466.$:=New object:C1471
-		Form:C1466.$.cancel:=button ("cancel")
-		Form:C1466.$.ok:=button ("done")
-		
-		$l:=Form:C1466.$.ok.bestSize(Align right:K42:4).coordinates.left-20
-		Form:C1466.$.cancel.setCoordinates(Null:C1517;Null:C1517;$l;Null:C1517).bestSize(Align right:K42:4)
+		  // Adapt UI to localization
+		button ("cancel").setCoordinates(Null:C1517;Null:C1517;button ("done").bestSize(Align right:K42:4).coordinates.left-20;Null:C1517).bestSize(Align right:K42:4)
 		
 		SET TIMER:C645(-1)
 		
@@ -38,6 +33,8 @@ Case of
 		SET TIMER:C645(0)
 		
 		$tPattern:=Choose:C955(String:C10($event.objectName)="pattern";Get edited text:C655;String:C10(Form:C1466.pattern))
+		
+		  //#TO_DO: see if we can use git check-ignore
 		
 		  // Escape dot
 		$tPattern:=Replace string:C233($tPattern;".";"\\.")
