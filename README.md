@@ -6,8 +6,6 @@
 
 # 4DPop Git
 
-**4DPop Git** makes it  simple to manage your project as a **Git repository**.
-
 No need to read the <a href="https://git-scm.com/docs/git">**git**</a> command documentation or to be an expert of the Terminal, everything is done automatically for you, just stay focused on your work.
 
 <img src="./Documentation/main.png">
