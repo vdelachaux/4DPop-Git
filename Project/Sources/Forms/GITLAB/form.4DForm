@@ -94,7 +94,7 @@
 						}
 					]
 				},
-				"Input": {
+				"project": {
 					"type": "input",
 					"left": 9,
 					"top": 63,
@@ -266,7 +266,7 @@
 					"enterable": false,
 					"borderStyle": "none",
 					"sizingY": "grow",
-					"dataSource": "$oForm.selector",
+					"dataSource": "Form.selector",
 					"method": "GITLAB_OBJECTS"
 				}
 			}
