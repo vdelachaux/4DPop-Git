@@ -12,10 +12,13 @@ C_OBJECT:C1216($0)
 C_VARIANT:C1683($1)
 C_OBJECT:C1216($2)
 
-C_LONGINT:C283($i;$listItem)
+C_BOOLEAN:C305($b)
+C_LONGINT:C283($i;$index;$list;$listItem)
 C_PICTURE:C286($p)
-C_TEXT:C284($t;$textItem)
+C_TEXT:C284($text;$textItem)
 C_OBJECT:C1216($o)
+
+ARRAY LONGINT:C221($aL_buffer;0)
 
 If (False:C215)
 	C_OBJECT:C1216(list ;$0)
@@ -34,26 +37,37 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"parameter";Formula:C1597(list ("parameter";New object:C1471("key";String:C10($1);"value";String:C10($2);"target";$3)));\
 		"icon";Formula:C1597(list ("icon";New object:C1471("icon";$1;"target";$2)));\
 		"empty";Formula:C1597(list ("empty"));\
-		"setReference";Formula:C1597(list ("setReference";New object:C1471("ref";Num:C11($1);"clear";Bool:C1537($2))))\
+		"setList";Formula:C1597(list ("setList";New object:C1471("ref";Num:C11($1);"clear";Bool:C1537($2))));\
+		"index";Formula:C1597(list ("index").value);\
+		"reference";Formula:C1597(list ("reference").value);\
+		"indexes";Formula:C1597(list ("indexes").value);\
+		"references";Formula:C1597(list ("references").value);\
+		"getByIndex";Formula:C1597(list ("getByIndex";New object:C1471("ref";Num:C11($1))).value);\
+		"getByReference";Formula:C1597(list ("getByReference";New object:C1471("ref";$1)).value)\
 		)
 	
 	If (Count parameters:C259>=1)
 		
 		Case of 
 				
-				  //______________________________________________________
-			: (Value type:C1509($1)=Is longint:K8:6)
+				  //—————————————————————————————————
+			: (Value type:C1509($1)=Is real:K8:4)\
+				 | (Value type:C1509($1)=Is longint:K8:6)
 				
 				$o.ref:=$1
 				
-				  //______________________________________________________
-			: (False:C215)
+				  //—————————————————————————————————
+			: (Value type:C1509($1)=Is text:K8:3)
 				
-				  //______________________________________________________
+				  // Create a hierarchical list whose content is copied from the list created in Development mode
+				$o.ref:=Load list:C383($1)
+				
+				  //—————————————————————————————————
 			Else 
 				
-				  // A "Case of" statement should never omit "Else"
-				  //______________________________________________________
+				  //
+				
+				  //—————————————————————————————————
 		End case 
 		
 		If ($o.ref=0)
@@ -61,9 +75,6 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 			$o.ref:=New list:C375
 			
 		End if 
-		
-		$t:=String:C10($1)
-		
 	End if 
 	
 	$o.success:=Is a list:C621($o.ref)
@@ -131,7 +142,53 @@ Else
 			End for 
 			
 			  //______________________________________________________
-		: ($1="setReference")
+		: ($1="reference")
+			
+			$o.value:=Selected list items:C379($o.ref;*)
+			
+			  //______________________________________________________
+		: ($1="index")
+			
+			$o.value:=Selected list items:C379($o.ref)
+			
+			  //______________________________________________________
+		: ($1="references")
+			
+			$aL_buffer{0}:=Selected list items:C379($o.ref;$aL_buffer;*)
+			$o.value:=New collection:C1472
+			ARRAY TO COLLECTION:C1563($o.value;$aL_buffer)
+			
+			  //______________________________________________________
+		: ($1="indexes")
+			
+			$aL_buffer{0}:=Selected list items:C379($o.ref;$aL_buffer)
+			$o.value:=New collection:C1472
+			ARRAY TO COLLECTION:C1563($o.value;$aL_buffer)
+			
+			  //______________________________________________________
+		: ($1="getByIndex")
+			
+			GET LIST ITEM:C378($o.ref;$2.ref;$index;$text;$list;$b)
+			
+			$o.value:=New object:C1471(\
+				"ref";$index;\
+				"label";$text;\
+				"sublist";$list;\
+				"expanded";$b)
+			
+			  //______________________________________________________
+		: ($1="getByReference")
+			
+			GET LIST ITEM:C378($o.ref;List item position:C629($o.ref;Num:C11($2.ref));$index;$text;$list;$b)
+			
+			$o.value:=New object:C1471(\
+				"ref";$index;\
+				"label";$text;\
+				"list";$list;\
+				"expanded";$b)
+			
+			  //______________________________________________________
+		: ($1="setList")
 			
 			If ($o.success)
 				

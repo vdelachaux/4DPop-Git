@@ -292,10 +292,10 @@ Case of
 	: ($event.objectName=Form:C1466.$.open.name)
 		
 		$menu:=menu \
-			.append("openInTerminal";"terminal").icon("/RESOURCES/Images/terminal.png")\
-			.append("openInFinder";"show").icon("/RESOURCES/Images/finder.png")\
+			.append("openInTerminal";"terminal").icon("/RESOURCES/Images/"+Form:C1466.template+"terminal.png")\
+			.append("openInFinder";"show").icon("/RESOURCES/Images/"+Form:C1466.template+"finder.png")\
 			.line()\
-			.append("viewOnGithub";"github").icon("/RESOURCES/Images/gitHub.png").disable()
+			.append("viewOnGithub";"github").icon("/RESOURCES/Images/"+Form:C1466.template+"gitHub.png").disable()
 		
 		If ($menu.popup().selected)
 			

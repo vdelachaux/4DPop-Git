@@ -164,15 +164,15 @@
 				"fetch": {
 					"type": "button",
 					"text": ":xliff:fetch",
-					"top": 8,
+					"top": 6,
 					"left": 7,
 					"width": 52,
-					"height": 44,
+					"height": 54,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/fetch.png",
+					"icon": "/RESOURCES/Images/default/fetch.png",
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
@@ -181,15 +181,15 @@
 				"pull": {
 					"type": "button",
 					"text": ":xliff:pull",
-					"top": 8,
+					"top": 6,
 					"left": 65,
 					"width": 52,
-					"height": 44,
+					"height": 54,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/pull.png",
+					"icon": "/RESOURCES/Images/default/pull.png",
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
@@ -198,15 +198,15 @@
 				"push": {
 					"type": "button",
 					"text": ":xliff:push",
-					"top": 8,
+					"top": 6,
 					"left": 121,
 					"width": 52,
-					"height": 44,
+					"height": 54,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/push.png",
+					"icon": "/RESOURCES/Images/default/push.png",
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
@@ -215,18 +215,19 @@
 				"open": {
 					"type": "button",
 					"text": ":xliff:open",
-					"top": 4,
+					"top": 2,
 					"left": 1014,
 					"width": 86,
-					"height": 52,
+					"height": 62,
 					"events": [
 						"onClick"
 					],
 					"method": "GITLAB_OBJECTS",
 					"focusable": false,
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/openWith.png",
-					"sizingX": "move"
+					"icon": "/RESOURCES/Images/default/open.png",
+					"sizingX": "move",
+					"fontSize": 11
 				},
 				"gitLogo": {
 					"type": "picture",
@@ -634,7 +635,7 @@
 					"style": "toolbar",
 					"method": "GITLAB_OBJECTS",
 					"focusable": false,
-					"icon": "/RESOURCES/Images/stageAll.png",
+					"icon": "/RESOURCES/Images/default/stageAll.png",
 					"sizingX": "move",
 					"tooltip": ":xliff:stageAll"
 				}
