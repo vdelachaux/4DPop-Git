@@ -3,17 +3,15 @@
   // ID[65871C4C423A4C31913CD88C79275F61]
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
-C_BOOLEAN:C305($b)
-C_LONGINT:C283($index;$list)
-C_TEXT:C284($t;$tLabel)
-C_OBJECT:C1216($event;$form;$o;$oList)
+C_TEXT:C284($t)
+C_OBJECT:C1216($event;$form;$o;$oGit;$oList)
 C_COLLECTION:C1488($c)
 
   // ----------------------------------------------------
   // Initialisations
 $event:=FORM Event:C1606
 
-If (($event.code=On Load:K2:1))
+If (Form:C1466.$=Null:C1517)
 	
 	  // Widgets definition
 	$form:=New object:C1471(\
@@ -63,7 +61,7 @@ Case of
 		$form.toComit.setScrollbar(0;2)
 		$form.commits.setScrollbar(0;2)
 		
-/* Apply template */
+		  // Apply template
 		For each ($t;New collection:C1472("fetch";"pull";"push";"open";"stageAll"))
 			
 			$form[$t].setFormat(";file:Images/"+Form:C1466.template+$t+".png")
@@ -81,6 +79,7 @@ Case of
 		$form.commit.bestSize(Align right:K42:4).disable()
 		$form.open.bestSize(Align right:K42:4)
 		
+/* UI */
 		Form:C1466.ƒ.update()
 		
 		  //______________________________________________________
@@ -100,12 +99,12 @@ Case of
 			For each ($o;$oGit.branches)
 				
 				$oList.append($o.name).parameter("ref";$o.ref)
+				
 				If ($o.current)
 					
 					$oList.icon(Form:C1466.icons.checked)
 					
 				End if 
-				
 			End for each 
 			
 		Else 
@@ -149,7 +148,6 @@ Case of
 			  // #TO_DO
 			
 		End if 
-		
 		
 		Case of 
 				
