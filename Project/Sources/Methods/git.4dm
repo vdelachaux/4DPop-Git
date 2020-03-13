@@ -39,6 +39,7 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"git";Null:C1517;\
 		"branches";New collection:C1472;\
 		"remotes";New collection:C1472;\
+		"tags";New collection:C1472;\
 		"init";Formula:C1597(git ("init"));\
 		"add";Formula:C1597(git ("add";$1));\
 		"branch";Formula:C1597(git ("branch"));\
@@ -53,6 +54,7 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"stage";Formula:C1597(git ("stage"));\
 		"stageAll";Formula:C1597(git ("stageAll"));\
 		"status";Formula:C1597(git ("status"));\
+		"tag";Formula:C1597(git ("tag"));\
 		"unstage";Formula:C1597(git ("unstage";$1));\
 		"untrack";Formula:C1597(git ("untrack";$1));\
 		"terminal";Formula:C1597(git ("open";"terminal"));\
@@ -321,6 +323,28 @@ Else
 			End if 
 			
 			  //______________________________________________________
+		: ($1="tag")
+			
+			If (Not:C34($o.success))
+				
+				$o.init()
+				
+			End if 
+			
+			$o.tags:=New collection:C1472
+			
+			$o.execute("tag")
+			
+			If ($o.success)
+				
+				For each ($t;Split string:C1554($o.result;"\n";sk ignore empty strings:K86:1))
+					
+					$o.tags.push($t)
+					
+				End for each 
+			End if 
+			
+			  //______________________________________________________
 		: ($1="add")
 			
 			If (Value type:C1509($2)=Is collection:K8:32)
@@ -425,7 +449,8 @@ Else
 					
 					$o.branches.push(New object:C1471(\
 						"name";$c[1];\
-						"ref";$c[2]))
+						"ref";$c[2];\
+						"current";Bool:C1537($c[0]="*")))
 					
 				End for each 
 			End if 

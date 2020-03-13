@@ -12,7 +12,7 @@ C_TEXT:C284($1)
 
 C_LONGINT:C283($Lon_parameters)
 C_PICTURE:C286($p)
-C_TEXT:C284($Txt_entryPoint;$Txt_methodName)
+C_TEXT:C284($t;$Txt_entryPoint;$Txt_methodName)
 C_OBJECT:C1216($o;$oForm)
 C_COLLECTION:C1488($c)
 
@@ -70,16 +70,19 @@ Case of
 			"commitDescription";""\
 			)
 		
+		  // Template to use, only one for now
+		$oForm.template:="default/"
+		
 		  // Page menu definition
 		$c:=New collection:C1472(\
 			New object:C1471("label";Get localized string:C991("changes"));\
 			New object:C1471(\
 			"label";Get localized string:C991("allCommits")))
 		
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/changes.png").platformPath;$p)
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"changes.png").platformPath;$p)
 		TRANSFORM PICTURE:C988($p;Scale:K61:2;0.4;0.4)
 		$c[0].icon:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/commits.png").platformPath;$p)
+		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"commits.png").platformPath;$p)
 		TRANSFORM PICTURE:C988($p;Scale:K61:2;0.4;0.4)
 		$c[1].icon:=$p
 		
@@ -87,27 +90,14 @@ Case of
 		
 		  // Preload icons
 		$oForm.icons:=New object:C1471
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/checked.png").platformPath;$p)
-		CREATE THUMBNAIL:C679($p;$p;20;20)
-		$oForm.icons.checked:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/gitHub.png").platformPath;$p)
-		CREATE THUMBNAIL:C679($p;$p;20;20)
-		$oForm.icons.github:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/gitLab.png").platformPath;$p)
-		CREATE THUMBNAIL:C679($p;$p;20;20)
-		$oForm.icons.gitlab:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/branch.png").platformPath;$p)
-		CREATE THUMBNAIL:C679($p;$p;20;20)
-		$oForm.icons.branch:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/tag.png").platformPath;$p)
-		CREATE THUMBNAIL:C679($p;$p;20;20)
-		$oForm.icons.tag:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/folder.png").platformPath;$p)
-		CREATE THUMBNAIL:C679($p;$p;20;20)
-		$oForm.icons.fix:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/cloud.png").platformPath;$p)
-		CREATE THUMBNAIL:C679($p;$p;20;20)
-		$oForm.icons.cloud:=$p
+		
+		For each ($t;New collection:C1472("checked";"github";"gitLab";"branch";"tag";"fix";"remote"))
+			
+			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+$t+".png").platformPath;$p)
+			CREATE THUMBNAIL:C679($p;$p;20;20)
+			$oForm.icons[Lowercase:C14($t)]:=$p
+			
+		End for each 
 		
 		  // Selector definition
 		$oForm.selector:=New list:C375
@@ -117,7 +107,7 @@ Case of
 		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
 		
 		APPEND TO LIST:C376($oForm.selector;"Remotes";-22;New list:C375;True:C214)
-		$p:=$oForm.icons.cloud
+		$p:=$oForm.icons.remote
 		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
 		
 		APPEND TO LIST:C376($oForm.selector;"Tags";-23;New list:C375;True:C214)
@@ -141,11 +131,7 @@ Case of
 		$oForm.ƒ:=$o
 		
 		  // Color definitions
-		$oForm.colors:=New object:C1471(\
-			"modified";"cornsilk";\
-			"deleted";"mistyrose";\
-			"new";"honeydew"\
-			)
+		$oForm.colors:=JSON Parse:C1218(File:C1566("/RESOURCES/Images/"+$oForm.template+"manifest.json").getText()).colors
 		
 		DIALOG:C40("GITLAB";$oForm)
 		CLOSE WINDOW:C154

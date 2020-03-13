@@ -6,12 +6,47 @@
 C_BOOLEAN:C305($b)
 C_LONGINT:C283($index;$list)
 C_TEXT:C284($t;$tLabel)
-C_OBJECT:C1216($event;$o;$oList)
+C_OBJECT:C1216($event;$form;$o;$oList)
 C_COLLECTION:C1488($c)
 
   // ----------------------------------------------------
   // Initialisations
 $event:=FORM Event:C1606
+
+If (($event.code=On Load:K2:1))
+	
+	  // Widgets definition
+	$form:=New object:C1471(\
+		"stage";button ("stage");\
+		"unstage";button ("unstage");\
+		"menu";listbox ("menu");\
+		"toStage";listbox ("unstaged");\
+		"toComit";listbox ("staged");\
+		"diff";widget ("diff");\
+		"diffTool";button ("diffTool");\
+		"stageAll";button ("stageAll");\
+		"subject";widget ("commitSubject");\
+		"description";widget ("commitDecription");\
+		"commit";button ("commit");\
+		"amend";button ("comitAmend");\
+		"commitment";widget ("commit@");\
+		"commits";listbox ("commits");\
+		"fetch";button ("fetch");\
+		"pull";button ("pull");\
+		"push";button ("push");\
+		"open";button ("open");\
+		"selector";list (Form:C1466.selector)\
+		)
+	
+	Form:C1466.$:=$form
+	
+Else 
+	
+	$form:=Form:C1466.$
+	
+End if 
+
+$oGit:=Form:C1466.git
 
   // ----------------------------------------------------
 Case of 
@@ -19,99 +54,32 @@ Case of
 		  //______________________________________________________
 	: ($event.code=On Load:K2:1)
 		
-		  // Widgets definition
-		Form:C1466.$:=New object:C1471(\
-			"stage";button ("stage");\
-			"unstage";button ("unstage");\
-			"menu";listbox ("menu");\
-			"toStage";listbox ("unstaged");\
-			"toComit";listbox ("staged");\
-			"diff";widget ("diff");\
-			"diffTool";button ("diffTool");\
-			"stageAll";button ("stageAll");\
-			"subject";widget ("commitSubject");\
-			"description";widget ("commitDecription");\
-			"commit";button ("commit");\
-			"amend";button ("comitAmend");\
-			"commitment";widget ("commit@");\
-			"commits";listbox ("commits");\
-			"fetch";button ("fetch");\
-			"pull";button ("pull");\
-			"push";button ("push");\
-			"open";button ("open")\
-			)
-		
-		  // Default is  changes page
-		Form:C1466.$.menu.select(1)
+/* Default is  changes page */
+		$form.menu.select(1)
+		FORM GOTO PAGE:C247(1)
 		
 		  // Trick
-		Form:C1466.$.toStage.setScrollbar(0;2)
-		Form:C1466.$.toComit.setScrollbar(0;2)
-		Form:C1466.$.commits.setScrollbar(0;2)
+		$form.toStage.setScrollbar(0;2)
+		$form.toComit.setScrollbar(0;2)
+		$form.commits.setScrollbar(0;2)
 		
-		  // Adapt UI to localization
-		Form:C1466.$.stage.bestSize(Align right:K42:4).disable()
-		Form:C1466.$.unstage.bestSize(Align right:K42:4).disable()
-		Form:C1466.$.commit.bestSize(Align right:K42:4).disable()
+/* Apply template */
+		For each ($t;New collection:C1472("fetch";"pull";"push";"open";"stageAll"))
+			
+			$form[$t].setFormat(";file:Images/"+Form:C1466.template+$t+".png")
+			
+		End for each 
 		
+/* Adapt UI to localization */
 		group ("fetch;pull;push").distributeHorizontally(New object:C1471(\
 			"start";10;\
 			"gap";10;\
 			"minWidth";50))
 		
-		Form:C1466.$.open.bestSize(Align right:K42:4)
-		
-		  // Branch list
-		Form:C1466.git.branch()
-		GET LIST ITEM:C378(Form:C1466.selector;List item position:C629(Form:C1466.selector;-21);$index;$tLabel;$list;$b)
-		$oList:=list ($list).empty()
-		
-		If (Form:C1466.git.branches.length>0)
-			
-			For each ($o;Form:C1466.git.branches)
-				
-				$oList.append($o.name).parameter("ref";$o.ref)
-				
-			End for each 
-			
-			If (Form:C1466.git.branches.length=1)
-				
-				$oList.icon(Form:C1466.icons.checked)
-				
-			Else 
-				
-				  // #TO_DO
-				
-			End if 
-			
-		Else 
-			
-			  //
-			
-		End if 
-		
-		SET LIST ITEM:C385(Form:C1466.selector;$index;$tLabel;$index;$list;True:C214)
-		
-		  // Remote list
-		Form:C1466.git.remote()
-		GET LIST ITEM:C378(Form:C1466.selector;List item position:C629(Form:C1466.selector;-22);$index;$tLabel;$list;$b)
-		$oList:=$oList.setReference($list).empty()
-		
-		If (Form:C1466.git.remotes.length>0)
-			
-			For each ($o;Form:C1466.git.remotes)
-				
-				$oList.append($o.name).parameter("url";$o.url).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
-				
-			End for each 
-			
-		Else 
-			
-			  // #TO_DO
-			
-		End if 
-		
-		SET LIST ITEM:C385(Form:C1466.selector;$index;$tLabel;$index;$list;True:C214)
+		$form.stage.bestSize(Align right:K42:4).disable()
+		$form.unstage.bestSize(Align right:K42:4).disable()
+		$form.commit.bestSize(Align right:K42:4).disable()
+		$form.open.bestSize(Align right:K42:4)
 		
 		Form:C1466.ƒ.update()
 		
@@ -123,7 +91,65 @@ Case of
 		
 		SET TIMER:C645(0)
 		
-		$o:=Form:C1466.git
+/* Branch list */
+		$oGit.branch()
+		$oList:=list ($form.selector.getByReference(-21).list).empty()
+		
+		If ($oGit.branches.length>0)
+			
+			For each ($o;$oGit.branches)
+				
+				$oList.append($o.name).parameter("ref";$o.ref)
+				If ($o.current)
+					
+					$oList.icon(Form:C1466.icons.checked)
+					
+				End if 
+				
+			End for each 
+			
+		Else 
+			
+			  // ??
+			
+		End if 
+		
+/* Remote list */
+		$oGit.remote()
+		$oList:=$oList.setList($form.selector.getByReference(-22).list).empty()
+		
+		If ($oGit.remotes.length>0)
+			
+			For each ($o;$oGit.remotes)
+				
+				$oList.append($o.name).parameter("url";$o.url).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
+				
+			End for each 
+			
+		Else 
+			
+			  // #TO_DO
+			
+		End if 
+		
+/* tag list */
+		$oGit.tag()
+		$oList:=$oList.setList($form.selector.getByReference(-23).list).empty()
+		
+		If ($oGit.tags.length>0)
+			
+			For each ($t;$oGit.tags)
+				
+				$oList.append($t).parameter("tag";$t).icon(Form:C1466.icons.tag)
+				
+			End for each 
+			
+		Else 
+			
+			  // #TO_DO
+			
+		End if 
+		
 		
 		Case of 
 				
@@ -131,36 +157,36 @@ Case of
 			: (FORM Get current page:C276=1)  // Changes
 				
 				  // Update file lists
-				If ($o.changes.length>0)
+				If ($oGit.changes.length>0)
 					
-					Form:C1466.unstaged:=$o.changes.query("status IN :1";New collection:C1472("?@";"@M";"@D"))
-					Form:C1466.staged:=$o.changes.query("status = :1";"@ ")
+					Form:C1466.unstaged:=$oGit.changes.query("status IN :1";New collection:C1472("?@";"@M";"@D"))
+					Form:C1466.staged:=$oGit.changes.query("status = :1";"@ ")
 					
 				Else 
 					
 					Form:C1466.staged.clear()
-					Form:C1466.$.unstage.disable()
+					$form.unstage.disable()
 					
 				End if 
 				
 				  // Update commit panel
 				If (Form:C1466.staged.length>0)
 					
-					Form:C1466.$.commitment.enable()
-					Form:C1466.$.commit.setEnabled(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
+					$form.commitment.enable()
+					$form.commit.setEnabled(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
 					
 				Else 
 					
 					Form:C1466.amend:=False:C215
-					Form:C1466.$.commitment.disable()
+					$form.commitment.disable()
 					Form:C1466.commitSubject:=""
 					
 				End if 
 				
-				Form:C1466.$.toStage.deselect()
-				Form:C1466.$.toComit.deselect()
+				$form.toStage.deselect()
+				$form.toComit.deselect()
 				
-				Form:C1466.$.diff.hide()
+				$form.diff.hide()
 				
 				Form:C1466.ƒ.refresh()
 				
@@ -170,10 +196,10 @@ Case of
 				  // Update commit list
 				Form:C1466.commits:=New collection:C1472
 				
-				$o.execute("log --abbrev-commit --format=%s,%an,%h,%aI")  // Message, author, ref, time
+				$oGit.execute("log --abbrev-commit --format=%s,%an,%h,%aI")  // Message, author, ref, time
 				
 				  // One commit per line
-				For each ($t;Split string:C1554($o.result;"\n";sk ignore empty strings:K86:1))
+				For each ($t;Split string:C1554($oGit.result;"\n";sk ignore empty strings:K86:1))
 					
 					$c:=Split string:C1554($t;",")
 					
@@ -204,15 +230,15 @@ Case of
 	: ($event.code=On Activate:K2:9)
 		
 		  // Get status
-		$o:=Form:C1466.git.status()
+		$oGit.status()
 		
 		  // Update UI
 		Form:C1466.ƒ.update()
 		
 		  // Update menu label
-		If ($o.changes.length>0)
+		If ($oGit.changes.length>0)
 			
-			Form:C1466.menu[0].label:="Changes ("+String:C10($o.changes.length)+")"
+			Form:C1466.menu[0].label:="Changes ("+String:C10($oGit.changes.length)+")"
 			
 		Else 
 			
