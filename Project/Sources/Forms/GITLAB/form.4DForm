@@ -266,8 +266,8 @@
 					"enterable": false,
 					"borderStyle": "none",
 					"sizingY": "grow",
-					"dataSource": "Form.selector",
-					"method": "GITLAB_OBJECTS"
+					"method": "GITLAB_OBJECTS",
+					"dataSource": "Form.selector	"
 				}
 			}
 		},
