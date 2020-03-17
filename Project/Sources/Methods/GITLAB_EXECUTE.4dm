@@ -69,10 +69,38 @@ Case of
 			
 			For each ($o;Form:C1466.selectedUnstaged)
 				
-				Form:C1466.git.checkout($o.path)
-				
+				If ($o.status="??")
+					
+					$v:=Form:C1466.ƒ.path($o.path)
+					
+					Case of 
+							
+							  //——————————————————————————————————
+						: (Value type:C1509($v)=Is text:K8:3)  // Method
+							
+							  // Warning: No update if 4D App don't be unactivated/activated
+							$v:=File:C1566(Form:C1466.project.parent.parent.path+$o.path)
+							
+							  //——————————————————————————————————
+						: (Value type:C1509($v)=Is object:K8:27)  // File
+							
+							  //
+							
+							  //——————————————————————————————————
+					End case 
+					
+					If (Bool:C1537($v.exists))
+						
+						$v.delete()
+						
+					End if 
+					
+				Else 
+					
+					Form:C1466.git.checkout($o.path)
+					
+				End if 
 			End for each 
-			
 		End if 
 		
 		  //______________________________________________________
