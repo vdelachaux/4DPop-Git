@@ -3,14 +3,12 @@
 !.gitignore
 
 # Ignore data file
-Data/
+[dD]ata/
 DATA/
-data/
 *.4DD
 *.journal
 *.4DIndx
 *.Match
-*symbols.txt
 
 # Ignore derived data
 Project/DerivedData/
@@ -28,8 +26,7 @@ Preferences/
 !4DPop AppMaker.*
 
 # Miscellaneous
-DEV/
 *__Orphan__*
+*symbols.txt
 ehthumbs.db
 Thumbs.db
-*.bbprojectd/
