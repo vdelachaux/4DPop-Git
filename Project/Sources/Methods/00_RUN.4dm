@@ -63,7 +63,7 @@ Case of
 		$oForm:=New object:C1471(\
 			"window";Open form window:C675("GITLAB";Plain form window:K39:10;Horizontally centered:K39:1;Vertically centered:K39:4;*);\
 			"project";File:C1566(Structure file:C489(*);fk platform path:K87:2);\
-			"git";git ();\
+			"git";cs:C1710.Git.new();\
 			"unstaged";New collection:C1472;\
 			"staged";New collection:C1472;\
 			"commitSubject";"";\

@@ -1,6 +1,4 @@
 ﻿{
-	"(Component)": {},
-	"(Private)": {},
 	"00_DEV": {
 		"methods": [
 			"00_TEST"
@@ -10,7 +8,6 @@
 		"methods": [
 			"button",
 			"COMPILER_classes",
-			"git",
 			"group",
 			"list",
 			"listbox",
@@ -18,6 +15,15 @@
 			"picture",
 			"static",
 			"widget"
+		]
+	},
+	"git": {
+		"methods": [
+			"COMPILER_Git",
+			"Git EXECUTE"
+		],
+		"classes": [
+			"Git"
 		]
 	},
 	"GITLAB": {
@@ -30,7 +36,8 @@
 		],
 		"forms": [
 			"ADD_PATTERN",
-			"GITLAB"
+			"GITLAB",
+			"TOOLBAR_MESSAGE"
 		]
 	},
 	"Shared": {
@@ -38,10 +45,5 @@
 			"4DPop_GIT"
 		]
 	},
-	"trash": {
-		"groups": [
-			"(Component)",
-			"(Private)"
-		]
-	}
+	"trash": {}
 }

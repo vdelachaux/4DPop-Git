@@ -293,7 +293,7 @@ Case of
 		
 		$menu:=menu \
 			.append("openInTerminal";"terminal").icon("/RESOURCES/Images/"+Form:C1466.template+"terminal.png")\
-			.append("openInFinder";"show").icon("/RESOURCES/Images/"+Form:C1466.template+"finder.png")\
+			.append("openInFinder";"show").icon("/RESOURCES/Images/"+Form:C1466.template+"show.png")\
 			.line()\
 			.append("viewOnGithub";"github").icon("/RESOURCES/Images/"+Form:C1466.template+"gitHub.png").disable()
 		
@@ -304,12 +304,12 @@ Case of
 					  //———————————————————————————————————————
 				: ($menu.choice="terminal")
 					
-					Form:C1466.git.terminal()
+					Form:C1466.git.open($menu.choice)
 					
 					  //———————————————————————————————————————
 				: ($menu.choice="show")
 					
-					Form:C1466.git.show()
+					Form:C1466.git.open($menu.choice)
 					
 					  //———————————————————————————————————————
 				Else 
@@ -360,9 +360,19 @@ Case of
 		End if 
 		
 		  //______________________________________________________
+	: ($event.objectName=Form:C1466.$.pull.name)
+		
+		GITLAB_EXECUTE ("pull")
+		
+		  //______________________________________________________
+	: ($event.objectName=Form:C1466.$.menu.name)
+		
+		FORM GOTO PAGE:C247(1)
+		
+		  //______________________________________________________
 	: ($event.objectName="selector")
 		
-		
+		FORM GOTO PAGE:C247(2)
 		
 		  //______________________________________________________
 	Else 

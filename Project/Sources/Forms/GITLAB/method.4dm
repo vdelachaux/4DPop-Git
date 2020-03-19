@@ -91,7 +91,7 @@ Case of
 		SET TIMER:C645(0)
 		
 /* Branch list */
-		$oGit.branch()
+		$oGit.getBranches()
 		$oList:=list ($form.selector.getByReference(-21).list).empty()
 		
 		If ($oGit.branches.length>0)
@@ -114,7 +114,7 @@ Case of
 		End if 
 		
 /* Remote list */
-		$oGit.remote()
+		$oGit.getRemotes()
 		$oList:=$oList.setList($form.selector.getByReference(-22).list).empty()
 		
 		If ($oGit.remotes.length>0)
@@ -132,7 +132,7 @@ Case of
 		End if 
 		
 /* tag list */
-		$oGit.tag()
+		$oGit.getTags()
 		$oList:=$oList.setList($form.selector.getByReference(-23).list).empty()
 		
 		If ($oGit.tags.length>0)
