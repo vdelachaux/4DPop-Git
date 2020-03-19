@@ -42,11 +42,6 @@ End if
 If (False:C215)
 	
 	  //…………………………………………………………………………………………………
-	C_OBJECT:C1216(git ;$0)
-	C_VARIANT:C1683(git ;$1)
-	C_VARIANT:C1683(git ;$2)
-	
-	  //…………………………………………………………………………………………………
 	C_OBJECT:C1216(list ;$0)
 	C_VARIANT:C1683(list ;$1)
 	C_OBJECT:C1216(list ;$2)

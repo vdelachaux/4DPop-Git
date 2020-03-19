@@ -11,7 +11,8 @@
 C_VARIANT:C1683($1)
 
 C_TEXT:C284($t_action)
-C_OBJECT:C1216($o;$o_IN)
+C_OBJECT:C1216($git;$o;$o_IN)
+C_VARIANT:C1683($v)
 
 If (False:C215)
 	C_VARIANT:C1683(GITLAB_EXECUTE ;$1)
@@ -33,6 +34,8 @@ Else
 	
 End if 
 
+$git:=Form:C1466.git
+
   // ----------------------------------------------------
 
 Case of 
@@ -42,21 +45,21 @@ Case of
 		
 		For each ($o;Form:C1466.selectedUnstaged)
 			
-			Form:C1466.git.add($o.path)
+			$git.add($o.path)
 			
 		End for each 
 		
 		  //______________________________________________________
 	: ($t_action="stageAll")
 		
-		Form:C1466.git.stageAll()
+		$git.add("all")
 		
 		  //______________________________________________________
 	: ($t_action="unstage")
 		
 		For each ($o;Form:C1466.selectedStaged)
 			
-			Form:C1466.git.unstage($o.path)
+			$git.unstage($o.path)
 			
 		End for each 
 		
@@ -84,7 +87,7 @@ Case of
 							  //——————————————————————————————————
 						: (Value type:C1509($v)=Is object:K8:27)  // File
 							
-							  //
+							  // <NOTHING MORE TO DO>
 							
 							  //——————————————————————————————————
 					End case 
@@ -93,11 +96,15 @@ Case of
 						
 						$v.delete()
 						
+					Else 
+						
+						TRACE:C157
+						
 					End if 
 					
 				Else 
 					
-					Form:C1466.git.checkout($o.path)
+					$git.checkout($o.path)
 					
 				End if 
 			End for each 
@@ -106,14 +113,27 @@ Case of
 		  //______________________________________________________
 	: ($t_action="commit")
 		
-		Form:C1466.git.commit($o_IN.message;Form:C1466.amend)
+		$git.commit($o_IN.message;Form:C1466.amend)
 		
 		  //______________________________________________________
 	: ($t_action="fetch")
 		
-		Form:C1466.git.execute("fetch --verbose --tags")
+		$git.execute("fetch --verbose --tags")
 		
+		  //______________________________________________________
+	: ($t_action="pull")
 		
+		$git.pull()
+		
+		If ($git.success)
+			
+			(OBJECT Get pointer:C1124(Object named:K67:5;"toolbarMessage"))->:=$git.history[0].out
+			
+		Else 
+			
+			  // A "If" statement should never omit "Else"
+			
+		End if 
 		
 		  //______________________________________________________
 	Else 
@@ -123,15 +143,14 @@ Case of
 End case 
 
   // Get status
-$o:=Form:C1466.git.status()
+$git.status()
 
   // Update UI
 Form:C1466.ƒ.update()
 
-  // Update menu label
-If ($o.changes.length>0)
+If ($git.changes.length>0)
 	
-	Form:C1466.menu[0].label:=Get localized string:C991("changes")+" ("+String:C10($o.changes.length)+")"
+	Form:C1466.menu[0].label:=Get localized string:C991("changes")+" ("+String:C10($git.changes.length)+")"
 	
 Else 
 	

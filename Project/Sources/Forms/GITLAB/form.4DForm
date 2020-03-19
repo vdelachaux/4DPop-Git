@@ -176,7 +176,8 @@
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "#696969"
+					"stroke": "#696969",
+					"visibility": "hidden"
 				},
 				"pull": {
 					"type": "button",
@@ -193,7 +194,9 @@
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "#696969"
+					"stroke": "#696969",
+					"method": "GITLAB_OBJECTS",
+					"visibility": "hidden"
 				},
 				"push": {
 					"type": "button",
@@ -210,7 +213,8 @@
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "#696969"
+					"stroke": "#696969",
+					"visibility": "hidden"
 				},
 				"open": {
 					"type": "button",
@@ -267,7 +271,21 @@
 					"borderStyle": "none",
 					"sizingY": "grow",
 					"method": "GITLAB_OBJECTS",
-					"dataSource": "Form.selector	"
+					"dataSource": "Form.selector\t"
+				},
+				"toolbarMessage": {
+					"type": "subform",
+					"left": 194,
+					"top": 6,
+					"width": 800,
+					"height": 49,
+					"detailForm": "TOOLBAR_MESSAGE",
+					"borderStyle": "none",
+					"sizingX": "grow",
+					"focusable": false,
+					"dataSourceTypeHint": "text",
+					"dataSource": "",
+					"visibility": "hidden"
 				}
 			}
 		},

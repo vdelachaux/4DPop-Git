@@ -1,1 +1,0 @@
-﻿<!----------------------------------------------------o := git ( Param_1 ; Param_2 ) -> Param_1 (Variant) -> Param_2 (Variant) <- o (Object)-->o := git ( Param_1 ; Param_2 )
