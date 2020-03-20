@@ -4,7 +4,7 @@
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
 C_TEXT:C284($t)
-C_OBJECT:C1216($event;$form;$o;$oGit;$oList)
+C_OBJECT:C1216($event;$form;$o;$git;$oList)
 C_COLLECTION:C1488($c)
 
   // ----------------------------------------------------
@@ -44,7 +44,7 @@ Else
 	
 End if 
 
-$oGit:=Form:C1466.git
+$git:=Form:C1466.git
 
   // ----------------------------------------------------
 Case of 
@@ -91,12 +91,13 @@ Case of
 		SET TIMER:C645(0)
 		
 /* Branch list */
-		$oGit.getBranches()
 		$oList:=list ($form.selector.getByReference(-21).list).empty()
 		
-		If ($oGit.branches.length>0)
+		$git.branch()
+		
+		If ($git.branches.length>0)
 			
-			For each ($o;$oGit.branches)
+			For each ($o;$git.branches)
 				
 				$oList.append($o.name).parameter("ref";$o.ref)
 				
@@ -114,12 +115,13 @@ Case of
 		End if 
 		
 /* Remote list */
-		$oGit.getRemotes()
 		$oList:=$oList.setList($form.selector.getByReference(-22).list).empty()
 		
-		If ($oGit.remotes.length>0)
+		$git.getRemotes()
+		
+		If ($git.remotes.length>0)
 			
-			For each ($o;$oGit.remotes)
+			For each ($o;$git.remotes)
 				
 				$oList.append($o.name).parameter("url";$o.url).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
 				
@@ -132,12 +134,13 @@ Case of
 		End if 
 		
 /* tag list */
-		$oGit.getTags()
 		$oList:=$oList.setList($form.selector.getByReference(-23).list).empty()
 		
-		If ($oGit.tags.length>0)
+		$git.getTags()
+		
+		If ($git.tags.length>0)
 			
-			For each ($t;$oGit.tags)
+			For each ($t;$git.tags)
 				
 				$oList.append($t).parameter("tag";$t).icon(Form:C1466.icons.tag)
 				
@@ -155,10 +158,10 @@ Case of
 			: (FORM Get current page:C276=1)  // Changes
 				
 				  // Update file lists
-				If ($oGit.changes.length>0)
+				If ($git.changes.length>0)
 					
-					Form:C1466.unstaged:=$oGit.changes.query("status IN :1";New collection:C1472("?@";"@M";"@D"))
-					Form:C1466.staged:=$oGit.changes.query("status = :1";"@ ")
+					Form:C1466.unstaged:=$git.changes.query("status IN :1";New collection:C1472("?@";"@M";"@D"))
+					Form:C1466.staged:=$git.changes.query("status = :1";"@ ")
 					
 				Else 
 					
@@ -194,10 +197,10 @@ Case of
 				  // Update commit list
 				Form:C1466.commits:=New collection:C1472
 				
-				$oGit.execute("log --abbrev-commit --format=%s,%an,%h,%aI")  // Message, author, ref, time
+				$git.execute("log --abbrev-commit --format=%s,%an,%h,%aI")  // Message, author, ref, time
 				
 				  // One commit per line
-				For each ($t;Split string:C1554($oGit.result;"\n";sk ignore empty strings:K86:1))
+				For each ($t;Split string:C1554($git.result;"\n";sk ignore empty strings:K86:1))
 					
 					$c:=Split string:C1554($t;",")
 					
@@ -228,15 +231,15 @@ Case of
 	: ($event.code=On Activate:K2:9)
 		
 		  // Get status
-		$oGit.status()
+		$git.status()
 		
 		  // Update UI
 		Form:C1466.ƒ.update()
 		
 		  // Update menu label
-		If ($oGit.changes.length>0)
+		If ($git.changes.length>0)
 			
-			Form:C1466.menu[0].label:="Changes ("+String:C10($oGit.changes.length)+")"
+			Form:C1466.menu[0].label:="Changes ("+String:C10($git.changes.length)+")"
 			
 		Else 
 			
