@@ -4,7 +4,7 @@
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
 C_TEXT:C284($t)
-C_OBJECT:C1216($event;$form;$o;$git;$oList)
+C_OBJECT:C1216($event;$form;$git;$o;$oList)
 C_COLLECTION:C1488($c)
 
   // ----------------------------------------------------
@@ -99,19 +99,18 @@ Case of
 			
 			For each ($o;$git.branches)
 				
-				$oList.append($o.name).parameter("ref";$o.ref)
+				$oList.append($o.name).parameter("data";JSON Stringify:C1217($o))
 				
 				If ($o.current)
 					
 					$oList.icon(Form:C1466.icons.checked)
 					
+				Else 
+					
+					$oList.icon(Choose:C955($o.name="master";Form:C1466.icons.master;Form:C1466.icons.branching))
+					
 				End if 
 			End for each 
-			
-		Else 
-			
-			  // ??
-			
 		End if 
 		
 /* Remote list */
@@ -123,14 +122,9 @@ Case of
 			
 			For each ($o;$git.remotes)
 				
-				$oList.append($o.name).parameter("url";$o.url).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
+				$oList.append($o.name).parameter("data";JSON Stringify:C1217($o)).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
 				
 			End for each 
-			
-		Else 
-			
-			  // #TO_DO
-			
 		End if 
 		
 /* tag list */
@@ -145,11 +139,20 @@ Case of
 				$oList.append($t).parameter("tag";$t).icon(Form:C1466.icons.tag)
 				
 			End for each 
+		End if 
+		
+/* staches list */
+		$oList:=$oList.setList($form.selector.getByReference(-24).list).empty()
+		
+		$git.stash()
+		
+		If ($git.stashes.length>0)
 			
-		Else 
-			
-			  // #TO_DO
-			
+			For each ($o;$git.stashes)
+				
+				$oList.append($o.message).parameter("data";JSON Stringify:C1217($o)).icon(Form:C1466.icons.stash)
+				
+			End for each 
 		End if 
 		
 		Case of 

@@ -15,7 +15,9 @@ C_OBJECT:C1216($2)
 C_BOOLEAN:C305($b)
 C_LONGINT:C283($i;$index;$list;$listItem)
 C_PICTURE:C286($p)
-C_TEXT:C284($text;$textItem)
+C_POINTER:C301($ptr)
+C_REAL:C285($n)
+C_TEXT:C284($t;$text;$textItem)
 C_OBJECT:C1216($o)
 
 ARRAY LONGINT:C221($aL_buffer;0)
@@ -43,7 +45,8 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"indexes";Formula:C1597(list ("indexes").value);\
 		"references";Formula:C1597(list ("references").value);\
 		"getByIndex";Formula:C1597(list ("getByIndex";New object:C1471("ref";Num:C11($1))).value);\
-		"getByReference";Formula:C1597(list ("getByReference";New object:C1471("ref";$1)).value)\
+		"getByReference";Formula:C1597(list ("getByReference";New object:C1471("ref";$1)).value);\
+		"getParameter";Formula:C1597(list ("getParameter";New object:C1471("key";String:C10($1);"ref";$2;"type";Num:C11($3))).value)\
 		)
 	
 	If (Count parameters:C259>=1)
@@ -118,6 +121,54 @@ Else
 			End if 
 			
 			SET LIST ITEM PARAMETER:C986($o.ref;Num:C11($2.target);$2.key;$2.value)
+			
+			  //______________________________________________________
+		: ($1="getParameter")
+			
+			Case of 
+					
+					  //—————————————————
+				: ($2.type=Is boolean:K8:9)
+					
+					$ptr:=->$b
+					
+					  //—————————————————
+				: ($2.type=Is real:K8:4)
+					
+					$ptr:=->$n
+					
+					  //—————————————————
+				Else 
+					
+					$ptr:=->$t
+					
+					  //—————————————————
+			End case 
+			
+			If ($2.ref=Null:C1517)  //selected item
+				
+				GET LIST ITEM PARAMETER:C985($o.ref;*;$2.key;$t)
+				
+			Else 
+				
+				GET LIST ITEM PARAMETER:C985($o.ref;Num:C11($2.ref);$2.key;$ptr->)
+				
+			End if 
+			
+			Case of 
+					
+					  //—————————————————
+				: ($2.type=Is object:K8:27)
+					
+					$o.value:=JSON Parse:C1218($t)
+					
+					  //—————————————————
+				Else 
+					
+					$o.value:=$ptr->
+					
+					  //—————————————————
+			End case 
 			
 			  //______________________________________________________
 		: ($1="icon")

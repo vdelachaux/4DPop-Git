@@ -41,6 +41,19 @@ $git:=Form:C1466.git
 Case of 
 		
 		  //______________________________________________________
+	: ($t_action="switch")
+		
+		$o:=Form:C1466.$.selector.getParameter("data";Null:C1517;Is object:K8:27)
+		
+		If (Not:C34($o.current))
+			
+			$git.branch()
+			
+		End if 
+		
+		
+		
+		  //______________________________________________________
 	: ($t_action="stage")
 		
 		For each ($o;Form:C1466.selectedUnstaged)
@@ -123,7 +136,7 @@ Case of
 		  //______________________________________________________
 	: ($t_action="pull")
 		
-		$git.pull()
+		$git.execute()
 		
 		If ($git.success)
 			

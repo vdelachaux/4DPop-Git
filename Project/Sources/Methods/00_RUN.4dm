@@ -91,7 +91,7 @@ Case of
 		  // Preload icons
 		$oForm.icons:=New object:C1471
 		
-		For each ($t;New collection:C1472("checked";"github";"gitLab";"branch";"tag";"fix";"remote"))
+		For each ($t;New collection:C1472("checked";"github";"gitLab";"branch";"branching";"master";"tag";"fix";"remote";"stash"))
 			
 			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+$t+".png").platformPath;$p)
 			CREATE THUMBNAIL:C679($p;$p;20;20)
@@ -112,6 +112,10 @@ Case of
 		
 		APPEND TO LIST:C376($oForm.selector;"Tags";-23;New list:C375;True:C214)
 		$p:=$oForm.icons.tag
+		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+		
+		APPEND TO LIST:C376($oForm.selector;"Staches";-24;New list:C375;True:C214)
+		$p:=$oForm.icons.stash
 		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
 		
 		SET LIST PROPERTIES:C387($oForm.selector;0;0;25)

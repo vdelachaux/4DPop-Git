@@ -140,7 +140,7 @@
 					"top": 893,
 					"width": 117,
 					"height": 14,
-					"dataSource": "\"git \"+Form:C1466.git.version",
+					"dataSource": "Form:C1466.git.version()",
 					"fill": "transparent",
 					"borderStyle": "none",
 					"hideFocusRing": true,
@@ -262,6 +262,7 @@
 					"height": 720,
 					"events": [
 						"onClick",
+						"onDoubleClick",
 						"onSelectionChange"
 					],
 					"scrollbarVertical": "hidden",

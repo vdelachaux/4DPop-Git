@@ -36,6 +36,7 @@
 		],
 		"forms": [
 			"ADD_PATTERN",
+			"GIT_SETTINGS",
 			"GITLAB",
 			"TOOLBAR_MESSAGE"
 		]
