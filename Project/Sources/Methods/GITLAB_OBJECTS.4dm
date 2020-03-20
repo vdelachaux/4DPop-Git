@@ -8,6 +8,7 @@
   //
   // ----------------------------------------------------
   // Declarations
+C_LONGINT:C283($indx)
 C_TEXT:C284($t)
 C_OBJECT:C1216($event;$file;$menu;$o;$oCurrent)
 C_COLLECTION:C1488($cSelected)
