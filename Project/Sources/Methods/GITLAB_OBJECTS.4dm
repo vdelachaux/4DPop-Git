@@ -372,7 +372,42 @@ Case of
 		  //______________________________________________________
 	: ($event.objectName="selector")
 		
-		FORM GOTO PAGE:C247(2)
+		Case of 
+				
+				  //______________________________________________________
+			: ($event.code=On Double Clicked:K2:5)
+				
+				GITLAB_EXECUTE ("switch")
+				
+				  //______________________________________________________
+			: ($event.code=On Clicked:K2:4)
+				
+				$o:=Form:C1466.$.selector.getParameter("data";Null:C1517;Is object:K8:27)
+				
+				If (Contextual click:C713)
+					
+					  //$menu:=menu 
+					
+					
+				Else 
+					
+					FORM GOTO PAGE:C247(2)
+					
+					$indx:=Form:C1466.commits.extract("ref").indexOf(String:C10($o.ref))
+					
+					If ($indx#-1)
+						
+						Form:C1466.$.commits.select($indx+1)
+						Form:C1466.$.commits.focus()
+						
+					Else 
+						
+						Form:C1466.$.commits.deselect()
+						
+					End if 
+					
+				End if 
+		End case 
 		
 		  //______________________________________________________
 	Else 

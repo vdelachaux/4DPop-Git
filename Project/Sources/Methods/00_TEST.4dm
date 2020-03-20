@@ -13,7 +13,7 @@ Case of
 		$tVersion:=$git.version("short")
 		
 		$git.status()
-		$git.getBranches()
+		$git.branch()
 		
 		$git.execute()
 		ASSERT:C1129($git.error#"")
@@ -26,7 +26,11 @@ Case of
 		
 		$git.diffTool("Project/Sources/Methods/GITLAB_EXECUTE.4dm")
 		
-		$git.open("disk")
+		  //$git.open("disk")
+		
+		$git.stash()
+		
+		
 		
 		  //______________________________________________________
 	: (True:C214)
