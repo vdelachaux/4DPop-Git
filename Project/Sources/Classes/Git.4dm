@@ -16,21 +16,13 @@ Class constructor
 	This:C1470.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
 	This:C1470.git:=This:C1470.workingDirectory.folder(".git")
 	This:C1470.gitignore:=This:C1470.workingDirectory.file(".gitignore")
+	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
 	This:C1470.local:=File:C1566("/usr/local/bin/git").exists
+	This:C1470.version:=""
 	
-	This:C1470.debug:=True:C214
+	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
 	
-	If (Git EXECUTE ("config --get user.name"))
-		
-		This:C1470.user.name:=Replace string:C233(This:C1470.result;"\n";"")
-		
-	End if 
-	
-	If (Git EXECUTE ("config --get user.email"))
-		
-		This:C1470.user.email:=Replace string:C233(This:C1470.result;"\n";"")
-		
-	End if 
+	This:C1470.init()
 	
 /*————————————————————————————————————————————————————————*/
 Function add
@@ -100,7 +92,11 @@ Function branch
 	C_COLLECTION:C1488($c)
 	C_OBJECT:C1216($o)
 	
-	$t:=String:C10($1)
+	If (Count parameters:C259>=1)
+		
+		$t:=String:C10($1)
+		
+	End if 
 	
 	Case of 
 			
@@ -380,6 +376,8 @@ Function getTags
 /*—————————————————————————————————————————————————————-——*/
 Function init
 	
+	C_LONGINT:C283($end;$start)
+	
 	If (Git EXECUTE ("init"))
 		
 		If (Not:C34(This:C1470.gitignore.exists))
@@ -387,6 +385,41 @@ Function init
 			  // Create default gitignore
 			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with CRLF:K24:20)
 			
+		End if 
+		
+		If (Not:C34(This:C1470.gitattributes.exists))
+			
+			  // Create default gitignore
+			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with CRLF:K24:20)
+			
+		End if 
+		
+		If (Git EXECUTE ("config --get user.name"))
+			
+			This:C1470.user.name:=Replace string:C233(This:C1470.result;"\n";"")
+			
+		End if 
+		
+		If (Git EXECUTE ("config --get user.email"))
+			
+			This:C1470.user.email:=Replace string:C233(This:C1470.result;"\n";"")
+			
+		End if 
+		
+		If (Git EXECUTE ("version"))
+			
+			This:C1470.version:=Replace string:C233(This:C1470.result;"\n";"")
+			
+			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?";This:C1470.result;1;$start;$end))
+				
+				This:C1470.version:=Substring:C12(This:C1470.result;$start;$end)
+				
+			Else 
+				
+				  // Return full result
+				This:C1470.version:=Replace string:C233(This:C1470.result;"\n";"")
+				
+			End if 
 		End if 
 	End if 
 	
@@ -480,7 +513,11 @@ Function stash
 	ARRAY LONGINT:C221($aLpos;0x0000)
 	ARRAY LONGINT:C221($aLlength;0x0000)
 	
-	$t:=String:C10($1)
+	If (Count parameters:C259>=1)
+		
+		$t:=String:C10($1)
+		
+	End if 
 	
 	Case of 
 			
@@ -603,24 +640,3 @@ Function untrack
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function version
-	
-	C_TEXT:C284($0)
-	C_TEXT:C284($1)
-	
-	C_LONGINT:C283($end;$start)
-	
-	If (Git EXECUTE ("version"))
-		
-		If (String:C10($1)="short")\
-			 & (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?";This:C1470.result;1;$start;$end))
-			
-			$0:=Substring:C12(This:C1470.result;$start;$end)
-			
-		Else 
-			
-			  // Return full result
-			$0:=Replace string:C233(This:C1470.result;"\n";"")
-			
-		End if 
-	End if 

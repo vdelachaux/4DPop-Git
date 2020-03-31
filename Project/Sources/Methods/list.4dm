@@ -160,7 +160,16 @@ Else
 					  //—————————————————
 				: ($2.type=Is object:K8:27)
 					
-					$o.value:=JSON Parse:C1218($t)
+					If (Match regex:C1019("(?i-ms)^\\{.*\\}$";$t;1))
+						
+						$o.value:=JSON Parse:C1218($t)
+						
+					Else 
+						
+						  // Return null value
+						$o.value:=Null:C1517
+						
+					End if 
 					
 					  //—————————————————
 				Else 

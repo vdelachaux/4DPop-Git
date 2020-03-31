@@ -140,7 +140,7 @@
 					"top": 893,
 					"width": 117,
 					"height": 14,
-					"dataSource": "Form:C1466.git.version()",
+					"dataSource": "Form:C1466.git.version",
 					"fill": "transparent",
 					"borderStyle": "none",
 					"hideFocusRing": true,
@@ -239,7 +239,7 @@
 					"left": 3,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/4DPop.png",
+					"picture": "/RESOURCES/Images/logo.png",
 					"pictureFormat": "scaled",
 					"sizingY": "move"
 				},
@@ -273,20 +273,6 @@
 					"sizingY": "grow",
 					"method": "GITLAB_OBJECTS",
 					"dataSource": "Form.selector\t"
-				},
-				"toolbarMessage": {
-					"type": "subform",
-					"left": 194,
-					"top": 6,
-					"width": 800,
-					"height": 49,
-					"detailForm": "TOOLBAR_MESSAGE",
-					"borderStyle": "none",
-					"sizingX": "grow",
-					"focusable": false,
-					"dataSourceTypeHint": "text",
-					"dataSource": "",
-					"visibility": "hidden"
 				}
 			}
 		},
@@ -340,7 +326,7 @@
 							"footer": {
 								"name": "Footer2"
 							},
-							"dataSource": "Replace string:C233(This:C1470.path;\"\\\"\";\"\")",
+							"dataSource": "This:C1470.path",
 							"enterable": false
 						}
 					]
@@ -669,9 +655,6 @@
 					"width": 940,
 					"height": 459,
 					"events": [
-						"onClick",
-						"onHeaderClick",
-						"onDataChange",
 						"onSelectionChange"
 					],
 					"listboxType": "collection",
@@ -687,6 +670,10 @@
 					"sizingY": "grow",
 					"borderStyle": "none",
 					"textAlign": "left",
+					"method": "GITLAB_OBJECTS",
+					"currentItemSource": "Form:C1466.commitsCurrent",
+					"currentItemPositionSource": "Form:C1466.commitsPosition",
+					"selectedItemsSource": "Form:C1466.commitsSelected",
 					"columns": [
 						{
 							"header": {
@@ -708,7 +695,7 @@
 								"text": "Header6"
 							},
 							"name": "Column6",
-							"dataSource": "This:C1470.author",
+							"dataSource": "This:C1470.author.name",
 							"footer": {
 								"name": "Footer6"
 							},
@@ -722,7 +709,7 @@
 								"text": "Header7"
 							},
 							"name": "Column7",
-							"dataSource": "This:C1470.ref",
+							"dataSource": "This:C1470.fingerprint.short",
 							"footer": {
 								"name": "Footer7"
 							},
@@ -771,6 +758,205 @@
 					"stroke": "#c0c0c0",
 					"right": 1120,
 					"sizingY": "move"
+				},
+				"detail_list": {
+					"type": "listbox",
+					"left": 180,
+					"top": 654,
+					"width": 418,
+					"height": 255,
+					"events": [
+						"onSelectionChange"
+					],
+					"listboxType": "collection",
+					"dataSource": "Form:C1466.commitDetail",
+					"method": "GITLAB_OBJECTS",
+					"resizingMode": "legacy",
+					"showHeaders": false,
+					"horizontalLineStroke": "transparent",
+					"verticalLineStroke": "transparent",
+					"selectionMode": "none",
+					"borderStyle": "none",
+					"sortable": false,
+					"sizingY": "grow",
+					"sizingX": "grow",
+					"scrollbarHorizontal": "hidden",
+					"visibility": "hidden",
+					"focusable": false,
+					"columns": [
+						{
+							"header": {
+								"text": "Header1",
+								"name": "Header9"
+							},
+							"name": "Column9",
+							"dataSource": "This:C1470.path",
+							"footer": {
+								"name": "Footer9"
+							}
+						}
+					]
+				},
+				"detail_authorName": {
+					"type": "input",
+					"left": 259,
+					"top": 534,
+					"width": 265,
+					"height": 17,
+					"dataSource": "Form:C1466.commitsCurrent.author.name",
+					"enterable": false,
+					"contextMenu": "none",
+					"borderStyle": "none",
+					"fontWeight": "bold",
+					"focusable": false,
+					"visibility": "hidden"
+				},
+				"detail_authorLabel": {
+					"type": "text",
+					"text": "AUTHOR",
+					"top": 534,
+					"left": 187,
+					"width": 62,
+					"height": 16,
+					"stroke": "#808080",
+					"visibility": "hidden",
+					"textAlign": "right"
+				},
+				"detail_time": {
+					"type": "input",
+					"left": 259,
+					"top": 555,
+					"width": 265,
+					"height": 17,
+					"dataSource": "Form:C1466.commitsCurrent.stamp",
+					"enterable": false,
+					"contextMenu": "none",
+					"borderStyle": "none",
+					"fontWeight": "normal",
+					"focusable": false,
+					"stroke": "#808080",
+					"visibility": "hidden"
+				},
+				"detail_shaLabel": {
+					"type": "text",
+					"text": "SHA",
+					"top": 577,
+					"left": 187,
+					"width": 62,
+					"height": 16,
+					"stroke": "#808080",
+					"textAlign": "right",
+					"visibility": "hidden"
+				},
+				"detail_sha": {
+					"type": "input",
+					"left": 259,
+					"top": 577,
+					"width": 265,
+					"height": 17,
+					"dataSource": "Form:C1466.commitsCurrent.fingerprint.long",
+					"enterable": false,
+					"contextMenu": "none",
+					"borderStyle": "none",
+					"fontWeight": "normal",
+					"focusable": false,
+					"stroke": "automatic",
+					"visibility": "hidden"
+				},
+				"detail_parentLabel": {
+					"type": "text",
+					"text": "PARENT",
+					"top": 595,
+					"left": 187,
+					"width": 62,
+					"height": 16,
+					"stroke": "#808080",
+					"textAlign": "right",
+					"visibility": "hidden"
+				},
+				"detail_parent": {
+					"type": "input",
+					"left": 259,
+					"top": 595,
+					"width": 91,
+					"height": 17,
+					"dataSource": "Form:C1466.commitsCurrent.parent.short",
+					"enterable": false,
+					"contextMenu": "none",
+					"borderStyle": "none",
+					"fontWeight": "normal",
+					"focusable": false,
+					"stroke": "#1e90ff",
+					"textDecoration": "underline",
+					"visibility": "hidden",
+					"events": [
+						"onClick"
+					],
+					"method": "GITLAB_OBJECTS"
+				},
+				"detail_separator": {
+					"type": "line",
+					"top": 521,
+					"left": 599,
+					"width": 0,
+					"height": 409,
+					"stroke": "#c0c0c0",
+					"startPoint": "topLeft",
+					"class": " ",
+					"sizingY": "grow",
+					"visibility": "hidden"
+				},
+				"detail_splitter": {
+					"type": "splitter",
+					"left": 599,
+					"top": 521,
+					"width": 1,
+					"height": 410,
+					"sizingY": "grow",
+					"visibility": "hidden",
+					"borderStyle": "none"
+				},
+				"detail_line": {
+					"type": "line",
+					"top": 653,
+					"left": 180,
+					"width": 418,
+					"height": 0,
+					"startPoint": "topLeft",
+					"sizingX": "grow",
+					"stroke": "#c0c0c0",
+					"right": 598,
+					"sizingY": "fixed",
+					"visibility": "hidden"
+				},
+				"detail_authorName1": {
+					"type": "input",
+					"left": 180,
+					"top": 631,
+					"width": 418,
+					"height": 17,
+					"dataSource": "Form:C1466.commitsCurrent.title",
+					"enterable": false,
+					"contextMenu": "none",
+					"borderStyle": "none",
+					"fontWeight": "bold",
+					"focusable": false,
+					"visibility": "hidden",
+					"textAlign": "center",
+					"sizingX": "grow"
+				},
+				"detail_line1": {
+					"type": "line",
+					"top": 626,
+					"left": 180,
+					"width": 418,
+					"height": 0,
+					"startPoint": "topLeft",
+					"sizingX": "grow",
+					"stroke": "#c0c0c0",
+					"right": 598,
+					"sizingY": "fixed",
+					"visibility": "hidden"
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : GITLAB_REFRESH
+  // Project method : GITLAB_UI
   // ID[9BABF27ABE474385B2C7B3CAC62A6343]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -180,79 +180,87 @@ If ($oTarget.button#Null:C1517)
 							
 							$l:=0
 							
-							For each ($tBuffer;$c)
+							If ($oTarget.current.status="@D@")
 								
-								If (Length:C16($tBuffer)>0)
+								ST SET TEXT:C1115($t;$c.join("\n");ST Start text:K78:15;ST End text:K78:16)
+								ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
+									Attribute text color:K65:7;"red")
+								
+							Else 
+								
+								For each ($tBuffer;$c)
 									
-									$tColor:="gray"
+									If (Length:C16($tBuffer)>0)
+										
+										$tColor:="gray"
+										
+										Case of 
+												
+												  //…………………………………………………………………………………………………
+											: ($tBuffer[[1]]="-")
+												
+												$tColor:="red"
+												
+												  //…………………………………………………………………………………………………
+											: ($tBuffer[[1]]="+")
+												
+												$tColor:="green"
+												
+												  //…………………………………………………………………………………………………
+											: (Character code:C91($tBuffer[[1]])=Character code:C91("@"))
+												
+												$tBuffer:="\n"+$tBuffer
+												
+												  //…………………………………………………………………………………………………
+											: ($tBuffer[[1]]="\\")
+												
+												$tBuffer:=Delete string:C232($tBuffer;1;1)
+												
+												  //…………………………………………………………………………………………………
+										End case 
+										
+										ST SET TEXT:C1115($t;$tBuffer;ST Start text:K78:15;ST End text:K78:16)
+										ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
+											Attribute text color:K65:7;$tColor)
+										
+									End if 
 									
-									Case of 
-											
-											  //…………………………………………………………………………………………………
-										: ($tBuffer[[1]]="-")
-											
-											$tColor:="red"
-											
-											  //…………………………………………………………………………………………………
-										: ($tBuffer[[1]]="+")
-											
-											$tColor:="green"
-											
-											  //…………………………………………………………………………………………………
-										: (Character code:C91($tBuffer[[1]])=Character code:C91("@"))
-											
-											$tBuffer:="\n"+$tBuffer
-											
-											  //…………………………………………………………………………………………………
-										: ($tBuffer[[1]]="\\")
-											
-											$tBuffer:=Delete string:C232($tBuffer;1;1)
-											
-											  //…………………………………………………………………………………………………
-									End case 
+									$c[$l]:=$t
+									$l:=$l+1
 									
-									ST SET TEXT:C1115($t;$tBuffer;ST Start text:K78:15;ST End text:K78:16)
-									ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
-										Attribute text color:K65:7;$tColor)
+								End for each 
+								
+								$t:=$c.join("\n")
+								
+								$t:=Replace string:C233($t;"<br/>";"")
+								
+								  // Separate blocks
+								$l:=1
+								
+								While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$";$t;$l;$pos;$length))
+									
+									If ($pos>1)
+										
+										$t:=Substring:C12($t;1;$pos-1)+"\n"+Substring:C12($t;$pos)
+										
+									End if 
+									
+									$l:=$l+$length
+									
+								End while 
+								
+								  // Remove unnecessary line breaks
+								While (Position:C15("\n\n";$t)>0)
+									
+									$t:=Replace string:C233($t;"\n\n";"\n")
+									
+								End while 
+								
+								If (Position:C15("\n";$t)=1)
+									
+									$t:=Delete string:C232($t;1;1)
 									
 								End if 
-								
-								$c[$l]:=$t
-								$l:=$l+1
-								
-							End for each 
-							
-							$t:=$c.join("\n")
-							
-							$t:=Replace string:C233($t;"<br/>";"")
-							
-							  // Separate blocks
-							$l:=1
-							
-							While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$";$t;$l;$pos;$length))
-								
-								If ($pos>1)
-									
-									$t:=Substring:C12($t;1;$pos-1)+"\n"+Substring:C12($t;$pos)
-									
-								End if 
-								
-								$l:=$l+$length
-								
-							End while 
-							
-							  // Remove unnecessary line breaks
-							
-							While (Position:C15("\n\n";$t)>0)
-								
-								$t:=Replace string:C233($t;"\n\n";"\n")
-								
-							End while 
-							
-							If (Position:C15("\n";$t)=1)
-								
-								$t:=Delete string:C232($t;1;1)
-								
 							End if 
 						End if 
 					End if 
