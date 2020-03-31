@@ -28,17 +28,16 @@
 	},
 	"GITLAB": {
 		"methods": [
-			"GITLAB_EXECUTE",
+			"GITLAB",
 			"GITLAB_metas",
 			"GITLAB_OBJECTS",
-			"GITLAB_REFRESH",
-			"GITLAB_resolvePath"
+			"GITLAB_resolvePath",
+			"GITLAB_UI"
 		],
 		"forms": [
 			"ADD_PATTERN",
 			"GIT_SETTINGS",
-			"GITLAB",
-			"TOOLBAR_MESSAGE"
+			"GITLAB"
 		]
 	},
 	"Shared": {

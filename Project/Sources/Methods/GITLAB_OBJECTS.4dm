@@ -10,6 +10,7 @@
   // Declarations
 C_LONGINT:C283($indx)
 C_TEXT:C284($t)
+C_COLLECTION:C1488($c)
 C_OBJECT:C1216($event;$file;$menu;$o;$oCurrent)
 C_COLLECTION:C1488($cSelected)
 C_VARIANT:C1683($v)
@@ -52,7 +53,6 @@ Case of
 							
 							  //———————————————————————————————————————
 					End case 
-					
 				End if 
 				
 				  //______________________________________________________
@@ -210,6 +210,7 @@ Case of
 								$t:=$file.getText("UTF-8";Document with CR:K24:21)
 								
 								Case of 
+										
 										  //____________________________
 									: ($menu.choice="ignoreFile")
 										
@@ -258,8 +259,8 @@ Case of
 								$file.setText($t;"UTF-8";Document with CRLF:K24:20)
 								
 								Form:C1466.git.status()
-								Form:C1466.ƒ.update()
 								Form:C1466.ƒ.refresh()
+								Form:C1466.ƒ.updateUI()
 								
 								  //———————————————————————————————————————
 							Else 
@@ -272,14 +273,14 @@ Case of
 					
 				Else 
 					
-					Form:C1466.ƒ.refresh()
+					Form:C1466.ƒ.updateUI()
 					
 				End if 
 				
 				  //______________________________________________________
 			: ($event.code=On Selection Change:K2:29)
 				
-				Form:C1466.ƒ.refresh()
+				Form:C1466.ƒ.updateUI()
 				
 				  //______________________________________________________
 			Else 
@@ -316,7 +317,6 @@ Case of
 				Else 
 					
 					  // A "Case of" statement should never omit "Else"
-					
 					  //———————————————————————————————————————
 			End case 
 		End if 
@@ -354,16 +354,25 @@ Case of
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.diffTool.name)
 		
-		If (Form:C1466.selectedUnstaged.length=1)
-			
-			Form:C1466.git.diffTool(Form:C1466.currentUnstaged.path)
-			
-		End if 
+		Case of 
+				
+				  //————————————————————————————————
+			: (Form:C1466.selectedUnstaged.length=1)
+				
+				Form:C1466.git.diffTool(Form:C1466.currentUnstaged.path)
+				
+				  //————————————————————————————————
+			: (Form:C1466.selectedStaged.length=1)
+				
+				Form:C1466.git.diffTool(Form:C1466.selectedStaged.path)
+				
+				  //————————————————————————————————
+		End case 
 		
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.pull.name)
 		
-		GITLAB_EXECUTE ("pull")
+		GITLAB ("pull")
 		
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.menu.name)
@@ -378,43 +387,69 @@ Case of
 				  //______________________________________________________
 			: ($event.code=On Double Clicked:K2:5)
 				
-				GITLAB_EXECUTE ("switch")
+				GITLAB ("switch")
 				
 				  //______________________________________________________
 			: ($event.code=On Clicked:K2:4)
 				
 				$o:=Form:C1466.$.selector.getParameter("data";Null:C1517;Is object:K8:27)
 				
-				If (Contextual click:C713)
+				If ($o#Null:C1517)
 					
-					  //$menu:=menu 
-					
-					
-				Else 
-					
-					FORM GOTO PAGE:C247(2)
-					
-					$indx:=Form:C1466.commits.extract("ref").indexOf(String:C10($o.ref))
-					
-					If ($indx#-1)
+					If (Contextual click:C713)
 						
-						Form:C1466.$.commits.select($indx+1)
-						Form:C1466.$.commits.focus()
+						  //$menu:=menu
 						
 					Else 
 						
-						Form:C1466.$.commits.deselect()
-						
+						If (FORM Get current page:C276=2)
+							
+							Form:C1466.$.commits.deselect()
+							
+							$indx:=Form:C1466.commits.extract("fingerprint.ref").indexOf(String:C10($o.ref))
+							
+							If ($indx#-1)
+								
+								Form:C1466.$.commits.reveal($indx+1)
+								Form:C1466.$.commits.focus()
+								
+							End if 
+							
+						Else 
+							
+							FORM GOTO PAGE:C247(2)
+							
+						End if 
 					End if 
-					
 				End if 
+				
+				  //----------------------------------------
 		End case 
+		
+		  //______________________________________________________
+	: ($event.objectName=Form:C1466.$.commits.name)
+		
+		GITLAB ("commitDetail")
+		
+		SELECT LIST ITEMS BY POSITION:C381(*;"selector";MAXLONG:K35:2)
+		
+		  //______________________________________________________
+	: ($event.objectName="detail_parent")
+		
+		$indx:=Form:C1466.commits.extract("fingerprint.short").indexOf(String:C10(Form:C1466.commitsCurrent.parent.short))
+		
+		If ($indx#-1)
+			
+			Form:C1466.$.commits.reveal($indx+1)
+			Form:C1466.$.commits.focus()
+			
+		End if 
+		
 		
 		  //______________________________________________________
 	Else 
 		
 		  // A "Case of" statement should never omit "Else"
-		
 		  //______________________________________________________
 End case 
 

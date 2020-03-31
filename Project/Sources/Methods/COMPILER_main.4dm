@@ -8,7 +8,7 @@ If (False:C215)
 	C_TEXT:C284(00_RUN ;$1)
 	
 	  //…………………………………………………………………………………………………
-	C_VARIANT:C1683(GITLAB_EXECUTE ;$1)
+	C_VARIANT:C1683(GITLAB ;$1)
 	
 	  //…………………………………………………………………………………………………
 	C_VARIANT:C1683(GITLAB_resolvePath ;$0)
@@ -21,7 +21,7 @@ If (False:C215)
 	C_TEXT:C284(00_RUN ;$1)
 	
 	  //…………………………………………………………………………………………………
-	C_VARIANT:C1683(GITLAB_EXECUTE ;$1)
+	C_VARIANT:C1683(GITLAB ;$1)
 	
 	  //…………………………………………………………………………………………………
 	C_VARIANT:C1683(GITLAB_resolvePath ;$0)

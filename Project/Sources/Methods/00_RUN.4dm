@@ -67,7 +67,9 @@ Case of
 			"unstaged";New collection:C1472;\
 			"staged";New collection:C1472;\
 			"commitSubject";"";\
-			"commitDescription";""\
+			"commitDescription";"";\
+			"commits";New collection:C1472;\
+			"commitDetail";New collection:C1472\
 			)
 		
 		  // Template to use, only one for now
@@ -122,14 +124,14 @@ Case of
 		
 		  // Methods definitions
 		$o:=New object:C1471(\
-			"update";Formula:C1597(SET TIMER:C645(-1));\
-			"refresh";Formula:C1597(GITLAB_REFRESH );\
-			"stage";Formula:C1597(GITLAB_EXECUTE ("stage"));\
-			"stageAll";Formula:C1597(GITLAB_EXECUTE ("stageAll"));\
-			"unstage";Formula:C1597(GITLAB_EXECUTE ("unstage"));\
-			"discard";Formula:C1597(GITLAB_EXECUTE ("discard"));\
+			"refresh";Formula:C1597(SET TIMER:C645(-1));\
+			"updateUI";Formula:C1597(GITLAB_UI );\
+			"stage";Formula:C1597(GITLAB ("stage"));\
+			"stageAll";Formula:C1597(GITLAB ("stageAll"));\
+			"unstage";Formula:C1597(GITLAB ("unstage"));\
+			"discard";Formula:C1597(GITLAB ("discard"));\
 			"path";Formula:C1597(GITLAB_resolvePath );\
-			"commit";Formula:C1597(GITLAB_EXECUTE (New object:C1471("action";"commit";"message";Form:C1466.commitSubject;"amend";Bool:C1537(Form:C1466.amend))))\
+			"commit";Formula:C1597(GITLAB (New object:C1471("action";"commit";"message";Form:C1466.commitSubject;"amend";Bool:C1537(Form:C1466.amend))))\
 			)
 		
 		$oForm.ƒ:=$o

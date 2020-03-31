@@ -20,7 +20,7 @@ Logs/
 userPreferences.*/
 
 Settings/
-!buildApp.4DSettings
+#!buildApp.4DSettings
 
 Preferences/
 !4DPop AppMaker.*

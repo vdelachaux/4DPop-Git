@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : GITLAB_EXECUTE
+  // Project method : GITLAB
   // ID[DBC17A31DBA047DEBC0BEA1F2BADF817]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -10,12 +10,13 @@
   // Declarations
 C_VARIANT:C1683($1)
 
-C_TEXT:C284($t_action)
+C_TEXT:C284($t;$t_action)
 C_OBJECT:C1216($git;$o;$o_IN)
+C_COLLECTION:C1488($c)
 C_VARIANT:C1683($v)
 
 If (False:C215)
-	C_VARIANT:C1683(GITLAB_EXECUTE ;$1)
+	C_VARIANT:C1683(GITLAB ;$1)
 End if 
 
   // ----------------------------------------------------
@@ -50,8 +51,6 @@ Case of
 			$git.branch()
 			
 		End if 
-		
-		
 		
 		  //______________________________________________________
 	: ($t_action="stage")
@@ -149,6 +148,33 @@ Case of
 		End if 
 		
 		  //______________________________________________________
+	: ($t_action="commitDetail")
+		
+		Form:C1466.commitDetail.clear()
+		
+		If (Form:C1466.commitsCurrent#Null:C1517)
+			
+			OBJECT SET VISIBLE:C603(*;"detail_@";True:C214)
+			
+			Form:C1466.git.execute("diff --name-status "+Form:C1466.commitsCurrent.fingerprint.short+" "+Form:C1466.commitsCurrent.parent.short)
+			
+			If (Form:C1466.git.success)
+				
+				For each ($t;Split string:C1554(Form:C1466.git.result;"\n";sk ignore empty strings:K86:1+sk trim spaces:K86:2))
+					
+					$c:=Split string:C1554($t;"\t";sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+					Form:C1466.commitDetail.push(New object:C1471("status";$c[0];"path";$c[1]))
+					
+				End for each 
+			End if 
+			
+		Else 
+			
+			OBJECT SET VISIBLE:C603(*;"detail_@";False:C215)
+			
+		End if 
+		
+		  //______________________________________________________
 	Else 
 		
 		  // A "Case of" statement should never omit "Else"
@@ -158,25 +184,14 @@ End case
   // Get status
 $git.status()
 
-  // Update UI
-Form:C1466.ƒ.update()
-
-If ($git.changes.length>0)
-	
-	Form:C1466.menu[0].label:=Get localized string:C991("changes")+" ("+String:C10($git.changes.length)+")"
-	
-Else 
-	
-	Form:C1466.menu[0].label:=Get localized string:C991("changes")
-	
-	Form:C1466.unstaged.clear()
-	Form:C1466.staged.clear()
-	
-End if 
+Form:C1466.menu[0].label:=Choose:C955($git.changes.length>0;Get localized string:C991("changes")+" ("+String:C10($git.changes.length)+")";Get localized string:C991("changes"))
 
   // Touch
 Form:C1466.menu:=Form:C1466.menu
 
+Form:C1466.ƒ.updateUI()
+
+  // Update UI
 Form:C1466.ƒ.refresh()
 
   // ----------------------------------------------------

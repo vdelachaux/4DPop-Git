@@ -3,6 +3,7 @@
   // ID[65871C4C423A4C31913CD88C79275F61]
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
+C_LONGINT:C283($indx)
 C_TEXT:C284($t)
 C_OBJECT:C1216($event;$form;$git;$o;$oList)
 C_COLLECTION:C1488($c)
@@ -33,7 +34,8 @@ If (Form:C1466.$=Null:C1517)
 		"pull";button ("pull");\
 		"push";button ("push");\
 		"open";button ("open");\
-		"selector";list (Form:C1466.selector)\
+		"selector";list (Form:C1466.selector);\
+		"remote";group ("fetch;pull;push")\
 		)
 	
 	Form:C1466.$:=$form
@@ -68,8 +70,8 @@ Case of
 			
 		End for each 
 		
-/* Adapt UI to localization */
-		group ("fetch;pull;push").distributeHorizontally(New object:C1471(\
+/*_______Adapt UI to localization______*/
+		$form.remote.distributeHorizontally(New object:C1471(\
 			"start";10;\
 			"gap";10;\
 			"minWidth";50))
@@ -79,8 +81,11 @@ Case of
 		$form.commit.bestSize(Align right:K42:4).disable()
 		$form.open.bestSize(Align right:K42:4)
 		
-/* UI */
-		Form:C1466.ƒ.update()
+/*_________________WIP_________________*/
+		$form.remote.setVisible($git.debug)
+		
+		  // Update UI
+		Form:C1466.ƒ.refresh()
 		
 		  //______________________________________________________
 	: ($event.code=On Unload:K2:2)
@@ -89,71 +94,6 @@ Case of
 	: ($event.code=On Timer:K2:25)
 		
 		SET TIMER:C645(0)
-		
-/* Branch list */
-		$oList:=list ($form.selector.getByReference(-21).list).empty()
-		
-		$git.branch()
-		
-		If ($git.branches.length>0)
-			
-			For each ($o;$git.branches)
-				
-				$oList.append($o.name).parameter("data";JSON Stringify:C1217($o))
-				
-				If ($o.current)
-					
-					$oList.icon(Form:C1466.icons.checked)
-					
-				Else 
-					
-					$oList.icon(Choose:C955($o.name="master";Form:C1466.icons.master;Form:C1466.icons.branching))
-					
-				End if 
-			End for each 
-		End if 
-		
-/* Remote list */
-		$oList:=$oList.setList($form.selector.getByReference(-22).list).empty()
-		
-		$git.getRemotes()
-		
-		If ($git.remotes.length>0)
-			
-			For each ($o;$git.remotes)
-				
-				$oList.append($o.name).parameter("data";JSON Stringify:C1217($o)).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
-				
-			End for each 
-		End if 
-		
-/* tag list */
-		$oList:=$oList.setList($form.selector.getByReference(-23).list).empty()
-		
-		$git.getTags()
-		
-		If ($git.tags.length>0)
-			
-			For each ($t;$git.tags)
-				
-				$oList.append($t).parameter("tag";$t).icon(Form:C1466.icons.tag)
-				
-			End for each 
-		End if 
-		
-/* staches list */
-		$oList:=$oList.setList($form.selector.getByReference(-24).list).empty()
-		
-		$git.stash()
-		
-		If ($git.stashes.length>0)
-			
-			For each ($o;$git.stashes)
-				
-				$oList.append($o.message).parameter("data";JSON Stringify:C1217($o)).icon(Form:C1466.icons.stash)
-				
-			End for each 
-		End if 
 		
 		Case of 
 				
@@ -165,6 +105,51 @@ Case of
 					
 					Form:C1466.unstaged:=$git.changes.query("status IN :1";New collection:C1472("?@";"@M";"@D"))
 					Form:C1466.staged:=$git.changes.query("status = :1";"@ ")
+					
+					  // Restore selection
+					Case of 
+							
+							  //———————————————————————————————
+						: (Form:C1466.currentUnstaged#Null:C1517)\
+							 & (Form:C1466.unstaged.length>0)
+							
+							$indx:=Form:C1466.unstaged.extract("path").indexOf(Form:C1466.currentUnstaged.path)
+							
+							If ($indx=-1)
+								
+								$form.toStage.deselect()
+								
+							Else 
+								
+								$form.toStage.reveal($indx+1)
+								
+							End if 
+							
+							  //———————————————————————————————
+						: (Form:C1466.currentStaged#Null:C1517)\
+							 & (Form:C1466.staged.length>0)
+							
+							  // Restore selection
+							$indx:=Form:C1466.staged.extract("path").indexOf(Form:C1466.currentStaged.path)
+							
+							If ($indx=-1)
+								
+								$form.toComit.deselect()
+								
+							Else 
+								
+								$form.toComit.reveal($indx+1)
+								
+							End if 
+							
+							  //———————————————————————————————
+						Else 
+							
+							$form.toStage.deselect()
+							$form.toComit.deselect()
+							
+							  //———————————————————————————————
+					End case 
 					
 				Else 
 					
@@ -187,36 +172,44 @@ Case of
 					
 				End if 
 				
-				$form.toStage.deselect()
-				$form.toComit.deselect()
-				
-				$form.diff.hide()
-				
-				Form:C1466.ƒ.refresh()
-				
 				  //———————————————————————————————————
 			: (FORM Get current page:C276=2)  // Commits
 				
-				  // Update commit list
-				Form:C1466.commits:=New collection:C1472
+				$o:=Form:C1466.$.selector.getParameter("data";Null:C1517;Is object:K8:27)
 				
-				$git.execute("log --abbrev-commit --format=%s,%an,%h,%aI")  // Message, author, ref, time
-				
-				  // One commit per line
-				For each ($t;Split string:C1554($git.result;"\n";sk ignore empty strings:K86:1))
+				If ($o#Null:C1517)
 					
-					$c:=Split string:C1554($t;",")
+					$indx:=Form:C1466.commits.extract("fingerprint.short").indexOf(String:C10($o.ref))
 					
-					If ($c.length>=4)
+					If ($indx#-1)
 						
-						Form:C1466.commits.push(New object:C1471(\
-							"title";$c[0];\
-							"author";$c[1];\
-							"ref";$c[2];\
-							"stamp";String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?)))
+						Form:C1466.$.commits.reveal($indx+1)
+						Form:C1466.$.commits.focus()
+					Else 
+						
+						$indx:=Form:C1466.commits.indexOf(Form:C1466.commitsCurrent)
+						
+						If ($indx#-1)
+							
+							Form:C1466.$.commits.reveal($indx+1)
+							Form:C1466.$.commits.focus()
+							
+						End if 
+					End if 
+					
+				Else 
+					
+					$indx:=Form:C1466.commits.indexOf(Form:C1466.commitsCurrent)
+					
+					If ($indx#-1)
+						
+						Form:C1466.$.commits.reveal($indx+1)
+						Form:C1466.$.commits.focus()
 						
 					End if 
-				End for each 
+				End if 
+				
+				GITLAB ("commitDetail")
 				
 				  //______________________________________________________
 			Else 
@@ -228,7 +221,57 @@ Case of
 		  //______________________________________________________
 	: ($event.code=On Page Change:K2:54)
 		
-		Form:C1466.ƒ.update()
+		Case of 
+				
+				  //______________________________________________________
+			: (FORM Get current page:C276=1)  // Changes
+				
+				
+				
+				
+				  //———————————————————————————————————
+			: (FORM Get current page:C276=2)  // Commits
+				
+				OBJECT SET VISIBLE:C603(*;"detail_@";False:C215)
+				
+				  // Update commit list
+				Form:C1466.commits.clear()
+				
+				$git.execute("log --abbrev-commit --format=%s,%an,%h,%aI,%H,%p,%P,%ae")
+				
+/*
+0 = message
+1 = author name
+2 = short sha
+3 = time stamp
+4 = sha
+5 = parent short sha
+6 = parent sh
+7 = author mail
+*/
+				
+				  // One commit per line
+				For each ($t;Split string:C1554($git.result;"\n";sk ignore empty strings:K86:1))
+					
+					$c:=Split string:C1554($t;",")
+					
+					If ($c.length>=4)
+						
+						$o:=New object:C1471(\
+							"title";$c[0];\
+							"author";New object:C1471("name";$c[1];"mail";$c[7]);\
+							"stamp";String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?);\
+							"fingerprint";New object:C1471("short";$c[2];"long";$c[4]);\
+							"parent";New object:C1471("short";$c[5];"long";$c[6]))
+						
+						Form:C1466.commits.push($o)
+						
+					End if 
+				End for each 
+		End case 
+		
+		  // Update UI
+		Form:C1466.ƒ.refresh()
 		
 		  //______________________________________________________
 	: ($event.code=On Activate:K2:9)
@@ -237,7 +280,7 @@ Case of
 		$git.status()
 		
 		  // Update UI
-		Form:C1466.ƒ.update()
+		Form:C1466.ƒ.refresh()
 		
 		  // Update menu label
 		If ($git.changes.length>0)
@@ -256,9 +299,72 @@ Case of
 		  // Touch
 		Form:C1466.menu:=Form:C1466.menu
 		
-		  // GITLAB_EXECUTE(new object("action";"fetch"))
+/*_______________________Branch list_______________________*/
+		$oList:=list ($form.selector.getByReference(-21).list).empty()
 		
-		Form:C1466.ƒ.refresh()
+		$git.branch()
+		
+		If ($git.branches.length>0)
+			
+			For each ($o;$git.branches)
+				
+				$oList.append($o.name).parameter("data";JSON Stringify:C1217($o))
+				
+				If ($o.current)
+					
+					$oList.icon(Form:C1466.icons.checked)
+					
+				Else 
+					
+					$oList.icon(Choose:C955($o.name="master";Form:C1466.icons.master;Form:C1466.icons.branching))
+					
+				End if 
+			End for each 
+		End if 
+		
+/*_______________________Remote list_______________________*/
+		$oList:=$oList.setList($form.selector.getByReference(-22).list).empty()
+		
+		$git.getRemotes()
+		
+		If ($git.remotes.length>0)
+			
+			For each ($o;$git.remotes)
+				
+				$oList.append($o.name).parameter("data";JSON Stringify:C1217($o)).icon(Form:C1466.icons[Choose:C955(Position:C15("github.com";$o.url)>0;"github";"gitlab")])
+				
+			End for each 
+		End if 
+		
+/*_______________________tag list_______________________*/
+		$oList:=$oList.setList($form.selector.getByReference(-23).list).empty()
+		
+		$git.getTags()
+		
+		If ($git.tags.length>0)
+			
+			For each ($t;$git.tags)
+				
+				$oList.append($t).parameter("tag";$t).icon(Form:C1466.icons.tag)
+				
+			End for each 
+		End if 
+		
+/*_______________________staches list_______________________*/
+		$oList:=$oList.setList($form.selector.getByReference(-24).list).empty()
+		
+		$git.stash()
+		
+		If ($git.stashes.length>0)
+			
+			For each ($o;$git.stashes)
+				
+				$oList.append($o.message).parameter("data";JSON Stringify:C1217($o)).icon(Form:C1466.icons.stash)
+				
+			End for each 
+		End if 
+		
+		Form:C1466.ƒ.updateUI()
 		
 		  //______________________________________________________
 	Else 

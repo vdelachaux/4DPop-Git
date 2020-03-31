@@ -1,6 +1,6 @@
 ﻿# Ignore invisible files/folders except me
 .*
-!.gitignore
+!.git*
 
 # Ignore data file
 Data/

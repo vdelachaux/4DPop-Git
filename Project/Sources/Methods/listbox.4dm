@@ -27,7 +27,11 @@ End if
   // ----------------------------------------------------
 If (This:C1470[""]=Null:C1517)  // Constructor
 	
-	$t:=String:C10($1)
+	If (Count parameters:C259>=1)
+		
+		$t:=String:C10($1)
+		
+	End if 
 	
 	$o:=New object:C1471(\
 		"";"listbox";\
