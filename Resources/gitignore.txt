@@ -1,10 +1,9 @@
 # Ignore invisible files/folders except me
 .*
-!.gitignore
+!.git*
 
 # Ignore data file
-[dD]ata/
-DATA/
+[dD][aA][tT][aA]/
 *.4DD
 *.journal
 *.4DIndx
