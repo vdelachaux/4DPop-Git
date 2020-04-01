@@ -3,7 +3,9 @@
   // ID[65871C4C423A4C31913CD88C79275F61]
   // Created 4-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
+C_BLOB:C604($x)
 C_LONGINT:C283($indx)
+C_PICTURE:C286($p)
 C_TEXT:C284($t)
 C_OBJECT:C1216($event;$form;$git;$o;$oList)
 C_COLLECTION:C1488($c)
@@ -226,9 +228,6 @@ Case of
 				  //______________________________________________________
 			: (FORM Get current page:C276=1)  // Changes
 				
-				
-				
-				
 				  //———————————————————————————————————
 			: (FORM Get current page:C276=2)  // Commits
 				
@@ -255,7 +254,7 @@ Case of
 					
 					$c:=Split string:C1554($t;",")
 					
-					If ($c.length>=4)
+					If ($c.length>=8)
 						
 						$o:=New object:C1471(\
 							"title";$c[0];\
