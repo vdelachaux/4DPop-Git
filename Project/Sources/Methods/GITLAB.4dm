@@ -168,6 +168,18 @@ Case of
 				End for each 
 			End if 
 			
+			If (Form:C1466.commitsCurrent.author.avatar=Null:C1517)
+				
+				C_BLOB:C604($x)
+				C_PICTURE:C286($p)
+				If (HTTP Get:C1157("https://www.gravatar.com/avatar/"+Generate digest:C1147(Form:C1466.commitsCurrent.author.mail;MD5 digest:K66:1);$x)=200)
+					
+					BLOB TO PICTURE:C682($x;$p)
+					Form:C1466.commitsCurrent.author.avatar:=$p
+					
+				End if 
+			End if 
+			
 		Else 
 			
 			OBJECT SET VISIBLE:C603(*;"detail_@";False:C215)

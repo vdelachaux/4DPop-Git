@@ -394,6 +394,9 @@ Function init
 			
 		End if 
 		
+		  // Ignore file permission
+		Git EXECUTE ("config core.filemode false")
+		
 		If (Git EXECUTE ("config --get user.name"))
 			
 			This:C1470.user.name:=Replace string:C233(This:C1470.result;"\n";"")
