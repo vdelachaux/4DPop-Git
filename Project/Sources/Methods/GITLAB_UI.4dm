@@ -124,6 +124,9 @@ If ($oTarget.button#Null:C1517)
 				
 				If (Length:C16($tBuffer)>0)
 					
+					$tBuffer:=Replace string:C233($tBuffer;"<";"&lt;")
+					$tBuffer:=Replace string:C233($tBuffer;">";"&gt;")
+					
 					ST SET TEXT:C1115($t;$tBuffer;ST Start text:K78:15;ST End text:K78:16)
 					ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
 						Attribute text color:K65:7;"green")
