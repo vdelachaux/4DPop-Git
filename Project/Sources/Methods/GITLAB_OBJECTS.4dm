@@ -77,6 +77,7 @@ Case of
 						If (New collection:C1472(" D").indexOf($oCurrent.status)=-1)
 							
 							$menu.append("showInFinder";"show")
+							$menu.append("deleteLocalFile";"delete")
 							
 						End if 
 						
@@ -156,6 +157,22 @@ Case of
 							: ($menu.choice="discard")
 								
 								Form:C1466.ƒ.discard()
+								
+								  //———————————————————————————————————————
+							: ($menu.choice="delete")
+								
+								$o:=File:C1566(Convert path POSIX to system:C1107($oCurrent.path);fk platform path:K87:2)
+								CONFIRM:C162(Replace string:C233(Get localized string:C991("areYouSureYouWantToDeleteTheFile");"{name}";$o.fullName))
+								
+								If (Bool:C1537(OK))
+									
+									File:C1566(Form:C1466.project.parent.parent.path+$oCurrent.path).delete()
+									
+									Form:C1466.git.status()
+									Form:C1466.ƒ.refresh()
+									Form:C1466.ƒ.updateUI()
+									
+								End if 
 								
 								  //———————————————————————————————————————
 							: ($menu.choice="open")

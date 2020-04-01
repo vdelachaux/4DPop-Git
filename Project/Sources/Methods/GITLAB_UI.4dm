@@ -84,15 +84,24 @@ If ($oTarget.button#Null:C1517)
 						
 						If (Bool:C1537($v.exists))
 							
-							If (Is picture file:C1113($v.platformPath))
-								
-								  //#TO_DO
-								
-							Else 
-								
-								$tBuffer:=$v.getText()
-								
-							End if 
+							Case of 
+									  //————————————————————————————————————
+								: ($v.extension=".svg")  // Treat svg as text file
+									
+									$tBuffer:=$v.getText()
+									
+									  //————————————————————————————————————
+								: (Is picture file:C1113($v.platformPath))
+									
+									  //#TO_DO
+									
+									  //————————————————————————————————————
+								Else 
+									
+									$tBuffer:=$v.getText()
+									
+									  //————————————————————————————————————
+							End case 
 						End if 
 						
 						  //______________________________________________________

@@ -7,6 +7,11 @@
 .gitattributes		text		linguist-language=gitattributes
 .gitignore			text
 *.md					text
+*.ini				text
+*.xlf				text								diff=xml
+# SVG treated as text.
+# If you want to treat it as binary,comment the next line.
+*.svg				text								diff=xml
 # Source files
 *.4DProject			text 	linguist-language=4d		diff=json
 *.4DCatalog			text 	linguist-language=4d		diff=xml
@@ -25,11 +30,5 @@
 *.[dD][aA][tT][aA]	binary 	linguist-language=4d
 *.4lb				binary	linguist-language=4d	
 *.4qr				binary	linguist-language=4d	
-# Miscellanous
-# SVG treated as text.
-# If you want to treat it as binary,comment the next line.
-*.svg				text
-*.xlf				text		linguist-language=xml
-*.ini				text
 Resources/bin/gh filter=lfs diff=lfs merge=lfs -text
 Resources/bin/gh.exe filter=lfs diff=lfs merge=lfs -text
