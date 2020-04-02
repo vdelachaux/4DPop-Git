@@ -351,6 +351,7 @@ Function push
 	If (Not:C34(This:C1470.success))
 		
 		This:C1470.success:=(Position:C15("Everything up-to-date";This:C1470.error)>0)
+		  //"To https://github.com/vdelachaux/4DPop-Git.git\n   079bfde..4ce5cc3  master -> master\n"
 		
 		If (This:C1470.success)
 			
