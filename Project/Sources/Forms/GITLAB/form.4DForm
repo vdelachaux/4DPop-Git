@@ -776,7 +776,7 @@
 					"showHeaders": false,
 					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
-					"selectionMode": "none",
+					"selectionMode": "single",
 					"borderStyle": "none",
 					"sortable": false,
 					"sizingY": "grow",
