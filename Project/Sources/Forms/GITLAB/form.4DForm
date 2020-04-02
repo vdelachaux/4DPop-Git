@@ -177,7 +177,8 @@
 					"fontSize": 11,
 					"borderStyle": "none",
 					"stroke": "#696969",
-					"visibility": "hidden"
+					"visibility": "visible",
+					"method": "GITLAB_OBJECTS"
 				},
 				"pull": {
 					"type": "button",
@@ -196,7 +197,7 @@
 					"borderStyle": "none",
 					"stroke": "#696969",
 					"method": "GITLAB_OBJECTS",
-					"visibility": "hidden"
+					"visibility": "visible"
 				},
 				"push": {
 					"type": "button",
@@ -214,7 +215,7 @@
 					"fontSize": 11,
 					"borderStyle": "none",
 					"stroke": "#696969",
-					"visibility": "hidden",
+					"visibility": "visible",
 					"method": "GITLAB_OBJECTS"
 				},
 				"open": {
@@ -529,7 +530,6 @@
 					"scrollbarVertical": "automatic",
 					"enterable": false,
 					"focusable": false,
-					"showSelection": true,
 					"fontSize": 12,
 					"styledText": true,
 					"storeDefaultStyle": true,
@@ -785,6 +785,9 @@
 					"visibility": "hidden",
 					"focusable": false,
 					"metaSource": "GITLAB_metas ",
+					"currentItemSource": "Form:C1466.commitFilesCurrent",
+					"currentItemPositionSource": "Form:C1466.commitFilesPosition",
+					"selectedItemsSource": "Form:C1466.commitFilesSelected",
 					"columns": [
 						{
 							"header": {
@@ -989,6 +992,27 @@
 					"focusable": false,
 					"stroke": "#808080",
 					"visibility": "hidden"
+				},
+				"diff1": {
+					"type": "input",
+					"left": 701,
+					"top": 521,
+					"width": 402,
+					"height": 373,
+					"dataSource": "Form:C1466.diff",
+					"borderStyle": "none",
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"scrollbarHorizontal": "automatic",
+					"scrollbarVertical": "automatic",
+					"enterable": false,
+					"focusable": false,
+					"fontSize": 12,
+					"styledText": true,
+					"storeDefaultStyle": true,
+					"visibility": "hidden",
+					"contextMenu": "none",
+					"fill": "automatic"
 				}
 			}
 		}

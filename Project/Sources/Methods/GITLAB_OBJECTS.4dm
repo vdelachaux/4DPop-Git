@@ -387,6 +387,11 @@ Case of
 		End case 
 		
 		  //______________________________________________________
+	: ($event.objectName=Form:C1466.$.fetch.name)
+		
+		GITLAB ("fetch")
+		
+		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.pull.name)
 		
 		GITLAB ("pull")
@@ -452,6 +457,11 @@ Case of
 	: ($event.objectName=Form:C1466.$.commits.name)
 		
 		GITLAB DISPLAY COMMIT 
+		
+		  //______________________________________________________
+	: ($event.objectName=Form:C1466.$.detailCommit.name)
+		
+		Form:C1466.ƒ.updateUI()
 		
 		  //______________________________________________________
 	: ($event.objectName="detail_parent")

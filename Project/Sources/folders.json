@@ -24,6 +24,7 @@
 	"GITLAB": {
 		"methods": [
 			"GITLAB",
+			"GITLAB Diff",
 			"GITLAB DISPLAY COMMIT",
 			"GITLAB_metas",
 			"GITLAB_OBJECTS",

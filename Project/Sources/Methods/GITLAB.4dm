@@ -130,30 +130,25 @@ Case of
 		  //______________________________________________________
 	: ($t_action="fetch")
 		
-		$git.execute("fetch --verbose --tags origin")
+		If ($git.fetch())
+			
+			GITLAB COMMIT LIST 
+			
+		End if 
 		
 		  //______________________________________________________
 	: ($t_action="pull")
 		
-		$git.execute()
-		
-		If ($git.success)
+		If ($git.pull())
 			
-			(OBJECT Get pointer:C1124(Object named:K67:5;"toolbarMessage"))->:=$git.history[0].out
-			
-		Else 
-			
-			  // A "If" statement should never omit "Else"
+			GITLAB COMMIT LIST 
 			
 		End if 
 		
 		  //______________________________________________________
 	: ($t_action="push")
 		
-		$git.push()
-		
-		
-		If (Not:C34($git.success))
+		If (Not:C34($git.push()))
 			
 			ALERT:C41($git.error)
 			
