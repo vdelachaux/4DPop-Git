@@ -106,7 +106,7 @@ Function branch
 			
 			This:C1470.branches:=New collection:C1472
 			
-			If (Git EXECUTE ("branch --list -v"))
+			If (This:C1470.execute("branch --list -v"))
 				
 				For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
 					
@@ -138,7 +138,7 @@ Function branch
 			  //———————————————————————————————————
 		: ($t="master")  // Return on the main branch
 			
-			If (Git EXECUTE ("checkout master"))
+			If (This:C1470.execute("checkout master"))
 				
 				This:C1470.branch()
 				
@@ -153,7 +153,7 @@ Function branch
 			  //———————————————————————————————————
 		: ($t="create")  // Create a new branch
 			
-			If (Git EXECUTE ("branch "+String:C10($2)))
+			If (This:C1470.execute("branch "+String:C10($2)))
 				
 				This:C1470.branch()
 				
@@ -162,7 +162,7 @@ Function branch
 			  //———————————————————————————————————
 		: ($t="createAndUse")  // Create a new branch and select it
 			
-			If (Git EXECUTE ("checkout -b "+String:C10($2)))
+			If (This:C1470.execute("checkout -b "+String:C10($2)))
 				
 				This:C1470.branch()
 				
@@ -171,7 +171,7 @@ Function branch
 			  //———————————————————————————————————
 		: ($t="use")  // Select a branch to use
 			
-			If (Git EXECUTE ("checkout "+$2+" --no-ff -m Merging branch "+$2))
+			If (This:C1470.execute("checkout "+$2+" --no-ff -m Merging branch "+$2))
 				
 				This:C1470.branch()
 				
@@ -180,7 +180,7 @@ Function branch
 			  //———————————————————————————————————
 		: ($t="merge")  // Merge a branch to the current branch
 			
-			If (Git EXECUTE ("merge "+String:C10($2)))
+			If (This:C1470.execute("merge "+String:C10($2)))
 				
 				This:C1470.branch()
 				
@@ -189,7 +189,7 @@ Function branch
 			  //———————————————————————————————————
 		: ($t="delete@")
 			
-			If (Git EXECUTE ("branch -"+Choose:C955($t="deleteForce";"D";"d")+" "+String:C10($2)))
+			If (This:C1470.execute("branch -"+Choose:C955($t="deleteForce";"D";"d")+" "+String:C10($2)))
 				
 				This:C1470.branch()
 				
@@ -204,11 +204,11 @@ Function branch
 			  //———————————————————————————————————
 		: ($t="rename")  // Rename a branch
 			
-			If (Git EXECUTE ("branch -m "+String:C10($2)+" "+String:C10($3)))
+			If (This:C1470.execute("branch -m "+String:C10($2)+" "+String:C10($3)))
 				
-				If (Git EXECUTE ("push origin :"+String:C10($2)))
+				If (This:C1470.execute("push origin :"+String:C10($2)))
 					
-					If (Git EXECUTE ("push --set-upstream origin "+String:C10($3)))
+					If (This:C1470.execute("push --set-upstream origin "+String:C10($3)))
 						
 						This:C1470.branch()
 						
@@ -278,11 +278,11 @@ Function commit
 		
 		If ($2)
 			
-			Git EXECUTE ("commit --amend --no-edit")
+			This:C1470.execute("commit --amend --no-edit")
 			
 		Else 
 			
-			Git EXECUTE ("commit -m "+Char:C90(Quote:K15:44)+$t+Char:C90(Quote:K15:44))
+			This:C1470.execute("commit -m "+Char:C90(Quote:K15:44)+$t+Char:C90(Quote:K15:44))
 			
 		End if 
 		
@@ -302,11 +302,11 @@ Function diff
 	
 	If (Count parameters:C259>=2)
 		
-		$b:=Git EXECUTE ("diff -w "+String:C10($2)+" -- "+$1)
+		$b:=This:C1470.execute("diff -w "+String:C10($2)+" -- "+$1)
 		
 	Else 
 		
-		$b:=Git EXECUTE ("diff -w -- '"+$1+"'")
+		$b:=This:C1470.execute("diff -w -- '"+$1+"'")
 		
 	End if 
 	
@@ -324,14 +324,102 @@ Function diffTool
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS";"false")
 	
-	Git EXECUTE ("difftool -y '"+$1+"'")
+	This:C1470.execute("difftool -y '"+$1+"'")
 	
 /*————————————————————————————————————————————————————————*/
 Function execute
 	
-	C_VARIANT:C1683($1)
+	C_BOOLEAN:C305($0)
+	C_TEXT:C284($1)
+	C_TEXT:C284($2)
 	
-	Git EXECUTE ($1)
+	C_TEXT:C284($tCMD;$tERROR;$tIN;$tOUT)
+	
+	If (Count parameters:C259>=2)
+		
+		$tIN:=$2
+		
+	End if 
+	
+	If (Count parameters:C259>=1)
+		
+		$tCMD:=$1
+		
+	End if 
+	
+	This:C1470.success:=(Length:C16($tCMD)>0)
+	
+	If (This:C1470.success)
+		
+		  //$tCMD:=$tCMD+" -q"
+		
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE";"true")
+		
+		If (This:C1470.workingDirectory#Null:C1517)
+			
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY";String:C10(This:C1470.workingDirectory.platformPath))
+			
+		End if 
+		
+		Case of 
+				
+				  //———————————————————————————————
+			: (This:C1470.local)
+				
+				$tCMD:="/usr/local/bin/git "+$tCMD
+				
+				  //———————————————————————————————
+			: (Is Windows:C1573)
+				
+				$tCMD:="Resources/git/git "+$tCMD
+				
+				  //———————————————————————————————
+			Else 
+				
+				$tCMD:="git "+$tCMD
+				
+				  //———————————————————————————————
+		End case 
+		
+		LAUNCH EXTERNAL PROCESS:C811($tCMD;$tIN;$tOUT;$tERROR)
+		This:C1470.success:=Bool:C1537(OK) & (Length:C16($tERROR)=0)
+		
+		If (Bool:C1537(This:C1470.debug))
+			
+			This:C1470.history.insert(0;New object:C1471(\
+				"cmd";"$ "+$tCMD;\
+				"success";This:C1470.success;\
+				"out";$tOUT;\
+				"error";$tERROR))
+			
+		End if 
+		
+		Case of 
+				
+				  //——————————————————————
+			: (This:C1470.success)
+				
+				This:C1470.error:=""
+				This:C1470.warning:=""
+				
+				This:C1470.result:=$tOUT
+				
+				  //——————————————————————
+			: (Length:C16($tERROR)>0)
+				
+				This:C1470.pushError(Current method name:C684+" - "+$tERROR)
+				
+				  //——————————————————————
+		End case 
+		
+	Else 
+		
+		This:C1470.pushError("Missing command parameter")
+		
+	End if 
+	
+	$0:=This:C1470.success
+	
 	
 /*————————————————————————————————————————————————————————*/
 Function push
@@ -340,28 +428,12 @@ Function push
 	
 	If (Count parameters:C259>=2)
 		
-		This:C1470.execute("push "+String:C10($1)+" "+String:C10($2))
+		This:C1470.execute("push "+String:C10($1)+" "+String:C10($2)+" -q")
 		
 	Else 
 		
 		This:C1470.execute("push origin master -q")
 		
-	End if 
-	
-	If (Not:C34(This:C1470.success))
-		
-		This:C1470.success:=(Position:C15("Everything up-to-date";This:C1470.error)>0)
-		  //"To https://github.com/vdelachaux/4DPop-Git.git\n   079bfde..4ce5cc3  master -> master\n"
-		  //"To https://github.com/vdelachaux/4DPop-Git.git\n   4ce5cc3..38acd0e  master -> master\n"
-		
-		If (This:C1470.success)
-			
-			  // Remove error & warning
-			This:C1470.error:=""
-			This:C1470.warning:=""
-			This:C1470.history[0].success:=True:C214
-			
-		End if 
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
@@ -372,7 +444,7 @@ Function getRemotes
 	
 	This:C1470.remotes.clear()
 	
-	If (Git EXECUTE ("remote -v"))
+	If (This:C1470.execute("remote -v"))
 		
 		For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
 			
@@ -395,7 +467,7 @@ Function getTags
 	
 	This:C1470.tags.clear()
 	
-	If (Git EXECUTE ("tag"))
+	If (This:C1470.execute("tag"))
 		
 		For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
 			
@@ -409,7 +481,7 @@ Function init
 	
 	C_LONGINT:C283($end;$start)
 	
-	If (Git EXECUTE ("init"))
+	If (This:C1470.execute("init"))
 		
 		If (Not:C34(This:C1470.gitignore.exists))
 			
@@ -426,21 +498,21 @@ Function init
 		End if 
 		
 		  // Ignore file permission
-		Git EXECUTE ("config core.filemode false")
+		This:C1470.execute("config core.filemode false")
 		
-		If (Git EXECUTE ("config --get user.name"))
+		If (This:C1470.execute("config --get user.name"))
 			
 			This:C1470.user.name:=Replace string:C233(This:C1470.result;"\n";"")
 			
 		End if 
 		
-		If (Git EXECUTE ("config --get user.email"))
+		If (This:C1470.execute("config --get user.email"))
 			
 			This:C1470.user.email:=Replace string:C233(This:C1470.result;"\n";"")
 			
 		End if 
 		
-		If (Git EXECUTE ("version"))
+		If (This:C1470.execute("version"))
 			
 			This:C1470.version:=Replace string:C233(This:C1470.result;"\n";"")
 			
@@ -522,7 +594,7 @@ Function status
 	
 	This:C1470.changes.clear()
 	
-	If (Git EXECUTE ("status -s -uall"))
+	If (This:C1470.execute("status -s -uall"))
 		
 		If (Position:C15("\n";String:C10(This:C1470.result))>0)
 			
@@ -561,7 +633,7 @@ Function stash
 			
 			This:C1470.stashes:=New collection:C1472
 			
-			If (Git EXECUTE ("stash list"))
+			If (This:C1470.execute("stash list"))
 				
 				For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
 					
@@ -609,7 +681,7 @@ Function unstage
 			  //_____________________________
 		: (Value type:C1509($1)=Is text:K8:3)
 			
-			Git EXECUTE ("reset HEAD "+Char:C90(Quote:K15:44)+$1+Char:C90(Quote:K15:44))
+			This:C1470.execute("reset HEAD "+Char:C90(Quote:K15:44)+$1+Char:C90(Quote:K15:44))
 			
 			  //_____________________________
 		: (Value type:C1509($1)=Is collection:K8:32)
@@ -618,7 +690,7 @@ Function unstage
 				
 				If (Value type:C1509($v)=Is text:K8:3)
 					
-					Git EXECUTE ("reset HEAD "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
+					This:C1470.execute("reset HEAD "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
 					
 				Else 
 					
@@ -647,7 +719,7 @@ Function untrack
 			  //_____________________________
 		: (Value type:C1509($1)=Is text:K8:3)
 			
-			Git EXECUTE ("rm --cached "+Char:C90(Quote:K15:44)+$1+Char:C90(Quote:K15:44))
+			This:C1470.execute("rm --cached "+Char:C90(Quote:K15:44)+$1+Char:C90(Quote:K15:44))
 			
 			  //_____________________________
 		: (Value type:C1509($1)=Is collection:K8:32)
@@ -656,7 +728,7 @@ Function untrack
 				
 				If (Value type:C1509($v)=Is text:K8:3)
 					
-					Git EXECUTE ("rm --cached "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
+					This:C1470.execute("rm --cached "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
 					
 				Else 
 					
