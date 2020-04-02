@@ -359,8 +359,6 @@ Function execute
 	
 	If (This:C1470.success)
 		
-		  //$tCMD:=$tCMD+" -q"
-		
 		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE";"true")
 		
 		If (This:C1470.workingDirectory#Null:C1517)
@@ -392,14 +390,19 @@ Function execute
 		LAUNCH EXTERNAL PROCESS:C811($tCMD;$tIN;$tOUT;$tERROR)
 		This:C1470.success:=Bool:C1537(OK) & (Length:C16($tERROR)=0)
 		
-		If (Bool:C1537(This:C1470.debug))
+		This:C1470.history.insert(0;New object:C1471(\
+			"cmd";"$ "+$tCMD;\
+			"success";This:C1470.success;\
+			"out";$tOUT;\
+			"error";$tERROR))
+		
+		If (Not:C34(Bool:C1537(This:C1470.debug)))
 			
-			This:C1470.history.insert(0;New object:C1471(\
-				"cmd";"$ "+$tCMD;\
-				"success";This:C1470.success;\
-				"out";$tOUT;\
-				"error";$tERROR))
-			
+			If (This:C1470.history.length>20)
+				
+				This:C1470.history.resize(20)
+				
+			End if 
 		End if 
 		
 		Case of 
