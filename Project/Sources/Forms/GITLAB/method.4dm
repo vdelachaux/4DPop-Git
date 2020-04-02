@@ -86,7 +86,7 @@ Case of
 		$form.open.bestSize(Align right:K42:4)
 		
 /*_________________WIP_________________*/
-		$form.remote.setVisible($git.debug)
+		  //$form.remote.setVisible($git.debug)
 		
 		  // Update UI
 		Form:C1466.ƒ.refresh()
@@ -233,46 +233,10 @@ Case of
 				  //———————————————————————————————————
 			: (FORM Get current page:C276=2)  // Commits
 				
-				OBJECT SET VISIBLE:C603(*;"detail_@";False:C215)
+				GITLAB COMMIT LIST 
 				
-				  // Update commit list
-				Form:C1466.commits.clear()
-				
-				$git.execute("log --abbrev-commit --format=%s,%an,%h,%aI,%H,%p,%P,%ae")
-				
-/*
-0 = message
-1 = author name
-2 = short sha
-3 = time stamp
-4 = sha
-5 = parent short sha
-6 = parent sh
-7 = author mail
-*/
-				
-				  // One commit per line
-				For each ($t;Split string:C1554($git.result;"\n";sk ignore empty strings:K86:1))
-					
-					$c:=Split string:C1554($t;",")
-					
-					If ($c.length>=8)
-						
-						$o:=New object:C1471(\
-							"title";$c[0];\
-							"author";New object:C1471("name";$c[1];"mail";$c[7]);\
-							"stamp";String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?);\
-							"fingerprint";New object:C1471("short";$c[2];"long";$c[4]);\
-							"parent";New object:C1471("short";$c[5];"long";$c[6]))
-						
-						Form:C1466.commits.push($o)
-						
-					End if 
-				End for each 
 		End case 
 		
-		  // Update UI
-		Form:C1466.ƒ.refresh()
 		
 		  //______________________________________________________
 	: ($event.code=On Activate:K2:9)

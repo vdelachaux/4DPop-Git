@@ -27,6 +27,10 @@ If (False:C215)
 	C_VARIANT:C1683(GITLAB_resolvePath ;$0)
 	C_TEXT:C284(GITLAB_resolvePath ;$1)
 	
+	  //…………………………………………………………………………………………………
+	C_TEXT:C284(GITLAB Diff ;$0)
+	C_TEXT:C284(GITLAB Diff ;$1)
+	
 	
 	  //…………………………………………………………………………………………………
 End if 

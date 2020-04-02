@@ -318,6 +318,14 @@ Function diff
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
+Function diffList
+	
+	C_BOOLEAN:C305($0)
+	C_TEXT:C284($1;$2)
+	
+	$0:=This:C1470.execute("diff --name-status "+$1+" "+$2)
+	
+/*————————————————————————————————————————————————————————*/
 Function diffTool
 	
 	C_TEXT:C284($1)
@@ -420,21 +428,12 @@ Function execute
 	
 	$0:=This:C1470.success
 	
-	
 /*————————————————————————————————————————————————————————*/
-Function push
+Function fetch
 	
-	C_OBJECT:C1216($o)
+	C_BOOLEAN:C305($0)
 	
-	If (Count parameters:C259>=2)
-		
-		This:C1470.execute("push "+String:C10($1)+" "+String:C10($2)+" -q")
-		
-	Else 
-		
-		This:C1470.execute("push origin master -q")
-		
-	End if 
+	$0:=This:C1470.execute("fetch --tags --all -q")
 	
 /*————————————————————————————————————————————————————————*/
 Function getRemotes
@@ -572,6 +571,30 @@ Function open
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
+Function pull
+	
+	C_BOOLEAN:C305($0)
+	
+	$0:=This:C1470.execute("pull --rebase --autostash origin -q")
+	
+/*————————————————————————————————————————————————————————*/
+Function push
+	
+	C_BOOLEAN:C305($0)
+	C_TEXT:C284($1;$2)
+	C_OBJECT:C1216($o)
+	
+	If (Count parameters:C259>=2)
+		
+		$0:=This:C1470.execute("push "+String:C10($1)+" "+String:C10($2)+" -q")
+		
+	Else 
+		
+		$0:=This:C1470.execute("push origin master -q")
+		
+	End if 
+	
+/*————————————————————————————————————————————————————————*/
 Function pushError
 	
 	C_TEXT:C284($1)
@@ -602,7 +625,7 @@ Function status
 				
 				This:C1470.changes.push(New object:C1471(\
 					"status";$t[[1]]+$t[[2]];\
-					"path";Delete string:C232($t;1;3)))
+					"path";Replace string:C233(Delete string:C232($t;1;3);"\"";"")))
 				
 			End for each 
 		End if 
@@ -629,7 +652,7 @@ Function stash
 			
 			  //———————————————————————————————————
 		: (Length:C16($t)=0)\
-			 | ($t="list")  // Update branch list
+			 | ($t="list")  // Update list
 			
 			This:C1470.stashes:=New collection:C1472
 			
@@ -663,10 +686,12 @@ Function stash
 				End for each 
 			End if 
 			
+			  //________________________________________
 		Else 
 			
 			This:C1470.pushError("Unmanaged entrypoint for stash method: "+$t)
 			
+			  //________________________________________
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
