@@ -37,7 +37,8 @@ If (Form:C1466.$=Null:C1517)
 		"push";button ("push");\
 		"open";button ("open");\
 		"selector";list (Form:C1466.selector);\
-		"remote";group ("fetch;pull;push")\
+		"remote";group ("fetch;pull;push");\
+		"detailCommit";listbox ("detail_list")\
 		)
 	
 	Form:C1466.$:=$form
@@ -64,6 +65,7 @@ Case of
 		$form.toStage.setScrollbar(0;2)
 		$form.toComit.setScrollbar(0;2)
 		$form.commits.setScrollbar(0;2)
+		$form.detailCommit.setScrollbar(0;2)
 		
 		  // Apply template
 		For each ($t;New collection:C1472("fetch";"pull";"push";"open";"stageAll"))
@@ -211,7 +213,7 @@ Case of
 					End if 
 				End if 
 				
-				GITLAB ("commitDetail")
+				GITLAB DISPLAY COMMIT 
 				
 				  //______________________________________________________
 			Else 

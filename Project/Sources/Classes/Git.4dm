@@ -302,11 +302,11 @@ Function diff
 	
 	If (Count parameters:C259>=2)
 		
-		$b:=Git EXECUTE ("diff "+String:C10($2)+" -- "+$1)
+		$b:=Git EXECUTE ("diff -w "+String:C10($2)+" -- "+$1)
 		
 	Else 
 		
-		$b:=Git EXECUTE ("diff -- '"+$1+"'")
+		$b:=Git EXECUTE ("diff -w -- '"+$1+"'")
 		
 	End if 
 	
@@ -383,14 +383,14 @@ Function init
 		If (Not:C34(This:C1470.gitignore.exists))
 			
 			  // Create default gitignore
-			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with CRLF:K24:20)
+			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with LF:K24:22)
 			
 		End if 
 		
 		If (Not:C34(This:C1470.gitattributes.exists))
 			
 			  // Create default gitignore
-			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with CRLF:K24:20)
+			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with LF:K24:22)
 			
 		End if 
 		

@@ -46,7 +46,8 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"references";Formula:C1597(list ("references").value);\
 		"getByIndex";Formula:C1597(list ("getByIndex";New object:C1471("ref";Num:C11($1))).value);\
 		"getByReference";Formula:C1597(list ("getByReference";New object:C1471("ref";$1)).value);\
-		"getParameter";Formula:C1597(list ("getParameter";New object:C1471("key";String:C10($1);"ref";$2;"type";Num:C11($3))).value)\
+		"getParameter";Formula:C1597(list ("getParameter";New object:C1471("key";String:C10($1);"ref";$2;"type";Num:C11($3))).value);\
+		"deselect";Formula:C1597(SELECT LIST ITEMS BY REFERENCE:C630(This:C1470.ref;-1))\
 		)
 	
 	If (Count parameters:C259>=1)
