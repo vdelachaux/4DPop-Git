@@ -29,6 +29,7 @@
 	"GITLAB": {
 		"methods": [
 			"GITLAB",
+			"GITLAB DISPLAY COMMIT",
 			"GITLAB_metas",
 			"GITLAB_OBJECTS",
 			"GITLAB_resolvePath",

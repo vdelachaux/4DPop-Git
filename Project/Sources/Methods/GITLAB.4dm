@@ -130,7 +130,7 @@ Case of
 		  //______________________________________________________
 	: ($t_action="fetch")
 		
-		$git.execute("fetch --verbose --tags")
+		$git.execute("fetch --verbose --tags origin")
 		
 		  //______________________________________________________
 	: ($t_action="pull")
@@ -148,43 +148,9 @@ Case of
 		End if 
 		
 		  //______________________________________________________
-	: ($t_action="commitDetail")
+	: ($t_action="push")
 		
-		Form:C1466.commitDetail.clear()
-		
-		If (Form:C1466.commitsCurrent#Null:C1517)
-			
-			OBJECT SET VISIBLE:C603(*;"detail_@";True:C214)
-			
-			Form:C1466.git.execute("diff --name-status "+Form:C1466.commitsCurrent.fingerprint.short+" "+Form:C1466.commitsCurrent.parent.short)
-			
-			If (Form:C1466.git.success)
-				
-				For each ($t;Split string:C1554(Form:C1466.git.result;"\n";sk ignore empty strings:K86:1+sk trim spaces:K86:2))
-					
-					$c:=Split string:C1554($t;"\t";sk ignore empty strings:K86:1+sk trim spaces:K86:2)
-					Form:C1466.commitDetail.push(New object:C1471("status";$c[0];"path";$c[1]))
-					
-				End for each 
-			End if 
-			
-			If (Form:C1466.commitsCurrent.author.avatar=Null:C1517)
-				
-				C_BLOB:C604($x)
-				C_PICTURE:C286($p)
-				If (HTTP Get:C1157("https://www.gravatar.com/avatar/"+Generate digest:C1147(Form:C1466.commitsCurrent.author.mail;MD5 digest:K66:1);$x)=200)
-					
-					BLOB TO PICTURE:C682($x;$p)
-					Form:C1466.commitsCurrent.author.avatar:=$p
-					
-				End if 
-			End if 
-			
-		Else 
-			
-			OBJECT SET VISIBLE:C603(*;"detail_@";False:C215)
-			
-		End if 
+		$git.execute("push origin master")
 		
 		  //______________________________________________________
 	Else 

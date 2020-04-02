@@ -273,7 +273,7 @@ Case of
 										  //____________________________
 								End case 
 								
-								$file.setText($t;"UTF-8";Document with CRLF:K24:20)
+								$file.setText($t;"UTF-8";Document with LF:K24:22)
 								
 								Form:C1466.git.status()
 								Form:C1466.ƒ.refresh()
@@ -392,6 +392,11 @@ Case of
 		GITLAB ("pull")
 		
 		  //______________________________________________________
+	: ($event.objectName=Form:C1466.$.push.name)
+		
+		GITLAB ("push")
+		
+		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.menu.name)
 		
 		FORM GOTO PAGE:C247(1)
@@ -446,9 +451,7 @@ Case of
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.commits.name)
 		
-		GITLAB ("commitDetail")
-		
-		SELECT LIST ITEMS BY POSITION:C381(*;"selector";MAXLONG:K35:2)
+		GITLAB DISPLAY COMMIT 
 		
 		  //______________________________________________________
 	: ($event.objectName="detail_parent")

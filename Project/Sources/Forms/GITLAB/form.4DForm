@@ -214,7 +214,8 @@
 					"fontSize": 11,
 					"borderStyle": "none",
 					"stroke": "#696969",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"method": "GITLAB_OBJECTS"
 				},
 				"open": {
 					"type": "button",
@@ -783,6 +784,7 @@
 					"scrollbarHorizontal": "hidden",
 					"visibility": "hidden",
 					"focusable": false,
+					"metaSource": "GITLAB_metas ",
 					"columns": [
 						{
 							"header": {
