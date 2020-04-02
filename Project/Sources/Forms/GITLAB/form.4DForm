@@ -783,11 +783,12 @@
 					"sizingX": "grow",
 					"scrollbarHorizontal": "hidden",
 					"visibility": "hidden",
-					"focusable": false,
+					"focusable": true,
 					"metaSource": "GITLAB_metas ",
 					"currentItemSource": "Form:C1466.commitFilesCurrent",
 					"currentItemPositionSource": "Form:C1466.commitFilesPosition",
 					"selectedItemsSource": "Form:C1466.commitFilesSelected",
+					"hideFocusRing": true,
 					"columns": [
 						{
 							"header": {
