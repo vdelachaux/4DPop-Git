@@ -334,6 +334,35 @@ Function execute
 	Git EXECUTE ($1)
 	
 /*————————————————————————————————————————————————————————*/
+Function push
+	
+	C_OBJECT:C1216($o)
+	
+	If (Count parameters:C259>=2)
+		
+		This:C1470.execute("push "+String:C10($1)+" "+String:C10($2))
+		
+	Else 
+		
+		This:C1470.execute("push origin master")
+		
+	End if 
+	
+	If (Not:C34(This:C1470.success))
+		
+		This:C1470.success:=(Position:C15("Everything up-to-date";This:C1470.error)>0)
+		
+		If (This:C1470.success)
+			
+			  // Remove error & warning
+			This:C1470.error:=""
+			This:C1470.warning:=""
+			This:C1470.history[0].success:=True:C214
+			
+		End if 
+	End if 
+	
+/*————————————————————————————————————————————————————————*/
 Function getRemotes
 	
 	C_TEXT:C284($t)
