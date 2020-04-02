@@ -8,7 +8,7 @@
 .gitignore			text
 *.md					text
 *.ini				text
-*.xlf				text								diff=xml
+*.xlf    text    diff=xml
 # SVG treated as text.
 # If you want to treat it as binary,comment the next line.
 *.svg				text								diff=xml
