@@ -150,7 +150,13 @@ Case of
 		  //______________________________________________________
 	: ($t_action="push")
 		
-		$git.execute("push origin master")
+		$git.push()
+		
+		If (Not:C34($git.success))
+			
+			ALERT:C41($git.error)
+			
+		End if 
 		
 		  //______________________________________________________
 	Else 
