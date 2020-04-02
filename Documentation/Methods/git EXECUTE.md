@@ -1,1 +1,0 @@
-﻿<!----------------------------------------------------Boolean := git EXECUTE ( tCMD ; tIN ) -> tCMD (Text) -> tIN (Text)-->Boolean := git EXECUTE ( tCMD ; tIN )

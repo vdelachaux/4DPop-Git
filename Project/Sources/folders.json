@@ -1,4 +1,5 @@
 ﻿{
+	"(git)": {},
 	"00_DEV": {
 		"methods": [
 			"00_TEST"
@@ -15,12 +16,6 @@
 			"picture",
 			"static",
 			"widget"
-		]
-	},
-	"git": {
-		"methods": [
-			"COMPILER_Git",
-			"Git EXECUTE"
 		],
 		"classes": [
 			"Git"
@@ -46,5 +41,9 @@
 			"4DPop_GIT"
 		]
 	},
-	"trash": {}
+	"trash": {
+		"groups": [
+			"(git)"
+		]
+	}
 }
