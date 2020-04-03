@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : GITLAB_UI
+  // Project method : GIT UI
   // ID[9BABF27ABE474385B2C7B3CAC62A6343]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -9,7 +9,7 @@
   // ----------------------------------------------------
   // Declarations
 C_TEXT:C284($t;$tBuffer)
-C_OBJECT:C1216($ƒ;$git;$o;$oTarget)
+C_OBJECT:C1216($ƒ;$o;$oTarget)
 C_VARIANT:C1683($v)
 
   // ----------------------------------------------------
@@ -171,7 +171,7 @@ Case of
 								  //______________________________________________________
 						End case 
 						
-						$t:=GITLAB Diff ($oTarget.current.status)
+						$t:=GIT Diff ($oTarget.current.status)
 						
 						  //––––––––––––––––––––––––––––––––––––––––––––––––
 				End case 
@@ -199,35 +199,32 @@ Case of
 		  //______________________________________________________
 	: (FORM Get current page:C276=2)
 		
-		If (Form:C1466.commitFilesSelected.length>0)
+		If (Form:C1466.commitFilesSelected#Null:C1517)
 			
-			$o:=Form:C1466.commitFilesCurrent
-			$git:=Form:C1466.git
-			
-			Case of 
+			If (Form:C1466.commitFilesSelected.length>0)
+				
+				OBJECT SET VISIBLE:C603(*;"diff1";True:C214)
+				
+				$o:=Form:C1466.commitFilesCurrent
+				
+				If ($o.status="A")
 					
-					  //––––––––––––––––––––––––––––––––––––––––––––––––
-				: ($o.status="M")\
-					 | ($o.status="D")\
-					 | ($o.status="A")  // Modified | New (into commit)
+					Form:C1466.git.execute("diff "+Form:C1466.commitsCurrent.fingerprint.short+"^ -- "+$o.path)
 					
-					$git.execute("diff "+Form:C1466.commitsCurrent.parent.short+" "+Form:C1466.commitsCurrent.fingerprint.short+" -- "+$o.path)
-					
-					  //––––––––––––––––––––––––––––––––––––––––––––––––
-				: ($o.status="R@")
-					
-					  // Renamed file
-					
-					  //––––––––––––––––––––––––––––––––––––––––––––––––
 				Else 
 					
-					  //
+					Form:C1466.git.execute("diff "+Form:C1466.commitsCurrent.parent.short+" "+Form:C1466.commitsCurrent.fingerprint.short+" -- "+$o.path)
 					
-					  //––––––––––––––––––––––––––––––––––––––––––––––––
-			End case 
-			
-			OBJECT SET VISIBLE:C603(*;"diff1";True:C214)
-			Form:C1466.diff:=GITLAB Diff ($o.status)
+				End if 
+				
+				Form:C1466.diff:=GIT Diff ($o.status)
+				
+			Else 
+				
+				OBJECT SET VISIBLE:C603(*;"diff1";False:C215)
+				Form:C1466.diff:=""
+				
+			End if 
 			
 		Else 
 			

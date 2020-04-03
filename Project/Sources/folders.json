@@ -23,18 +23,19 @@
 	},
 	"GITLAB": {
 		"methods": [
-			"GITLAB",
-			"GITLAB Diff",
-			"GITLAB DISPLAY COMMIT",
-			"GITLAB_metas",
-			"GITLAB_OBJECTS",
-			"GITLAB_resolvePath",
-			"GITLAB_UI"
+			"GIT",
+			"GIT COMMIT LIST",
+			"GIT Diff",
+			"GIT DISPLAY COMMIT",
+			"GIT Metas",
+			"GIT OBJECTS",
+			"GIT Path",
+			"GIT UI"
 		],
 		"forms": [
-			"ADD_PATTERN",
-			"GIT_SETTINGS",
-			"GITLAB"
+			"GIT",
+			"GIT PATTERN",
+			"GIT SETTINGS"
 		]
 	},
 	"Shared": {

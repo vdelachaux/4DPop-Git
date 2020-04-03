@@ -21,10 +21,10 @@ Case of
 		$git.getRemotes()
 		$git.getTags()
 		
-		$file:=Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath;fk platform path:K87:2).file("Project/Sources/Methods/GITLAB_EXECUTE.4dm")
+		$file:=Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath;fk platform path:K87:2).file("Project/Sources/Methods/GIT.4dm")
 		$git.diff($file)
 		
-		$git.diffTool("Project/Sources/Methods/GITLAB_EXECUTE.4dm")
+		$git.diffTool("Project/Sources/Methods/GIT.4dm")
 		
 		  //$git.open("disk")
 		

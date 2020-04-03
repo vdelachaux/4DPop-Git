@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : GITLAB
+  // Project method : GIT
   // ID[DBC17A31DBA047DEBC0BEA1F2BADF817]
   // Created 6-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -16,7 +16,7 @@ C_COLLECTION:C1488($c)
 C_VARIANT:C1683($v)
 
 If (False:C215)
-	C_VARIANT:C1683(GITLAB ;$1)
+	C_VARIANT:C1683(GIT ;$1)
 End if 
 
   // ----------------------------------------------------
@@ -132,7 +132,7 @@ Case of
 		
 		If ($git.fetch())
 			
-			GITLAB COMMIT LIST 
+			GIT COMMIT LIST 
 			
 		End if 
 		
@@ -141,7 +141,7 @@ Case of
 		
 		If ($git.pull())
 			
-			GITLAB COMMIT LIST 
+			GIT COMMIT LIST 
 			
 		End if 
 		

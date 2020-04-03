@@ -2,7 +2,7 @@
 C_BLOB:C604($x)
 C_PICTURE:C286($p)
 C_TEXT:C284($t)
-C_OBJECT:C1216($o)
+C_OBJECT:C1216($o;$oCommit)
 C_COLLECTION:C1488($c)
 
   // Clear list
@@ -10,27 +10,38 @@ Form:C1466.$.detailCommit.deselect()
 
 Form:C1466.commitDetail.clear()
 
-$o:=Form:C1466.commitsCurrent
+$oCommit:=Form:C1466.commitsCurrent
 
-If ($o#Null:C1517)
+If ($oCommit#Null:C1517)
 	
 	OBJECT SET VISIBLE:C603(*;"detail_@";True:C214)
 	
-	If (Form:C1466.git.diffList($o.parent.short;$o.fingerprint.short))
+	If (Form:C1466.git.diffList($oCommit.parent.short;$oCommit.fingerprint.short))
 		
 		For each ($t;Split string:C1554(Form:C1466.git.result;"\n";sk ignore empty strings:K86:1+sk trim spaces:K86:2))
 			
 			$c:=Split string:C1554($t;"\t";sk ignore empty strings:K86:1+sk trim spaces:K86:2)
-			Form:C1466.commitDetail.push(New object:C1471(\
+			
+			$o:=New object:C1471(\
 				"status";$c[0];\
-				"path";$c[1]))
+				"path";$c[1];\
+				"label";$c[1])
+			
+			If ($c.length>=3)  // Renamed
+				
+				$o.label:=$o.label+" -> "+$c[2]
+				$o.path:=$c[2]
+				
+			End if 
+			
+			Form:C1466.commitDetail.push($o)
 			
 		End for each 
 	End if 
 	
-	If ($o.author.avatar=Null:C1517)
+	If ($oCommit.author.avatar=Null:C1517)
 		
-		$t:=Generate digest:C1147($o.author.mail;MD5 digest:K66:1)
+		$t:=Generate digest:C1147($oCommit.author.mail;MD5 digest:K66:1)
 		
 		If (Form:C1466[$t]=Null:C1517)
 			
@@ -42,7 +53,7 @@ If ($o#Null:C1517)
 			End if 
 		End if 
 		
-		$o.author.avatar:=Form:C1466[$t]
+		$oCommit.author.avatar:=Form:C1466[$t]
 		
 	End if 
 	

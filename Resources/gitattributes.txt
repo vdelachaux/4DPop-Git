@@ -9,8 +9,8 @@
 # ====================================================================
 
 # These files are text and should be normalized (Convert crlf => lf)
-.gitattributes		text		linguist-language=gitattributes
-.gitignore			text
+#.gitattributes		text		linguist-language=gitattributes
+#.gitignore			text
 *.md					text
 *.ini				text
 *.xlf				text								diff=xml

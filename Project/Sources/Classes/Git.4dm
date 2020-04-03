@@ -418,7 +418,7 @@ Function execute
 				  //——————————————————————
 			: (Length:C16($tERROR)>0)
 				
-				This:C1470.pushError(Current method name:C684+" - "+$tERROR)
+				This:C1470.pushError(This:C1470.history[0].cmd+" - "+$tERROR)
 				
 				  //——————————————————————
 		End case 

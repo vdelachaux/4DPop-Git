@@ -60,89 +60,105 @@ Case of
 		00_RUN ("_declarations")
 		00_RUN ("_init")
 		
-		$oForm:=New object:C1471(\
-			"window";Open form window:C675("GITLAB";Plain form window:K39:10;Horizontally centered:K39:1;Vertically centered:K39:4;*);\
-			"project";File:C1566(Structure file:C489(*);fk platform path:K87:2);\
-			"git";cs:C1710.Git.new();\
-			"unstaged";New collection:C1472;\
-			"staged";New collection:C1472;\
-			"commitSubject";"";\
-			"commitDescription";"";\
-			"commits";New collection:C1472;\
-			"commitDetail";New collection:C1472\
-			)
+		OK:=Num:C11(Folder:C1567(fk database folder:K87:14;*).folder(".git").exists)
 		
-		  // Template to use, only one for now
-		$oForm.template:="default/"
-		
-		  // Page menu definition
-		$c:=New collection:C1472(\
-			New object:C1471("label";Get localized string:C991("changes"));\
-			New object:C1471(\
-			"label";Get localized string:C991("allCommits")))
-		
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"changes.png").platformPath;$p)
-		TRANSFORM PICTURE:C988($p;Scale:K61:2;0.4;0.4)
-		$c[0].icon:=$p
-		READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"commits.png").platformPath;$p)
-		TRANSFORM PICTURE:C988($p;Scale:K61:2;0.4;0.4)
-		$c[1].icon:=$p
-		
-		$oForm.menu:=$c
-		
-		  // Preload icons
-		$oForm.icons:=New object:C1471
-		
-		For each ($t;New collection:C1472("checked";"github";"gitLab";"branch";"branching";"master";"tag";"fix";"remote";"stash"))
+		If (OK=0)
 			
-			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+$t+".png").platformPath;$p)
-			CREATE THUMBNAIL:C679($p;$p;20;20)
-			$oForm.icons[Lowercase:C14($t)]:=$p
+			CONFIRM:C162("This database is not under git source control";"Initialize git repository here")
 			
-		End for each 
+		End if 
 		
-		  // Selector definition
-		$oForm.selector:=New list:C375
-		
-		APPEND TO LIST:C376($oForm.selector;"Branches";-21;New list:C375;True:C214)
-		$p:=$oForm.icons.branch
-		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
-		
-		APPEND TO LIST:C376($oForm.selector;"Remotes";-22;New list:C375;True:C214)
-		$p:=$oForm.icons.remote
-		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
-		
-		APPEND TO LIST:C376($oForm.selector;"Tags";-23;New list:C375;True:C214)
-		$p:=$oForm.icons.tag
-		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
-		
-		APPEND TO LIST:C376($oForm.selector;"Staches";-24;New list:C375;True:C214)
-		$p:=$oForm.icons.stash
-		SET LIST ITEM ICON:C950($oForm.selector;0;$p)
-		
-		SET LIST PROPERTIES:C387($oForm.selector;0;0;25)
-		
-		  // Methods definitions
-		$o:=New object:C1471(\
-			"refresh";Formula:C1597(SET TIMER:C645(-1));\
-			"updateUI";Formula:C1597(GITLAB_UI );\
-			"stage";Formula:C1597(GITLAB ("stage"));\
-			"stageAll";Formula:C1597(GITLAB ("stageAll"));\
-			"unstage";Formula:C1597(GITLAB ("unstage"));\
-			"discard";Formula:C1597(GITLAB ("discard"));\
-			"path";Formula:C1597(GITLAB_resolvePath );\
-			"commit";Formula:C1597(GITLAB (New object:C1471("action";"commit";"message";Form:C1466.commitSubject;"amend";Bool:C1537(Form:C1466.amend))))\
-			)
-		
-		$oForm.ƒ:=$o
-		
-		  // Color definitions
-		$oForm.colors:=JSON Parse:C1218(File:C1566("/RESOURCES/Images/"+$oForm.template+"manifest.json").getText()).colors
-		
-		DIALOG:C40("GITLAB";$oForm)
-		CLOSE WINDOW:C154
-		
-		CLEAR LIST:C377($oForm.selector;*)
+		If (Bool:C1537(OK))
+			
+			$oForm:=New object:C1471(\
+				"window";Open form window:C675("GIT";Plain form window:K39:10;Horizontally centered:K39:1;Vertically centered:K39:4;*);\
+				"project";File:C1566(Structure file:C489(*);fk platform path:K87:2);\
+				"git";cs:C1710.Git.new();\
+				"unstaged";New collection:C1472;\
+				"staged";New collection:C1472;\
+				"commitSubject";"";\
+				"commitDescription";"";\
+				"commits";New collection:C1472;\
+				"commitDetail";New collection:C1472\
+				)
+			
+			  // Template to use, only one for now
+			$oForm.template:="default/"
+			
+			  // Page menu definition
+			$c:=New collection:C1472(\
+				New object:C1471("label";Get localized string:C991("changes"));\
+				New object:C1471(\
+				"label";Get localized string:C991("allCommits")))
+			
+			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"changes.png").platformPath;$p)
+			TRANSFORM PICTURE:C988($p;Scale:K61:2;0.4;0.4)
+			$c[0].icon:=$p
+			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"commits.png").platformPath;$p)
+			TRANSFORM PICTURE:C988($p;Scale:K61:2;0.4;0.4)
+			$c[1].icon:=$p
+			
+			$oForm.menu:=$c
+			
+			  // Preload icons
+			$oForm.icons:=New object:C1471
+			
+			For each ($t;New collection:C1472("checked";"github";"gitLab";"branch";"branching";"master";"tag";"fix";"remote";"stash"))
+				
+				READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+$t+".png").platformPath;$p)
+				CREATE THUMBNAIL:C679($p;$p;20;20)
+				$oForm.icons[Lowercase:C14($t)]:=$p
+				
+			End for each 
+			
+			  // Selector definition
+			$oForm.selector:=New list:C375
+			
+			APPEND TO LIST:C376($oForm.selector;"Branches";-21;New list:C375;True:C214)
+			$p:=$oForm.icons.branch
+			SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+			
+			APPEND TO LIST:C376($oForm.selector;"Remotes";-22;New list:C375;True:C214)
+			$p:=$oForm.icons.remote
+			SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+			
+			APPEND TO LIST:C376($oForm.selector;"Tags";-23;New list:C375;True:C214)
+			$p:=$oForm.icons.tag
+			SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+			
+			APPEND TO LIST:C376($oForm.selector;"Staches";-24;New list:C375;True:C214)
+			$p:=$oForm.icons.stash
+			SET LIST ITEM ICON:C950($oForm.selector;0;$p)
+			
+			SET LIST PROPERTIES:C387($oForm.selector;0;0;25)
+			
+			  // Methods definitions
+			$o:=New object:C1471(\
+				"refresh";Formula:C1597(SET TIMER:C645(-1));\
+				"updateUI";Formula:C1597(GIT UI );\
+				"stage";Formula:C1597(GIT ("stage"));\
+				"stageAll";Formula:C1597(GIT ("stageAll"));\
+				"unstage";Formula:C1597(GIT ("unstage"));\
+				"discard";Formula:C1597(GIT ("discard"));\
+				"path";Formula:C1597(GIT Path );\
+				"commit";Formula:C1597(GIT (New object:C1471("action";"commit";"message";Form:C1466.commitSubject;"amend";Bool:C1537(Form:C1466.amend))))\
+				)
+			
+			$oForm.ƒ:=$o
+			
+			  // Color definitions
+			$oForm.colors:=JSON Parse:C1218(File:C1566("/RESOURCES/Images/"+$oForm.template+"manifest.json").getText()).colors
+			
+			DIALOG:C40("GIT";$oForm)
+			CLOSE WINDOW:C154
+			
+			CLEAR LIST:C377($oForm.selector;*)
+			
+		Else 
+			
+			  // USER CANCELLATION 
+			
+		End if 
 		
 		00_RUN ("_deinit")
 		

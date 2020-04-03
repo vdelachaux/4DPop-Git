@@ -178,7 +178,7 @@
 					"borderStyle": "none",
 					"stroke": "#696969",
 					"visibility": "visible",
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"pull": {
 					"type": "button",
@@ -196,7 +196,7 @@
 					"fontSize": 11,
 					"borderStyle": "none",
 					"stroke": "#696969",
-					"method": "GITLAB_OBJECTS",
+					"method": "GIT OBJECTS",
 					"visibility": "visible"
 				},
 				"push": {
@@ -216,7 +216,7 @@
 					"borderStyle": "none",
 					"stroke": "#696969",
 					"visibility": "visible",
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"open": {
 					"type": "button",
@@ -228,7 +228,7 @@
 					"events": [
 						"onClick"
 					],
-					"method": "GITLAB_OBJECTS",
+					"method": "GIT OBJECTS",
 					"focusable": false,
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/default/open.png",
@@ -273,7 +273,7 @@
 					"enterable": false,
 					"borderStyle": "none",
 					"sizingY": "grow",
-					"method": "GITLAB_OBJECTS",
+					"method": "GIT OBJECTS",
 					"dataSource": "Form.selector\t"
 				}
 			}
@@ -316,8 +316,8 @@
 					"selectedItemsSource": "Form:C1466.selectedUnstaged",
 					"sizingX": "grow",
 					"sortable": false,
-					"method": "GITLAB_OBJECTS",
-					"metaSource": "GITLAB_metas",
+					"method": "GIT OBJECTS",
+					"metaSource": "GIT Metas ",
 					"columns": [
 						{
 							"header": {
@@ -360,8 +360,8 @@
 					"currentItemSource": "Form:C1466.currentStaged",
 					"currentItemPositionSource": "Form:C1466.itemPositionStaged",
 					"selectedItemsSource": "Form:C1466.selectedStaged",
-					"method": "GITLAB_OBJECTS",
-					"metaSource": "GITLAB_metas",
+					"method": "GIT OBJECTS",
+					"metaSource": "GIT Metas ",
 					"columns": [
 						{
 							"header": {
@@ -405,7 +405,7 @@
 					"shortcutAlt": false,
 					"shortcutKey": "s",
 					"focusable": false,
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"Text3": {
 					"type": "text",
@@ -435,7 +435,7 @@
 					"shortcutAlt": false,
 					"shortcutKey": "s",
 					"focusable": false,
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"diffTool": {
 					"type": "button",
@@ -454,7 +454,7 @@
 					"shortcutKey": "d",
 					"sizingY": "move",
 					"style": "flat",
-					"method": "GITLAB_OBJECTS",
+					"method": "GIT OBJECTS",
 					"focusable": false
 				},
 				"vSplitter_2": {
@@ -576,7 +576,7 @@
 					"events": [
 						"onAfterEdit"
 					],
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"commitDescription": {
 					"hideFocusRing": true,
@@ -604,7 +604,7 @@
 					"sizingX": "move",
 					"focusable": true,
 					"sizingY": "move",
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"comitAmend": {
 					"type": "checkbox",
@@ -620,7 +620,7 @@
 					"dataSourceTypeHint": "boolean",
 					"sizingY": "move",
 					"focusable": false,
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"stageAll": {
 					"type": "button",
@@ -639,7 +639,7 @@
 					"shortcutKey": "s",
 					"sizingY": "fixed",
 					"style": "toolbar",
-					"method": "GITLAB_OBJECTS",
+					"method": "GIT OBJECTS",
 					"focusable": false,
 					"icon": "/RESOURCES/Images/default/stageAll.png",
 					"sizingX": "move",
@@ -671,7 +671,7 @@
 					"sizingY": "grow",
 					"borderStyle": "none",
 					"textAlign": "left",
-					"method": "GITLAB_OBJECTS",
+					"method": "GIT OBJECTS",
 					"currentItemSource": "Form:C1466.commitsCurrent",
 					"currentItemPositionSource": "Form:C1466.commitsPosition",
 					"selectedItemsSource": "Form:C1466.commitsSelected",
@@ -771,7 +771,7 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commitDetail",
-					"method": "GITLAB_OBJECTS",
+					"method": "GIT OBJECTS",
 					"resizingMode": "legacy",
 					"showHeaders": false,
 					"horizontalLineStroke": "transparent",
@@ -784,7 +784,7 @@
 					"scrollbarHorizontal": "hidden",
 					"visibility": "hidden",
 					"focusable": true,
-					"metaSource": "GITLAB_metas ",
+					"metaSource": "GIT Metas ",
 					"currentItemSource": "Form:C1466.commitFilesCurrent",
 					"currentItemPositionSource": "Form:C1466.commitFilesPosition",
 					"selectedItemsSource": "Form:C1466.commitFilesSelected",
@@ -796,10 +796,11 @@
 								"name": "Header9"
 							},
 							"name": "Column9",
-							"dataSource": "This:C1470.path",
+							"dataSource": "This:C1470.label",
 							"footer": {
 								"name": "Footer9"
-							}
+							},
+							"enterable": false
 						}
 					]
 				},
@@ -898,7 +899,7 @@
 					"events": [
 						"onClick"
 					],
-					"method": "GITLAB_OBJECTS"
+					"method": "GIT OBJECTS"
 				},
 				"detail_separator": {
 					"type": "line",
