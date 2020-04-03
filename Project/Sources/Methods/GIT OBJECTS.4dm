@@ -1,6 +1,6 @@
 //%attributes = {"invisible":true}
   // ----------------------------------------------------
-  // Project method : GITLAB_OBJECTS
+  // Project method : GIT OBJECTS
   // ID[BBFA94B40A9249EBA8EF811FE6BF0D3E]
   // Created 9-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------
@@ -250,13 +250,13 @@ Case of
 									: ($menu.choice="ignoreCustom")
 										
 										$o:=New object:C1471(\
-											"window";Open form window:C675("ADD_PATTERN";\
+											"window";Open form window:C675("GIT PATTERN";\
 											Plain form window:K39:10;Horizontally centered:K39:1;\
 											Vertically centered:K39:4;*);\
 											"pattern";$oCurrent.path;\
 											"files";Form:C1466.git.changes)
 										
-										DIALOG:C40("ADD_PATTERN";$o)
+										DIALOG:C40("GIT PATTERN";$o)
 										CLOSE WINDOW:C154
 										
 										If (Bool:C1537(OK))
@@ -389,17 +389,17 @@ Case of
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.fetch.name)
 		
-		GITLAB ("fetch")
+		GIT ("fetch")
 		
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.pull.name)
 		
-		GITLAB ("pull")
+		GIT ("pull")
 		
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.push.name)
 		
-		GITLAB ("push")
+		GIT ("push")
 		
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.menu.name)
@@ -414,7 +414,7 @@ Case of
 				  //______________________________________________________
 			: ($event.code=On Double Clicked:K2:5)
 				
-				GITLAB ("switch")
+				GIT ("switch")
 				
 				  //______________________________________________________
 			: ($event.code=On Clicked:K2:4)
@@ -456,7 +456,7 @@ Case of
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.commits.name)
 		
-		GITLAB DISPLAY COMMIT 
+		GIT DISPLAY COMMIT 
 		
 		  //______________________________________________________
 	: ($event.objectName=Form:C1466.$.detailCommit.name)

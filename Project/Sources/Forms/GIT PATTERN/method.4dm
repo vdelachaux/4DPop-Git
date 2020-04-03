@@ -1,5 +1,5 @@
   // ----------------------------------------------------
-  // Form method : ADD_PATTERN
+  // Form method : GIT PATTERN
   // ID[F480A3B6285F424087B017C3B2CADCA1]
   // Created 11-3-2020 by Vincent de Lachaux
   // ----------------------------------------------------

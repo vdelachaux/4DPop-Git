@@ -1,4 +1,4 @@
-//%attributes = {}
+//%attributes = {"invisible":true}
 C_TEXT:C284($t)
 C_OBJECT:C1216($git;$o)
 C_COLLECTION:C1488($c)
@@ -12,7 +12,7 @@ If (FORM Get current page:C276=2)
 	  // Update commit list
 	Form:C1466.commits.clear()
 	
-	$git.execute("log --abbrev-commit --format=%s,%an,%h,%aI,%H,%p,%P,%ae")
+	$git.execute("log --abbrev-commit --format=%s|%an|%h|%aI|%H|%p|%P|%ae")
 	
 /*
 0 = message
@@ -28,7 +28,7 @@ If (FORM Get current page:C276=2)
 	  // One commit per line
 	For each ($t;Split string:C1554($git.result;"\n";sk ignore empty strings:K86:1))
 		
-		$c:=Split string:C1554($t;",")
+		$c:=Split string:C1554($t;"|")
 		
 		If ($c.length>=8)
 			

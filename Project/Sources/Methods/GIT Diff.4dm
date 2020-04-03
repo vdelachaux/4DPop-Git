@@ -9,8 +9,8 @@ C_OBJECT:C1216($git;$o)
 C_COLLECTION:C1488($c)
 
 If (False:C215)
-	C_TEXT:C284(GITLAB Diff ;$0)
-	C_TEXT:C284(GITLAB Diff ;$1)
+	C_TEXT:C284(GIT Diff ;$0)
+	C_TEXT:C284(GIT Diff ;$1)
 End if 
 
 $git:=Form:C1466.git

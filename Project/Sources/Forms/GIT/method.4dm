@@ -85,9 +85,6 @@ Case of
 		$form.commit.bestSize(Align right:K42:4).disable()
 		$form.open.bestSize(Align right:K42:4)
 		
-/*_________________WIP_________________*/
-		  //$form.remote.setVisible($git.debug)
-		
 		  // Update UI
 		Form:C1466.ƒ.refresh()
 		
@@ -189,6 +186,7 @@ Case of
 						
 						Form:C1466.$.commits.reveal($indx+1)
 						Form:C1466.$.commits.focus()
+						
 					Else 
 						
 						$indx:=Form:C1466.commits.indexOf(Form:C1466.commitsCurrent)
@@ -213,7 +211,7 @@ Case of
 					End if 
 				End if 
 				
-				GITLAB DISPLAY COMMIT 
+				GIT DISPLAY COMMIT 
 				
 				  //______________________________________________________
 			Else 
@@ -233,10 +231,10 @@ Case of
 				  //———————————————————————————————————
 			: (FORM Get current page:C276=2)  // Commits
 				
-				GITLAB COMMIT LIST 
+				GIT COMMIT LIST 
 				
+				  //----------------------------------------
 		End case 
-		
 		
 		  //______________________________________________________
 	: ($event.code=On Activate:K2:9)
