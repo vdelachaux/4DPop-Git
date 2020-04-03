@@ -64,3 +64,6 @@ Else
 End if 
 
 Form:C1466.$.selector.deselect()
+
+OBJECT SET VISIBLE:C603(*;"diff1";False:C215)
+Form:C1466.diff:=""

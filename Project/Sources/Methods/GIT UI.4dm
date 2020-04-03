@@ -207,15 +207,27 @@ Case of
 				
 				$o:=Form:C1466.commitFilesCurrent
 				
-				If ($o.status="A")
-					
-					Form:C1466.git.execute("diff "+Form:C1466.commitsCurrent.fingerprint.short+"^ -- "+$o.path)
-					
-				Else 
-					
-					Form:C1466.git.execute("diff "+Form:C1466.commitsCurrent.parent.short+" "+Form:C1466.commitsCurrent.fingerprint.short+" -- "+$o.path)
-					
-				End if 
+				Case of 
+						  //______________________________________________________
+					: (Length:C16(String:C10(Form:C1466.commitsCurrent.parent.short))=0)
+						
+						Form:C1466.git.execute("diff "+Form:C1466.commitsCurrent.fingerprint.short+" -- "+$o.path)
+						
+						  //______________________________________________________
+					: ($o.status="A")
+						
+						Form:C1466.git.execute("diff "+Form:C1466.commitsCurrent.fingerprint.short+"^ -- "+$o.path)
+						
+						
+						
+						  //______________________________________________________
+					Else 
+						
+						Form:C1466.git.execute("diff "+Form:C1466.commitsCurrent.parent.short+" "+Form:C1466.commitsCurrent.fingerprint.short+" -- "+$o.path)
+						
+						  //______________________________________________________
+				End case 
+				
 				
 				Form:C1466.diff:=GIT Diff ($o.status)
 				
