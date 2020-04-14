@@ -10,8 +10,7 @@
   // Declarations
 C_LONGINT:C283($indx)
 C_TEXT:C284($t)
-C_COLLECTION:C1488($c)
-C_OBJECT:C1216($event;$file;$menu;$o;$oCurrent)
+C_OBJECT:C1216($event;$file;$git;$menu;$o;$oCurrent)
 C_COLLECTION:C1488($cSelected)
 C_VARIANT:C1683($v)
 
@@ -21,6 +20,7 @@ C_VARIANT:C1683($v)
   // <NO PARAMETERS REQUIRED>
 
 $event:=FORM Event:C1606
+$git:=Form:C1466.git
 
   // ----------------------------------------------------
 Case of 
@@ -151,7 +151,7 @@ Case of
 								  //———————————————————————————————————————
 							: ($menu.choice="diffTool")
 								
-								Form:C1466.git.diffTool($oCurrent.path)
+								$git.diffTool($oCurrent.path)
 								
 								  //———————————————————————————————————————
 							: ($menu.choice="discard")
@@ -168,7 +168,7 @@ Case of
 									
 									File:C1566(Form:C1466.project.parent.parent.path+$oCurrent.path).delete()
 									
-									Form:C1466.git.status()
+									$git.status()
 									Form:C1466.ƒ.refresh()
 									Form:C1466.ƒ.updateUI()
 									
@@ -223,7 +223,7 @@ Case of
 								
 								$o:=File:C1566($oCurrent.path)
 								
-								$file:=Form:C1466.git.workingDirectory.file(".gitignore")
+								$file:=$git.workingDirectory.file(".gitignore")
 								$t:=$file.getText("UTF-8";Document with CR:K24:21)
 								
 								Case of 
@@ -233,7 +233,7 @@ Case of
 										
 										If ($oCurrent.status#"??")
 											
-											Form:C1466.git.untrack($oCurrent.path)
+											$git.untrack($oCurrent.path)
 											
 										End if 
 										
@@ -254,7 +254,7 @@ Case of
 											Plain form window:K39:10;Horizontally centered:K39:1;\
 											Vertically centered:K39:4;*);\
 											"pattern";$oCurrent.path;\
-											"files";Form:C1466.git.changes)
+											"files";$git.changes)
 										
 										DIALOG:C40("GIT PATTERN";$o)
 										CLOSE WINDOW:C154
@@ -275,7 +275,7 @@ Case of
 								
 								$file.setText($t;"UTF-8";Document with LF:K24:22)
 								
-								Form:C1466.git.status()
+								$git.status()
 								Form:C1466.ƒ.refresh()
 								Form:C1466.ƒ.updateUI()
 								
@@ -314,7 +314,15 @@ Case of
 			.append("openInTerminal";"terminal").icon("/RESOURCES/Images/"+Form:C1466.template+"terminal.png")\
 			.append("openInFinder";"show").icon("/RESOURCES/Images/"+Form:C1466.template+"show.png")\
 			.line()\
-			.append("viewOnGithub";"github").icon("/RESOURCES/Images/"+Form:C1466.template+"gitHub.png").disable()
+			.append("viewOnGithub";"github").icon("/RESOURCES/Images/"+Form:C1466.template+"gitHub.png")
+		
+		$git.execute("config --get remote.origin.url")
+		
+		If (Not:C34($git.execute("config --get remote.origin.url")))
+			
+			$menu.disable()
+			
+		End if 
 		
 		If ($menu.popup().selected)
 			
@@ -323,12 +331,18 @@ Case of
 					  //———————————————————————————————————————
 				: ($menu.choice="terminal")
 					
-					Form:C1466.git.open($menu.choice)
+					$git.open($menu.choice)
 					
 					  //———————————————————————————————————————
 				: ($menu.choice="show")
 					
-					Form:C1466.git.open($menu.choice)
+					$git.open($menu.choice)
+					
+					  //———————————————————————————————————————
+				: ($menu.choice="github")
+					
+					$t:=Replace string:C233($git.result;"\n";"")
+					OPEN URL:C673($t)
 					
 					  //———————————————————————————————————————
 				Else 
@@ -376,12 +390,12 @@ Case of
 				  //————————————————————————————————
 			: (Form:C1466.selectedUnstaged.length=1)
 				
-				Form:C1466.git.diffTool(Form:C1466.currentUnstaged.path)
+				$git.diffTool(Form:C1466.currentUnstaged.path)
 				
 				  //————————————————————————————————
 			: (Form:C1466.selectedStaged.length=1)
 				
-				Form:C1466.git.diffTool(Form:C1466.selectedStaged.path)
+				$git.diffTool(Form:C1466.selectedStaged.path)
 				
 				  //————————————————————————————————
 		End case 
@@ -474,7 +488,6 @@ Case of
 			Form:C1466.$.commits.focus()
 			
 		End if 
-		
 		
 		  //______________________________________________________
 	Else 
