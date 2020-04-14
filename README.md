@@ -9,4 +9,9 @@
 No need to read the <a href="https://git-scm.com/docs/git">**git**</a> command documentation or to be an expert of the Terminal, everything is done automatically for you, just stay focused on your work.
 
 <img src="./Documentation/main.png">
+
 <img src="./Documentation/commits.png">
+
+<img src="./Documentation/fileMenu.png" width="518">
+
+<img src="./Documentation/openMenu.png" width="184">
