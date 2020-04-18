@@ -60,12 +60,33 @@ Case of
 		00_RUN ("_declarations")
 		00_RUN ("_init")
 		
-		OK:=Num:C11(Folder:C1567(fk database folder:K87:14;*).folder(".git").exists)
+		$o:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
+		
+		OK:=Num:C11($o.folder(".git").exists)
 		
 		If (OK=0)
 			
-			CONFIRM:C162("This database is not under git source control";"Initialize git repository here")
+			While ($o#Null:C1517)\
+				 & (OK=0)
+				
+				$o:=$o.parent
+				
+				If ($o#Null:C1517)
+					
+					OK:=Num:C11($o.folder(".git").exists)
+					
+				End if 
+			End while 
 			
+			If (OK=0)
+				
+				CONFIRM:C162(Get localized string:C991("thisDatabaseIsNotUnderGitControl");Get localized string:C991("initializeTheGitRepository"))
+				
+			Else 
+				
+				CONFIRM:C162(Get localized string:C991("thisDatabaseIsUnderGitSourceControlButNotAtThisLevel"))
+				
+			End if 
 		End if 
 		
 		If (Bool:C1537(OK))
