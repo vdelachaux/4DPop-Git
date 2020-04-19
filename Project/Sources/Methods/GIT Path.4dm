@@ -89,7 +89,16 @@ Case of
 				  //……………………………………………………………………………………………
 			Else 
 				
-				$v_resolved:=File:C1566(Form:C1466.project.parent.parent.path+$t_path)
+				If ($t_path[[Length:C16($t_path)]]="/")
+					
+					  // It's a folder
+					$v_resolved:=Folder:C1567(Form:C1466.project.parent.parent.path+$t_path)
+					
+				Else 
+					
+					$v_resolved:=File:C1566(Form:C1466.project.parent.parent.path+$t_path)
+					
+				End if 
 				
 				  //……………………………………………………………………………………………
 		End case 
@@ -104,7 +113,7 @@ End case
 
   // ----------------------------------------------------
   // Return
-$0:=$v_resolved  //4D path or file
+$0:=$v_resolved  // 4D path or file
 
   // ----------------------------------------------------
   // End
