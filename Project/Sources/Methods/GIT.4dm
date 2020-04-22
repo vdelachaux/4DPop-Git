@@ -11,7 +11,7 @@
 C_VARIANT:C1683($1)
 
 C_TEXT:C284($t_action)
-C_OBJECT:C1216($git;$o;$o_IN;$oForm)
+C_OBJECT:C1216($git;$o;$o_IN)
 C_VARIANT:C1683($v)
 
 If (False:C215)
@@ -132,7 +132,7 @@ Case of
 		  //______________________________________________________
 	: ($t_action="fetch")
 		
-		$o:=progress ("Fetching data").setIcon($oForm.logo).setProgress(-1)
+		$o:=progress ("Fetching data").setIcon(Form:C1466.logo).setProgress(-1)
 		
 		If ($git.fetch())
 			
@@ -145,7 +145,7 @@ Case of
 		  //______________________________________________________
 	: ($t_action="pull")
 		
-		$o:=progress ("Pulling data").setIcon($oForm.logo).setProgress(-1)
+		$o:=progress ("Pulling data").setIcon(Form:C1466.logo).setProgress(-1)
 		
 		If ($git.pull())
 			
@@ -163,7 +163,7 @@ Case of
 		  //______________________________________________________
 	: ($t_action="push")
 		
-		$o:=progress ("Pushing data").setIcon($oForm.logo).setProgress(-1)
+		$o:=progress ("Pushing data").setIcon(Form:C1466.logo).setProgress(-1)
 		
 		If (Not:C34($git.push()))
 			
