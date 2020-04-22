@@ -120,6 +120,9 @@ Case of
 					
 				End if 
 			End for each 
+			
+			RELOAD PROJECT:C1739
+			
 		End if 
 		
 		  //______________________________________________________
@@ -143,6 +146,11 @@ Case of
 			
 			GIT COMMIT LIST 
 			
+			If (Num:C11(Application version:C493)>=1840)  //#18R4+
+				
+				EXECUTE FORMULA:C63("RELOAD PROJECT:C1739")
+				
+			End if 
 		End if 
 		
 		  //______________________________________________________
