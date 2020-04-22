@@ -10,9 +10,8 @@
   // Declarations
 C_VARIANT:C1683($1)
 
-C_TEXT:C284($t;$t_action)
-C_OBJECT:C1216($git;$o;$o_IN)
-C_COLLECTION:C1488($c)
+C_TEXT:C284($t_action)
+C_OBJECT:C1216($git;$o;$o_IN;$oForm)
 C_VARIANT:C1683($v)
 
 If (False:C215)
@@ -133,14 +132,20 @@ Case of
 		  //______________________________________________________
 	: ($t_action="fetch")
 		
+		$o:=progress ("Fetching data").setIcon($oForm.log).setProgress(-1)
+		
 		If ($git.fetch())
 			
 			GIT COMMIT LIST 
 			
 		End if 
 		
+		$o.close()
+		
 		  //______________________________________________________
 	: ($t_action="pull")
+		
+		$o:=progress ("Pulling data").setIcon($oForm.log).setProgress(-1)
 		
 		If ($git.pull())
 			
@@ -153,14 +158,20 @@ Case of
 			End if 
 		End if 
 		
+		$o.close()
+		
 		  //______________________________________________________
 	: ($t_action="push")
+		
+		$o:=progress ("Pushing data").setIcon($oForm.log).setProgress(-1)
 		
 		If (Not:C34($git.push()))
 			
 			ALERT:C41($git.error)
 			
 		End if 
+		
+		$o.close()
 		
 		  //______________________________________________________
 	Else 
