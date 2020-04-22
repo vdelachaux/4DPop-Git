@@ -48,3 +48,9 @@ If (False:C215)
 	
 	  //…………………………………………………………………………………………………
 End if 
+
+If (False:C215)
+	C_OBJECT:C1216(progress ;$0)
+	C_TEXT:C284(progress ;$1)
+	C_OBJECT:C1216(progress ;$2)
+End if 

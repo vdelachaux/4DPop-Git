@@ -132,6 +132,9 @@ Case of
 				
 			End for each 
 			
+			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath;$p)
+			$oForm.log:=$p
+			
 			  // Selector definition
 			$oForm.selector:=New list:C375
 			
