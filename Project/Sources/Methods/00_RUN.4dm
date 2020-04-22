@@ -133,7 +133,8 @@ Case of
 			End for each 
 			
 			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath;$p)
-			$oForm.log:=$p
+			CREATE THUMBNAIL:C679($p;$p;32;32)
+			$oForm.logo:=$p
 			
 			  // Selector definition
 			$oForm.selector:=New list:C375
