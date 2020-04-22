@@ -3,6 +3,7 @@
 #--------------------------------
 .*
 !.git*
+
 .git/
 
 #--------------------------------
@@ -10,9 +11,10 @@
 #--------------------------------
 [dD][aA][tT][aA]/
 *.4DD
-*.journal
 *.4DIndx
+*.4DIndy
 *.Match
+*.journal
 
 #--------------------------------
 # Ignore derived data
@@ -29,8 +31,10 @@ Logs/
 #--------------------------------
 Preferences/
 !4DPop AppMaker.*
+
 Settings/
 #!buildApp.4DSettings
+
 userPreferences.*/
 
 #--------------------------------
@@ -42,5 +46,5 @@ ehthumbs.db
 Thumbs.db
 
 #--------------------------------
-# Added by user 
+# Added by user
 #--------------------------------

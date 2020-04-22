@@ -168,6 +168,12 @@ Case of
 									
 									File:C1566(Form:C1466.project.parent.parent.path+$oCurrent.path).delete()
 									
+									If (Num:C11(Application version:C493)>=1840)  //#18R4+
+										
+										EXECUTE FORMULA:C63("RELOAD PROJECT:C1739")
+										
+									End if 
+									
 									$git.status()
 									Form:C1466.ƒ.refresh()
 									Form:C1466.ƒ.updateUI()
@@ -191,8 +197,15 @@ Case of
 										
 										If (Bool:C1537($v.exists))
 											
-											OPEN URL:C673($v.platformPath)
-											
+											If ($v.extension=".4dform")
+												
+												OPEN URL:C673($v.platformPath;File:C1566(Application file:C491;fk platform path:K87:2).fullName;*)
+												
+											Else 
+												
+												OPEN URL:C673($v.platformPath)
+												
+											End if 
 										End if 
 										
 										  //——————————————————————————————————
