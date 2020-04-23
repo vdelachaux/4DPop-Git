@@ -323,6 +323,10 @@ Function diffList
 	C_BOOLEAN:C305($0)
 	C_TEXT:C284($1;$2)
 	
+	If ($1="")
+		$1:="4b825dc642cb6eb9a060e54bf8d69288fbee4904"  // empty tree id
+	End if 
+	
 	$0:=This:C1470.execute("diff --name-status "+$1+" "+$2)
 	
 /*————————————————————————————————————————————————————————*/
