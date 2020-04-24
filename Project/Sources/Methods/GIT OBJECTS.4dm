@@ -199,7 +199,14 @@ Case of
 											
 											If ($v.extension=".4dform")
 												
-												OPEN URL:C673($v.platformPath;File:C1566(Application file:C491;fk platform path:K87:2).fullName;*)
+/*++++++++++++++++++++++++++++++++++
+    MISSING FORM OPEN PATH command 
+  ++++++++++++++++++++++++++++++++++*/
+												
+												  //$tCommnand:="open -a '"+File(Application file;fk platform path).path+"' '"+$v.path+"'"
+												  //LAUNCH EXTERNAL PROCESS($tCommnand)
+												
+												  //OPEN URL($v.platformPath;File(Application file;fk platform path).fullName;*)
 												
 											Else 
 												
