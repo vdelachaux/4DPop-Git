@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE macros SYSTEM "http://www.4d.com/dtd/2007/macros.dtd" >
+<macros>
+ <!-- ******************************* TOOLS ******************************* -->
+    <macro name="-" in_menu="true" type_ahead="false"><text/></macro>
+    
+    <macro name="Git Diff" 
+        in_menu="true" 
+        type_ahead="false" 
+        version="2">
+        <text><method>Macro_4DPop_GIT("<method_path/>")</method></text>
+    </macro>
+
+</macros>

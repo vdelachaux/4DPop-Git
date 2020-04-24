@@ -41,7 +41,8 @@
 	},
 	"Shared": {
 		"methods": [
-			"4DPop_GIT"
+			"4DPop_GIT",
+			"Macro_4DPop_GIT"
 		]
 	},
 	"trash": {
