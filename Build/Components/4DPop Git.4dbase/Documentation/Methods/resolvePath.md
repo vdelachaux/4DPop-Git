@@ -1,0 +1,1 @@
+﻿<!----------------------------------------------------resolved := resolvePath ( path ) -> path (Text) <- resolved (Variant) - 4D path or file-->Variant := convertPath ( Param_1 )
