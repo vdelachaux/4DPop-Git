@@ -4,7 +4,7 @@
 [![license](https://img.shields.io/github/license/vdelachaux/4DPop-Git)](LICENSE)
 [![release](https://img.shields.io/github/v/release/vdelachaux/4DPop-Git?include_prereleases)](https://github.com/vdelachaux/4DPop-Git/releases/latest)
 
-# 4DPop Git
+# 4DPop Git (18R3+)
 
 No need to read the <a href="https://git-scm.com/docs/git">**git**</a> command documentation or to be an expert of the Terminal, everything is done automatically for you, just stay focused on your work.
 
