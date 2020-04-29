@@ -1,4 +1,4 @@
-﻿#--------------------------------
+#--------------------------------
 # Ignore invisible files/folders
 #--------------------------------
 .*
@@ -47,3 +47,10 @@ Thumbs.db
 Resources/php.ini
 *.bbprojectd/
 Project/Trash/
+
+Resources/response.json
+Resources/test
+Build/Components/4DPop Git.4dbase/Resources/test
+Build/Components/4DPop Git.4dbase/Resources/response.json
+Build/Components/4DPop Git.4dbase/Resources/php.ini
+Build/Components/4DPop Git.4dbase/Documentation/*.png
