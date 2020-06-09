@@ -1,10 +1,6 @@
 ﻿{
 	"(git)": {},
-	"00_DEV": {
-		"methods": [
-			"00_TEST"
-		]
-	},
+	"00_DEV": {},
 	"classes": {
 		"methods": [
 			"button",
