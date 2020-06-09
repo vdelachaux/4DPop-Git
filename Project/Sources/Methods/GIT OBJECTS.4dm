@@ -168,11 +168,7 @@ Case of
 									
 									File:C1566(Form:C1466.project.parent.parent.path+$oCurrent.path).delete()
 									
-									If (Num:C11(Application version:C493)>=1840)  //#18R4+
-										
-										EXECUTE FORMULA:C63("RELOAD PROJECT:C1739")
-										
-									End if 
+									RELOAD PROJECT:C1739
 									
 									$git.status()
 									Form:C1466.ƒ.refresh()
