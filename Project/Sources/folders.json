@@ -1,6 +1,10 @@
 ﻿{
 	"(git)": {},
-	"00_DEV": {},
+	"00_DEV": {
+		"methods": [
+			"00_TEST"
+		]
+	},
 	"classes": {
 		"methods": [
 			"button",
@@ -15,7 +19,8 @@
 			"widget"
 		],
 		"classes": [
-			"Git"
+			"Git",
+			"jwt"
 		]
 	},
 	"GIT UI": {
