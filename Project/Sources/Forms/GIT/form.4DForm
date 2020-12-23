@@ -30,7 +30,7 @@
 					"sizingX": "grow",
 					"sizingY": "grow",
 					"stroke": "transparent",
-					"fill": "#FFFFFF",
+					"fill": "automatic",
 					"visibility": "visible",
 					"strokeWidth": 0
 				},
@@ -274,7 +274,8 @@
 					"borderStyle": "none",
 					"sizingY": "grow",
 					"method": "GIT OBJECTS",
-					"dataSource": "Form.selector\t"
+					"dataSource": "Form.selector\t",
+					"fill": "transparent"
 				}
 			}
 		},
@@ -317,7 +318,8 @@
 					"sizingX": "grow",
 					"sortable": false,
 					"method": "GIT OBJECTS",
-					"metaSource": "GIT Metas ",
+					"metaSource": "GIT Metas",
+					"fill": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -361,7 +363,8 @@
 					"currentItemPositionSource": "Form:C1466.itemPositionStaged",
 					"selectedItemsSource": "Form:C1466.selectedStaged",
 					"method": "GIT OBJECTS",
-					"metaSource": "GIT Metas ",
+					"metaSource": "GIT Metas",
+					"fill": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -533,7 +536,8 @@
 					"fontSize": 12,
 					"styledText": true,
 					"storeDefaultStyle": true,
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"fill": "automatic"
 				},
 				"Input1": {
 					"type": "input",
@@ -789,6 +793,7 @@
 					"currentItemPositionSource": "Form:C1466.commitFilesPosition",
 					"selectedItemsSource": "Form:C1466.commitFilesSelected",
 					"hideFocusRing": true,
+					"fill": "automatic",
 					"columns": [
 						{
 							"header": {
@@ -1022,5 +1027,12 @@
 	"method": "method.4dm",
 	"width": 1120,
 	"height": 910,
-	"memorizeGeometry": true
+	"memorizeGeometry": true,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
 }
