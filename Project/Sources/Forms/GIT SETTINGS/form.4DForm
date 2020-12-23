@@ -37,7 +37,8 @@
 					"left": 0,
 					"width": 500,
 					"height": 300,
-					"stroke": "transparent"
+					"stroke": "transparent",
+					"fill": "automatic"
 				},
 				"Button": {
 					"type": "button",
