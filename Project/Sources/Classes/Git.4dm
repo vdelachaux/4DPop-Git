@@ -17,7 +17,11 @@ Class constructor
 	This:C1470.git:=This:C1470.workingDirectory.folder(".git")
 	This:C1470.gitignore:=This:C1470.workingDirectory.file(".gitignore")
 	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
-	This:C1470.local:=File:C1566("/usr/local/bin/git").exists
+	If (Is macOS)
+		This:C1470.local:=File:C1566("/usr/local/bin/git").exists
+	Else 
+		This:C1470.local:=False
+	End if 
 	This:C1470.version:=""
 	
 	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
