@@ -1,0 +1,17 @@
+{
+  "dependencies": [
+    "Components/4D Progress"
+  ], 
+  "postBuild": {
+    "buildNumber": true, 
+    "owner": "VDL", 
+    "InfoPlist": true, 
+    "remove": [
+      "Build/", 
+      "Data/", 
+      "Resources/php.ini", 
+      "_config.yml", 
+      "git.bbprojectd"
+    ]
+  }
+}
