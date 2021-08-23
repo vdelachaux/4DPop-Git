@@ -1,0 +1,2 @@
+//%attributes = {}
+var httpError : Integer
