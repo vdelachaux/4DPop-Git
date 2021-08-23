@@ -1,4 +1,25 @@
 {
+	"_BREW": {
+		"methods": [
+			"Method36",
+			"Method37"
+		],
+		"classes": [
+			"brew"
+		]
+	},
+	"_BREW_TEST": {
+		"methods": [
+			"COMPILER_http"
+		],
+		"classes": [
+			"http",
+			"lep",
+			"menu",
+			"svg",
+			"xml"
+		]
+	},
 	"(git)": {},
 	"00_DEV": {
 		"methods": [
