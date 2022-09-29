@@ -490,6 +490,8 @@ Case of
 			$ƒ.commits.reveal($indx+1)
 			$ƒ.commits.focus()
 			
+			GIT DISPLAY COMMIT
+			
 		End if 
 		
 		//______________________________________________________
