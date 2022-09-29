@@ -7,7 +7,7 @@
 	"bottomMargin": 5,
 	"events": [
 		"onLoad",
-		"onActivate"
+		"onTimer"
 	],
 	"destination": "detailScreen",
 	"pages": [
@@ -16,68 +16,48 @@
 		},
 		{
 			"objects": {
+				"version": {
+					"type": "input",
+					"left": 46,
+					"top": 10,
+					"width": 130,
+					"height": 14,
+					"dataSource": "\"4D \"+Form:C1466.version",
+					"enterable": false,
+					"focusable": false,
+					"borderStyle": "none",
+					"fill": "transparent",
+					"fontWeight": "normal",
+					"fontSize": 10,
+					"textAlign": "center"
+				},
 				"Static Picture1": {
 					"type": "picture",
 					"top": 5,
 					"left": 5,
-					"width": 34,
-					"height": 37,
+					"width": 36,
+					"height": 36,
 					"picture": "/RESOURCES/Images/logo.png",
 					"pictureFormat": "scaled"
 				},
 				"branch": {
 					"type": "input",
-					"left": 87,
-					"top": 10,
-					"width": 89,
-					"height": 17,
-					"dataSource": "Form:C1466.branch",
+					"left": 46,
+					"top": 27,
+					"width": 130,
+					"height": 14,
+					"dataSource": "\"branch \"+Form:C1466.branch",
 					"enterable": false,
 					"focusable": false,
 					"borderStyle": "none",
 					"fill": "transparent",
-					"fontWeight": "normal",
-					"fontSize": 10
-				},
-				"branch.label": {
-					"type": "text",
-					"text": "Branch",
-					"top": 10,
-					"left": 41,
-					"width": 42,
-					"height": 16,
-					"textAlign": "right",
-					"fontSize": 10
-				},
-				"version": {
-					"type": "input",
-					"left": 87,
-					"top": 27,
-					"width": 89,
-					"height": 17,
-					"dataSource": "Form:C1466.version",
-					"enterable": false,
-					"focusable": false,
-					"borderStyle": "none",
-					"fill": "transparent",
-					"fontWeight": "normal",
-					"fontSize": 10
-				},
-				"version.label": {
-					"type": "text",
-					"text": "4D",
-					"top": 27,
-					"left": 41,
-					"width": 42,
-					"height": 16,
-					"textAlign": "right",
-					"fontWeight": "normal",
-					"fontSize": 10
+					"fontSize": 10,
+					"textAlign": "center"
 				}
 			}
 		}
 	],
-	"geometryStamp": 78,
+	"geometryStamp": 90,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",
