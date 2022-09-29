@@ -893,7 +893,7 @@
 					"type": "input",
 					"left": 259,
 					"top": 599,
-					"width": 91,
+					"width": 151,
 					"height": 17,
 					"dataSource": "Form:C1466.commitsCurrent.parent.short",
 					"enterable": false,
@@ -1037,5 +1037,6 @@
 		"views": {
 			"View 1": {}
 		}
-	}
+	},
+	"geometryStamp": 3
 }
