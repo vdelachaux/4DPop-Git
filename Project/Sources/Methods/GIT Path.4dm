@@ -1,119 +1,88 @@
 //%attributes = {"invisible":true}
-  // ----------------------------------------------------
-  // Project method : GIT Path
-  // ID[D8FCE09C5AE341AA9189F5C8DCFFEBCE]
-  // Created 6-3-2020 by Vincent de Lachaux
-  // ----------------------------------------------------
-  // Description:
-  //
-  // ----------------------------------------------------
-  // Declarations
-C_VARIANT:C1683($0)
-C_TEXT:C284($1)
-
-C_LONGINT:C283($Lon_parameters)
-C_TEXT:C284($t_path)
-C_VARIANT:C1683($v_resolved)
+// ----------------------------------------------------
+// Project method : GIT Path
+// ID[D8FCE09C5AE341AA9189F5C8DCFFEBCE]
+// Created 6-3-2020 by Vincent de Lachaux
+// ----------------------------------------------------
+// Declarations
+#DECLARE($path : Text) : Variant
 
 If (False:C215)
-	C_VARIANT:C1683(GIT Path ;$0)
-	C_TEXT:C284(GIT Path ;$1)
+	C_TEXT:C284(GIT Path; $1)
+	C_VARIANT:C1683(GIT Path; $0)
 End if 
 
-  // ----------------------------------------------------
-  // Initialisations
-$Lon_parameters:=Count parameters:C259
+var $t : Text
 
-If (Asserted:C1132(Count parameters:C259>=1;"Missing parameter"))
-	
-	  // Required parameters
-	$t_path:=$1
-	
-	  // Default values
-	
-Else 
-	
-	ABORT:C156
-	
-End if 
-
-  // ----------------------------------------------------
-$t_path:=Replace string:C233($t_path;"\"";"")
+$path:=Replace string:C233($path; "\""; "")
 
 Case of 
 		
-		  //———————————————————————————————————————————
-	: (Position:C15(")";$t_path)>0)  // Trash
+		//———————————————————————————————————————————
+	: (Position:C15(")"; $path)>0)  // Trash
 		
-		$v_resolved:=File:C1566(Form:C1466.project.parent.parent.path+$t_path)
+		return File:C1566(Form:C1466.project.parent.parent.path+$path)
 		
-		  //———————————————————————————————————————————
-	: ($t_path="Documentation/@")  // Documentation
+		//———————————————————————————————————————————
+	: ($path="Documentation/@")  // Documentation
 		
-		$v_resolved:=File:C1566(Form:C1466.project.parent.parent.path+$t_path)
+		return File:C1566(Form:C1466.project.parent.parent.path+$path)
 		
-		  //———————————————————————————————————————————
-	: ($t_path="@/Methods/@")  // Project methods
+		//———————————————————————————————————————————
+	: ($path="@/Methods/@")  // Project methods
 		
-		$v_resolved:=Replace string:C233(Replace string:C233($t_path;".4dm";"");"Project/Sources/Methods/";"")
+		return Replace string:C233(Replace string:C233($path; ".4dm"; ""); "Project/Sources/Methods/"; "")
 		
-		  //———————————————————————————————————————————
-	: ($t_path="@/Forms/@")
+		//———————————————————————————————————————————
+	: ($path="@/Forms/@")
 		
 		Case of 
 				
-				  //……………………………………………………………………………………………
-			: ($t_path="@.4DForm")  // Form definition
+				//……………………………………………………………………………………………
+			: ($path="@.4DForm")  // Form definition
 				
-				$v_resolved:=File:C1566(Form:C1466.project.parent.parent.path+$t_path)
+				return File:C1566(Form:C1466.project.parent.parent.path+$path)
 				
-				  //……………………………………………………………………………………………
-			: ($t_path="@.4dm")  // method
+				//……………………………………………………………………………………………
+			: ($path="@.4dm")  // method
 				
-				$v_resolved:=Replace string:C233($t_path;".4dm";"")
+				$t:=Replace string:C233($path; ".4dm"; "")
 				
-				If ($v_resolved="@/ObjectMethods/@")  // Object method
+				If ($t="@/ObjectMethods/@")  // Object method
 					
-					$v_resolved:=Replace string:C233($v_resolved;"Project/Sources/Forms/";"")
-					$v_resolved:=Replace string:C233($v_resolved;"ObjectMethods";"")
-					$v_resolved:="[projectForm]/"+$v_resolved
+					$t:=Replace string:C233($t; "Project/Sources/Forms/"; "")
+					$t:=Replace string:C233($t; "ObjectMethods"; "")
+					return "[projectForm]/"+$t
 					
 				Else   // Form method
 					
-					$v_resolved:=Replace string:C233($v_resolved;"Project/Sources/Forms/";"")
-					$v_resolved:=Replace string:C233($v_resolved;"method";"")
-					$v_resolved:="[projectForm]/"+$v_resolved+"{formMethod}"
+					$t:=Replace string:C233($t; "Project/Sources/Forms/"; "")
+					$t:=Replace string:C233($t; "method"; "")
+					return "[projectForm]/"+$t+"{formMethod}"
 					
 				End if 
 				
-				  //……………………………………………………………………………………………
+				//……………………………………………………………………………………………
 			Else 
 				
-				If ($t_path[[Length:C16($t_path)]]="/")
+				If ($path[[Length:C16($path)]]="/")
 					
-					  // It's a folder
-					$v_resolved:=Folder:C1567(Form:C1466.project.parent.parent.path+$t_path)
+					// It's a folder
+					return Folder:C1567(Form:C1466.project.parent.parent.path+$path)
 					
 				Else 
 					
-					$v_resolved:=File:C1566(Form:C1466.project.parent.parent.path+$t_path)
+					return File:C1566(Form:C1466.project.parent.parent.path+$path)
 					
 				End if 
 				
-				  //……………………………………………………………………………………………
+				//……………………………………………………………………………………………
 		End case 
 		
-		  //———————————————————————————————————————————
+		//———————————————————————————————————————————
 	Else 
 		
-		$v_resolved:=File:C1566(Form:C1466.project.parent.parent.path+$t_path)
+		return File:C1566(Form:C1466.project.parent.parent.path+$path)
 		
-		  //———————————————————————————————————————————
+		//———————————————————————————————————————————
 End case 
-
-  // ----------------------------------------------------
-  // Return
-$0:=$v_resolved  // 4D path or file
-
-  // ----------------------------------------------------
-  // End

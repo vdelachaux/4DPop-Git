@@ -1,17 +1,17 @@
 //%attributes = {"invisible":true}
-C_TEXT:C284($0)
-C_TEXT:C284($1)
-
-C_BOOLEAN:C305($b)
-C_LONGINT:C283($l;$length;$pos)
-C_TEXT:C284($t;$tBuffer;$tColor)
-C_OBJECT:C1216($git;$o)
-C_COLLECTION:C1488($c)
+#DECLARE($diff : Text) : Text
 
 If (False:C215)
-	C_TEXT:C284(GIT Diff ;$0)
-	C_TEXT:C284(GIT Diff ;$1)
+	C_TEXT:C284(GIT Diff; $1)
+	C_TEXT:C284(GIT Diff; $0)
 End if 
+
+var $color; $line; $styled : Text
+var $continue : Boolean
+var $indx; $len; $pos : Integer
+var $o : Object
+var $c : Collection
+var $git : cs:C1710.Git
 
 $git:=Form:C1466.git
 
@@ -19,122 +19,119 @@ If ($git.success)
 	
 	If (Length:C16($git.result)>0)
 		
-		$c:=Split string:C1554($git.result;"\n";sk ignore empty strings:K86:1)
+		$c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1)
 		
-		  // Delete the initial lines
-		$b:=True:C214
+		// Delete the initial lines
+		$continue:=True:C214
 		
-		While ($c.length>0) & $b
+		While ($c.length>0) & $continue
 			
-			$b:=(Position:C15("@";String:C10($c[0]))#1)
+			$continue:=(Position:C15("@"; String:C10($c[0]))#1)
 			
-			If ($b)
+			If ($continue)
 				
-				$c.remove(0;1)
+				$c.remove(0; 1)
 				
 			End if 
 		End while 
 		
 		If ($c.length>0)
 			
-			$l:=0
-			
 			Case of 
 					
-					  //______________________________________________________
-				: ($1="A")\
-					 | ($1="??")
+					//______________________________________________________
+				: ($diff="A")\
+					 | ($diff="??")
 					
-					ST SET TEXT:C1115($t;$c.join("\n");ST Start text:K78:15;ST End text:K78:16)
-					ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
-						Attribute text color:K65:7;"green")
+					ST SET TEXT:C1115($styled; $c.join("\n"); ST Start text:K78:15; ST End text:K78:16)
+					ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; \
+						Attribute text color:K65:7; "green")
 					
-					  //______________________________________________________
-				: ($1="@D@")
+					//______________________________________________________
+				: ($diff="@D@")
 					
-					ST SET TEXT:C1115($t;$c.join("\n");ST Start text:K78:15;ST End text:K78:16)
-					ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
-						Attribute text color:K65:7;"red")
+					ST SET TEXT:C1115($styled; $c.join("\n"); ST Start text:K78:15; ST End text:K78:16)
+					ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; \
+						Attribute text color:K65:7; "red")
 					
-					  //______________________________________________________
+					//______________________________________________________
 				Else 
 					
-					For each ($tBuffer;$c)
+					For each ($line; $c)
 						
-						If (Length:C16($tBuffer)>0)
+						If (Length:C16($line)>0)
 							
-							$tColor:="gray"
+							$color:="gray"
 							
 							Case of 
 									
-									  //…………………………………………………………………………………………………
-								: ($tBuffer[[1]]="-")
+									//…………………………………………………………………………………………………
+								: ($line[[1]]="-")
 									
-									$tColor:="red"
+									$color:="red"
 									
-									  //…………………………………………………………………………………………………
-								: ($tBuffer[[1]]="+")
+									//…………………………………………………………………………………………………
+								: ($line[[1]]="+")
 									
-									$tColor:="green"
+									$color:="green"
 									
-									  //…………………………………………………………………………………………………
-								: (Character code:C91($tBuffer[[1]])=Character code:C91("@"))
+									//…………………………………………………………………………………………………
+								: (Character code:C91($line[[1]])=Character code:C91("@"))
 									
-									$tBuffer:="\n"+$tBuffer
+									$line:="\n"+$line
 									
-									  //…………………………………………………………………………………………………
-								: ($tBuffer[[1]]="\\")
+									//…………………………………………………………………………………………………
+								: ($line[[1]]="\\")
 									
-									$tBuffer:=Delete string:C232($tBuffer;1;1)
+									$line:=Delete string:C232($line; 1; 1)
 									
-									  //…………………………………………………………………………………………………
+									//…………………………………………………………………………………………………
 							End case 
 							
-							ST SET TEXT:C1115($t;$tBuffer;ST Start text:K78:15;ST End text:K78:16)
-							ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
-								Attribute text color:K65:7;$tColor)
+							ST SET TEXT:C1115($styled; $line; ST Start text:K78:15; ST End text:K78:16)
+							ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; \
+								Attribute text color:K65:7; $color)
 							
 						End if 
 						
-						$c[$l]:=$t
-						$l:=$l+1
+						$c[$indx]:=$styled
+						$indx+=1
 						
 					End for each 
 					
-					$t:=$c.join("\n")
+					$styled:=$c.join("\n")
 					
-					$t:=Replace string:C233($t;"<br/>";"")
+					$styled:=Replace string:C233($styled; "<br/>"; "")
 					
-					  // Separate blocks
-					$l:=1
+					// Separate blocks
+					$indx:=1
 					
-					While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$";$t;$l;$pos;$length))
+					While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$"; $styled; $indx; $pos; $len))
 						
 						If ($pos>1)
 							
-							$t:=Substring:C12($t;1;$pos-1)+"\n"+Substring:C12($t;$pos)
+							$styled:=Substring:C12($styled; 1; $pos-1)+"\n"+Substring:C12($styled; $pos)
 							
 						End if 
 						
-						$l:=$l+$length
+						$indx+=$len
 						
 					End while 
 					
-					  // Remove unnecessary line breaks
-					
-					While (Position:C15("\n\n";$t)>0)
+					// Remove unnecessary line breaks
+					While (Position:C15("\n\n"; $styled)>0)
 						
-						$t:=Replace string:C233($t;"\n\n";"\n")
+						$styled:=Replace string:C233($styled; "\n\n"; "\n")
 						
 					End while 
 					
-					If (Position:C15("\n";$t)=1)
+					If (Position:C15("\n"; $styled)=1)
 						
-						$t:=Delete string:C232($t;1;1)
+						$styled:=Delete string:C232($styled; 1; 1)
 						
 					End if 
 					
-					  //______________________________________________________
+					//______________________________________________________
 			End case 
 		End if 
 	End if 
@@ -142,10 +139,10 @@ If ($git.success)
 Else 
 	
 	$o:=$git.history.pop()
-	ST SET TEXT:C1115($t;String:C10($o.cmd)+"\r\r"+String:C10($o.error);ST Start text:K78:15;ST End text:K78:16)
-	ST SET ATTRIBUTES:C1093($t;ST Start text:K78:15;ST End text:K78:16;\
-		Attribute text color:K65:7;"red")
+	ST SET TEXT:C1115($styled; String:C10($o.cmd)+"\r\r"+String:C10($o.error); ST Start text:K78:15; ST End text:K78:16)
+	ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; \
+		Attribute text color:K65:7; "red")
 	
 End if 
 
-$0:=$t
+return $styled

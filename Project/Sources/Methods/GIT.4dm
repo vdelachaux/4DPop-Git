@@ -4,44 +4,24 @@
 // ID[DBC17A31DBA047DEBC0BEA1F2BADF817]
 // Created 6-3-2020 by Vincent de Lachaux
 // ----------------------------------------------------
-// Description:
-//
-// ----------------------------------------------------
-// Declarations
-C_VARIANT:C1683($1)
-
-C_TEXT:C284($t_action)
-C_OBJECT:C1216($git; $o; $o_IN)
-C_VARIANT:C1683($v)
+#DECLARE($in)
 
 If (False:C215)
 	C_VARIANT:C1683(GIT; $1)
 End if 
 
-// ----------------------------------------------------
-// Initialisations
+var $action : Text
+var $v
+var $o : Object
+var $git : cs:C1710.Git
 
-// <NO PARAMETERS REQUIRED>
-
-If (Value type:C1509($1)=Is object:K8:27)
-	
-	$o_IN:=$1
-	$t_action:=String:C10($o_IN.action)
-	
-Else 
-	
-	$t_action:=String:C10($1)
-	
-End if 
-
+$action:=Value type:C1509($in)=Is object:K8:27 ? String:C10($in.action) : String:C10($in)
 $git:=Form:C1466.git
-
-// ----------------------------------------------------
 
 Case of 
 		
 		//______________________________________________________
-	: ($t_action="switch")
+	: ($action="switch")
 		
 		$o:=Form:C1466.$.selector.getParameter("data"; Null:C1517; Is object:K8:27)
 		
@@ -52,7 +32,7 @@ Case of
 		End if 
 		
 		//______________________________________________________
-	: ($t_action="stage")
+	: ($action="stage")
 		
 		For each ($o; Form:C1466.selectedUnstaged)
 			
@@ -61,12 +41,12 @@ Case of
 		End for each 
 		
 		//______________________________________________________
-	: ($t_action="stageAll")
+	: ($action="stageAll")
 		
 		$git.add("all")
 		
 		//______________________________________________________
-	: ($t_action="unstage")
+	: ($action="unstage")
 		
 		For each ($o; Form:C1466.selectedStaged)
 			
@@ -75,7 +55,7 @@ Case of
 		End for each 
 		
 		//______________________________________________________
-	: ($t_action="discard")
+	: ($action="discard")
 		
 		CONFIRM:C162(Get localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); Get localized string:C991("discard"))
 		
@@ -125,12 +105,12 @@ Case of
 		End if 
 		
 		//______________________________________________________
-	: ($t_action="commit")
+	: ($action="commit")
 		
-		$git.commit($o_IN.message; Form:C1466.amend)
+		$git.commit($in.message; Form:C1466.amend)
 		
 		//______________________________________________________
-	: ($t_action="fetch")
+	: ($action="fetch")
 		
 		$o:=progress("Fetching data").setIcon(Form:C1466.logo).setProgress(-1)
 		
@@ -143,7 +123,7 @@ Case of
 		$o.close()
 		
 		//______________________________________________________
-	: ($t_action="pull")
+	: ($action="pull")
 		
 		$o:=progress("Pulling data").setIcon(Form:C1466.logo).setProgress(-1)
 		
@@ -158,7 +138,7 @@ Case of
 		$o.close()
 		
 		//______________________________________________________
-	: ($t_action="push")
+	: ($action="push")
 		
 		$o:=progress("Pushing data").setIcon(Form:C1466.logo).setProgress(-1)
 		
@@ -189,9 +169,3 @@ Form:C1466.ƒ.updateUI()
 
 // Update UI
 Form:C1466.ƒ.refresh()
-
-// ----------------------------------------------------
-// Return
-// <NONE>
-// ----------------------------------------------------
-// End
