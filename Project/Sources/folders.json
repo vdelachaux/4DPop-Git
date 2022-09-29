@@ -24,6 +24,12 @@
 		]
 	},
 	"GIT UI": {
+		"groups": [
+			"MAIN",
+			"PALETT"
+		]
+	},
+	"MAIN": {
 		"methods": [
 			"GIT",
 			"GIT COMMIT LIST",
@@ -38,6 +44,11 @@
 			"GIT",
 			"GIT PATTERN",
 			"GIT SETTINGS"
+		]
+	},
+	"PALETT": {
+		"forms": [
+			"GIT_PALLET"
 		]
 	},
 	"Shared": {

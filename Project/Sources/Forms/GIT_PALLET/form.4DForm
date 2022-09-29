@@ -1,0 +1,92 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"rightMargin": 5,
+	"bottomMargin": 5,
+	"events": [
+		"onLoad",
+		"onActivate"
+	],
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"Static Picture1": {
+					"type": "picture",
+					"top": 5,
+					"left": 5,
+					"width": 34,
+					"height": 37,
+					"picture": "/RESOURCES/Images/logo.png",
+					"pictureFormat": "scaled"
+				},
+				"branch": {
+					"type": "input",
+					"left": 87,
+					"top": 10,
+					"width": 89,
+					"height": 17,
+					"dataSource": "Form:C1466.branch",
+					"enterable": false,
+					"focusable": false,
+					"borderStyle": "none",
+					"fill": "transparent",
+					"fontWeight": "normal",
+					"fontSize": 10
+				},
+				"branch.label": {
+					"type": "text",
+					"text": "Branch",
+					"top": 10,
+					"left": 41,
+					"width": 42,
+					"height": 16,
+					"textAlign": "right",
+					"fontSize": 10
+				},
+				"version": {
+					"type": "input",
+					"left": 87,
+					"top": 27,
+					"width": 89,
+					"height": 17,
+					"dataSource": "Form:C1466.version",
+					"enterable": false,
+					"focusable": false,
+					"borderStyle": "none",
+					"fill": "transparent",
+					"fontWeight": "normal",
+					"fontSize": 10
+				},
+				"version.label": {
+					"type": "text",
+					"text": "4D",
+					"top": 27,
+					"left": 41,
+					"width": 42,
+					"height": 16,
+					"textAlign": "right",
+					"fontWeight": "normal",
+					"fontSize": 10
+				}
+			}
+		}
+	],
+	"geometryStamp": 78,
+	"method": "method.4dm",
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"windowTitle": "git",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed"
+}
