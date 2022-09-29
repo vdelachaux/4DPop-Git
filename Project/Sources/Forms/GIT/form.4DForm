@@ -320,6 +320,7 @@
 					"method": "GIT OBJECTS",
 					"metaSource": "GIT Metas",
 					"fill": "transparent",
+					"horizontalPadding": 2,
 					"columns": [
 						{
 							"header": {
@@ -679,6 +680,7 @@
 					"currentItemSource": "Form:C1466.commitsCurrent",
 					"currentItemPositionSource": "Form:C1466.commitsPosition",
 					"selectedItemsSource": "Form:C1466.commitsSelected",
+					"horizontalPadding": 2,
 					"columns": [
 						{
 							"header": {
@@ -788,12 +790,13 @@
 					"scrollbarHorizontal": "hidden",
 					"visibility": "hidden",
 					"focusable": true,
-					"metaSource": "GIT Metas ",
+					"metaSource": "GIT Metas",
 					"currentItemSource": "Form:C1466.commitFilesCurrent",
 					"currentItemPositionSource": "Form:C1466.commitFilesPosition",
 					"selectedItemsSource": "Form:C1466.commitFilesSelected",
 					"hideFocusRing": true,
 					"fill": "automatic",
+					"horizontalPadding": 2,
 					"columns": [
 						{
 							"header": {

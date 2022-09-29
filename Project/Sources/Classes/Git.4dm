@@ -1,10 +1,13 @@
 Class constructor
 	
 	This:C1470.success:=True:C214
+	
 	This:C1470.error:=""
 	This:C1470.errors:=New collection:C1472
+	
 	This:C1470.warning:=""
 	This:C1470.warnings:=New collection:C1472
+	
 	This:C1470.user:=New object:C1471
 	This:C1470.workingBranch:=New object:C1471
 	This:C1470.branches:=New collection:C1472
@@ -13,124 +16,113 @@ Class constructor
 	This:C1470.remotes:=New collection:C1472
 	This:C1470.stashes:=New collection:C1472
 	This:C1470.tags:=New collection:C1472
-	This:C1470.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14;*).platformPath;fk platform path:K87:2)
+	
+	This:C1470.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
+	
 	This:C1470.git:=This:C1470.workingDirectory.folder(".git")
 	This:C1470.gitignore:=This:C1470.workingDirectory.file(".gitignore")
 	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
-	If (Is macOS)
-		This:C1470.local:=File:C1566("/usr/local/bin/git").exists
-	Else 
-		This:C1470.local:=False
-	End if 
+	
+	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
+	
 	This:C1470.version:=""
 	
 	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
 	
-	This:C1470.init()
+	This:C1470._init()
 	
 /*————————————————————————————————————————————————————————*/
-Function add
+Function add($something)
 	
-	C_VARIANT:C1683($1)
-	C_VARIANT:C1683($v)
+	var $item
 	
 	Case of 
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is text:K8:3)
+			//_____________________________
+		: (Value type:C1509($something)=Is text:K8:3)
 			
 			Case of 
 					
-					  //——————————————————————
-				: ($1="all")  // Update the index and adds new files
+					//——————————————————————
+				: ($something="all")  // Update the index and adds new files
 					
 					This:C1470.result:=New collection:C1472
 					This:C1470.execute("add -A")
 					
-					  //——————————————————————
-				: ($1="update")  // Update the index, but adds no new files
+					//——————————————————————
+				: ($something="update")  // Update the index, but adds no new files
 					
 					This:C1470.result:=New collection:C1472
 					This:C1470.execute("add -u")
 					
-					  //——————————————————————
+					//——————————————————————
 				Else   // Add the given file
 					
-					This:C1470.execute("add "+Char:C90(Quote:K15:44)+String:C10($1)+Char:C90(Quote:K15:44))
+					This:C1470.execute("add "+Char:C90(Quote:K15:44)+$something+Char:C90(Quote:K15:44))
 					
-					  //——————————————————————
+					//——————————————————————
 			End case 
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is collection:K8:32)
+			//_____________________________
+		: (Value type:C1509($something)=Is collection:K8:32)
 			
-			For each ($v;$1)
+			For each ($item; $something)
 				
-				If (Value type:C1509($v)=Is text:K8:3)
+				If (Value type:C1509($item)=Is text:K8:3)
 					
-					This:C1470.execute("add "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
+					This:C1470.execute("add "+Char:C90(Quote:K15:44)+$item+Char:C90(Quote:K15:44))
 					
 				Else 
 					
-					This:C1470.pushError("Wrong type of argument")
+					This:C1470._pushError("Wrong type of argument")
 					
 				End if 
 			End for each 
 			
-			  //_____________________________
+			//_____________________________
 		Else 
 			
-			  // ERROR
+			This:C1470._pushError("Wrong type of argument")
 			
-			  //_____________________________
+			//_____________________________
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function branch
+Function branch($whatToDo : Text; $name : Text; $newName : Text)
 	
-	C_TEXT:C284($1)
-	C_TEXT:C284($2)
-	C_TEXT:C284($3)
-	
-	C_TEXT:C284($t)
-	C_COLLECTION:C1488($c)
-	C_OBJECT:C1216($o)
-	
-	If (Count parameters:C259>=1)
-		
-		$t:=String:C10($1)
-		
-	End if 
+	var $t : Text
+	var $o : Object
+	var $c : Collection
 	
 	Case of 
 			
-			  //———————————————————————————————————
-		: (Length:C16($t)=0)\
-			 | ($t="list")  // Update branch list
+			//———————————————————————————————————
+		: (Length:C16($whatToDo)=0)\
+			 | ($whatToDo="list")  // Update branch list
 			
 			This:C1470.branches:=New collection:C1472
 			
 			If (This:C1470.execute("branch --list -v"))
 				
-				For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
+				For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					
-					$c:=Split string:C1554($t;" ";sk ignore empty strings:K86:1)
+					$c:=Split string:C1554($t; " "; sk ignore empty strings:K86:1)
 					
 					If ($c[0]="*")  // Current branch
 						
 						$o:=New object:C1471(\
-							"name";$c[1];\
-							"ref";$c[2];\
-							"current";True:C214)
+							"name"; $c[1]; \
+							"ref"; $c[2]; \
+							"current"; True:C214)
 						
 						This:C1470.workingBranch:=$o
 						
 					Else 
 						
 						$o:=New object:C1471(\
-							"name";$c[0];\
-							"ref";$c[1];\
-							"current";False:C215)
+							"name"; $c[0]; \
+							"ref"; $c[1]; \
+							"current"; False:C215)
 						
 					End if 
 					
@@ -139,8 +131,8 @@ Function branch
 				End for each 
 			End if 
 			
-			  //———————————————————————————————————
-		: ($t="master")  // Return on the main branch
+			//———————————————————————————————————
+		: ($whatToDo="master") | ($whatToDo="main")  // Return on the main branch
 			
 			If (This:C1470.execute("checkout master"))
 				
@@ -148,71 +140,71 @@ Function branch
 				
 			End if 
 			
-			  //———————————————————————————————————
+			//———————————————————————————————————
 		: (Count parameters:C259<2)\
-			 | (Length:C16(String:C10($2))=0)
+			 | (Length:C16($name)=0)
 			
-			This:C1470.pushError("Missing branch name!")
+			This:C1470._pushError("Missing branch name!")
 			
-			  //———————————————————————————————————
-		: ($t="create")  // Create a new branch
+			//———————————————————————————————————
+		: ($whatToDo="create")  // Create a new branch
 			
-			If (This:C1470.execute("branch "+String:C10($2)))
+			If (This:C1470.execute("branch "+$name))
 				
 				This:C1470.branch()
 				
 			End if 
 			
-			  //———————————————————————————————————
-		: ($t="createAndUse")  // Create a new branch and select it
+			//———————————————————————————————————
+		: ($whatToDo="createAndUse")  // Create a new branch and select it
 			
-			If (This:C1470.execute("checkout -b "+String:C10($2)))
+			If (This:C1470.execute("checkout -b "+$name))
 				
 				This:C1470.branch()
 				
 			End if 
 			
-			  //———————————————————————————————————
-		: ($t="use")  // Select a branch to use
+			//———————————————————————————————————
+		: ($whatToDo="use")  // Select a branch to use
 			
-			If (This:C1470.execute("checkout "+$2+" --no-ff -m Merging branch "+$2))
+			If (This:C1470.execute("checkout "+$name+" --no-ff -m Merging branch "+$name))
 				
 				This:C1470.branch()
 				
 			End if 
 			
-			  //———————————————————————————————————
-		: ($t="merge")  // Merge a branch to the current branch
+			//———————————————————————————————————
+		: ($whatToDo="merge")  // Merge a branch to the current branch
 			
-			If (This:C1470.execute("merge "+String:C10($2)))
+			If (This:C1470.execute("merge "+$name))
 				
 				This:C1470.branch()
 				
 			End if 
 			
-			  //———————————————————————————————————
-		: ($t="delete@")
+			//———————————————————————————————————
+		: ($whatToDo="delete@")
 			
-			If (This:C1470.execute("branch -"+Choose:C955($t="deleteForce";"D";"d")+" "+String:C10($2)))
+			If (This:C1470.execute("branch -"+Choose:C955($whatToDo="deleteForce"; "D"; "d")+" "+$name))
 				
 				This:C1470.branch()
 				
 			End if 
 			
-			  //———————————————————————————————————
+			//———————————————————————————————————
 		: (Count parameters:C259<3)\
-			 | (Length:C16(String:C10($3))=0)
+			 | (Length:C16($newName)=0)
 			
-			This:C1470.pushError("Missing branch new name!")
+			This:C1470._pushError("Missing branch new name!")
 			
-			  //———————————————————————————————————
-		: ($t="rename")  // Rename a branch
+			//———————————————————————————————————
+		: ($whatToDo="rename")  // Rename a branch
 			
-			If (This:C1470.execute("branch -m "+String:C10($2)+" "+String:C10($3)))
+			If (This:C1470.execute("branch -m "+$name+" "+$newName))
 				
-				If (This:C1470.execute("push origin :"+String:C10($2)))
+				If (This:C1470.execute("push origin :"+$name))
 					
-					If (This:C1470.execute("push --set-upstream origin "+String:C10($3)))
+					If (This:C1470.execute("push --set-upstream origin "+$newName))
 						
 						This:C1470.branch()
 						
@@ -220,189 +212,158 @@ Function branch
 				End if 
 			End if 
 			
-			  //———————————————————————————————————
+			//———————————————————————————————————
 			
 		Else 
 			
-			This:C1470.pushError("Unmanaged entrypoint for branch method: "+$t)
+			This:C1470._pushError("Unmanaged entrypoint for branch method: "+$whatToDo)
 			
-			  //———————————————————————————————————
+			//———————————————————————————————————
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function checkout
+Function checkout($something)
 	
-	C_VARIANT:C1683($1)
-	C_VARIANT:C1683($v)
+	var $item
 	
 	Case of 
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is text:K8:3)
+			//_____________________________
+		: (Value type:C1509($something)=Is text:K8:3)
 			
-			This:C1470.execute("checkout -- "+Char:C90(Quote:K15:44)+String:C10($1)+Char:C90(Quote:K15:44))
+			This:C1470.execute("checkout -- "+This:C1470._quoted($something))
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is collection:K8:32)
+			//_____________________________
+		: (Value type:C1509($something)=Is collection:K8:32)
 			
-			For each ($v;$1)
+			For each ($item; $something)
 				
-				If (Value type:C1509($v)=Is text:K8:3)
+				If (Value type:C1509($item)=Is text:K8:3)
 					
-					This:C1470.execute("checkout -- "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
+					This:C1470.execute("checkout -- "+This:C1470._quoted($item))
 					
 				Else 
 					
-					  // ERROR
+					This:C1470._pushError("Wrong type of argument")
 					
 				End if 
 			End for each 
 			
-			  //_____________________________
+			//_____________________________
 		Else 
 			
-			  // ERROR
+			This:C1470._pushError("Wrong type of argument")
 			
-			  //_____________________________
+			//_____________________________
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function commit
-	
-	C_TEXT:C284($1)
-	C_BOOLEAN:C305($2)
-	
-	C_TEXT:C284($t)
+Function commit($message : Text; $amend : Boolean)
 	
 	This:C1470.status()
 	
 	If (This:C1470.changes.length>0)
 		
-		$t:=Choose:C955(Length:C16($1)=0;"Initial commit";$1)
+		$message:=Length:C16($message)=0 ? "Initial commit" : $message
 		
-		If ($2)
+		If ($amend)
 			
 			This:C1470.execute("commit --amend --no-edit")
 			
 		Else 
 			
-			This:C1470.execute("commit -m "+Char:C90(Quote:K15:44)+$t+Char:C90(Quote:K15:44))
+			This:C1470.execute("commit -m "+This:C1470._quoted($message))
 			
 		End if 
 		
 	Else 
 		
-		This:C1470.pushWarning("Nothing to commit")
+		This:C1470._pushWarning("Nothing to commit")
 		
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
-Function diff
+Function diff($pathname : Text; $option : Text)
 	
-	C_TEXT:C284($1)
-	C_TEXT:C284($2)
-	
-	C_BOOLEAN:C305($b)
+	var $success : Boolean
 	
 	If (Count parameters:C259>=2)
 		
-		$b:=This:C1470.execute("diff -w "+String:C10($2)+" -- "+$1)
+		$success:=This:C1470.execute("diff -w "+String:C10($option)+" -- "+This:C1470._quoted($pathname))
 		
 	Else 
 		
-		$b:=This:C1470.execute("diff -w -- '"+$1+"'")
+		$success:=This:C1470.execute("diff -w -- "+This:C1470._quoted($pathname))
 		
 	End if 
 	
-	If ($b)
+	If ($success)
 		
-		This:C1470.result:=Replace string:C233(This:C1470.result;"\r\n";"\n")
-		This:C1470.result:=Replace string:C233(This:C1470.result;"\r";"\n")
+		This:C1470.result:=Replace string:C233(This:C1470.result; "\r\n"; "\n")
+		This:C1470.result:=Replace string:C233(This:C1470.result; "\r"; "\n")
 		
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
-Function diffList
+Function diffList($parent : Text; $current : Text) : Boolean
 	
-	C_BOOLEAN:C305($0)
-	C_TEXT:C284($1;$2)
+	// empty tree id
+	$parent:=Length:C16($parent)=0 ? "4b825dc642cb6eb9a060e54bf8d69288fbee4904" : $parent
 	
-	If ($1="")
-		$1:="4b825dc642cb6eb9a060e54bf8d69288fbee4904"  // empty tree id
-	End if 
-	
-	$0:=This:C1470.execute("diff --name-status "+$1+" "+$2)
+	return This:C1470.execute("diff --name-status "+$parent+" "+$current)
 	
 /*————————————————————————————————————————————————————————*/
-Function diffTool
+Function diffTool($pathname : Text)
 	
-	C_TEXT:C284($1)
+	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS"; "false")
 	
-	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS";"false")
-	
-	This:C1470.execute("difftool -y '"+$1+"'")
+	This:C1470.execute("difftool -y "+This:C1470._quoted($pathname))
 	
 /*————————————————————————————————————————————————————————*/
-Function execute
+Function execute($command : Text; $inputStream : Text) : Boolean
 	
-	C_BOOLEAN:C305($0)
-	C_TEXT:C284($1)
-	C_TEXT:C284($2)
+	var $errorStream; $outputStream : Text
 	
-	C_TEXT:C284($tCMD;$tERROR;$tIN;$tOUT)
-	
-	If (Count parameters:C259>=2)
-		
-		$tIN:=$2
-		
-	End if 
-	
-	If (Count parameters:C259>=1)
-		
-		$tCMD:=$1
-		
-	End if 
-	
-	This:C1470.success:=(Length:C16($tCMD)>0)
+	This:C1470.success:=(Length:C16($command)>0)
 	
 	If (This:C1470.success)
 		
-		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE";"true")
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
 		
 		If (This:C1470.workingDirectory#Null:C1517)
 			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY";String:C10(This:C1470.workingDirectory.platformPath))
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
 			
 		End if 
 		
 		Case of 
 				
-				  //———————————————————————————————
+				//———————————————————————————————
 			: (This:C1470.local)
 				
-				$tCMD:="/usr/local/bin/git "+$tCMD
+				$command:="/usr/local/bin/git "+$command
 				
-				  //———————————————————————————————
+				//———————————————————————————————
 			: (Is Windows:C1573)
 				
-				$tCMD:="Resources/git/git "+$tCMD
+				$command:="Resources/git/git "+$command
 				
-				  //———————————————————————————————
+				//———————————————————————————————
 			Else 
 				
-				$tCMD:="git "+$tCMD
+				$command:="git "+$command
 				
-				  //———————————————————————————————
+				//———————————————————————————————
 		End case 
 		
-		LAUNCH EXTERNAL PROCESS:C811($tCMD;$tIN;$tOUT;$tERROR)
-		This:C1470.success:=Bool:C1537(OK) & (Length:C16($tERROR)=0)
+		LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
+		This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
 		
-		This:C1470.history.insert(0;New object:C1471(\
-			"cmd";"$ "+$tCMD;\
-			"success";This:C1470.success;\
-			"out";$tOUT;\
-			"error";$tERROR))
+		This:C1470.history.insert(0; New object:C1471(\
+			"cmd"; "$ "+$command; \
+			"success"; This:C1470.success; \
+			"out"; $outputStream; \
+			"error"; $errorStream))
 		
 		If (Not:C34(Bool:C1537(This:C1470.debug)))
 			
@@ -415,278 +376,191 @@ Function execute
 		
 		Case of 
 				
-				  //——————————————————————
+				//——————————————————————
 			: (This:C1470.success)
 				
 				This:C1470.error:=""
 				This:C1470.warning:=""
 				
-				This:C1470.result:=$tOUT
+				This:C1470.result:=$outputStream
 				
-				  //——————————————————————
-			: (Length:C16($tERROR)>0)
+				//——————————————————————
+			: (Length:C16($errorStream)>0)
 				
-				This:C1470.pushError(This:C1470.history[0].cmd+" - "+$tERROR)
+				This:C1470._pushError(This:C1470.history[0].cmd+" - "+$errorStream)
 				
-				  //——————————————————————
+				//——————————————————————
 		End case 
 		
 	Else 
 		
-		This:C1470.pushError("Missing command parameter")
+		This:C1470._pushError("Missing command parameter")
 		
 	End if 
 	
-	$0:=This:C1470.success
+	return This:C1470.success
 	
 /*————————————————————————————————————————————————————————*/
-Function fetch
+Function fetch() : Boolean
 	
-	C_BOOLEAN:C305($0)
-	
-	$0:=This:C1470.execute("fetch --tags --all -q")
+	return This:C1470.execute("fetch --tags --all -q")
 	
 /*————————————————————————————————————————————————————————*/
-Function getRemotes
+Function getRemotes()
 	
-	C_TEXT:C284($t)
-	C_COLLECTION:C1488($c)
+	var $t : Text
+	var $c : Collection
 	
 	This:C1470.remotes.clear()
 	
 	If (This:C1470.execute("remote -v"))
 		
-		For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
+		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
-			$c:=Split string:C1554($t;"\t";sk ignore empty strings:K86:1)
+			$c:=Split string:C1554($t; "\t"; sk ignore empty strings:K86:1)
 			
-			If (This:C1470.remotes.query("name=:1";$c[0]).length=0)
+			If (This:C1470.remotes.query("name=:1"; $c[0]).length=0)
 				
 				This:C1470.remotes.push(New object:C1471(\
-					"name";$c[0];\
-					"url";Substring:C12($c[1];1;Position:C15(" (";$c[1])-1)))
+					"name"; $c[0]; \
+					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)))
 				
 			End if 
 		End for each 
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
-Function getTags
+Function getTags()
 	
-	C_TEXT:C284($t)
+	var $t : Text
 	
 	This:C1470.tags.clear()
 	
 	If (This:C1470.execute("tag"))
 		
-		For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
+		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
 			This:C1470.tags.push($t)
 			
 		End for each 
 	End if 
 	
-/*—————————————————————————————————————————————————————-——*/
-Function init
-	
-	C_LONGINT:C283($end;$start)
-	
-	If (This:C1470.execute("init"))
-		
-		If (Not:C34(This:C1470.gitignore.exists))
-			
-			  // Create default gitignore
-			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with LF:K24:22)
-			
-		End if 
-		
-		If (Not:C34(This:C1470.gitattributes.exists))
-			
-			  // Create default gitignore
-			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8";Document with CR:K24:21);"UTF-8";Document with LF:K24:22)
-			
-		End if 
-		
-		  // Ignore file permission
-		This:C1470.execute("config core.filemode false")
-		
-		If (This:C1470.execute("config --get user.name"))
-			
-			This:C1470.user.name:=Replace string:C233(This:C1470.result;"\n";"")
-			
-		End if 
-		
-		If (This:C1470.execute("config --get user.email"))
-			
-			This:C1470.user.email:=Replace string:C233(This:C1470.result;"\n";"")
-			
-		End if 
-		
-		If (This:C1470.execute("version"))
-			
-			This:C1470.version:=Replace string:C233(This:C1470.result;"\n";"")
-			
-			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?";This:C1470.result;1;$start;$end))
-				
-				This:C1470.version:=Substring:C12(This:C1470.result;$start;$end)
-				
-			Else 
-				
-				  // Return full result
-				This:C1470.version:=Replace string:C233(This:C1470.result;"\n";"")
-				
-			End if 
-		End if 
-	End if 
-	
 /*————————————————————————————————————————————————————————*/
-Function open
+Function open($whatToDo : Text)
 	
-	C_TEXT:C284($1)
+	var $errorStream; $outputStream; $inputStream : Text
 	
-	C_TEXT:C284($tIN;$tOUT;$tERROR)
-	
-	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE";"true")
+	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
 	
 	Case of 
 			
-			  //——————————————————————
-		: ($1="terminal")  // Open terminal in the working directory
+			//——————————————————————
+		: ($whatToDo="terminal")  // Open terminal in the working directory
 			
-			LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.workingDirectory.path+"'";$tIN;$tOUT;$tERROR)
+			LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.workingDirectory.path+"'"; $inputStream; $outputStream; $errorStream)
 			
-			  //——————————————————————
-		: ($1="show")  // Open on disk the current directory
+			//——————————————————————
+		: ($whatToDo="show")  // Open on disk the current directory
 			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY";String:C10(This:C1470.workingDirectory.platformPath))
-			LAUNCH EXTERNAL PROCESS:C811("open .";$tIN;$tOUT;$tERROR)
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
+			LAUNCH EXTERNAL PROCESS:C811("open ."; $inputStream; $outputStream; $errorStream)
 			
-			  //——————————————————————
+			//——————————————————————
 	End case 
 	
-	This:C1470.success:=Bool:C1537(OK) & (Length:C16($tERROR)=0)
+	This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
 	
 	Case of 
 			
-			  //——————————————————————
+			//——————————————————————
 		: (This:C1470.success)
 			
 			This:C1470.error:=""
 			
-			  //——————————————————————
-		: (Length:C16($tERROR)>0)
+			//——————————————————————
+		: (Length:C16($errorStream)>0)
 			
-			This:C1470.pushError($tERROR)
+			This:C1470._pushError($errorStream)
 			
-			  //——————————————————————
+			//——————————————————————
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function pull
+Function pull() : Boolean
 	
-	C_BOOLEAN:C305($0)
-	
-	$0:=This:C1470.execute("pull --rebase --autostash origin -q")
+	return This:C1470.execute("pull --rebase --autostash origin -q")
 	
 /*————————————————————————————————————————————————————————*/
-Function push
-	
-	C_BOOLEAN:C305($0)
-	C_TEXT:C284($1;$2)
-	C_OBJECT:C1216($o)
+Function push($origin : Text; $branch : Text) : Boolean
 	
 	If (Count parameters:C259>=2)
 		
-		$0:=This:C1470.execute("push "+String:C10($1)+" "+String:C10($2)+" -q")
+		return This:C1470.execute("push "+$origin+" "+$branch+" -q")
 		
 	Else 
 		
-		$0:=This:C1470.execute("push origin master -q")
+		return This:C1470.execute("push origin master -q")
 		
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
-Function pushError
+Function status()
 	
-	C_TEXT:C284($1)
-	
-	This:C1470.error:=$1
-	This:C1470.errors.push($1)
-	
-/*————————————————————————————————————————————————————————*/
-Function pushWarning
-	
-	C_TEXT:C284($1)
-	
-	This:C1470.warning:=$1
-	This:C1470.warnings.push($1)
-	
-/*————————————————————————————————————————————————————————*/
-Function status
-	
-	C_TEXT:C284($t)
+	var $t : Text
 	
 	This:C1470.changes.clear()
 	
 	If (This:C1470.execute("status -s -uall"))
 		
-		If (Position:C15("\n";String:C10(This:C1470.result))>0)
+		If (Position:C15("\n"; String:C10(This:C1470.result))>0)
 			
-			For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
+			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 				
 				This:C1470.changes.push(New object:C1471(\
-					"status";$t[[1]]+$t[[2]];\
-					"path";Replace string:C233(Delete string:C232($t;1;3);"\"";"")))
+					"status"; $t[[1]]+$t[[2]]; \
+					"path"; Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")))
 				
 			End for each 
 		End if 
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
-Function stash
+Function stash($name : Text)
 	
-	C_TEXT:C284($1)
+	var $line : Text
+	var $o : Object
 	
-	C_TEXT:C284($t)
-	C_OBJECT:C1216($o)
-	
-	ARRAY LONGINT:C221($aLpos;0x0000)
-	ARRAY LONGINT:C221($aLlength;0x0000)
-	
-	If (Count parameters:C259>=1)
-		
-		$t:=String:C10($1)
-		
-	End if 
+	ARRAY LONGINT:C221($pos; 0x0000)
+	ARRAY LONGINT:C221($len; 0x0000)
 	
 	Case of 
 			
-			  //———————————————————————————————————
-		: (Length:C16($t)=0)\
-			 | ($t="list")  // Update list
+			//———————————————————————————————————
+		: (Length:C16($name)=0)\
+			 | ($name="list")  // Update list
 			
 			This:C1470.stashes:=New collection:C1472
 			
 			If (This:C1470.execute("stash list"))
 				
-				For each ($t;Split string:C1554(This:C1470.result;"\n";sk ignore empty strings:K86:1))
+				For each ($line; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					
-					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)(?::\\s([[:alnum:]]{7})\\s([^$]*))?$";$t;1;$aLpos;$aLlength))
+					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)(?::\\s([[:alnum:]]{7})\\s([^$]*))?$"; $line; 1; $pos; $len))
 						
-						If ($aLpos{3}#-1)
+						If ($pos{3}#-1)
 							
 							$o:=New object:C1471(\
-								"name";Substring:C12($t;$aLpos{1};$aLlength{1});\
-								"message";Substring:C12($t;$aLpos{2};$aLlength{2});\
-								"ref";Substring:C12($t;$aLpos{3};$aLlength{3});\
-								"refMessage";Substring:C12($t;$aLpos{4};$aLlength{4})\
+								"name"; Substring:C12($line; $pos{1}; $len{1}); \
+								"message"; Substring:C12($line; $pos{2}; $len{2}); \
+								"ref"; Substring:C12($line; $pos{3}; $len{3}); \
+								"refMessage"; Substring:C12($line; $pos{4}; $len{4})\
 								)
 							
 						Else 
 							
 							$o:=New object:C1471(\
-								"name";Substring:C12($t;$aLpos{1};$aLlength{1});\
-								"message";Substring:C12($t;$aLpos{2};$aLlength{2})\
+								"name"; Substring:C12($line; $pos{1}; $len{1}); \
+								"message"; Substring:C12($line; $pos{2}; $len{2})\
 								)
 							
 						End if 
@@ -697,88 +571,153 @@ Function stash
 				End for each 
 			End if 
 			
-			  //________________________________________
+			//________________________________________
 		Else 
 			
-			This:C1470.pushError("Unmanaged entrypoint for stash method: "+$t)
+			This:C1470._pushError("Unmanaged entrypoint for stash method: "+$name)
 			
-			  //________________________________________
+			//________________________________________
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function unstage
+Function unstage($something)
 	
-	C_VARIANT:C1683($1)
-	
-	C_VARIANT:C1683($v)
+	var $item
 	
 	Case of 
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is text:K8:3)
+			//_____________________________
+		: (Value type:C1509($something)=Is text:K8:3)
 			
-			This:C1470.execute("reset HEAD "+Char:C90(Quote:K15:44)+$1+Char:C90(Quote:K15:44))
+			This:C1470.execute("reset HEAD "+This:C1470._quoted($something))
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is collection:K8:32)
+			//_____________________________
+		: (Value type:C1509($something)=Is collection:K8:32)
 			
-			For each ($v;$1)
+			For each ($item; $something)
 				
-				If (Value type:C1509($v)=Is text:K8:3)
+				If (Value type:C1509($item)=Is text:K8:3)
 					
-					This:C1470.execute("reset HEAD "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
+					This:C1470.execute("reset HEAD "+This:C1470._quoted($item))
 					
 				Else 
 					
-					  // ERROR
+					This:C1470._pushError("Wrong type of argument")
 					
 				End if 
 			End for each 
 			
-			  //_____________________________
+			//_____________________________
 		Else 
 			
-			  // ERROR
+			This:C1470._pushError("Wrong type of argument")
 			
-			  //_____________________________
+			//_____________________________
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function untrack
+Function untrack($something)
 	
-	C_VARIANT:C1683($1)
-	
-	C_VARIANT:C1683($v)
+	var $item
 	
 	Case of 
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is text:K8:3)
+			//_____________________________
+		: (Value type:C1509($something)=Is text:K8:3)
 			
-			This:C1470.execute("rm --cached "+Char:C90(Quote:K15:44)+$1+Char:C90(Quote:K15:44))
+			This:C1470.execute("rm --cached "+This:C1470._quoted($something))
 			
-			  //_____________________________
-		: (Value type:C1509($1)=Is collection:K8:32)
+			//_____________________________
+		: (Value type:C1509($something)=Is collection:K8:32)
 			
-			For each ($v;$1)
+			For each ($item; $something)
 				
-				If (Value type:C1509($v)=Is text:K8:3)
+				If (Value type:C1509($item)=Is text:K8:3)
 					
-					This:C1470.execute("rm --cached "+Char:C90(Quote:K15:44)+$v+Char:C90(Quote:K15:44))
+					This:C1470.execute("rm --cached "+This:C1470._quoted($item))
 					
 				Else 
 					
-					  // ERROR
+					This:C1470._pushError("Wrong type of argument")
 					
 				End if 
 			End for each 
 			
-			  //_____________________________
+			//_____________________________
 		Else 
 			
-			  // ERROR
+			This:C1470._pushError("Wrong type of argument")
 			
-			  //_____________________________
+			//_____________________________
 	End case 
 	
+/*—————————————————————————————————————————————————————-——*/
+Function _init()
+	
+	var $len; $pos : Integer
+	
+	If (This:C1470.execute("init"))
+		
+		If (Not:C34(This:C1470.gitignore.exists))
+			
+			// Create default gitignore
+			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
+			
+		End if 
+		
+		If (Not:C34(This:C1470.gitattributes.exists))
+			
+			// Create default gitignore
+			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
+			
+		End if 
+		
+		// Ignore file permission
+		This:C1470.execute("config core.filemode false")
+		
+		If (This:C1470.execute("config --get user.name"))
+			
+			This:C1470.user.name:=Replace string:C233(This:C1470.result; "\n"; "")
+			
+		End if 
+		
+		If (This:C1470.execute("config --get user.email"))
+			
+			This:C1470.user.email:=Replace string:C233(This:C1470.result; "\n"; "")
+			
+		End if 
+		
+		If (This:C1470.execute("version"))
+			
+			This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
+			
+			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
+				
+				This:C1470.version:=Substring:C12(This:C1470.result; $pos; $len)
+				
+			Else 
+				
+				// Return full result
+				This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
+				
+			End if 
+		End if 
+	End if 
+	
 /*————————————————————————————————————————————————————————*/
+Function _pushError($message : Text)
+	
+	This:C1470.error:=$message
+	This:C1470.errors.push($message)
+	
+/*————————————————————————————————————————————————————————*/
+Function _pushWarning($message : Text)
+	
+	This:C1470.warning:=$message
+	This:C1470.warnings.push($message)
+	
+/*————————————————————————————————————————————————————————*/
+Function _quoted($string : Text) : Text
+	
+	return Char:C90(Quote:K15:44)+$string+Char:C90(Quote:K15:44)
+	

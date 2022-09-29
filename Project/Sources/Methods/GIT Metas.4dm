@@ -1,48 +1,55 @@
 //%attributes = {"invisible":true}
-$0:=New object:C1471
+#DECLARE() : Object
+
+If (False:C215)
+	C_OBJECT:C1216(GIT Metas; $0)
+End if 
 
 Case of 
 		
-		  //  //______________________________________________________
-		  //: (This.status="D")  // Deleted (into commit)
-		
-		  //$0.fill:=Form.colors.deleted
-		
-		  //  //______________________________________________________
-		  //: (This.status="A")  // New (into commit)
-		
-		  //$0.fill:=Form.colors.new
-		
-		  //  //______________________________________________________
-		  //: (This.status="M")  // Modified (into commit)
-		
-		  //$0.fill:=Form.colors.modified
-		
-		  //______________________________________________________
+		//______________________________________________________
 	: (This:C1470.status="??")\
 		 | (This:C1470.status="A@")  // New (staged or not)
 		
-		$0.fill:=Form:C1466.colors.new
+		return New object:C1471(\
+			"fill"; Form:C1466.colors.new)
 		
-		  //______________________________________________________
+		//______________________________________________________
 	: (This:C1470.status="@D@")  // Deleted (staged or not)
 		
-		$0.fill:=Form:C1466.colors.deleted
+		return New object:C1471(\
+			"fill"; Form:C1466.colors.deleted)
 		
-		  //______________________________________________________
+		//______________________________________________________
 	: (This:C1470.status="RM")  // Moved
 		
-		  //
+		//
 		
-		  //______________________________________________________
+		//______________________________________________________
 	: (This:C1470.status="@M@")  // Modified
 		
-		$0.fill:=Form:C1466.colors.modified
+		return New object:C1471(\
+			"fill"; Form:C1466.colors.modified)
 		
-		  //______________________________________________________
+		//  //______________________________________________________
+		//: (This.status="D")  // Deleted (into commit)
+		
+		//$0.fill:=Form.colors.deleted
+		
+		//  //______________________________________________________
+		//: (This.status="A")  // New (into commit)
+		
+		//$0.fill:=Form.colors.new
+		
+		//  //______________________________________________________
+		//: (This.status="M")  // Modified (into commit)
+		
+		//$0.fill:=Form.colors.modified
+		
+		//______________________________________________________
 	Else 
 		
-		  //
+		return New object:C1471
 		
-		  //______________________________________________________
+		//______________________________________________________
 End case 
