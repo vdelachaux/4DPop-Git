@@ -114,7 +114,7 @@
 					"top": 35,
 					"width": 26,
 					"height": 14,
-					"dataSource": "Form:C1466.fetch",
+					"dataSource": "Form:C1466.push",
 					"enterable": false,
 					"focusable": false,
 					"fill": "transparent",
