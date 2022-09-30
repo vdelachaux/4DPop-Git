@@ -88,7 +88,7 @@ Case of
 		
 		Form:C1466.changes:=Form:C1466.git.status()
 		
-		Form:C1466.git.execute("log origin/master..master --format=%h")
+		Form:C1466.git.execute("log origin/master..master --format=%H")
 		Form:C1466.push:=Split string:C1554(Form:C1466.git.result; "\n"; sk ignore empty strings:K86:1).length
 		
 		Form:C1466.git.execute("rev-list origin...HEAD")
