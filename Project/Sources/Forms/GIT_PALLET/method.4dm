@@ -12,6 +12,7 @@ Case of
 		Form:C1466.branch:=""
 		Form:C1466.changes:=0
 		Form:C1466.fetch:=0
+		Form:C1466.push:=0
 		
 		Form:C1466.timer:=30
 		Form:C1466.appVersion:=Application version:C493(*)
@@ -40,6 +41,8 @@ Case of
 		Form:C1466.git:=cs:C1710.Git.new()
 		
 		SET TIMER:C645(-1)
+		
+		
 		
 		//______________________________________________________
 	: ($e.code=On Timer:K2:25)
@@ -85,8 +88,11 @@ Case of
 		
 		Form:C1466.changes:=Form:C1466.git.status()
 		
+		Form:C1466.git.execute("log origin/master..master --format=%h")
+		Form:C1466.push:=Split string:C1554(Form:C1466.git.result; "\n"; sk ignore empty strings:K86:1).length
+		
 		Form:C1466.git.execute("rev-list origin...HEAD")
-		Form:C1466.fetch:=Split string:C1554(Form:C1466.git.result; "\n").length
+		Form:C1466.fetch:=Split string:C1554(Form:C1466.git.result; "\n"; sk ignore empty strings:K86:1).length-Form:C1466.push
 		
 		SET TIMER:C645(60*Form:C1466.timer)
 		
