@@ -401,9 +401,10 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	return This:C1470.success
 	
 /*————————————————————————————————————————————————————————*/
-Function fetch() : Boolean
+Function fetch($depot : Text) : Boolean
 	
-	return This:C1470.execute("fetch --tags --all -q")
+	$depot:=Length:C16($depot)=0 ? "--all" : $depot
+	return This:C1470.execute("fetch --tags "+$depot+" -q")
 	
 /*————————————————————————————————————————————————————————*/
 Function getRemotes()
@@ -504,7 +505,7 @@ Function push($origin : Text; $branch : Text) : Boolean
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
-Function status()
+Function status() : Integer
 	
 	var $t : Text
 	
@@ -523,6 +524,8 @@ Function status()
 			End for each 
 		End if 
 	End if 
+	
+	return This:C1470.changes.length
 	
 /*————————————————————————————————————————————————————————*/
 Function stash($name : Text)
@@ -650,6 +653,17 @@ Function untrack($something)
 			
 			//_____________________________
 	End case 
+	
+/*————————————————————————————————————————————————————————*/
+Function currentBranch() : Text
+	
+	This:C1470.execute("rev-parse --abbrev-ref HEAD")
+	
+	If (This:C1470.success)
+		
+		return Delete string:C232(This:C1470.result; Length:C16(This:C1470.result); 1)
+		
+	End if 
 	
 /*—————————————————————————————————————————————————————-——*/
 Function _init()

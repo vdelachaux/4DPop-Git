@@ -1,10 +1,6 @@
-var $head : Text
+var $branch : Text
 var $success : Boolean
 var $e : Object
-var $file : 4D:C1709.File
-
-ARRAY LONGINT:C221($len; 0)
-ARRAY LONGINT:C221($pos; 0)
 
 $e:=FORM Event:C1606
 
@@ -14,6 +10,9 @@ Case of
 	: ($e.code=On Load:K2:1)
 		
 		Form:C1466.branch:=""
+		Form:C1466.changes:=0
+		Form:C1466.fetch:=0
+		
 		Form:C1466.timer:=30
 		Form:C1466.appVersion:=Application version:C493(*)
 		Form:C1466.digits:=Split string:C1554(Application version:C493; "")
@@ -38,6 +37,8 @@ Case of
 			End if 
 		End if 
 		
+		Form:C1466.git:=cs:C1710.Git.new()
+		
 		SET TIMER:C645(-1)
 		
 		//______________________________________________________
@@ -45,59 +46,49 @@ Case of
 		
 		SET TIMER:C645(0)
 		
-		$file:=Folder:C1567(fk database folder:K87:14; *).file(".git/HEAD")
+		$branch:=Form:C1466.git.currentBranch()
 		
-		If ($file.exists)
+		If ($branch#Form:C1466.branch)
 			
-			$head:=$file.getText()
+			Form:C1466.branch:=$branch
 			
-			If (Match regex:C1019("(?m-si)ref: refs/heads/(.*)$"; $head; 1; $pos; $len))
+			If (Form:C1466.appVersion="A@")
 				
-				If (Substring:C12($head; $pos{1}; $len{1})#Form:C1466.branch)
+				$success:=(Form:C1466.branch="main") || (Form:C1466.branch="master") || (Form:C1466.branch=(Form:C1466.major+(Form:C1466.digits[2]="0" ? "."+Form:C1466.digits[3] : "R"+Form:C1466.digits[2])+"@"))
+				
+			Else 
+				
+				If (Form:C1466.digits[2]#"0")
 					
-					Form:C1466.branch:=Substring:C12($head; $pos{1}; $len{1})
+					$success:=(Form:C1466.branch=(Form:C1466.version)+"@") || (Form:C1466.branch=(Form:C1466.major+"RX"))
 					
-					If (Form:C1466.appVersion="A@")
-						
-						$success:=(Form:C1466.branch="main") || (Form:C1466.branch="master") || (Form:C1466.branch=(Form:C1466.major+(Form:C1466.digits[2]="0" ? "."+Form:C1466.digits[3] : "R"+Form:C1466.digits[2])+"@"))
-						
-					Else 
-						
-						If (Form:C1466.digits[2]#"0")
-							
-							$success:=(Form:C1466.branch=(Form:C1466.version)+"@") || (Form:C1466.branch=(Form:C1466.major+"RX"))
-							
-						Else 
-							
-							$success:=(Form:C1466.branch=(Form:C1466.version)+"@") || (Form:C1466.branch=(Form:C1466.major+".X"))
-							
-						End if 
-					End if 
+				Else 
 					
-					If ($success)
-						
-						OBJECT SET RGB COLORS:C628(*; "branch"; Foreground color:K23:1)
-						OBJECT SET FONT STYLE:C166(*; "branch"; Plain:K14:1)
-						
-					Else 
-						
-						BEEP:C151
-						OBJECT SET RGB COLORS:C628(*; "branch"; "red")
-						OBJECT SET FONT STYLE:C166(*; "branch"; Bold:K14:2)
-						
-					End if 
+					$success:=(Form:C1466.branch=(Form:C1466.version)+"@") || (Form:C1466.branch=(Form:C1466.major+".X"))
+					
 				End if 
 			End if 
 			
-			SET TIMER:C645(60*Form:C1466.timer)
-			
+			If ($success)
+				
+				OBJECT SET RGB COLORS:C628(*; "branch"; Foreground color:K23:1)
+				OBJECT SET FONT STYLE:C166(*; "branch"; Plain:K14:1)
+				
+			Else 
+				
+				BEEP:C151
+				OBJECT SET RGB COLORS:C628(*; "branch"; "red")
+				OBJECT SET FONT STYLE:C166(*; "branch"; Bold:K14:2)
+				
+			End if 
 		End if 
 		
-		//______________________________________________________
+		Form:C1466.changes:=Form:C1466.git.status()
 		
-	Else 
+		Form:C1466.git.execute("rev-list origin...HEAD")
+		Form:C1466.fetch:=Split string:C1554(Form:C1466.git.result; "\n").length
 		
-		// A "Case of" statement should never omit "Else"
+		SET TIMER:C645(60*Form:C1466.timer)
 		
 		//______________________________________________________
 End case 

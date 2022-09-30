@@ -4,7 +4,7 @@
 		"kind": "form"
 	},
 	"rightMargin": 5,
-	"bottomMargin": 5,
+	"bottomMargin": 3,
 	"events": [
 		"onLoad",
 		"onTimer"
@@ -19,7 +19,7 @@
 				"version": {
 					"type": "input",
 					"left": 46,
-					"top": 10,
+					"top": 4,
 					"width": 130,
 					"height": 14,
 					"dataSource": "\"4D \"+Form:C1466.version",
@@ -29,7 +29,8 @@
 					"fill": "transparent",
 					"fontWeight": "normal",
 					"fontSize": 10,
-					"textAlign": "center"
+					"textAlign": "center",
+					"contextMenu": "none"
 				},
 				"Static Picture1": {
 					"type": "picture",
@@ -43,7 +44,7 @@
 				"branch": {
 					"type": "input",
 					"left": 46,
-					"top": 27,
+					"top": 18,
 					"width": 130,
 					"height": 14,
 					"dataSource": "\"branch \"+Form:C1466.branch",
@@ -52,12 +53,82 @@
 					"borderStyle": "none",
 					"fill": "transparent",
 					"fontSize": 10,
-					"textAlign": "center"
+					"textAlign": "center",
+					"contextMenu": "none"
+				},
+				"branch1": {
+					"type": "input",
+					"left": 148,
+					"top": 35,
+					"width": 21,
+					"height": 14,
+					"dataSource": "Form:C1466.changes",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontSize": 10,
+					"dataSourceTypeHint": "integer",
+					"contextMenu": "none",
+					"fontWeight": "bold",
+					"textAlign": "left",
+					"borderStyle": "none"
+				},
+				"Static Picture2": {
+					"type": "picture",
+					"top": 34,
+					"left": 129,
+					"width": 16,
+					"height": 16,
+					"picture": "/RESOURCES/Images/changes.png",
+					"pictureFormat": "scaled"
+				},
+				"branch2": {
+					"type": "input",
+					"left": 45,
+					"top": 35,
+					"width": 26,
+					"height": 14,
+					"dataSource": "Form:C1466.fetch",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontSize": 10,
+					"textAlign": "right",
+					"dataSourceTypeHint": "integer",
+					"contextMenu": "none",
+					"fontWeight": "bold",
+					"borderStyle": "none"
+				},
+				"Static Picture3": {
+					"type": "picture",
+					"top": 34,
+					"left": 73,
+					"width": 16,
+					"height": 16,
+					"picture": "/RESOURCES/Images/swap.png",
+					"pictureFormat": "scaled"
+				},
+				"branch3": {
+					"type": "input",
+					"left": 91,
+					"top": 35,
+					"width": 26,
+					"height": 14,
+					"dataSource": "Form:C1466.fetch",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontSize": 10,
+					"dataSourceTypeHint": "integer",
+					"contextMenu": "none",
+					"fontWeight": "bold",
+					"textAlign": "left",
+					"borderStyle": "none"
 				}
 			}
 		}
 	],
-	"geometryStamp": 90,
+	"geometryStamp": 205,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",
