@@ -14,7 +14,8 @@ Case of
 		Form:C1466.fetch:=0
 		Form:C1466.push:=0
 		
-		Form:C1466.timer:=30
+		Form:C1466.timer:=20
+		
 		Form:C1466.appVersion:=Application version:C493(*)
 		Form:C1466.digits:=Split string:C1554(Application version:C493; "")
 		Form:C1466.major:=Form:C1466.digits[0]+Form:C1466.digits[1]
@@ -41,8 +42,6 @@ Case of
 		Form:C1466.git:=cs:C1710.Git.new()
 		
 		SET TIMER:C645(-1)
-		
-		
 		
 		//______________________________________________________
 	: ($e.code=On Timer:K2:25)
@@ -80,6 +79,7 @@ Case of
 			Else 
 				
 				BEEP:C151
+				
 				OBJECT SET RGB COLORS:C628(*; "branch"; "red")
 				OBJECT SET FONT STYLE:C166(*; "branch"; Bold:K14:2)
 				
