@@ -32,15 +32,6 @@
 					"textAlign": "center",
 					"contextMenu": "none"
 				},
-				"Static Picture1": {
-					"type": "picture",
-					"top": 5,
-					"left": 5,
-					"width": 36,
-					"height": 36,
-					"picture": "/RESOURCES/Images/logo.png",
-					"pictureFormat": "scaled"
-				},
 				"branch": {
 					"type": "input",
 					"left": 46,
@@ -124,11 +115,25 @@
 					"fontWeight": "bold",
 					"textAlign": "left",
 					"borderStyle": "none"
+				},
+				"git": {
+					"type": "button",
+					"text": "",
+					"top": 5,
+					"left": 5,
+					"width": 36,
+					"height": 36,
+					"events": [
+						"onClick"
+					],
+					"icon": "/RESOURCES/Images/git.png",
+					"style": "toolbar",
+					"method": "ObjectMethods/git.4dm"
 				}
 			}
 		}
 	],
-	"geometryStamp": 205,
+	"geometryStamp": 217,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",
