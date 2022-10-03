@@ -88,11 +88,14 @@ Case of
 		
 		Form:C1466.changes:=Form:C1466.git.status()
 		
-		Form:C1466.git.execute("log origin/master..master --format=%H")
+		//Form.git.execute("log origin/master..master --format=%H")
+		Form:C1466.git.execute("log origin/"+Form:C1466.branch+".."+Form:C1466.branch+" --format=%H")
 		Form:C1466.push:=Split string:C1554(Form:C1466.git.result; "\n"; sk ignore empty strings:K86:1).length
 		
-		Form:C1466.git.execute("rev-list origin...HEAD")
-		Form:C1466.fetch:=Split string:C1554(Form:C1466.git.result; "\n"; sk ignore empty strings:K86:1).length-Form:C1466.push
+		Form:C1466.git.execute("rev-list origin...HEAD --single-worktree")
+		var $count : Integer
+		$count:=Split string:C1554(Form:C1466.git.result; "\n"; sk ignore empty strings:K86:1).length-Form:C1466.push
+		Form:C1466.fetch:=$count<0 ? 0 : $count
 		
 		SET TIMER:C645(60*Form:C1466.timer)
 		
