@@ -27,6 +27,9 @@
 		"groups": [
 			"MAIN",
 			"PALETT"
+		],
+		"methods": [
+			"update"
 		]
 	},
 	"MAIN": {
