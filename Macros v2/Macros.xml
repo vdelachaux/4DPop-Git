@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE macros SYSTEM "http://www.4d.com/dtd/2007/macros.dtd">
+<macros>
+  <macro name="update1" in_menu="false" type_ahead="false" in_toolbar="false" method_event="on_create">
+    <text>
+      <method>update</method>
+    </text>
+  </macro>
+  <macro name="update2" in_menu="false" type_ahead="false" in_toolbar="false" method_event="on_save">
+    <text>
+      <method>update</method>
+    </text>
+  </macro>
+</macros>
