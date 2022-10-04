@@ -13,8 +13,8 @@ Case of
 		
 		Form:C1466.branch:=""
 		Form:C1466.changes:=0
-		Form:C1466.fetch:=0
-		Form:C1466.push:=0
+		Form:C1466.fetchNumber:=0
+		Form:C1466.pushNumber:=0
 		
 		Form:C1466.timer:=20
 		
@@ -94,8 +94,8 @@ Case of
 			End if 
 		End if 
 		
-		Form:C1466.fetch:=$git.branchFetchNumber()
-		Form:C1466.push:=$git.branchPushNumber()
+		Form:C1466.fetchNumber:=$git.branchFetchNumber()
+		Form:C1466.pushNumber:=$git.branchPushNumber()
 		Form:C1466.changes:=$git.status()
 		
 		SET TIMER:C645(60*Form:C1466.timer)
