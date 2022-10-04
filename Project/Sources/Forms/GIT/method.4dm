@@ -6,7 +6,7 @@
 var $t : Text
 var $indx : Integer
 var $e; $ƒ; $list; $o : Object
-var $git : cs:C1710.Git
+var $git : cs:C1710.git
 
 Form:C1466.$:=Form:C1466.$ || New object:C1471(\
 "stage"; button("stage"); \

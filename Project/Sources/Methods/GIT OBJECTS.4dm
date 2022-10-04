@@ -10,7 +10,7 @@ var $v
 var $current; $e; $ƒ; $menu : Object
 var $selected : Collection
 var $file; $o : 4D:C1709.File
-var $git : cs:C1710.Git
+var $git : cs:C1710.git
 
 $e:=FORM Event:C1606
 $ƒ:=Form:C1466.$

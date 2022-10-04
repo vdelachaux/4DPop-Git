@@ -11,7 +11,7 @@ var $continue : Boolean
 var $indx; $len; $pos : Integer
 var $o : Object
 var $c : Collection
-var $git : cs:C1710.Git
+var $git : cs:C1710.git
 
 $git:=Form:C1466.git
 
