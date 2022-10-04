@@ -1,0 +1,166 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"events": [
+		"onLoad",
+		"onTimer"
+	],
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"git.version": {
+					"type": "input",
+					"left": 41,
+					"top": 2,
+					"width": 129,
+					"height": 14,
+					"dataSource": "\"4D \"+Form:C1466.version",
+					"enterable": false,
+					"focusable": false,
+					"borderStyle": "none",
+					"fill": "transparent",
+					"fontWeight": "normal",
+					"fontSize": 10,
+					"textAlign": "center",
+					"contextMenu": "none",
+					"visibility": "hidden"
+				},
+				"git.branch": {
+					"type": "input",
+					"left": 41,
+					"top": 15,
+					"width": 129,
+					"height": 14,
+					"dataSource": "\"branch \"+Form:C1466.branch",
+					"enterable": false,
+					"focusable": false,
+					"borderStyle": "none",
+					"fill": "transparent",
+					"fontSize": 10,
+					"textAlign": "center",
+					"contextMenu": "none",
+					"visibility": "hidden"
+				},
+				"git.changes": {
+					"type": "input",
+					"left": 143,
+					"top": 29,
+					"width": 21,
+					"height": 14,
+					"dataSource": "Form:C1466.changes",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontSize": 10,
+					"dataSourceTypeHint": "integer",
+					"contextMenu": "none",
+					"fontWeight": "bold",
+					"textAlign": "left",
+					"borderStyle": "none",
+					"visibility": "hidden"
+				},
+				"git.statusIcon": {
+					"type": "picture",
+					"top": 28,
+					"left": 124,
+					"width": 16,
+					"height": 16,
+					"picture": "/RESOURCES/Images/changes.png",
+					"pictureFormat": "scaled",
+					"visibility": "hidden"
+				},
+				"git.fetch": {
+					"type": "input",
+					"left": 40,
+					"top": 29,
+					"width": 26,
+					"height": 14,
+					"dataSource": "Form:C1466.fetchNumber",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontSize": 10,
+					"textAlign": "right",
+					"dataSourceTypeHint": "integer",
+					"contextMenu": "none",
+					"fontWeight": "bold",
+					"borderStyle": "none",
+					"visibility": "hidden"
+				},
+				"git.todoIcon": {
+					"type": "picture",
+					"top": 28,
+					"left": 68,
+					"width": 16,
+					"height": 16,
+					"picture": "/RESOURCES/Images/swap.png",
+					"pictureFormat": "scaled",
+					"visibility": "hidden"
+				},
+				"git.push": {
+					"type": "input",
+					"left": 86,
+					"top": 29,
+					"width": 26,
+					"height": 14,
+					"dataSource": "Form:C1466.pushNumber",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontSize": 10,
+					"dataSourceTypeHint": "integer",
+					"contextMenu": "none",
+					"fontWeight": "bold",
+					"textAlign": "left",
+					"borderStyle": "none",
+					"visibility": "hidden"
+				},
+				"git": {
+					"type": "button",
+					"text": "",
+					"top": 4,
+					"left": 2,
+					"width": 36,
+					"height": 36,
+					"events": [
+						"onClick"
+					],
+					"icon": "/RESOURCES/Images/git.png",
+					"style": "toolbar",
+					"method": "ObjectMethods/git.4dm"
+				},
+				"git.init": {
+					"type": "button",
+					"text": "Init Repository",
+					"top": 11,
+					"left": 45,
+					"width": 116,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"visibility": "hidden",
+					"method": "ObjectMethods/git.init.4dm"
+				}
+			}
+		}
+	],
+	"geometryStamp": 317,
+	"method": "method.4dm",
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"shared": true,
+	"width": 170,
+	"height": 45
+}

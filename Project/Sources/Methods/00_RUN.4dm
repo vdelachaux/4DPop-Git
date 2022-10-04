@@ -94,7 +94,7 @@ Case of
 			$oForm:=New object:C1471(\
 				"window"; Open form window:C675("GIT"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
 				"project"; File:C1566(Structure file:C489(*); fk platform path:K87:2); \
-				"git"; cs:C1710.Git.new(); \
+				"git"; cs:C1710.git.new(); \
 				"unstaged"; New collection:C1472; \
 				"staged"; New collection:C1472; \
 				"commitSubject"; ""; \

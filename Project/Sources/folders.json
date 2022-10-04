@@ -1,5 +1,8 @@
 {
 	"(git)": {},
+	"(MAIN)": {},
+	"(PALETT)": {},
+	"(WIDGET)": {},
 	"00_DEV": {
 		"methods": [
 			"00_TEST"
@@ -19,20 +22,10 @@
 			"widget"
 		],
 		"classes": [
-			"Git",
 			"jwt"
 		]
 	},
 	"GIT UI": {
-		"groups": [
-			"MAIN",
-			"PALETT"
-		],
-		"methods": [
-			"update"
-		]
-	},
-	"MAIN": {
 		"methods": [
 			"GIT",
 			"GIT COMMIT LIST",
@@ -46,11 +39,8 @@
 		"forms": [
 			"GIT",
 			"GIT PATTERN",
-			"GIT SETTINGS"
-		]
-	},
-	"PALETT": {
-		"forms": [
+			"GIT SETTINGS",
+			"GIT_EXTENSION",
 			"GIT_PALLET"
 		]
 	},
@@ -61,7 +51,10 @@
 	},
 	"trash": {
 		"groups": [
-			"(git)"
+			"(git)",
+			"(MAIN)",
+			"(PALETT)",
+			"(WIDGET)"
 		]
 	}
 }

@@ -26,6 +26,7 @@ Class constructor
 	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
 	
 	This:C1470.version:=""
+	This:C1470.result:=""
 	
 	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
 	
