@@ -403,8 +403,6 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 /*————————————————————————————————————————————————————————*/
 Function fetch($origin : Boolean) : Boolean
 	
-	$all:=Count parameters:C259=0 ? True:C214 : $all
-	
 	return $origin ? This:C1470._fetchCurrent() : This:C1470._fetchAll()
 	
 /*————————————————————————————————————————————————————————*/
