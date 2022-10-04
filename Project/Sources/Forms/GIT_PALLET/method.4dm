@@ -92,18 +92,15 @@ Case of
 		
 		Form:C1466.changes:=$git.status()
 		
-		//$git.execute("log origin/"+Form.branch+".."+Form.branch+" --format=%H")
-		//$git.execute("log origin/master...master --format=%H")
-		$git.execute("log origin/"+Form:C1466.branch+"..."+Form:C1466.branch+" --format=%H")
+		//$git.execute("log origin/"+Form.branch+"..."+Form.branch+" --format=%H")
+		//Form.fetch:=Split string($git.result; "\n"; sk ignore empty strings).length
+		$git.fetch(True:C214)
 		Form:C1466.fetch:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).length
 		
 		//$git.execute("rev-list origin...HEAD --single-worktree")
-		//$count:=Split string($git.result; "\n"; sk ignore empty strings).length-Form.push
-		//Form.fetch:=$count<0 ? 0 : $count
 		
-		
-		//$git.fetchCurrent()
-		//Form.fetch:=Split string($git.result; "\n"; sk ignore empty strings).length
+		$git.execute("rev-list origin/"+Form:C1466.branch+"...HEAD --single-worktree")
+		Form:C1466.push:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).length
 		
 		SET TIMER:C645(60*Form:C1466.timer)
 		
