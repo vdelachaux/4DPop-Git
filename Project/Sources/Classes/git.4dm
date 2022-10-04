@@ -401,10 +401,21 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	return This:C1470.success
 	
 /*————————————————————————————————————————————————————————*/
-Function fetch($depot : Text) : Boolean
+Function fetch($origin : Boolean) : Boolean
 	
-	$depot:=Length:C16($depot)=0 ? "--all" : $depot
-	return This:C1470.execute("fetch --tags "+$depot+" -q")
+	$all:=Count parameters:C259=0 ? True:C214 : $all
+	
+	return $origin ? This:C1470._fetchCurrent() : This:C1470._fetchAll()
+	
+/*————————————————————————————————————————————————————————*/
+Function _fetchAll() : Boolean
+	
+	return This:C1470.execute("fetch --prune --tags --all")
+	
+/*————————————————————————————————————————————————————————*/
+Function _fetchCurrent() : Boolean
+	
+	return This:C1470.execute("fetch --prune --tags origin")
 	
 /*————————————————————————————————————————————————————————*/
 Function getRemotes()
