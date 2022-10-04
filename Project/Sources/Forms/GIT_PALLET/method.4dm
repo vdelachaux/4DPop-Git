@@ -90,17 +90,13 @@ Case of
 			End if 
 		End if 
 		
-		Form:C1466.changes:=$git.status()
-		
-		//$git.execute("log origin/"+Form.branch+"..."+Form.branch+" --format=%H")
-		//Form.fetch:=Split string($git.result; "\n"; sk ignore empty strings).length
 		$git.fetch(True:C214)
 		Form:C1466.fetch:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).length
 		
-		//$git.execute("rev-list origin...HEAD --single-worktree")
-		
 		$git.execute("rev-list origin/"+Form:C1466.branch+"...HEAD --single-worktree")
 		Form:C1466.push:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).length
+		
+		Form:C1466.changes:=$git.status()
 		
 		SET TIMER:C645(60*Form:C1466.timer)
 		
