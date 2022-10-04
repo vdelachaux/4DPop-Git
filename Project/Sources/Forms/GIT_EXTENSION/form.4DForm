@@ -67,17 +67,17 @@
 				},
 				"git.statusIcon": {
 					"type": "picture",
-					"top": 28,
-					"left": 124,
-					"width": 16,
-					"height": 16,
+					"top": 30,
+					"left": 127,
+					"width": 11,
+					"height": 12,
 					"picture": "/RESOURCES/Images/changes.png",
 					"pictureFormat": "scaled",
 					"visibility": "hidden"
 				},
 				"git.fetch": {
 					"type": "input",
-					"left": 40,
+					"left": 41,
 					"top": 29,
 					"width": 26,
 					"height": 14,
@@ -151,7 +151,7 @@
 			}
 		}
 	],
-	"geometryStamp": 317,
+	"geometryStamp": 330,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",
