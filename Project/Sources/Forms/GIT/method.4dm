@@ -276,7 +276,7 @@ Case of
 /*_______________________Remote list_______________________*/
 		$list:=$list.setList($ƒ.selector.getByReference(-22).list).empty()
 		
-		$git.getRemotes()
+		$git.updateRemotes()
 		
 		If ($git.remotes.length>0)
 			
@@ -290,7 +290,7 @@ Case of
 /*_______________________tag list_______________________*/
 		$list:=$list.setList($ƒ.selector.getByReference(-23).list).empty()
 		
-		$git.getTags()
+		$git.updateTags()
 		
 		If ($git.tags.length>0)
 			

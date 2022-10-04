@@ -32,6 +32,110 @@ Class constructor
 	This:C1470._init()
 	
 /*————————————————————————————————————————————————————————*/
+Function execute($command : Text; $inputStream : Text) : Boolean
+	
+	var $errorStream; $outputStream : Text
+	
+	This:C1470.success:=(Length:C16($command)>0)
+	
+	If (This:C1470.success)
+		
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
+		
+		If (This:C1470.workingDirectory#Null:C1517)
+			
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
+			
+		End if 
+		
+		Case of 
+				
+				//———————————————————————————————
+			: (This:C1470.local)
+				
+				$command:="/usr/local/bin/git "+$command
+				
+				//———————————————————————————————
+			: (Is Windows:C1573)
+				
+				$command:="Resources/git/git "+$command
+				
+				//———————————————————————————————
+			Else 
+				
+				$command:="git "+$command
+				
+				//———————————————————————————————
+		End case 
+		
+		LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
+		This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
+		
+		This:C1470.history.insert(0; New object:C1471(\
+			"cmd"; "$ "+$command; \
+			"success"; This:C1470.success; \
+			"out"; $outputStream; \
+			"error"; $errorStream))
+		
+		If (Not:C34(Bool:C1537(This:C1470.debug)))
+			
+			If (This:C1470.history.length>20)
+				
+				This:C1470.history.resize(20)
+				
+			End if 
+		End if 
+		
+		Case of 
+				
+				//——————————————————————
+			: (This:C1470.success)
+				
+				This:C1470.error:=""
+				This:C1470.warning:=""
+				
+				This:C1470.result:=$outputStream
+				
+				//——————————————————————
+			: (Length:C16($errorStream)>0)
+				
+				This:C1470._pushError(This:C1470.history[0].cmd+" - "+$errorStream)
+				
+				//——————————————————————
+		End case 
+		
+	Else 
+		
+		This:C1470._pushError("Missing command parameter")
+		
+	End if 
+	
+	return This:C1470.success
+	
+/*————————————————————————————————————————————————————————*/
+Function status() : Integer
+	
+	var $t : Text
+	
+	This:C1470.changes.clear()
+	
+	If (This:C1470.execute("status -s -uall"))
+		
+		If (Position:C15("\n"; String:C10(This:C1470.result))>0)
+			
+			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
+				
+				This:C1470.changes.push(New object:C1471(\
+					"status"; $t[[1]]+$t[[2]]; \
+					"path"; Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")))
+				
+			End for each 
+		End if 
+	End if 
+	
+	return This:C1470.changes.length
+	
+/*————————————————————————————————————————————————————————*/
 Function add($something)
 	
 	var $item
@@ -86,6 +190,138 @@ Function add($something)
 			
 			//_____________________________
 	End case 
+	
+/*————————————————————————————————————————————————————————*/
+Function untrack($something)
+	
+	var $item
+	
+	Case of 
+			
+			//_____________________________
+		: (Value type:C1509($something)=Is text:K8:3)
+			
+			This:C1470.execute("rm --cached "+This:C1470._quoted($something))
+			
+			//_____________________________
+		: (Value type:C1509($something)=Is collection:K8:32)
+			
+			For each ($item; $something)
+				
+				If (Value type:C1509($item)=Is text:K8:3)
+					
+					This:C1470.execute("rm --cached "+This:C1470._quoted($item))
+					
+				Else 
+					
+					This:C1470._pushError("Wrong type of argument")
+					
+				End if 
+			End for each 
+			
+			//_____________________________
+		Else 
+			
+			This:C1470._pushError("Wrong type of argument")
+			
+			//_____________________________
+	End case 
+	
+/*————————————————————————————————————————————————————————*/
+Function unstage($something)
+	
+	var $item
+	
+	Case of 
+			
+			//_____________________________
+		: (Value type:C1509($something)=Is text:K8:3)
+			
+			This:C1470.execute("reset HEAD "+This:C1470._quoted($something))
+			
+			//_____________________________
+		: (Value type:C1509($something)=Is collection:K8:32)
+			
+			For each ($item; $something)
+				
+				If (Value type:C1509($item)=Is text:K8:3)
+					
+					This:C1470.execute("reset HEAD "+This:C1470._quoted($item))
+					
+				Else 
+					
+					This:C1470._pushError("Wrong type of argument")
+					
+				End if 
+			End for each 
+			
+			//_____________________________
+		Else 
+			
+			This:C1470._pushError("Wrong type of argument")
+			
+			//_____________________________
+	End case 
+	
+/*————————————————————————————————————————————————————————*/
+Function commit($message : Text; $amend : Boolean)
+	
+	This:C1470.status()
+	
+	If (This:C1470.changes.length>0)
+		
+		$message:=Length:C16($message)=0 ? "Initial commit" : $message
+		
+		If ($amend)
+			
+			This:C1470.execute("commit --amend --no-edit")
+			
+		Else 
+			
+			This:C1470.execute("commit -m "+This:C1470._quoted($message))
+			
+		End if 
+		
+	Else 
+		
+		This:C1470._pushWarning("Nothing to commit")
+		
+	End if 
+	
+/*————————————————————————————————————————————————————————*/
+Function fetch($origin : Boolean) : Boolean
+	
+	return $origin ? This:C1470._fetchCurrent() : This:C1470._fetchAll()
+	
+/*————————————————————————————————————————————————————————*/
+Function pull() : Boolean
+	
+	return This:C1470.execute("pull --rebase --autostash origin -q")
+	
+/*————————————————————————————————————————————————————————*/
+Function push($origin : Text; $branch : Text) : Boolean
+	
+	If (Count parameters:C259>=2)
+		
+		return This:C1470.execute("push "+$origin+" "+$branch+" -q")
+		
+	Else 
+		
+		return This:C1470.execute("push origin master -q")
+		
+	End if 
+	
+	//MARK:-branch
+/*————————————————————————————————————————————————————————*/
+Function currentBranch() : Text
+	
+	This:C1470.execute("rev-parse --abbrev-ref HEAD")
+	
+	If (This:C1470.success)
+		
+		return Delete string:C232(This:C1470.result; Length:C16(This:C1470.result); 1)
+		
+	End if 
 	
 /*————————————————————————————————————————————————————————*/
 Function branch($whatToDo : Text; $name : Text; $newName : Text)
@@ -258,30 +494,20 @@ Function checkout($something)
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function commit($message : Text; $amend : Boolean)
+Function branchFetchNumber() : Integer
 	
-	This:C1470.status()
+	This:C1470._fetchCurrent()
 	
-	If (This:C1470.changes.length>0)
-		
-		$message:=Length:C16($message)=0 ? "Initial commit" : $message
-		
-		If ($amend)
-			
-			This:C1470.execute("commit --amend --no-edit")
-			
-		Else 
-			
-			This:C1470.execute("commit -m "+This:C1470._quoted($message))
-			
-		End if 
-		
-	Else 
-		
-		This:C1470._pushWarning("Nothing to commit")
-		
-	End if 
+	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
+/*————————————————————————————————————————————————————————*/
+Function branchPushNumber() : Integer
+	
+	This:C1470.execute("rev-list origin/"+Form:C1466.branch+"...HEAD --single-worktree")
+	
+	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
+	
+	//MARK:-dif
 /*————————————————————————————————————————————————————————*/
 Function diff($pathname : Text; $option : Text)
 	
@@ -319,104 +545,9 @@ Function diffTool($pathname : Text)
 	
 	This:C1470.execute("difftool -y "+This:C1470._quoted($pathname))
 	
+	//MARK:-
 /*————————————————————————————————————————————————————————*/
-Function execute($command : Text; $inputStream : Text) : Boolean
-	
-	var $errorStream; $outputStream : Text
-	
-	This:C1470.success:=(Length:C16($command)>0)
-	
-	If (This:C1470.success)
-		
-		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
-		
-		If (This:C1470.workingDirectory#Null:C1517)
-			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
-			
-		End if 
-		
-		Case of 
-				
-				//———————————————————————————————
-			: (This:C1470.local)
-				
-				$command:="/usr/local/bin/git "+$command
-				
-				//———————————————————————————————
-			: (Is Windows:C1573)
-				
-				$command:="Resources/git/git "+$command
-				
-				//———————————————————————————————
-			Else 
-				
-				$command:="git "+$command
-				
-				//———————————————————————————————
-		End case 
-		
-		LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
-		This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
-		
-		This:C1470.history.insert(0; New object:C1471(\
-			"cmd"; "$ "+$command; \
-			"success"; This:C1470.success; \
-			"out"; $outputStream; \
-			"error"; $errorStream))
-		
-		If (Not:C34(Bool:C1537(This:C1470.debug)))
-			
-			If (This:C1470.history.length>20)
-				
-				This:C1470.history.resize(20)
-				
-			End if 
-		End if 
-		
-		Case of 
-				
-				//——————————————————————
-			: (This:C1470.success)
-				
-				This:C1470.error:=""
-				This:C1470.warning:=""
-				
-				This:C1470.result:=$outputStream
-				
-				//——————————————————————
-			: (Length:C16($errorStream)>0)
-				
-				This:C1470._pushError(This:C1470.history[0].cmd+" - "+$errorStream)
-				
-				//——————————————————————
-		End case 
-		
-	Else 
-		
-		This:C1470._pushError("Missing command parameter")
-		
-	End if 
-	
-	return This:C1470.success
-	
-/*————————————————————————————————————————————————————————*/
-Function fetch($origin : Boolean) : Boolean
-	
-	return $origin ? This:C1470._fetchCurrent() : This:C1470._fetchAll()
-	
-/*————————————————————————————————————————————————————————*/
-Function _fetchAll() : Boolean
-	
-	return This:C1470.execute("fetch --prune --tags --all")
-	
-/*————————————————————————————————————————————————————————*/
-Function _fetchCurrent() : Boolean
-	
-	return This:C1470.execute("fetch --prune --tags origin")
-	
-/*————————————————————————————————————————————————————————*/
-Function getRemotes()
+Function updateRemotes()
 	
 	var $t : Text
 	var $c : Collection
@@ -440,7 +571,7 @@ Function getRemotes()
 	End if 
 	
 /*————————————————————————————————————————————————————————*/
-Function getTags()
+Function updateTags()
 	
 	var $t : Text
 	
@@ -494,47 +625,6 @@ Function open($whatToDo : Text)
 			
 			//——————————————————————
 	End case 
-	
-/*————————————————————————————————————————————————————————*/
-Function pull() : Boolean
-	
-	return This:C1470.execute("pull --rebase --autostash origin -q")
-	
-/*————————————————————————————————————————————————————————*/
-Function push($origin : Text; $branch : Text) : Boolean
-	
-	If (Count parameters:C259>=2)
-		
-		return This:C1470.execute("push "+$origin+" "+$branch+" -q")
-		
-	Else 
-		
-		return This:C1470.execute("push origin master -q")
-		
-	End if 
-	
-/*————————————————————————————————————————————————————————*/
-Function status() : Integer
-	
-	var $t : Text
-	
-	This:C1470.changes.clear()
-	
-	If (This:C1470.execute("status -s -uall"))
-		
-		If (Position:C15("\n"; String:C10(This:C1470.result))>0)
-			
-			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
-				
-				This:C1470.changes.push(New object:C1471(\
-					"status"; $t[[1]]+$t[[2]]; \
-					"path"; Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")))
-				
-			End for each 
-		End if 
-	End if 
-	
-	return This:C1470.changes.length
 	
 /*————————————————————————————————————————————————————————*/
 Function stash($name : Text)
@@ -591,89 +681,7 @@ Function stash($name : Text)
 			//________________________________________
 	End case 
 	
-/*————————————————————————————————————————————————————————*/
-Function unstage($something)
-	
-	var $item
-	
-	Case of 
-			
-			//_____________________________
-		: (Value type:C1509($something)=Is text:K8:3)
-			
-			This:C1470.execute("reset HEAD "+This:C1470._quoted($something))
-			
-			//_____________________________
-		: (Value type:C1509($something)=Is collection:K8:32)
-			
-			For each ($item; $something)
-				
-				If (Value type:C1509($item)=Is text:K8:3)
-					
-					This:C1470.execute("reset HEAD "+This:C1470._quoted($item))
-					
-				Else 
-					
-					This:C1470._pushError("Wrong type of argument")
-					
-				End if 
-			End for each 
-			
-			//_____________________________
-		Else 
-			
-			This:C1470._pushError("Wrong type of argument")
-			
-			//_____________________________
-	End case 
-	
-/*————————————————————————————————————————————————————————*/
-Function untrack($something)
-	
-	var $item
-	
-	Case of 
-			
-			//_____________________________
-		: (Value type:C1509($something)=Is text:K8:3)
-			
-			This:C1470.execute("rm --cached "+This:C1470._quoted($something))
-			
-			//_____________________________
-		: (Value type:C1509($something)=Is collection:K8:32)
-			
-			For each ($item; $something)
-				
-				If (Value type:C1509($item)=Is text:K8:3)
-					
-					This:C1470.execute("rm --cached "+This:C1470._quoted($item))
-					
-				Else 
-					
-					This:C1470._pushError("Wrong type of argument")
-					
-				End if 
-			End for each 
-			
-			//_____________________________
-		Else 
-			
-			This:C1470._pushError("Wrong type of argument")
-			
-			//_____________________________
-	End case 
-	
-/*————————————————————————————————————————————————————————*/
-Function currentBranch() : Text
-	
-	This:C1470.execute("rev-parse --abbrev-ref HEAD")
-	
-	If (This:C1470.success)
-		
-		return Delete string:C232(This:C1470.result; Length:C16(This:C1470.result); 1)
-		
-	End if 
-	
+	//MARK:-[PRIVATE]
 /*—————————————————————————————————————————————————————-——*/
 Function _init()
 	
@@ -720,12 +728,22 @@ Function _init()
 				
 			Else 
 				
-				// Return full result
+				// Store full result
 				This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
 				
 			End if 
 		End if 
 	End if 
+	
+/*————————————————————————————————————————————————————————*/
+Function _fetchAll() : Boolean
+	
+	return This:C1470.execute("fetch --prune --tags --all")
+	
+/*————————————————————————————————————————————————————————*/
+Function _fetchCurrent() : Boolean
+	
+	return This:C1470.execute("fetch --prune --tags origin")
 	
 /*————————————————————————————————————————————————————————*/
 Function _pushError($message : Text)
@@ -743,4 +761,5 @@ Function _pushWarning($message : Text)
 Function _quoted($string : Text) : Text
 	
 	return Char:C90(Quote:K15:44)+$string+Char:C90(Quote:K15:44)
+	
 	

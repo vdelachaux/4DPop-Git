@@ -28,7 +28,7 @@ Case of
 			
 		Else 
 			
-			Form:C1466.version:=Form:C1466.major+Choose:C955(Form:C1466.digits[2]="0"; ("."+Form:C1466.digits[3]); ("R"+Form:C1466.digits[2]))
+			Form:C1466.version:=Form:C1466.major+(Form:C1466.digits[2]="0" ? ("."+Form:C1466.digits[3]) : ("R"+Form:C1466.digits[2]))
 			
 			If (Form:C1466.digits[2]#"0")
 				
@@ -60,17 +60,21 @@ Case of
 			
 			If (Form:C1466.appVersion="A@")
 				
-				$success:=(Form:C1466.branch="main") || (Form:C1466.branch="master") || (Form:C1466.branch=(Form:C1466.major+(Form:C1466.digits[2]="0" ? "."+Form:C1466.digits[3] : "R"+Form:C1466.digits[2])+"@"))
+				$success:=(Form:C1466.branch="main")\
+					 || (Form:C1466.branch="master")\
+					 || (Form:C1466.branch=(Form:C1466.major+(Form:C1466.digits[2]="0" ? "."+Form:C1466.digits[3] : "R"+Form:C1466.digits[2])+"@"))
 				
 			Else 
 				
 				If (Form:C1466.digits[2]#"0")
 					
-					$success:=(Form:C1466.branch=(Form:C1466.version)+"@") || (Form:C1466.branch=(Form:C1466.major+"RX"))
+					$success:=(Form:C1466.branch=(Form:C1466.version)+"@")\
+						 || (Form:C1466.branch=(Form:C1466.major+"RX"))
 					
 				Else 
 					
-					$success:=(Form:C1466.branch=(Form:C1466.version)+"@") || (Form:C1466.branch=(Form:C1466.major+".X"))
+					$success:=(Form:C1466.branch=(Form:C1466.version)+"@")\
+						 || (Form:C1466.branch=(Form:C1466.major+".X"))
 					
 				End if 
 			End if 
@@ -90,12 +94,8 @@ Case of
 			End if 
 		End if 
 		
-		$git.fetch(True:C214)
-		Form:C1466.fetch:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).length
-		
-		$git.execute("rev-list origin/"+Form:C1466.branch+"...HEAD --single-worktree")
-		Form:C1466.push:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).length
-		
+		Form:C1466.fetch:=$git.branchFetchNumber()
+		Form:C1466.push:=$git.branchPushNumber()
 		Form:C1466.changes:=$git.status()
 		
 		SET TIMER:C645(60*Form:C1466.timer)
