@@ -7,6 +7,7 @@
 	"bottomMargin": 3,
 	"events": [
 		"onLoad",
+		"onClick",
 		"onTimer"
 	],
 	"destination": "detailScreen",
@@ -22,8 +23,9 @@
 					"top": 5,
 					"width": 170,
 					"height": 45,
-					"detailForm": "GIT_EXTENSION",
-					"dataSourceTypeHint": "undefined"
+					"detailForm": "EXTENSION",
+					"dataSourceTypeHint": "undefined",
+					"focusable": false
 				}
 			}
 		}

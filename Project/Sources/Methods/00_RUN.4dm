@@ -180,7 +180,7 @@ Case of
 			
 		Else 
 			
-			// USER CANCELLATION 
+			// USER CANCELLATION
 			
 		End if 
 		
@@ -192,9 +192,9 @@ Case of
 		//___________________________________________________________
 	: ($Txt_entryPoint="_init")
 		
-		$o:=menu\
-			.append(":xliff:CommonMenuFile"; menu.file())\
-			.append(":xliff:CommonMenuEdit"; menu.edit())
+		$o:=_o_menu\
+			.append(":xliff:CommonMenuFile"; _o_menu.file())\
+			.append(":xliff:CommonMenuEdit"; _o_menu.edit())
 		
 		// If (Storage.database.isMatrix)
 		//file_Menu($o.ref)

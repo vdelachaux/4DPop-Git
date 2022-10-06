@@ -112,7 +112,7 @@ Case of
 		//______________________________________________________
 	: ($action="fetch")
 		
-		$o:=progress("Fetching data").setIcon(Form:C1466.logo).setProgress(-1)
+		$o:=_o_progress("Fetching data").setIcon(Form:C1466.logo).setProgress(-1)
 		
 		If ($git.fetch())
 			
@@ -125,7 +125,7 @@ Case of
 		//______________________________________________________
 	: ($action="pull")
 		
-		$o:=progress("Pulling data").setIcon(Form:C1466.logo).setProgress(-1)
+		$o:=_o_progress("Pulling data").setIcon(Form:C1466.logo).setProgress(-1)
 		
 		If ($git.pull())
 			
@@ -140,7 +140,7 @@ Case of
 		//______________________________________________________
 	: ($action="push")
 		
-		$o:=progress("Pushing data").setIcon(Form:C1466.logo).setProgress(-1)
+		$o:=_o_progress("Pushing data").setIcon(Form:C1466.logo).setProgress(-1)
 		
 		If (Not:C34($git.push()))
 			

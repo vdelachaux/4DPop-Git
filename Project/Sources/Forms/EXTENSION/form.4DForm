@@ -5,6 +5,7 @@
 	},
 	"events": [
 		"onLoad",
+		"onClick",
 		"onTimer"
 	],
 	"destination": "detailScreen",
@@ -14,7 +15,7 @@
 		},
 		{
 			"objects": {
-				"git.changes": {
+				"changes": {
 					"type": "input",
 					"left": 57,
 					"top": 29,
@@ -32,7 +33,7 @@
 					"visibility": "hidden",
 					"borderStyle": "none"
 				},
-				"git.statusIcon": {
+				"localChangesIcon": {
 					"type": "picture",
 					"top": 30,
 					"left": 41,
@@ -42,7 +43,7 @@
 					"pictureFormat": "scaled",
 					"visibility": "hidden"
 				},
-				"git.version": {
+				"version": {
 					"type": "input",
 					"left": 41,
 					"top": 2,
@@ -58,7 +59,7 @@
 					"visibility": "hidden",
 					"borderStyle": "none"
 				},
-				"git.branch": {
+				"branch": {
 					"type": "input",
 					"left": 41,
 					"top": 16,
@@ -73,7 +74,7 @@
 					"visibility": "hidden",
 					"borderStyle": "none"
 				},
-				"git.fetch": {
+				"fetch": {
 					"type": "input",
 					"left": 99,
 					"top": 29,
@@ -91,7 +92,7 @@
 					"visibility": "hidden",
 					"borderStyle": "none"
 				},
-				"git.todoIcon": {
+				"todo": {
 					"type": "picture",
 					"top": 28,
 					"left": 126,
@@ -101,7 +102,7 @@
 					"pictureFormat": "scaled",
 					"visibility": "hidden"
 				},
-				"git.push": {
+				"push": {
 					"type": "input",
 					"left": 144,
 					"top": 29,
@@ -119,7 +120,7 @@
 					"visibility": "hidden",
 					"borderStyle": "none"
 				},
-				"git": {
+				"openGitWindow": {
 					"type": "button",
 					"text": "",
 					"top": 4,
@@ -130,10 +131,9 @@
 						"onClick"
 					],
 					"icon": "/RESOURCES/Images/git.png",
-					"style": "toolbar",
-					"method": "ObjectMethods/git.4dm"
+					"style": "toolbar"
 				},
-				"git.init": {
+				"initRepository": {
 					"type": "button",
 					"text": "Init Repository",
 					"top": 11,
@@ -143,10 +143,9 @@
 					"events": [
 						"onClick"
 					],
-					"visibility": "hidden",
-					"method": "ObjectMethods/git.init.4dm"
+					"visibility": "hidden"
 				},
-				"git.more": {
+				"more": {
 					"type": "button",
 					"top": 0,
 					"left": 148,
@@ -159,14 +158,12 @@
 					"style": "toolbar",
 					"iconFrames": 4,
 					"visibility": "hidden",
-					"focusable": false,
-					"method": "ObjectMethods/git.more.4dm"
+					"focusable": false
 				}
 			}
 		}
 	],
-	"geometryStamp": 449,
-	"method": "method.4dm",
+	"geometryStamp": 464,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
@@ -176,5 +173,6 @@
 	},
 	"shared": true,
 	"width": 170,
-	"height": 45
+	"height": 45,
+	"method": "EXTENSION"
 }
