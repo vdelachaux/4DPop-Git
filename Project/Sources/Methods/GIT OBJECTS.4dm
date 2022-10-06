@@ -53,7 +53,7 @@ Case of
 				
 				If (Contextual click:C713)
 					
-					$menu:=menu
+					$menu:=_o_menu
 					
 					If ($selected.length=1)
 						
@@ -124,7 +124,7 @@ Case of
 						$o:=File:C1566($current.path)
 						
 						$menu.line()\
-							.append("ignore"; menu\
+							.append("ignore"; _o_menu\
 							.append(Replace string:C233(Get localized string:C991("ignoreFile"); "{file}"; $o.fullName); "ignoreFile")\
 							.append(Replace string:C233(Get localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $o.extension); "ignoreExtension")\
 							.line()\
@@ -313,7 +313,7 @@ Case of
 		//______________________________________________________
 	: ($e.objectName=$ƒ.open.name)
 		
-		$menu:=menu\
+		$menu:=_o_menu\
 			.append("openInTerminal"; "terminal").icon("/RESOURCES/Images/"+Form:C1466.template+"terminal.png")\
 			.append("openInFinder"; "show").icon("/RESOURCES/Images/"+Form:C1466.template+"show.png")\
 			.line()\

@@ -5,27 +5,51 @@
 	"(WIDGET)": {},
 	"00_DEV": {
 		"methods": [
-			"00_TEST"
+			"_o_button",
+			"_o_group",
+			"_o_list",
+			"_o_listbox",
+			"_o_menu",
+			"_o_picture",
+			"_o_progress",
+			"_o_static",
+			"_o_widget",
+			"00_TEST",
+			"COMPILER_o_classes"
 		]
 	},
 	"classes": {
-		"methods": [
-			"button",
-			"COMPILER_classes",
-			"group",
-			"list",
-			"listbox",
-			"menu",
-			"picture",
-			"progress",
-			"static",
-			"widget"
+		"groups": [
+			"ui"
 		],
 		"classes": [
+			"git",
 			"jwt"
 		]
 	},
+	"Component": {
+		"methods": [
+			"00_RUN",
+			"GIT PALLET",
+			"update"
+		]
+	},
+	"EXTENSION": {
+		"methods": [
+			"EXTENSION"
+		],
+		"forms": [
+			"EXTENSION"
+		],
+		"classes": [
+			"EXTENSION"
+		]
+	},
 	"GIT UI": {
+		"groups": [
+			"EXTENSION",
+			"PALETT"
+		],
 		"methods": [
 			"GIT",
 			"GIT COMMIT LIST",
@@ -39,14 +63,41 @@
 		"forms": [
 			"GIT",
 			"GIT PATTERN",
-			"GIT SETTINGS",
-			"GIT_EXTENSION",
-			"GIT_PALLET"
+			"GIT SETTINGS"
+		]
+	},
+	"PALETT": {
+		"forms": [
+			"PALLET"
 		]
 	},
 	"Shared": {
 		"methods": [
 			"4DPop_GIT"
+		]
+	},
+	"ui": {
+		"methods": [
+			"COMPILER_formClasses",
+			"form_spreadToSubforms"
+		],
+		"classes": [
+			"button",
+			"dropDown",
+			"form",
+			"formObject",
+			"group",
+			"input",
+			"listbox",
+			"menu",
+			"picture",
+			"progress",
+			"scrollable",
+			"selector",
+			"stepper",
+			"subform",
+			"thermometer",
+			"widget"
 		]
 	},
 	"trash": {

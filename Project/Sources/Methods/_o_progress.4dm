@@ -18,9 +18,9 @@ C_OBJECT:C1216($o)
 C_VARIANT:C1683($v)
 
 If (False:C215)
-	C_OBJECT:C1216(progress; $0)
-	C_TEXT:C284(progress; $1)
-	C_OBJECT:C1216(progress; $2)
+	C_OBJECT:C1216(_o_progress; $0)
+	C_TEXT:C284(_o_progress; $1)
+	C_OBJECT:C1216(_o_progress; $2)
 End if 
 
 // ----------------------------------------------------
@@ -39,20 +39,20 @@ If (This:C1470[""]=Null:C1517)  // Constructor
 		"stopped"; False:C215; \
 		"title"; ""; \
 		"visible"; True:C214; \
-		"bringToFront"; Formula:C1597(progress("foreground")); \
-		"setStopTitle"; Formula:C1597(progress("setStopTitle"; New object:C1471("value"; String:C10($1)))); \
-		"close"; Formula:C1597(progress("close")); \
-		"hide"; Formula:C1597(progress("hide")); \
-		"hideStop"; Formula:C1597(progress("hideStop")); \
-		"isStopped"; Formula:C1597(progress("isStopped").stopped); \
-		"setIcon"; Formula:C1597(progress("setIcon"; New object:C1471("icon"; $1))); \
-		"setMessage"; Formula:C1597(progress("setMessage"; New object:C1471("value"; String:C10($1); "foreground"; Bool:C1537($2)))); \
-		"position"; Formula:C1597(progress("setPosition"; New object:C1471("x"; $1; "y"; $2; "foreground"; Bool:C1537($2)))); \
-		"setProgress"; Formula:C1597(progress("setProgress"; New object:C1471("progress"; $1))); \
-		"setTitle"; Formula:C1597(progress("setTitle"; New object:C1471("value"; String:C10($1)))); \
-		"show"; Formula:C1597(progress("show"; New object:C1471("foreground"; Bool:C1537($1)))); \
-		"showStop"; Formula:C1597(progress("showStop")); \
-		"forEach"; Formula:C1597(progress("forEach"; New object:C1471("container"; $1; "formula"; $2; "keep"; $3)))\
+		"bringToFront"; Formula:C1597(_o_progress("foreground")); \
+		"setStopTitle"; Formula:C1597(_o_progress("setStopTitle"; New object:C1471("value"; String:C10($1)))); \
+		"close"; Formula:C1597(_o_progress("close")); \
+		"hide"; Formula:C1597(_o_progress("hide")); \
+		"hideStop"; Formula:C1597(_o_progress("hideStop")); \
+		"isStopped"; Formula:C1597(_o_progress("isStopped").stopped); \
+		"setIcon"; Formula:C1597(_o_progress("setIcon"; New object:C1471("icon"; $1))); \
+		"setMessage"; Formula:C1597(_o_progress("setMessage"; New object:C1471("value"; String:C10($1); "foreground"; Bool:C1537($2)))); \
+		"position"; Formula:C1597(_o_progress("setPosition"; New object:C1471("x"; $1; "y"; $2; "foreground"; Bool:C1537($2)))); \
+		"setProgress"; Formula:C1597(_o_progress("setProgress"; New object:C1471("progress"; $1))); \
+		"setTitle"; Formula:C1597(_o_progress("setTitle"; New object:C1471("value"; String:C10($1)))); \
+		"show"; Formula:C1597(_o_progress("show"; New object:C1471("foreground"; Bool:C1537($1)))); \
+		"showStop"; Formula:C1597(_o_progress("showStop")); \
+		"forEach"; Formula:C1597(_o_progress("forEach"; New object:C1471("container"; $1; "formula"; $2; "keep"; $3)))\
 		)
 	
 	$o.progress:=Progress Get Progress($o.id)

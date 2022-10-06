@@ -9,27 +9,27 @@ var $e; $ƒ; $list; $o : Object
 var $git : cs:C1710.git
 
 Form:C1466.$:=Form:C1466.$ || New object:C1471(\
-"stage"; button("stage"); \
-"unstage"; button("unstage"); \
-"menu"; listbox("menu"); \
-"toStage"; listbox("unstaged"); \
-"toComit"; listbox("staged"); \
-"diff"; widget("diff"); \
-"diffTool"; button("diffTool"); \
-"stageAll"; button("stageAll"); \
-"subject"; widget("commitSubject"); \
-"description"; widget("commitDecription"); \
-"commit"; button("commit"); \
-"amend"; button("comitAmend"); \
-"commitment"; widget("commit@"); \
-"commits"; listbox("commits"); \
-"fetch"; button("fetch"); \
-"pull"; button("pull"); \
-"push"; button("push"); \
-"open"; button("open"); \
-"selector"; list(Form:C1466.selector); \
-"remote"; group("fetch;pull;push"); \
-"detailCommit"; listbox("detail_list")\
+"stage"; _o_button("stage"); \
+"unstage"; _o_button("unstage"); \
+"menu"; _o_listbox("menu"); \
+"toStage"; _o_listbox("unstaged"); \
+"toComit"; _o_listbox("staged"); \
+"diff"; _o_widget("diff"); \
+"diffTool"; _o_button("diffTool"); \
+"stageAll"; _o_button("stageAll"); \
+"subject"; _o_widget("commitSubject"); \
+"description"; _o_widget("commitDecription"); \
+"commit"; _o_button("commit"); \
+"amend"; _o_button("comitAmend"); \
+"commitment"; _o_widget("commit@"); \
+"commits"; _o_listbox("commits"); \
+"fetch"; _o_button("fetch"); \
+"pull"; _o_button("pull"); \
+"push"; _o_button("push"); \
+"open"; _o_button("open"); \
+"selector"; _o_list(Form:C1466.selector); \
+"remote"; _o_group("fetch;pull;push"); \
+"detailCommit"; _o_listbox("detail_list")\
 )
 
 $ƒ:=Form:C1466.$
@@ -251,7 +251,7 @@ Case of
 		Form:C1466.menu:=Form:C1466.menu
 		
 /*_______________________Branch list_______________________*/
-		$list:=list($ƒ.selector.getByReference(-21).list).empty()
+		$list:=_o_list($ƒ.selector.getByReference(-21).list).empty()
 		
 		$git.branch()
 		
