@@ -184,7 +184,7 @@ Function update()
 				
 				This:C1470.branch.foregroundColor:=Foreground color:K23:1
 				This:C1470.branch.fontStyle:=Plain:K14:1
-				This:C1470.branch.setHelpTip(Form:C1466.branch+" is the current branch")
+				This:C1470.branch.setHelpTip("\""+Form:C1466.branch+"\" is the current branch")
 				
 			Else 
 				
@@ -195,8 +195,8 @@ Function update()
 			End if 
 		End if 
 		
-		Form:C1466.fetchNumber:=$git.branchFetchNumber()
-		Form:C1466.pushNumber:=$git.branchPushNumber()
+		Form:C1466.fetchNumber:=$git.branchFetchNumber(Form:C1466.branch)
+		Form:C1466.pushNumber:=$git.branchPushNumber(Form:C1466.branch)
 		Form:C1466.changes:=$git.status()
 		
 		This:C1470.gitItems.show()

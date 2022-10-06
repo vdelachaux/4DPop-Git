@@ -495,16 +495,32 @@ Function checkout($something)
 	End case 
 	
 /*————————————————————————————————————————————————————————*/
-Function branchFetchNumber() : Integer
+Function branchFetchNumber($branch : Text) : Integer
 	
-	This:C1470._fetchCurrent()
+	If (Length:C16($branch)>0)
+		
+		This:C1470.execute("git log origin/"+$branch+"..")
+		
+	Else 
+		
+		This:C1470.execute("git log origin..")
+		
+	End if 
 	
 	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
 /*————————————————————————————————————————————————————————*/
-Function branchPushNumber() : Integer
+Function branchPushNumber($branch : Text) : Integer
 	
-	This:C1470.execute("rev-list origin/"+Form:C1466.branch+"...HEAD --single-worktree")
+	If (Length:C16($branch)>0)
+		
+		This:C1470.execute("rev-list origin/"+$branch+"..HEAD --single-worktree")
+		
+	Else 
+		
+		This:C1470.execute("rev-list origin..HEAD --single-worktree")
+		
+	End if 
 	
 	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
