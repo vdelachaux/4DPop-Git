@@ -14,44 +14,11 @@
 		},
 		{
 			"objects": {
-				"git.version": {
-					"type": "input",
-					"left": 41,
-					"top": 2,
-					"width": 129,
-					"height": 14,
-					"dataSource": "\"4D \"+Form:C1466.version",
-					"enterable": false,
-					"focusable": false,
-					"borderStyle": "none",
-					"fill": "transparent",
-					"fontWeight": "normal",
-					"fontSize": 10,
-					"textAlign": "center",
-					"contextMenu": "none",
-					"visibility": "hidden"
-				},
-				"git.branch": {
-					"type": "input",
-					"left": 41,
-					"top": 15,
-					"width": 129,
-					"height": 14,
-					"dataSource": "\"branch \"+Form:C1466.branch",
-					"enterable": false,
-					"focusable": false,
-					"borderStyle": "none",
-					"fill": "transparent",
-					"fontSize": 10,
-					"textAlign": "center",
-					"contextMenu": "none",
-					"visibility": "hidden"
-				},
 				"git.changes": {
 					"type": "input",
-					"left": 143,
+					"left": 57,
 					"top": 29,
-					"width": 21,
+					"width": 37,
 					"height": 14,
 					"dataSource": "Form:C1466.changes",
 					"enterable": false,
@@ -62,22 +29,53 @@
 					"contextMenu": "none",
 					"fontWeight": "bold",
 					"textAlign": "left",
-					"borderStyle": "none",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"borderStyle": "none"
 				},
 				"git.statusIcon": {
 					"type": "picture",
 					"top": 30,
-					"left": 127,
+					"left": 41,
 					"width": 11,
 					"height": 12,
 					"picture": "/RESOURCES/Images/changes.png",
 					"pictureFormat": "scaled",
 					"visibility": "hidden"
 				},
-				"git.fetch": {
+				"git.version": {
 					"type": "input",
 					"left": 41,
+					"top": 2,
+					"width": 105,
+					"height": 14,
+					"dataSource": "\"4D \"+Form:C1466.version",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontWeight": "normal",
+					"fontSize": 10,
+					"contextMenu": "none",
+					"visibility": "hidden",
+					"borderStyle": "none"
+				},
+				"git.branch": {
+					"type": "input",
+					"left": 41,
+					"top": 16,
+					"width": 105,
+					"height": 14,
+					"dataSource": "\"branch \"+Form:C1466.branch",
+					"enterable": false,
+					"focusable": false,
+					"fill": "transparent",
+					"fontSize": 10,
+					"contextMenu": "none",
+					"visibility": "hidden",
+					"borderStyle": "none"
+				},
+				"git.fetch": {
+					"type": "input",
+					"left": 99,
 					"top": 29,
 					"width": 26,
 					"height": 14,
@@ -90,13 +88,13 @@
 					"dataSourceTypeHint": "integer",
 					"contextMenu": "none",
 					"fontWeight": "bold",
-					"borderStyle": "none",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"borderStyle": "none"
 				},
 				"git.todoIcon": {
 					"type": "picture",
 					"top": 28,
-					"left": 68,
+					"left": 126,
 					"width": 16,
 					"height": 16,
 					"picture": "/RESOURCES/Images/swap.png",
@@ -105,7 +103,7 @@
 				},
 				"git.push": {
 					"type": "input",
-					"left": 86,
+					"left": 144,
 					"top": 29,
 					"width": 26,
 					"height": 14,
@@ -118,8 +116,8 @@
 					"contextMenu": "none",
 					"fontWeight": "bold",
 					"textAlign": "left",
-					"borderStyle": "none",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"borderStyle": "none"
 				},
 				"git": {
 					"type": "button",
@@ -139,19 +137,35 @@
 					"type": "button",
 					"text": "Init Repository",
 					"top": 11,
-					"left": 45,
-					"width": 116,
+					"left": 41,
+					"width": 122,
 					"height": 22,
 					"events": [
 						"onClick"
 					],
 					"visibility": "hidden",
 					"method": "ObjectMethods/git.init.4dm"
+				},
+				"git.more": {
+					"type": "button",
+					"top": 0,
+					"left": 148,
+					"width": 22,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"icon": "/RESOURCES/Images/more.png",
+					"style": "toolbar",
+					"iconFrames": 4,
+					"visibility": "hidden",
+					"focusable": false,
+					"method": "ObjectMethods/git.more.4dm"
 				}
 			}
 		}
 	],
-	"geometryStamp": 330,
+	"geometryStamp": 449,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",
