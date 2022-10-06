@@ -497,17 +497,35 @@ Function checkout($something)
 /*————————————————————————————————————————————————————————*/
 Function branchFetchNumber($branch : Text) : Integer
 	
+	var $local; $remote; $t : Text
+	var $i : Integer
+	
 	If (Length:C16($branch)>0)
 		
-		This:C1470.execute("git log origin/"+$branch+"..")
+		$local:=Substring:C12(This:C1470.git.folder("refs/heads").file($branch).getText(); 1; 7)
+		$remote:=Substring:C12(This:C1470.git.folder("refs/remotes/origin").file($branch).getText(); 1; 7)
+		
+		This:C1470.execute("log "+$local+".."+$remote)
+		
+		$i:=0
+		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
+			
+			$i+=Num:C11($t="commit @")
+			
+		End for each 
+		
+		return $i
 		
 	Else 
 		
-		This:C1470.execute("git log origin..")
+		This:C1470.execute("log origin..")
 		
+		If (Match regex:C1019("(?m-si)^[[:xdigit:]]{5,}"; This:C1470.result; 1; *))
+			
+			return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length-1
+			
+		End if 
 	End if 
-	
-	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
 /*————————————————————————————————————————————————————————*/
 Function branchPushNumber($branch : Text) : Integer
