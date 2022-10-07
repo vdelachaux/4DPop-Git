@@ -167,31 +167,35 @@ Function append($item; $param; $mark : Boolean) : cs:C1710.menu
 					
 					If (Asserted:C1132(OB Instance of:C1731($param; cs:C1710.menu)))
 						
-						If (This:C1470.metacharacters)
+						If ($param.itemCount()>0)  // Don't do it if there are no items in the sub-menu
 							
-							APPEND MENU ITEM:C411(This:C1470.ref; $t; $param.ref)
+							If (This:C1470.metacharacters)
+								
+								APPEND MENU ITEM:C411(This:C1470.ref; $t; $param.ref)
+								
+							Else 
+								
+								APPEND MENU ITEM:C411(This:C1470.ref; $t; $param.ref; *)
+								
+							End if 
 							
-						Else 
+							// Keep the sub-menu structure
+							This:C1470.submenus.push($param)
 							
-							APPEND MENU ITEM:C411(This:C1470.ref; $t; $param.ref; *)
-							
+							// Keep datas, if any
+							For each ($o; $param.data)
+								
+								This:C1470.data.push($o)
+								
+							End for each 
 						End if 
-						
-						// Keep the sub-menu structure
-						This:C1470.submenus.push($param)
-						
-						// Keep datas, if any
-						For each ($o; $param.data)
-							
-							This:C1470.data.push($o)
-							
-						End for each 
 						
 						If ($param.autoRelease)
 							
 							RELEASE MENU:C978($param.ref)
 							
 						End if 
+						
 					End if 
 					
 				Else 

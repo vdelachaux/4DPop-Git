@@ -55,24 +55,26 @@ Function handleEvents($e : Object)
 		
 	Else   // <== WIDGETS METHOD
 		
+		var $git : cs:C1710.git
+		$git:=This:C1470.gitInstance
+		
 		Case of 
 				
 				//==============================================
 			: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
 				
-				This:C1470.git:=cs:C1710.git.new()
+				This:C1470.gitInstance:=cs:C1710.git.new()
 				This:C1470.refresh()
 				
 				//==============================================
 			: (This:C1470.more.catch($e; On Clicked:K2:4))
 				
 				var $menu : cs:C1710.menu
-				
 				$menu:=cs:C1710.menu.new()\
 					.append("Open in Terminal"; "terminal")\
 					.append("Open in Finder"; "show")\
 					.line()\
-					.append("View on Github"; "github").enable(This:C1470.gitInstance.execute("config --get remote.origin.url"))\
+					.append("View on Github"; "github").enable($git.execute("config --get remote.origin.url"))\
 					.line()\
 					.append("Refresh"; "refresh")
 				
@@ -84,12 +86,12 @@ Function handleEvents($e : Object)
 						: ($menu.choice="terminal")\
 							 | ($menu.choice="show")
 							
-							This:C1470.gitInstance.open($menu.choice)
+							$git.open($menu.choice)
 							
 							//———————————————————————————————————————
 						: ($menu.choice="github")
 							
-							OPEN URL:C673(Replace string:C233(This:C1470.gitInstance.result; "\n"; ""))
+							OPEN URL:C673(Replace string:C233($git.result; "\n"; ""))
 							
 							//———————————————————————————————————————
 						: ($menu.choice="refresh")
@@ -98,6 +100,116 @@ Function handleEvents($e : Object)
 							
 							//______________________________________________________
 					End case 
+				End if 
+				
+				//==============================================
+			: (This:C1470.changes.catch($e; On Clicked:K2:4))
+				
+				var $o : Object
+				var $c : Collection
+				var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
+				
+				If ($git.status()>0)
+					
+					$classes:=cs:C1710.menu.new()
+					$forms:=cs:C1710.menu.new()
+					$methods:=cs:C1710.menu.new()
+					$others:=cs:C1710.menu.new()
+					
+					For each ($o; $git.changes.orderBy("path"))
+						
+						$c:=Split string:C1554($o.path; "/")
+						
+						Case of 
+								
+								//______________________________________________________
+							: ($c.indexOf("Classes")=2)
+								
+								$classes.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path)
+								
+								//______________________________________________________
+							: ($c.indexOf("Forms")=2)
+								
+								
+								Case of 
+										//______________________________________________________
+									: ($c[$c.length-1]="form.4DForm")
+										
+										$forms.append($c[3]; $o.path)
+										
+										//______________________________________________________
+									: ($c.indexOf("ObjectMethods")=4)
+										
+										$forms.append(Replace string:C233($c.remove(0; 3).remove(1; 1).join("/"); ".4dm"; ""); $o.path)
+										
+										//______________________________________________________
+									Else 
+										
+										$forms.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dform"; ""); $o.path)
+										
+										//______________________________________________________
+								End case 
+								
+								//______________________________________________________
+							: ($c.indexOf("Methods")=2)
+								
+								$methods.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path)
+								
+								//______________________________________________________
+							Else 
+								
+								$others.append($c.remove(0; 2).join("/"); File:C1566($o.path))
+								
+								//______________________________________________________
+						End case 
+					End for each 
+					
+					$menu:=cs:C1710.menu.new()
+					
+					$menu.append("Classes"; $classes)
+					$menu.append("Methods"; $methods)
+					$menu.append("Forms"; $forms)
+					$menu.append("Others"; $others)
+					
+					If ($menu.popup(This:C1470.changes).selected)
+						
+						var $target
+						$target:=GIT Path($menu.choice)
+						
+						Case of 
+								
+								//——————————————————————————————————
+							: (Value type:C1509($target)=Is text:K8:3)  // Classe, Method
+								
+								If ($target="@.4DForm")
+									
+									FORM EDIT:C1749(String:C10(Split string:C1554($target; "/")[0]))
+									
+								Else 
+									
+									METHOD OPEN PATH:C1213($target; *)
+									
+								End if 
+								
+								//——————————————————————————————————
+							: (Value type:C1509($target)=Is object:K8:27)  // File
+								
+								If (Bool:C1537($target.exists))
+									
+									If ($target.extension=".4dform")
+										
+										FORM EDIT:C1749(String:C10($target.parent.fullName))
+										
+									Else 
+										
+										OPEN URL:C673($target.platformPath)
+										
+									End if 
+								End if 
+								
+								//——————————————————————————————————
+						End case 
+					End if 
 				End if 
 				
 				//==============================================
