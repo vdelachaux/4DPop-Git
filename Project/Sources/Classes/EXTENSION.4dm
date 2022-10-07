@@ -14,7 +14,6 @@ Function init()
 	var $group : cs:C1710.group
 	
 	$group:=This:C1470.group("gitItems")
-	This:C1470.input("version").addToGroup($group)
 	This:C1470.input("branch").addToGroup($group)
 	This:C1470.formObject("localChangesIcon").addToGroup($group)
 	This:C1470.input("changes").addToGroup($group)
@@ -70,13 +69,29 @@ Function handleEvents($e : Object)
 				var $menu : cs:C1710.menu
 				
 				$menu:=cs:C1710.menu.new()\
+					.append("Open in Terminal"; "terminal")\
+					.append("Open in Finder"; "show")\
+					.line()\
+					.append("View on Github"; "github").enable(This:C1470.gitInstance.execute("config --get remote.origin.url"))\
+					.line()\
 					.append("Refresh"; "refresh")
 				
-				If ($menu.popup().selected)
+				If ($menu.popup(This:C1470.more).selected)
 					
 					Case of 
 							
-							//______________________________________________________
+							//———————————————————————————————————————
+						: ($menu.choice="terminal")\
+							 | ($menu.choice="show")
+							
+							This:C1470.gitInstance.open($menu.choice)
+							
+							//———————————————————————————————————————
+						: ($menu.choice="github")
+							
+							OPEN URL:C673(Replace string:C233(This:C1470.gitInstance.result; "\n"; ""))
+							
+							//———————————————————————————————————————
 						: ($menu.choice="refresh")
 							
 							This:C1470.refresh()
@@ -153,7 +168,7 @@ Function update()
 	
 	If ($git#Null:C1517)
 		
-		$branch:=$git.currentBranch()
+		$branch:=$git.currentBranch
 		
 		If ($branch#Form:C1466.branch)
 			
@@ -184,19 +199,19 @@ Function update()
 				
 				This:C1470.branch.foregroundColor:=Foreground color:K23:1
 				This:C1470.branch.fontStyle:=Plain:K14:1
-				This:C1470.branch.setHelpTip("\""+Form:C1466.branch+"\" is the current branch")
+				This:C1470.branch.setHelpTip("\""+$branch+"\" is the current branch")
 				
 			Else 
 				
 				This:C1470.branch.foregroundColor:="red"
 				This:C1470.branch.fontStyle:=Bold:K14:2
-				This:C1470.branch.setHelpTip("WARNING:\n\nYou are editing the \""+$branch+"\" branch of \""+File:C1566("/PACKAGE/.git/HEAD"; *).parent.parent.name+"\" with a "+Form:C1466.version+" version of 4D.")
+				This:C1470.branch.setHelpTip("WARNING:\nYou are editing the \""+$branch+"\" branch of \""+Folder:C1567("/PACKAGE"; *).name+"\" \nwith a "+Form:C1466.version+" version of 4D.")
 				
 			End if 
 		End if 
 		
-		Form:C1466.fetchNumber:=$git.branchFetchNumber(Form:C1466.branch)
-		Form:C1466.pushNumber:=$git.branchPushNumber(Form:C1466.branch)
+		Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
+		Form:C1466.pushNumber:=$git.branchPushNumber($branch)
 		Form:C1466.changes:=$git.status()
 		
 		This:C1470.gitItems.show()

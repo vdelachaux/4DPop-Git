@@ -18,7 +18,7 @@
 				"changes": {
 					"type": "input",
 					"left": 57,
-					"top": 29,
+					"top": 23,
 					"width": 37,
 					"height": 14,
 					"dataSource": "Form:C1466.changes",
@@ -35,7 +35,7 @@
 				},
 				"localChangesIcon": {
 					"type": "picture",
-					"top": 30,
+					"top": 24,
 					"left": 41,
 					"width": 11,
 					"height": 12,
@@ -43,26 +43,10 @@
 					"pictureFormat": "scaled",
 					"visibility": "hidden"
 				},
-				"version": {
-					"type": "input",
-					"left": 41,
-					"top": 2,
-					"width": 105,
-					"height": 14,
-					"dataSource": "\"4D \"+Form:C1466.version",
-					"enterable": false,
-					"focusable": false,
-					"fill": "transparent",
-					"fontWeight": "normal",
-					"fontSize": 10,
-					"contextMenu": "none",
-					"visibility": "hidden",
-					"borderStyle": "none"
-				},
 				"branch": {
 					"type": "input",
 					"left": 41,
-					"top": 16,
+					"top": 4,
 					"width": 105,
 					"height": 14,
 					"dataSource": "\"branch \"+Form:C1466.branch",
@@ -77,7 +61,7 @@
 				"fetch": {
 					"type": "input",
 					"left": 99,
-					"top": 29,
+					"top": 23,
 					"width": 26,
 					"height": 14,
 					"dataSource": "Form:C1466.fetchNumber",
@@ -94,7 +78,7 @@
 				},
 				"todo": {
 					"type": "picture",
-					"top": 28,
+					"top": 22,
 					"left": 126,
 					"width": 16,
 					"height": 16,
@@ -105,7 +89,7 @@
 				"push": {
 					"type": "input",
 					"left": 144,
-					"top": 29,
+					"top": 23,
 					"width": 26,
 					"height": 14,
 					"dataSource": "Form:C1466.pushNumber",
@@ -133,18 +117,6 @@
 					"icon": "/RESOURCES/Images/git.png",
 					"style": "toolbar"
 				},
-				"initRepository": {
-					"type": "button",
-					"text": "Init Repository",
-					"top": 11,
-					"left": 41,
-					"width": 122,
-					"height": 22,
-					"events": [
-						"onClick"
-					],
-					"visibility": "hidden"
-				},
 				"more": {
 					"type": "button",
 					"top": 0,
@@ -159,16 +131,34 @@
 					"iconFrames": 4,
 					"visibility": "hidden",
 					"focusable": false
+				},
+				"initRepository": {
+					"type": "button",
+					"text": "Init Repository",
+					"top": 11,
+					"left": 41,
+					"width": 122,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"visibility": "hidden"
 				}
 			}
 		}
 	],
-	"geometryStamp": 464,
+	"geometryStamp": 477,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
 		"views": {
-			"View 1": {}
+			"View 1": {},
+			"Init": {
+				"visible": false,
+				"objects": [
+					"initRepository"
+				]
+			}
 		}
 	},
 	"shared": true,
