@@ -17,9 +17,11 @@ Class constructor
 	This:C1470.stashes:=New collection:C1472
 	This:C1470.tags:=New collection:C1472
 	
+	This:C1470.HEAD:=""
+	
 	This:C1470.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
 	
-	This:C1470.git:=This:C1470.workingDirectory.folder(".git")
+	This:C1470.root:=This:C1470.workingDirectory.folder(".git")
 	This:C1470.gitignore:=This:C1470.workingDirectory.file(".gitignore")
 	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
 	
@@ -30,7 +32,91 @@ Class constructor
 	
 	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
 	
-	This:C1470._init()
+	If (This:C1470.root.exist)
+		
+		This:C1470.update()
+		
+	Else 
+		
+		This:C1470.init()
+		
+	End if 
+	
+/*————————————————————————————————————————————————————————*/
+Function get currentBranch() : Text
+	
+	var $t : Text
+	var $c : Collection
+	
+	$t:=Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5)
+	$c:=Split string:C1554($t; "\r"; sk ignore empty strings:K86:1)
+	$c:=Split string:C1554($c[0]; "/")
+	return $c[$c.length-1]
+	
+	//mark:-
+/*—————————————————————————————————————————————————————-——*/
+Function init()
+	
+	var $len; $pos : Integer
+	
+	If (This:C1470.execute("init"))
+		
+		If (Not:C34(This:C1470.gitignore.exists))
+			
+			// Create default gitignore
+			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
+			
+		End if 
+		
+		If (Not:C34(This:C1470.gitattributes.exists))
+			
+			// Create default gitignore
+			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
+			
+		End if 
+		
+		// Ignore file permission
+		This:C1470.execute("config core.filemode false")
+		
+		If (This:C1470.execute("config --get user.name"))
+			
+			This:C1470.user.name:=Replace string:C233(This:C1470.result; "\n"; "")
+			
+		End if 
+		
+		If (This:C1470.execute("config --get user.email"))
+			
+			This:C1470.user.email:=Replace string:C233(This:C1470.result; "\n"; "")
+			
+		End if 
+		
+		If (This:C1470.execute("version"))
+			
+			This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
+			
+			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
+				
+				This:C1470.version:=Substring:C12(This:C1470.result; $pos; $len)
+				
+			Else 
+				
+				// Store full result
+				This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
+				
+			End if 
+		End if 
+	End if 
+	
+/*————————————————————————————————————————————————————————*/
+Function update()
+	
+	var $t : Text
+	var $c : Collection
+	
+	$t:=Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5)
+	$c:=Split string:C1554($t; "\r"; sk ignore empty strings:K86:1)
+	
+	This:C1470.HEAD:=$c[0]
 	
 /*————————————————————————————————————————————————————————*/
 Function execute($command : Text; $inputStream : Text) : Boolean
@@ -314,17 +400,6 @@ Function push($origin : Text; $branch : Text) : Boolean
 	
 	//MARK:-branch
 /*————————————————————————————————————————————————————————*/
-Function currentBranch() : Text
-	
-	This:C1470.execute("rev-parse --abbrev-ref HEAD")
-	
-	If (This:C1470.success)
-		
-		return Delete string:C232(This:C1470.result; Length:C16(This:C1470.result); 1)
-		
-	End if 
-	
-/*————————————————————————————————————————————————————————*/
 Function branch($whatToDo : Text; $name : Text; $newName : Text)
 	
 	var $t : Text
@@ -502,12 +577,11 @@ Function branchFetchNumber($branch : Text) : Integer
 	
 	If (Length:C16($branch)>0)
 		
-		$local:=Substring:C12(This:C1470.git.folder("refs/heads").file($branch).getText(); 1; 7)
-		$remote:=Substring:C12(This:C1470.git.folder("refs/remotes/origin").file($branch).getText(); 1; 7)
+		$local:=Substring:C12(This:C1470.root.folder("refs/heads").file($branch).getText(); 1; 7)
+		$remote:=Substring:C12(This:C1470.root.folder("refs/remotes/origin").file($branch).getText(); 1; 7)
 		
 		This:C1470.execute("log "+$local+".."+$remote)
 		
-		$i:=0
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
 			$i+=Num:C11($t="commit @")
@@ -518,6 +592,7 @@ Function branchFetchNumber($branch : Text) : Integer
 		
 	Else 
 		
+		//fixme:To test
 		This:C1470.execute("log origin..")
 		
 		If (Match regex:C1019("(?m-si)^[[:xdigit:]]{5,}"; This:C1470.result; 1; *))
@@ -717,59 +792,6 @@ Function stash($name : Text)
 	End case 
 	
 	//MARK:-[PRIVATE]
-/*—————————————————————————————————————————————————————-——*/
-Function _init()
-	
-	var $len; $pos : Integer
-	
-	If (This:C1470.execute("init"))
-		
-		If (Not:C34(This:C1470.gitignore.exists))
-			
-			// Create default gitignore
-			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
-			
-		End if 
-		
-		If (Not:C34(This:C1470.gitattributes.exists))
-			
-			// Create default gitignore
-			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
-			
-		End if 
-		
-		// Ignore file permission
-		This:C1470.execute("config core.filemode false")
-		
-		If (This:C1470.execute("config --get user.name"))
-			
-			This:C1470.user.name:=Replace string:C233(This:C1470.result; "\n"; "")
-			
-		End if 
-		
-		If (This:C1470.execute("config --get user.email"))
-			
-			This:C1470.user.email:=Replace string:C233(This:C1470.result; "\n"; "")
-			
-		End if 
-		
-		If (This:C1470.execute("version"))
-			
-			This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
-			
-			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
-				
-				This:C1470.version:=Substring:C12(This:C1470.result; $pos; $len)
-				
-			Else 
-				
-				// Store full result
-				This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
-				
-			End if 
-		End if 
-	End if 
-	
 /*————————————————————————————————————————————————————————*/
 Function _fetchAll() : Boolean
 	
