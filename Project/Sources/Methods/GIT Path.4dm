@@ -34,6 +34,11 @@ Case of
 		return Replace string:C233(Replace string:C233($path; ".4dm"; ""); "Project/Sources/Methods/"; "")
 		
 		//———————————————————————————————————————————
+	: ($path="@/Classes/@")
+		
+		return "[class]"+Replace string:C233(Replace string:C233($path; ".4dm"; ""); "Project/Sources/Classes"; "")
+		
+		//———————————————————————————————————————————
 	: ($path="@/Forms/@")
 		
 		Case of 
@@ -41,7 +46,7 @@ Case of
 				//……………………………………………………………………………………………
 			: ($path="@.4DForm")  // Form definition
 				
-				return File:C1566(Form:C1466.project.parent.parent.path+$path)
+				return Replace string:C233($path; "Project/Sources/Forms/"; "")
 				
 				//……………………………………………………………………………………………
 			: ($path="@.4dm")  // method
