@@ -1,4 +1,4 @@
-Class constructor
+Class constructor($folder : 4D:C1709.Folder)
 	
 	This:C1470.success:=True:C214
 	
@@ -19,9 +19,42 @@ Class constructor
 	
 	This:C1470.HEAD:=""
 	
-	This:C1470.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
+	If ($folder#Null:C1517) && ($folder.exists)
+		
+		This:C1470.workingDirectory:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
+		
+	Else 
+		
+		$folder:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)
+		
+		While ($folder#Null:C1517)\
+			 && Not:C34($folder.folder(".git").exists)
+			
+			$folder:=$folder.parent
+			
+		End while 
+		
+		If ($folder#Null:C1517) && ($folder.exists)
+			
+			This:C1470.workingDirectory:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
+			
+		Else 
+			
+			This:C1470.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
+			
+		End if 
+	End if 
 	
 	This:C1470.root:=This:C1470.workingDirectory.folder(".git")
+	
+	While (This:C1470.root#Null:C1517)\
+		 && Not:C34(This:C1470.root.exists)
+		
+		This:C1470.root:=This:C1470.root.parent.folder(".git")
+		
+	End while 
+	
+	
 	This:C1470.gitignore:=This:C1470.workingDirectory.file(".gitignore")
 	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
 	
@@ -32,7 +65,7 @@ Class constructor
 	
 	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
 	
-	If (This:C1470.root.exist)
+	If (This:C1470.root#Null:C1517) & (This:C1470.root.exists)
 		
 		This:C1470.update()
 		
