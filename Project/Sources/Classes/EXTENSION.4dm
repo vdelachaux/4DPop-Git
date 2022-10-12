@@ -265,9 +265,19 @@ Function update()
 			
 		End if 
 		
-		If (Folder:C1567("/PACKAGE/.git"; *).exists)
+		var $folder : 4D:C1709.Folder
+		$folder:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)
+		
+		While ($folder#Null:C1517)\
+			 && Not:C34($folder.folder(".git").exists)
 			
-			This:C1470.gitInstance:=cs:C1710.git.new()
+			$folder:=$folder.parent
+			
+		End while 
+		
+		If ($folder#Null:C1517) && ($folder.exists)
+			
+			This:C1470.gitInstance:=cs:C1710.git.new($folder)
 			
 		Else 
 			
