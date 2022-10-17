@@ -84,7 +84,7 @@ Function get currentBranch() : Text
 	$t:=Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5)
 	$c:=Split string:C1554($t; "\r"; sk ignore empty strings:K86:1)
 	$c:=Split string:C1554($c[0]; "/")
-	return $c[$c.length-1]
+	return $c.remove(0; 2).join("/")  //$c[$c.length-1]
 	
 	//mark:-
 /*—————————————————————————————————————————————————————-——*/
@@ -611,15 +611,27 @@ Function branchFetchNumber($branch : Text) : Integer
 	If (Length:C16($branch)>0)
 		
 		$local:=Substring:C12(This:C1470.root.folder("refs/heads").file($branch).getText(); 1; 7)
-		$remote:=Substring:C12(This:C1470.root.folder("refs/remotes/origin").file($branch).getText(); 1; 7)
 		
-		This:C1470.execute("log "+$local+".."+$remote)
+		var $file : 4D:C1709.File
+		$file:=This:C1470.root.folder("refs/remotes/origin").file($branch)
 		
-		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
+		If ($file.exists)
 			
-			$i+=Num:C11($t="commit @")
+			$remote:=Substring:C12($file.getText(); 1; 7)
 			
-		End for each 
+			This:C1470.execute("log "+$local+".."+$remote)
+			
+			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
+				
+				$i+=Num:C11($t="commit @")
+				
+			End for each 
+			
+		Else 
+			
+			// Not on the server
+			
+		End if 
 		
 		return $i
 		
