@@ -300,7 +300,8 @@ Function update()
 				
 				$success:=(Form:C1466.branch="main")\
 					 || (Form:C1466.branch="master")\
-					 || (Form:C1466.branch=(Form:C1466.major+Form:C1466.minor+"@"))
+					 || (Form:C1466.branch=(Form:C1466.major+Form:C1466.minor+"@"))\
+					 || (Split string:C1554(Form:C1466.branch; "/").length>1)
 				
 			Else 
 				
