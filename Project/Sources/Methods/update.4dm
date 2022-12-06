@@ -1,17 +1,17 @@
 //%attributes = {"invisible":true,"preemptive":"incapable"}
-var $i : Integer
+//var $i : Integer
 
-ARRAY LONGINT:C221($windows; 0)
+//ARRAY LONGINT($windows; 0)
 
-WINDOW LIST:C442($windows; *)
+//WINDOW LIST($windows; *)
 
-For ($i; 1; Size of array:C274($windows); 1)
-	
-	If (Get window title:C450($windows{$i})="git") && (Window kind:C445($windows{$i})=Floating window:K27:4)
-		
-		CALL FORM:C1391($windows{$i}; Formula:C1597(EXECUTE METHOD IN SUBFORM:C1085("git"; Formula:C1597(SET TIMER:C645(-1)))))
-		
-		break
-		
-	End if 
-End for 
+//For ($i; 1; Size of array($windows); 1)
+
+//If (Get window title($windows{$i})="git") && (Window kind($windows{$i})=Floating window)
+
+//CALL FORM($windows{$i}; Formula(EXECUTE METHOD IN SUBFORM("git"; Formula(SET TIMER(-1)))))
+
+//break
+
+//End if 
+//End for 

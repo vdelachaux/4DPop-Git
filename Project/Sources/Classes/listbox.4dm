@@ -940,8 +940,8 @@ Function _commonProperties() : Object
 	
 	$o.autoRowHeight:=New object:C1471("k"; lk auto row height:K53:72)
 	$o.backgroundColorExpression:=New object:C1471("k"; lk background color expression:K53:47)
-	$o.cellHorizontalPadding:=New object:C1471("k"; lk cell horizontal padding:K53:77)
-	$o.cellVerticalPadding:=New object:C1471("k"; lk cell vertical padding:K53:78)
+	//$o.cellHorizontalPadding:=New object("k"; ‘k53;77‘)
+	//$o.cellVerticalPadding:=New object("k"; ‘k53;78‘)
 	$o.fontColorExpression:=New object:C1471("k"; lk font color expression:K53:48)
 	$o.fontStyleExpression:=New object:C1471("k"; lk font style expression:K53:49)
 	$o.truncate:=New object:C1471("k"; lk truncate:K53:37)
