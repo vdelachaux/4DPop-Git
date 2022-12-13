@@ -1,18 +1,16 @@
-#--------------------------------
-# Ignore invisible files/folders
-#--------------------------------
+# Ignore invisible files/folders except .gitignore
 .*
-!.git*
-.git/
+!.gitignore
 
 #--------------------------------
 # Ignore data file
 #--------------------------------
 [dD][aA][tT][aA]/
 *.4DD
-*.journal
 *.4DIndx
+*.4DIndy
 *.Match
+*.journal
 
 #--------------------------------
 # Ignore derived data
@@ -27,11 +25,20 @@ Logs/
 #--------------------------------
 # Ignore settings & preferences
 #--------------------------------
-userPreferences.*/
-Settings/
-#!buildApp.4DSettings
 Preferences/
 !4DPop AppMaker.*
+
+Settings/
+#!buildApp.4DSettings
+
+userPreferences.*/
+
+#--------------------------------
+# Ignore Trash
+#--------------------------------
+Project/Trash/
+
+Resources/php.ini
 
 #--------------------------------
 # Miscellaneous
@@ -44,18 +51,20 @@ Thumbs.db
 #--------------------------------
 # Added by user
 #--------------------------------
-Resources/php.ini
-*.bbprojectd/
-Project/Trash/
+Components/
+!Build/Components
+
+_gsdata_
+
+Project/Sources/Methods/Method*.4dm
+Project/Sources/Methods/00_*.4dm
+
+Libraries/lib4d-arm64.dylib
 
 Resources/response.json
 Resources/test
+
 Build/Components/4DPop Git.4dbase/Resources/test
 Build/Components/4DPop Git.4dbase/Resources/response.json
-Build/Components/4DPop Git.4dbase/Resources/php.ini
 Build/Components/4DPop Git.4dbase/Documentation/*.png
-Libraries/lib4d-arm64.dylib
-Build/Components/4DPop Git.dmg
-Build/Components/4DPop Git.4dbase/_gsdata_
-Method[0-9]*
 _Macros v2
