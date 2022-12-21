@@ -29,16 +29,15 @@ Settings/
 userPreferences.*/
 
 #--------------------------------
-# Don't ignore Forms
-#--------------------------------
-!Project/Sources/Forms/Preferences/
-!Project/Sources/Forms/Settings/
-!Project/Sources/Forms/[dD][aA][tT][aA]/
-
-#--------------------------------
 # Ignore Trash
 #--------------------------------
 Project/Trash/
+
+#--------------------------------
+# Ignore backup
+#--------------------------------
+*.4BK
+backupHistory.json
 
 #--------------------------------
 # Miscellaneous
@@ -59,6 +58,11 @@ Project/Sources/Methods/00_*.4dm
 Libraries/lib4d-arm64.dylib
 
 DEV/
+
+#--------------------------------
+# [!] Never omit forms
+#--------------------------------
+!**/Forms/*/
 
 #--------------------------------
 # Added by user
