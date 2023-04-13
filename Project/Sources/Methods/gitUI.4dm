@@ -1,6 +1,6 @@
 //%attributes = {}
 // ----------------------------------------------------
-// Project method: 00_RUN
+// Project method: gitUI
 // ID[52DD5F426D1647FF837AF213147FFC6B]
 // Created 4-3-2020 by Vincent de Lachaux
 // ----------------------------------------------------
@@ -17,7 +17,7 @@ C_OBJECT:C1216($o; $oForm)
 C_COLLECTION:C1488($c)
 
 If (False:C215)
-	C_TEXT:C284(00_RUN; $1)
+	C_TEXT:C284(gitUI; $1)
 End if 
 
 // ----------------------------------------------------
@@ -57,8 +57,8 @@ Case of
 	: ($Txt_entryPoint="_run")
 		
 		// First launch of this method executed in a new process
-		00_RUN("_declarations")
-		00_RUN("_init")
+		gitUI("_declarations")
+		gitUI("_init")
 		
 		$o:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
 		
@@ -184,7 +184,7 @@ Case of
 			
 		End if 
 		
-		00_RUN("_deinit")
+		gitUI("_deinit")
 		
 		//___________________________________________________________
 	: ($Txt_entryPoint="_declarations")

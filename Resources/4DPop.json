@@ -1,0 +1,8 @@
+{
+  "name": ":Git",
+  "picture": "4DPop.png",
+  "handler": "4DPopGit",
+  "tools": {
+    "method": "gitUI"
+  }
+}

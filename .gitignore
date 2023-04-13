@@ -23,8 +23,8 @@ Project/DerivedData/
 Preferences/
 !4DPop AppMaker.*
 
-Settings/
-!buildApp.4DSettings
+#Settings/
+#!Settings/buildApp.4DSettings
 
 userPreferences.*/
 
