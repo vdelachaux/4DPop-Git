@@ -29,7 +29,6 @@
 	},
 	"Component": {
 		"methods": [
-			"00_RUN",
 			"GIT PALLET",
 			"update"
 		]
@@ -72,7 +71,7 @@
 	},
 	"Shared": {
 		"methods": [
-			"4DPop_GIT"
+			"4DPopGit"
 		]
 	},
 	"ui": {

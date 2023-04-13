@@ -1,5 +1,5 @@
 var $choice : Text
-var $menu : Object
+var $menu : Text
 
 $menu:=Create menu:C408
 

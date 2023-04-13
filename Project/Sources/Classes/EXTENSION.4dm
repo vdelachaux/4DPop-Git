@@ -215,7 +215,7 @@ Function handleEvents($e : Object)
 				//==============================================
 			: (This:C1470.openGitWindow.catch($e; On Clicked:K2:4))
 				
-				00_RUN
+				gitUI
 				
 				//==============================================
 		End case 
