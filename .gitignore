@@ -24,7 +24,7 @@ Preferences/
 !4DPop AppMaker.*
 
 #Settings/
-#!Settings/buildApp.4DSettings
+!Settings/buildApp.4DSettings
 
 userPreferences.*/
 
