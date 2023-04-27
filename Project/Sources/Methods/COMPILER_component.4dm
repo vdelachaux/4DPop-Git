@@ -1,8 +1,6 @@
 //%attributes = {"invisible":true}
 If (False:C215)
 	
-	C_OBJECT:C1216(4DPopGit; $0)
-	
 	//…………………………………………………………………………………………………
 	C_TEXT:C284(gitUI; $1)
 	

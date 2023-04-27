@@ -1,9 +1,16 @@
 {
+	"- #️⃣ API": {},
+	"-👥 NAMESPACE": {
+		"classes": [
+			"git",
+			"jwt"
+		]
+	},
 	"(git)": {},
 	"(MAIN)": {},
 	"(PALETT)": {},
 	"(WIDGET)": {},
-	"00_DEV": {
+	"# 🚧 DEV": {
 		"methods": [
 			"_o_button",
 			"_o_group",
@@ -16,21 +23,34 @@
 			"_o_widget",
 			"00_TEST",
 			"COMPILER_o_classes"
+		],
+		"forms": [
+			"GIT EXTENSION"
 		]
 	},
-	"classes": {
+	"♻️ LIBRAIRIES": {
 		"groups": [
 			"ui"
-		],
-		"classes": [
-			"git",
-			"jwt"
 		]
 	},
-	"Component": {
+	"⚙️ MACROS": {},
+	"📦 COMPONENT": {
+		"groups": [
+			"EXTENSION",
+			"GIT",
+			"PALETT"
+		],
 		"methods": [
+			"COMPILER_component",
 			"GIT PALLET",
 			"update"
+		]
+	},
+	"4️⃣ 4DPop": {
+		"methods": [
+			"_4DPopGit",
+			"COMPILER_4DPop",
+			"gitUI"
 		]
 	},
 	"EXTENSION": {
@@ -44,10 +64,7 @@
 			"EXTENSION"
 		]
 	},
-	"GIT UI": {
-		"groups": [
-			"PALETT"
-		],
+	"GIT": {
 		"methods": [
 			"GIT",
 			"GIT COMMIT LIST",
@@ -67,11 +84,6 @@
 	"PALETT": {
 		"forms": [
 			"PALLET"
-		]
-	},
-	"Shared": {
-		"methods": [
-			"4DPopGit"
 		]
 	},
 	"ui": {

@@ -1,7 +1,7 @@
 {
-  "name": ":Git",
-  "picture": "4DPop.png",
-  "handler": "4DPopGit",
+  "name": "Git",
+  "media": "4DPop.png",
+  "handler": "_4DPopGit",
   "tools": {
     "method": "gitUI"
   }
