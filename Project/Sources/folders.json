@@ -43,6 +43,7 @@
 		"methods": [
 			"COMPILER_component",
 			"GIT PALLET",
+			"gitUI",
 			"update"
 		]
 	},
@@ -50,7 +51,7 @@
 		"methods": [
 			"_4DPopGit",
 			"COMPILER_4DPop",
-			"gitUI"
+			"main"
 		]
 	},
 	"EXTENSION": {
