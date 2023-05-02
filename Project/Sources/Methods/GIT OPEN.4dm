@@ -17,7 +17,7 @@ C_OBJECT:C1216($o; $oForm)
 C_COLLECTION:C1488($c)
 
 If (False:C215)
-	C_TEXT:C284(gitUI; $1)
+	C_TEXT:C284(GIT OPEN; $1)
 End if 
 
 // ----------------------------------------------------
@@ -57,8 +57,8 @@ Case of
 	: ($Txt_entryPoint="_run")
 		
 		// First launch of this method executed in a new process
-		gitUI("_declarations")
-		gitUI("_init")
+		GIT OPEN("_declarations")
+		GIT OPEN("_init")
 		
 		$o:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
 		
@@ -184,7 +184,7 @@ Case of
 			
 		End if 
 		
-		gitUI("_deinit")
+		GIT OPEN("_deinit")
 		
 		//___________________________________________________________
 	: ($Txt_entryPoint="_declarations")

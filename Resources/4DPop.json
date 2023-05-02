@@ -2,7 +2,11 @@
   "name": "Git",
   "media": "4DPop.png",
   "handler": "_4DPopGit",
+  "widget": {
+    "name": "WIDGET",
+    "width": 160
+  },
   "tools": {
-    "method": "gitUI"
+    "method": "main"
   }
 }
