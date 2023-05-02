@@ -18,8 +18,6 @@ Case of
 		
 		SET TIMER:C645(0)
 		
-		BEEP:C151
-		
 		var $branch : Text
 		var $success : Boolean
 		var $c : Collection
