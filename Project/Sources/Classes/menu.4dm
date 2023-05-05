@@ -161,11 +161,11 @@ Function append($item; $param; $mark : Boolean) : cs:C1710.menu
 			
 			$t:=Choose:C955(Length:C16($t)>0; $t; $item)
 			
-			If (Count parameters:C259>=2)
+			If ($param#Null:C1517)
 				
 				If (Value type:C1509($param)=Is object:K8:27)  // Submenu
 					
-					If (Asserted:C1132(OB Instance of:C1731($param; cs:C1710.menu)))
+					If (OB Instance of:C1731($param; cs:C1710.menu))
 						
 						If ($param.itemCount()>0)  // Don't do it if there are no items in the sub-menu
 							

@@ -5,15 +5,15 @@
 // Created 6-3-2020 by Vincent de Lachaux
 // ----------------------------------------------------
 // Declarations
-#DECLARE($path : Text) : Variant
+#DECLARE($path : Text; $root : 4D:C1709.Folder) : Variant
 
 If (False:C215)
 	C_TEXT:C284(GIT Path; $1)
+	C_OBJECT:C1216(GIT Path; $2)
 	C_VARIANT:C1683(GIT Path; $0)
 End if 
 
-var $t : Text
-
+$root:=$root || Form:C1466.project.parent.parent
 $path:=Replace string:C233($path; "\""; "")
 
 Case of 
@@ -21,12 +21,12 @@ Case of
 		//———————————————————————————————————————————
 	: (Position:C15(")"; $path)>0)  // Trash
 		
-		return File:C1566(Form:C1466.project.parent.parent.path+$path)
+		return File:C1566($root.path+$path)
 		
 		//———————————————————————————————————————————
 	: ($path="Documentation/@")  // Documentation
 		
-		return File:C1566(Form:C1466.project.parent.parent.path+$path)
+		return File:C1566($root.path+$path)
 		
 		//———————————————————————————————————————————
 	: ($path="@/Methods/@")  // Project methods
@@ -49,45 +49,53 @@ Case of
 				return Replace string:C233($path; "Project/Sources/Forms/"; "")
 				
 				//……………………………………………………………………………………………
-			: ($path="@.4dm")  // method
+			: ($path="@.4dm")  // Method
 				
-				$t:=Replace string:C233($path; ".4dm"; "")
+				$path:=Replace string:C233($path; ".4dm"; "")
 				
-				If ($t="@/ObjectMethods/@")  // Object method
+				If ($path="@/ObjectMethods/@")  // Object method
 					
-					$t:=Replace string:C233($t; "Project/Sources/Forms/"; "")
-					$t:=Replace string:C233($t; "ObjectMethods"; "")
-					return "[projectForm]/"+$t
+					$path:=Replace string:C233($path; "Project/Sources/Forms/"; "")
+					$path:=Replace string:C233($path; "ObjectMethods"; "")
+					return "[projectForm]/"+$path
 					
 				Else   // Form method
 					
-					$t:=Replace string:C233($t; "Project/Sources/Forms/"; "")
-					$t:=Replace string:C233($t; "method"; "")
-					return "[projectForm]/"+$t+"{formMethod}"
+					$path:=Replace string:C233($path; "Project/Sources/Forms/"; "")
+					$path:=Replace string:C233($path; "method"; "")
+					return "[projectForm]/"+$path+"{formMethod}"
 					
 				End if 
 				
 				//……………………………………………………………………………………………
 			Else 
 				
-				If ($path[[Length:C16($path)]]="/")
-					
-					// It's a folder
-					return Folder:C1567(Form:C1466.project.parent.parent.path+$path)
-					
-				Else 
-					
-					return File:C1566(Form:C1466.project.parent.parent.path+$path)
-					
-				End if 
+				return $path[[Length:C16($path)]]="/" ? Folder:C1567($root.path+$path) : File:C1566($root.path+$path)
 				
 				//……………………………………………………………………………………………
 		End case 
 		
 		//———————————————————————————————————————————
+	: ($path="/RESOURCES/@")\
+		 | ($path="/PACKAGE/@")\
+		 | ($path="/SOURCES/@")\
+		 | ($path="/PROJECT/@")\
+		 | ($path="/DATA/@")\
+		 | ($path="/LOGS/@")
+		
+		$path:=Replace string:C233($path; "/RESOURCES/"; "/RESOURCES/")
+		$path:=Replace string:C233($path; "/PACKAGE/"; "/PACKAGE/")
+		$path:=Replace string:C233($path; "/SOURCES/"; "/SOURCES/")
+		$path:=Replace string:C233($path; "/PROJECT/"; "/PROJECT/")
+		$path:=Replace string:C233($path; "/DATA/"; "/DATA/")
+		$path:=Replace string:C233($path; "/LOGS/"; "/LOGS/")
+		
+		return ($path="@/" ? Folder:C1567($path) : File:C1566($path))
+		
+		//———————————————————————————————————————————
 	Else 
 		
-		return File:C1566(Form:C1466.project.parent.parent.path+$path)
+		return File:C1566($root.path+$path)
 		
 		//———————————————————————————————————————————
 End case 

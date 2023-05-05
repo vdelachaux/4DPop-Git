@@ -3,8 +3,8 @@
 
   <file datatype="plaintext" original="Undefined" source-language="en" target-language="fr">
     <header>
-      <prop-group name="Xliff-Editor.4dbase">
-        <prop prop-type="version">2.0</prop>
+      <prop-group name="4DPop XLIFF Pro">
+        <prop prop-type="version">3.0</prop>
       </prop-group>
     </header>
     <body>
@@ -97,18 +97,9 @@ All uncommitted changes will be lost.</source>
 
 Toutes les modifications non validées seront perdues.</target>
         </trans-unit>
-        <trans-unit id="W+QREFQDDsR7yfiOmHcOwQ" resname="openInTerminal">
-          <source>Terminal</source>
-          <target>Terminal</target>
-        </trans-unit>
-        <trans-unit id="BTn2qVZij7jnTBCOUi3ihw" resname="openInFinder">
-          <source>Open in Finder</source>
-          <target>Ouvrir dans le Finder</target>
-        </trans-unit>
-        <trans-unit id="ooP2Gnzx2aUbDKBAmj2d9g" resname="viewOnGithub">
-          <source>View on Github</source>
-          <target>Voir sur Github</target>
-        </trans-unit>
+        
+        
+        
         <trans-unit id="PpfP4oF59uHwzvf1ucvTCw" resname="allCommits">
           <source>All commits</source>
           <target>Historique</target>
@@ -190,7 +181,76 @@ Initialize a git repository here anyway?</source>
 Initialiser un dépôt git ici quand même ?</target>
         </trans-unit>
       </group>
+      <group resname="widget">
+        <trans-unit id="eZs4Us+h3PmEW8itkkIiaQ" resname="clickToInitializeAsAGitRepository">
+          <source>Click to initialize as a git repository</source>
+          <target>Cliquer pour initialiser le dépôt git</target>
+        </trans-unit>
+        <trans-unit id="Jz5U+6rwKrzQVtbJtol+fw" resname="numberOfCommitsToBePulled">
+          <source>Number of commits to be pulled</source>
+          <target>Nombre de commits à récupérer</target>
+        </trans-unit>
+        <trans-unit id="y6OQq0OV4_3Qk8Cd7kGVcA" resname="numberOfCommitsToBePushed">
+          <source>Number of commits to be pushed</source>
+          <target>Nombre de commits à envoyer</target>
+        </trans-unit>
+        <trans-unit id="ZDWZU0_Xxrm_HpR3wYapxw" resname="numberOfChangesInTheLocalDirectory">
+          <source>Number of changes in the local directory</source>
+          <target>Nombre de modifications dans le répertoire local</target>
+        </trans-unit>
+        <trans-unit id="vqr16GW3Hw3H9dsw6das1w" resname="IsTheCurrentBranch">
+          <source>"{$branch}" is the current branch</source>
+          <target>"{$branch}" est la branche courante</target>
+        </trans-unit>
+        <trans-unit id="Hso4Db_Z0G+C2O5xrHwudQ" resname="warningBranch">
+          <source>WARNING:
+You are editing the"{branch}" branch of "{project}"
+with a "{version}" version of 4D."</source>
+          <target>ATTENTION :
+Vous éditez la branche "{branch}" de "{project}"
+avec une version "{version}" de 4D."</target>
+        </trans-unit>
+        <trans-unit id="q7Ma8DFf_d2FwID04ZQjzA" resname="classes">
+          <source>Classes</source>
+          <target>Classes</target>
+        </trans-unit>
+        <trans-unit id="SFO3+Dos8Z5Hacf_fKL9tg" resname="methods">
+          <source>Methods</source>
+          <target>Methodes</target>
+        </trans-unit>
+        <trans-unit id="o4YfQPB2QVvTKL39hSg2dQ" resname="forms">
+          <source>Forms</source>
+          <target>Formulaires</target>
+        </trans-unit>
+        <trans-unit id="roarkVsThS2KfrL4f_3Vgg" resname="others">
+          <source>Others</source>
+          <target>Autres</target>
+        </trans-unit>
+        <trans-unit id="5N134rZTSSKlnkrUrsmAZg" resname="fileDeleted">
+          <source>The file "{path}" has been deleted</source>
+          <target>Le fichier "{path}" a été supprimé</target>
+        </trans-unit>
+      </group>
+      <group resname="menus">
+        <trans-unit id="OMGlwYp9spkzVPJ6kuRh+Q" resname="openInTerminal">
+          <source>Open in Terminal</source>
+          <target>Ouvrir dans le terminal</target>
+        </trans-unit>
+        <trans-unit id="2z6PlpDFqQh7xxbLvwHr7w" resname="showOnDisk">
+          <source>Show on disk</source>
+          <target>Montrer sur le disque</target>
+        </trans-unit>
+        <trans-unit id="i8PfSN8MP5qVSkRKKacP4w" resname="viewOnGithub">
+          <source>View on Github</source>
+          <target>Voir sur Github</target>
+        </trans-unit>
+        <trans-unit id="7YawiGZW9c2mLJ0cLKDY9A" resname="refresh">
+          <source>Refresh</source>
+          <target>Actualiser</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
 
 </xliff>

@@ -6,30 +6,80 @@ Class constructor
 	Super:C1705()
 	
 	This:C1470.isSubform:=True:C214
-	This:C1470.timer:=20
+	
+	This:C1470.currentBranch:=""
+	
+	This:C1470.timer:=20  // Timer value for refresh
+	
+	// 📌 The initialization is deferred to the first update
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function init()
 	
+	var $c : Collection
+	var $folder : 4D:C1709.Folder
 	var $group : cs:C1710.group
 	
 	$group:=This:C1470.group("gitItems")
-	This:C1470.button("branch").addToGroup($group)
-	This:C1470.formObject("localChangesIcon").addToGroup($group)
-	This:C1470.input("changes").addToGroup($group)
-	This:C1470.input("fetch").addToGroup($group)
-	This:C1470.formObject("todo").addToGroup($group)
-	This:C1470.input("push").addToGroup($group)
+	
+	This:C1470.button("icon")
+	
 	This:C1470.button("more").addToGroup($group)
 	
-	This:C1470.button("openGitWindow")
+	This:C1470.button("branch").addToGroup($group)
+	
+	This:C1470.button("localChanges").addToGroup($group)
+	
+	This:C1470.input("fetch").addToGroup($group)
+	This:C1470.formObject("swap").addToGroup($group)
+	This:C1470.input("push").addToGroup($group)
+	
 	This:C1470.button("initRepository")
 	
-	This:C1470.openGitWindow.setHelpTip("Open the main git window…")
-	This:C1470.initRepository.setHelpTip("Click to initialize as a git repository")
-	This:C1470.fetch.setHelpTip("Number of commits to be pulled")
-	This:C1470.push.setHelpTip("Number of commits to be pushed")
-	This:C1470.changes.setHelpTip("Number of changes in the local directory")
+	This:C1470.initRepository.setHelpTip(Get localized string:C991("clickToInitializeAsAGitRepository"))
+	This:C1470.fetch.setHelpTip(Get localized string:C991("numberOfCommitsToBePulled"))
+	This:C1470.push.setHelpTip(Get localized string:C991("numberOfCommitsToBePushed"))
+	This:C1470.localChanges.setHelpTip(Get localized string:C991("numberOfChangesInTheLocalDirectory"))
+	
+	Form:C1466.fetchNumber:=0
+	Form:C1466.pushNumber:=0
+	
+	$c:=Split string:C1554(Application version:C493; "")
+	
+	This:C1470.release:=$c[2]#"0"
+	This:C1470.lts:=Not:C34(This:C1470.release)
+	
+	This:C1470.major:=$c[0]+$c[1]
+	This:C1470.minor:=This:C1470.release ? "R"+$c[2] : "."+$c[3]
+	This:C1470.alpha:=Application version:C493(*)="A@"
+	
+	This:C1470.version:=This:C1470.major+This:C1470.minor
+	
+	If (This:C1470.alpha)
+		
+		This:C1470.version:="DEV ("+This:C1470.version+")"
+		
+	End if 
+	
+	$folder:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)
+	
+	While ($folder#Null:C1517)\
+		 && Not:C34($folder.folder(".git").exists)
+		
+		$folder:=$folder.parent
+		
+	End while 
+	
+	If ($folder#Null:C1517)\
+		 && ($folder.exists)
+		
+		This:C1470.gitInstance:=cs:C1710.git.new($folder)
+		
+	Else 
+		
+		This:C1470.gitInstance:=Null:C1517
+		
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : Object)
@@ -55,15 +105,12 @@ Function handleEvents($e : Object)
 		
 	Else   // <== WIDGETS METHOD
 		
-		var $git : cs:C1710.git
-		$git:=This:C1470.gitInstance
-		
 		Case of 
 				
 				//==============================================
 			: (This:C1470.branch.catch($e; On Clicked:K2:4))
 				
-				// TODO:Display branches and allow to change
+				This:C1470._doBranchMenu()
 				
 				//==============================================
 			: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
@@ -74,151 +121,15 @@ Function handleEvents($e : Object)
 				//==============================================
 			: (This:C1470.more.catch($e; On Clicked:K2:4))
 				
-				var $menu : cs:C1710.menu
-				$menu:=cs:C1710.menu.new()\
-					.append("Open in Terminal"; "terminal")\
-					.append("Open in Finder"; "show")\
-					.line()\
-					.append("View on Github"; "github").enable($git.execute("config --get remote.origin.url"))\
-					.line()\
-					.append("Refresh"; "refresh")
-				
-				If ($menu.popup(This:C1470.more).selected)
-					
-					Case of 
-							
-							//———————————————————————————————————————
-						: ($menu.choice="terminal")\
-							 | ($menu.choice="show")
-							
-							$git.open($menu.choice)
-							
-							//———————————————————————————————————————
-						: ($menu.choice="github")
-							
-							OPEN URL:C673(Replace string:C233($git.result; "\n"; ""))
-							
-							//———————————————————————————————————————
-						: ($menu.choice="refresh")
-							
-							This:C1470.refresh()
-							
-							//______________________________________________________
-					End case 
-				End if 
+				This:C1470._doMoreMenu()
 				
 				//==============================================
-			: (This:C1470.changes.catch($e; On Clicked:K2:4))
+			: (This:C1470.localChanges.catch($e; On Clicked:K2:4))
 				
-				var $o : Object
-				var $c : Collection
-				var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
-				
-				If ($git.status()>0)
-					
-					$classes:=cs:C1710.menu.new()
-					$forms:=cs:C1710.menu.new()
-					$methods:=cs:C1710.menu.new()
-					$others:=cs:C1710.menu.new()
-					
-					For each ($o; $git.changes.orderBy("path"))
-						
-						$c:=Split string:C1554($o.path; "/")
-						
-						Case of 
-								
-								//______________________________________________________
-							: ($c.indexOf("Classes")=2)
-								
-								$classes.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path)
-								
-								//______________________________________________________
-							: ($c.indexOf("Forms")=2)
-								
-								
-								Case of 
-										//______________________________________________________
-									: ($c[$c.length-1]="form.4DForm")
-										
-										$forms.append($c[3]; $o.path)
-										
-										//______________________________________________________
-									: ($c.indexOf("ObjectMethods")=4)
-										
-										$forms.append(Replace string:C233($c.remove(0; 3).remove(1; 1).join("/"); ".4dm"; ""); $o.path)
-										
-										//______________________________________________________
-									Else 
-										
-										$forms.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dform"; ""); $o.path)
-										
-										//______________________________________________________
-								End case 
-								
-								//______________________________________________________
-							: ($c.indexOf("Methods")=2)
-								
-								$methods.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path)
-								
-								//______________________________________________________
-							Else 
-								
-								$others.append($c.remove(0; 2).join("/"); File:C1566($o.path))
-								
-								//______________________________________________________
-						End case 
-					End for each 
-					
-					$menu:=cs:C1710.menu.new()
-					
-					$menu.append("Classes"; $classes)
-					$menu.append("Methods"; $methods)
-					$menu.append("Forms"; $forms)
-					$menu.append("Others"; $others)
-					
-					If ($menu.popup(This:C1470.changes).selected)
-						
-						var $target
-						$target:=GIT Path($menu.choice)
-						
-						Case of 
-								
-								//——————————————————————————————————
-							: (Value type:C1509($target)=Is text:K8:3)  // Classe, Method
-								
-								If ($target="@.4DForm")
-									
-									FORM EDIT:C1749(String:C10(Split string:C1554($target; "/")[0]))
-									
-								Else 
-									
-									METHOD OPEN PATH:C1213($target; *)
-									
-								End if 
-								
-								//——————————————————————————————————
-							: (Value type:C1509($target)=Is object:K8:27)  // File
-								
-								If (Bool:C1537($target.exists))
-									
-									If ($target.extension=".4dform")
-										
-										FORM EDIT:C1749(String:C10($target.parent.fullName))
-										
-									Else 
-										
-										OPEN URL:C673($target.platformPath)
-										
-									End if 
-								End if 
-								
-								//——————————————————————————————————
-						End case 
-					End if 
-				End if 
+				This:C1470._doChangesMenu()
 				
 				//==============================================
-			: (This:C1470.openGitWindow.catch($e; On Clicked:K2:4))
+			: (This:C1470.icon.catch($e; On Clicked:K2:4))
 				
 				GIT OPEN
 				
@@ -248,47 +159,6 @@ Function update()
 		
 		This:C1470.init()
 		
-		Form:C1466.branch:=""
-		Form:C1466.changes:=0
-		Form:C1466.fetchNumber:=0
-		Form:C1466.pushNumber:=0
-		
-		$c:=Split string:C1554(Application version:C493; "")
-		
-		Form:C1466.release:=$c[2]#"0"
-		Form:C1466.lts:=Not:C34(Form:C1466.release)
-		
-		Form:C1466.major:=$c[0]+$c[1]
-		Form:C1466.minor:=Form:C1466.release ? "R"+$c[2] : "."+$c[3]
-		Form:C1466.alpha:=Application version:C493(*)="A@"
-		
-		Form:C1466.version:=Form:C1466.major+Form:C1466.minor
-		
-		If (Form:C1466.alpha)
-			
-			Form:C1466.version:="DEV ("+Form:C1466.version+")"
-			
-		End if 
-		
-		var $folder : 4D:C1709.Folder
-		$folder:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)
-		
-		While ($folder#Null:C1517)\
-			 && Not:C34($folder.folder(".git").exists)
-			
-			$folder:=$folder.parent
-			
-		End while 
-		
-		If ($folder#Null:C1517) && ($folder.exists)
-			
-			This:C1470.gitInstance:=cs:C1710.git.new($folder)
-			
-		Else 
-			
-			This:C1470.gitInstance:=Null:C1517
-			
-		End if 
 	End if 
 	
 	$git:=This:C1470.gitInstance
@@ -297,28 +167,28 @@ Function update()
 		
 		$branch:=$git.currentBranch
 		
-		If ($branch#Form:C1466.branch)
+		If ($branch#This:C1470.currentBranch)
 			
-			Form:C1466.branch:=$branch
+			This:C1470.currentBranch:=$branch
 			
-			If (Form:C1466.alpha)
+			If (This:C1470.alpha)
 				
-				$success:=(Form:C1466.branch="main")\
-					 || (Form:C1466.branch="master")\
-					 || (Form:C1466.branch=(Form:C1466.major+Form:C1466.minor+"@"))\
-					 || (Split string:C1554(Form:C1466.branch; "/").length>1)
+				$success:=(This:C1470.currentBranch="main")\
+					 || (This:C1470.currentBranch="master")\
+					 || (This:C1470.currentBranch=(This:C1470.major+This:C1470.minor+"@"))\
+					 || (Split string:C1554(This:C1470.currentBranch; "/").length>1)
 				
 			Else 
 				
-				If (Form:C1466.release)
+				If (This:C1470.release)
 					
-					$success:=(Form:C1466.branch=(Form:C1466.version)+"@")\
-						 || (Form:C1466.branch=(Form:C1466.major+"RX"))
+					$success:=(This:C1470.currentBranch=(This:C1470.version)+"@")\
+						 || (This:C1470.currentBranch=(This:C1470.major+"RX"))
 					
 				Else 
 					
-					$success:=(Form:C1466.branch=(Form:C1466.version)+"@")\
-						 || (Form:C1466.branch=(Form:C1466.major+".X"))
+					$success:=(This:C1470.currentBranch=(This:C1470.version)+"@")\
+						 || (This:C1470.currentBranch=(This:C1470.major+".X"))
 					
 				End if 
 			End if 
@@ -327,20 +197,27 @@ Function update()
 				
 				This:C1470.branch.foregroundColor:=Foreground color:K23:1
 				This:C1470.branch.fontStyle:=Plain:K14:1
-				This:C1470.branch.setHelpTip("\""+$branch+"\" is the current branch")
+				This:C1470.branch.setPicture("/Images/widget/branch_mini.png")
+				This:C1470.branch.setHelpTip(Replace string:C233(Get localized string:C991("IsTheCurrentBranch"); "{$branch}"; $branch))
 				
 			Else 
 				
+				This:C1470.branch.setPicture("/Images/widget/branch_mini_warning.png")
 				This:C1470.branch.foregroundColor:="red"
 				This:C1470.branch.fontStyle:=Bold:K14:2
-				This:C1470.branch.setHelpTip("WARNING:\nYou are editing the \""+$branch+"\" branch of \""+Folder:C1567("/PACKAGE"; *).name+"\" \nwith a "+Form:C1466.version+" version of 4D.")
+				This:C1470.branch.setHelpTip(Replace string:C233(\
+					Replace string:C233(Replace string:C233(\
+					Get localized string:C991("warningBranch"); "{branch}"; $branch)\
+					; "{project}"; Folder:C1567("/PACKAGE"; *).name)\
+					; "{version}\" de 4D.\"}"; This:C1470.version))
 				
 			End if 
 		End if 
 		
 		Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
 		Form:C1466.pushNumber:=$git.branchPushNumber($branch)
-		Form:C1466.changes:=$git.status()
+		
+		This:C1470.localChanges.setTitle(String:C10($git.status()))
 		
 		This:C1470.gitItems.show()
 		This:C1470.initRepository.hide()
@@ -354,4 +231,222 @@ Function update()
 		
 	End if 
 	
-	This:C1470.branch.setTitle(Form:C1466.branch)
+	This:C1470.branch.setTitle(This:C1470.currentBranch)
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+Function _doChangesMenu()
+	
+	var $tgt
+	var $icon : Text
+	var $o : Object
+	var $c : Collection
+	var $git : cs:C1710.git
+	var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
+	
+	$git:=This:C1470.gitInstance
+	
+	If ($git.status()=0)
+		
+		// No change
+		return 
+		
+	End if 
+	
+	For each ($o; $git.changes.orderBy("path"))
+		
+		$icon:=$o.status="@M@" ? "🟡 "\
+			 : $o.status="@D@" ? "🔴 "\
+			 : $o.status="??" ? "🟢 "\
+			 : "⚫️ "
+		
+		$c:=Split string:C1554($o.path; "/")
+		
+		Case of 
+				
+				//______________________________________________________
+			: ($c.indexOf("Classes")=2)
+				
+				$classes:=$classes || cs:C1710.menu.new()
+				$classes.append($icon+Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path)
+				
+				//______________________________________________________
+			: ($c.indexOf("Forms")=2)
+				
+				$forms:=$forms || cs:C1710.menu.new()
+				
+				Case of 
+						
+						//______________________________________________________
+					: ($c[$c.length-1]="form.4DForm")
+						
+						$forms.append($icon+$c[3]; $o.path)
+						
+						//______________________________________________________
+					: ($c.indexOf("ObjectMethods")=4)
+						
+						$forms.append($icon+Replace string:C233($c.remove(0; 3).remove(1; 1).join("/"); ".4dm"; ""); $o.path)
+						
+						//______________________________________________________
+					Else 
+						
+						$forms.append($icon+Replace string:C233($c.remove(0; 3).join("/"); ".4dform"; ""); $o.path)
+						
+						//______________________________________________________
+				End case 
+				
+				//______________________________________________________
+			: ($c.indexOf("Methods")=2)
+				
+				$methods:=$methods || cs:C1710.menu.new()
+				$methods.append($icon+Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path)
+				
+				//______________________________________________________
+			Else 
+				
+				$others:=$others || cs:C1710.menu.new()
+				$others.append($icon+$c.remove(0; 2).join("/"); $o.path)
+				
+				//______________________________________________________
+		End case 
+	End for each 
+	
+	$menu:=cs:C1710.menu.new()\
+		.append(":xliff:classes"; $classes)\
+		.append(":xliff:methods"; $methods)\
+		.append(":xliff:forms"; $forms)\
+		.append(":xliff:others"; $others)
+	
+	If (Not:C34($menu.popup().selected))
+		
+		return 
+		
+	End if 
+	
+	$tgt:=GIT Path($menu.choice; Folder:C1567(fk database folder:K87:14; *))
+	
+	Case of 
+			
+			//——————————————————————————————————
+		: (Value type:C1509($tgt)=Is text:K8:3)  // Classe, Method,…
+			
+			If ($tgt="@.4DForm")
+				
+				FORM EDIT:C1749(String:C10(Split string:C1554($tgt; "/")[0]))
+				
+			Else 
+				
+				METHOD OPEN PATH:C1213($tgt; *)
+				
+			End if 
+			
+			//——————————————————————————————————
+		: (Value type:C1509($tgt)=Is object:K8:27)\
+			 && (OB Instance of:C1731($tgt; 4D:C1709.Folder))  // Folder
+			
+			SHOW ON DISK:C922($tgt.platformPath)
+			
+			//——————————————————————————————————
+		: (Value type:C1509($tgt)=Is object:K8:27)\
+			 && (OB Instance of:C1731($tgt; 4D:C1709.File))  // File
+			
+			If (Bool:C1537($tgt.exists))
+				
+				If ($tgt.extension=".zip")\
+					 | ($tgt.extension=".dmg")\
+					 | ($tgt.extension=".dylib")\
+					 | ($tgt.extension=".4D@")
+					
+					SHOW ON DISK:C922($tgt.platformPath)
+					
+				Else 
+					
+					OPEN URL:C673($tgt.platformPath)
+					
+				End if 
+				
+			Else 
+				
+				ALERT:C41(Replace string:C233(Get localized string:C991("fileDeleted"); "{path}"; $tgt.path))
+				
+			End if 
+			
+			//——————————————————————————————————
+	End case 
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+Function _doBranchMenu()
+	
+	var $o : Object
+	var $git : cs:C1710.git
+	var $menu : cs:C1710.menu
+	
+	$git:=This:C1470.gitInstance
+	
+	$git.branch()
+	
+	If ($git.branches.length>0)
+		
+		$menu:=cs:C1710.menu.new()
+		
+		For each ($o; $git.branches)
+			
+			$menu.append($o.name).mark($o.current)
+			
+		End for each 
+		
+		If (Not:C34($menu.popup().selected))
+			
+			return 
+			
+		End if 
+		
+		//TODO:Change branch
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+Function _doMoreMenu()
+	
+	var $git : cs:C1710.git
+	var $menu : cs:C1710.menu
+	
+	$git:=This:C1470.gitInstance
+	
+	$menu:=cs:C1710.menu.new()\
+		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Common/git.png")\
+		.line()\
+		.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
+		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/show.png")\
+		.line()\
+		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($git.execute("config --get remote.origin.url"))\
+		.line()\
+		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
+	
+	If ($menu.popup(This:C1470.more).selected)
+		
+		Case of 
+				
+				//———————————————————————————————————————
+			: ($menu.choice="tool")
+				
+				GIT OPEN
+				
+				//———————————————————————————————————————
+			: ($menu.choice="terminal")\
+				 | ($menu.choice="show")
+				
+				$git.open($menu.choice)
+				
+				//———————————————————————————————————————
+			: ($menu.choice="github")
+				
+				OPEN URL:C673(Replace string:C233($git.result; "\n"; ""))
+				
+				//———————————————————————————————————————
+			: ($menu.choice="refresh")
+				
+				This:C1470.refresh()
+				
+				//______________________________________________________
+		End case 
+	End if 

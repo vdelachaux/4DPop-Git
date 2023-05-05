@@ -104,7 +104,7 @@ Case of
 				)
 			
 			// Template to use, only one for now
-			$oForm.template:="default/"
+			//$oForm.template:="default/"
 			
 			// Page menu definition
 			$c:=New collection:C1472(\
@@ -112,11 +112,11 @@ Case of
 				New object:C1471(\
 				"label"; Get localized string:C991("allCommits")))
 			
-			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"changes.png").platformPath; $p)
-			TRANSFORM PICTURE:C988($p; Scale:K61:2; 0.4; 0.4)
+			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/changes.png").platformPath; $p)
+			CREATE THUMBNAIL:C679($p; $p; 20; 20)
 			$c[0].icon:=$p
-			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+"commits.png").platformPath; $p)
-			TRANSFORM PICTURE:C988($p; Scale:K61:2; 0.4; 0.4)
+			READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/commits.png").platformPath; $p)
+			CREATE THUMBNAIL:C679($p; $p; 20; 20)
 			$c[1].icon:=$p
 			
 			$oForm.menu:=$c
@@ -124,9 +124,9 @@ Case of
 			// Preload icons
 			$oForm.icons:=New object:C1471
 			
-			For each ($t; New collection:C1472("checked"; "github"; "gitLab"; "branch"; "branching"; "master"; "tag"; "fix"; "remote"; "stash"))
+			For each ($t; New collection:C1472("checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"))
 				
-				READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/"+$oForm.template+$t+".png").platformPath; $p)
+				READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/"+$t+".png").platformPath; $p)
 				CREATE THUMBNAIL:C679($p; $p; 20; 20)
 				$oForm.icons[Lowercase:C14($t)]:=$p
 				
@@ -171,7 +171,7 @@ Case of
 			$oForm.ƒ:=$o
 			
 			// Color definitions
-			$oForm.colors:=JSON Parse:C1218(File:C1566("/RESOURCES/Images/"+$oForm.template+"manifest.json").getText()).colors
+			//$oForm.colors:=JSON Parse(File("/RESOURCES/Images/manifest.json").getText()).colors
 			
 			DIALOG:C40("GIT"; $oForm)
 			CLOSE WINDOW:C154

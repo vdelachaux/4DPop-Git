@@ -314,18 +314,10 @@ Case of
 	: ($e.objectName=$ƒ.open.name)
 		
 		$menu:=_o_menu\
-			.append("openInTerminal"; "terminal").icon("/RESOURCES/Images/"+Form:C1466.template+"terminal.png")\
-			.append("openInFinder"; "show").icon("/RESOURCES/Images/"+Form:C1466.template+"show.png")\
+			.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
+			.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/show.png")\
 			.line()\
-			.append("viewOnGithub"; "github").icon("/RESOURCES/Images/"+Form:C1466.template+"gitHub.png")
-		
-		$git.execute("config --get remote.origin.url")
-		
-		If (Not:C34($git.execute("config --get remote.origin.url")))
-			
-			$menu.disable()
-			
-		End if 
+			.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($git.execute("config --get remote.origin.url"))
 		
 		If ($menu.popup().selected)
 			

@@ -1,4 +1,16 @@
 {
+	"(EXTENSION)": {
+		"methods": [
+			"(EXTENSION)"
+		],
+		"forms": [
+			"(EXTENSION)"
+		],
+		"classes": [
+			"_EXTENSION"
+		]
+	},
+	"(GIT_1)": {},
 	"(git)": {},
 	"(MAIN)": {},
 	"(PALETT_1)": {
@@ -9,9 +21,6 @@
 	"(PALETT)": {},
 	"(WIDGET)": {},
 	"# 🚧 DEV": {
-		"groups": [
-			"EXTENSION"
-		],
 		"methods": [
 			"_o_button",
 			"_o_group",
@@ -25,9 +34,6 @@
 			"00_TEST",
 			"COMPILER_o_classes",
 			"update"
-		],
-		"forms": [
-			"GIT EXTENSION"
 		]
 	},
 	"#️⃣ API": {},
@@ -44,40 +50,8 @@
 		]
 	},
 	"📦 COMPONENT": {
-		"groups": [
-			"GIT"
-		],
 		"methods": [
-			"COMPILER_component"
-		]
-	},
-	"4️⃣ 4DPop": {
-		"methods": [
-			"_4DPopGit",
-			"COMPILER_4DPop",
-			"main",
-			"WIDGET"
-		],
-		"forms": [
-			"WIDGET"
-		],
-		"classes": [
-			"_WIDGET"
-		]
-	},
-	"EXTENSION": {
-		"methods": [
-			"EXTENSION"
-		],
-		"forms": [
-			"EXTENSION"
-		],
-		"classes": [
-			"_EXTENSION"
-		]
-	},
-	"GIT": {
-		"methods": [
+			"COMPILER_component",
 			"GIT",
 			"GIT COMMIT LIST",
 			"GIT Diff",
@@ -92,6 +66,20 @@
 			"GIT",
 			"GIT PATTERN",
 			"GIT SETTINGS"
+		]
+	},
+	"4️⃣ 4DPop": {
+		"methods": [
+			"_4DPopGit",
+			"COMPILER_4DPop",
+			"main",
+			"WIDGET"
+		],
+		"forms": [
+			"WIDGET"
+		],
+		"classes": [
+			"_WIDGET"
 		]
 	},
 	"ui": {
@@ -120,6 +108,8 @@
 	},
 	"trash": {
 		"groups": [
+			"(EXTENSION)",
+			"(GIT_1)",
 			"(git)",
 			"(MAIN)",
 			"(PALETT_1)",
