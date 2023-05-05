@@ -45,12 +45,9 @@
 					"showHeaders": false,
 					"fill": "transparent",
 					"resizingMode": "legacy",
-					"scrollbarHorizontal": "hidden",
-					"scrollbarVertical": "hidden",
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.menu",
 					"hideFocusRing": true,
-					"hideSystemHighlight": false,
 					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
 					"sizingY": "fixed",
@@ -60,7 +57,12 @@
 					"sizingX": "fixed",
 					"rowHeight": "2em",
 					"verticalAlign": "middle",
-					"focusable": false,
+					"scrollbarHorizontal": "hidden",
+					"scrollbarVertical": "hidden",
+					"selectionMode": "single",
+					"currentItemSource": "Form:C1466.menuCurrentItem",
+					"currentItemPositionSource": "Form:C1466.menuItemPosition",
+					"selectedItemsSource": "Form:C1466.menuSelectedItems",
 					"columns": [
 						{
 							"header": {
@@ -172,7 +174,7 @@
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/default/fetch.png",
+					"icon": "/RESOURCES/Images/main/Fetch.png",
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
@@ -191,7 +193,7 @@
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/default/pull.png",
+					"icon": "/RESOURCES/Images/main/Pull.png",
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
@@ -210,7 +212,7 @@
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/default/push.png",
+					"icon": "/RESOURCES/Images/main/Push.png",
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
@@ -231,7 +233,7 @@
 					"method": "GIT OBJECTS",
 					"focusable": false,
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/default/open.png",
+					"icon": "/RESOURCES/Images/main/open.png",
 					"sizingX": "move",
 					"fontSize": 11
 				},
@@ -267,7 +269,7 @@
 						"onDoubleClick",
 						"onSelectionChange"
 					],
-					"scrollbarVertical": "hidden",
+					"scrollbarVertical": "automatic",
 					"scrollbarHorizontal": "hidden",
 					"focusable": true,
 					"enterable": false,
@@ -275,7 +277,8 @@
 					"sizingY": "grow",
 					"method": "GIT OBJECTS",
 					"dataSource": "Form.selector\t",
-					"fill": "transparent"
+					"fill": "transparent",
+					"hideFocusRing": true
 				}
 			}
 		},
@@ -630,10 +633,10 @@
 				"stageAll": {
 					"type": "button",
 					"text": "",
-					"top": 60,
+					"top": 62,
 					"left": 458,
-					"width": 22,
-					"height": 22,
+					"width": 18,
+					"height": 17,
 					"events": [
 						"onClick"
 					],
@@ -646,7 +649,7 @@
 					"style": "toolbar",
 					"method": "GIT OBJECTS",
 					"focusable": false,
-					"icon": "/RESOURCES/Images/default/stageAll.png",
+					"icon": "/RESOURCES/Images/main/stageAll.png",
 					"sizingX": "move",
 					"tooltip": ":xliff:stageAll"
 				}
@@ -1038,5 +1041,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 4
+	"geometryStamp": 16
 }

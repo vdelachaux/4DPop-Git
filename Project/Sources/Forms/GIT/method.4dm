@@ -51,12 +51,6 @@ Case of
 		$ƒ.commits.setScrollbar(0; 2)
 		$ƒ.detailCommit.setScrollbar(0; 2)
 		
-		// Apply template
-		For each ($t; New collection:C1472("fetch"; "pull"; "push"; "open"; "stageAll"))
-			
-			$ƒ[$t].setFormat(";file:Images/"+Form:C1466.template+$t+".png")
-			
-		End for each 
 		
 /*_______Adapt UI to localization______*/
 		$ƒ.remote.distributeHorizontally(New object:C1471(\
@@ -267,7 +261,7 @@ Case of
 					
 				Else 
 					
-					$list.icon(Choose:C955($o.name="master"; Form:C1466.icons.master; Form:C1466.icons.branching))
+					$list.icon(Choose:C955($o.name="master"; Form:C1466.icons.master; Form:C1466.icons.branch))
 					
 				End if 
 			End for each 

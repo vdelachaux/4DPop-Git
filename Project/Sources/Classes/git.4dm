@@ -233,17 +233,21 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	return This:C1470.success
 	
 /*————————————————————————————————————————————————————————*/
-Function status() : Integer
+Function status($short : Boolean) : Integer
 	
-	var $t : Text
+	var $cmd; $t : Text
+	
+	$short:=Count parameters:C259=0 ? True:C214 : $short
 	
 	This:C1470.changes.clear()
 	
-	If (This:C1470.execute("status -s -uall"))
+	$cmd:="status"+($short ? " -s" : "")+" -uall"
+	
+	If (This:C1470.execute($cmd))
 		
 		If (Position:C15("\n"; String:C10(This:C1470.result))>0)
 			
-			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
+			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2))
 				
 				This:C1470.changes.push(New object:C1471(\
 					"status"; $t[[1]]+$t[[2]]; \

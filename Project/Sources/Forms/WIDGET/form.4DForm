@@ -15,43 +15,12 @@
 		},
 		{
 			"objects": {
-				"changes": {
-					"type": "input",
-					"left": 49,
-					"top": 54,
-					"width": 29,
-					"height": 14,
-					"dataSource": "Form:C1466.changes",
-					"enterable": false,
-					"focusable": false,
-					"fill": "transparent",
-					"fontSize": 12,
-					"dataSourceTypeHint": "integer",
-					"contextMenu": "none",
-					"fontWeight": "bold",
-					"textAlign": "left",
-					"visibility": "visible",
-					"borderStyle": "none",
-					"events": [
-						"onClick"
-					]
-				},
-				"localChangesIcon": {
-					"type": "picture",
-					"top": 53,
-					"left": 27,
-					"width": 16,
-					"height": 16,
-					"picture": "/RESOURCES/Images/changes.png",
-					"pictureFormat": "scaled",
-					"visibility": "visible"
-				},
 				"fetch": {
 					"type": "input",
 					"left": 81,
 					"top": 54,
 					"width": 27,
-					"height": 14,
+					"height": 16,
 					"dataSource": "Form:C1466.fetchNumber",
 					"enterable": false,
 					"focusable": false,
@@ -64,13 +33,13 @@
 					"visibility": "visible",
 					"borderStyle": "none"
 				},
-				"todo": {
+				"swap": {
 					"type": "picture",
-					"top": 52,
+					"top": 51,
 					"left": 108,
 					"width": 18,
-					"height": 18,
-					"picture": "/RESOURCES/Images/swap.png",
+					"height": 22,
+					"picture": "/RESOURCES/Images/widget/swap.png",
 					"pictureFormat": "scaled",
 					"visibility": "visible"
 				},
@@ -79,7 +48,7 @@
 					"left": 126,
 					"top": 54,
 					"width": 29,
-					"height": 14,
+					"height": 16,
 					"dataSource": "Form:C1466.pushNumber",
 					"enterable": false,
 					"focusable": false,
@@ -92,9 +61,8 @@
 					"visibility": "visible",
 					"borderStyle": "none"
 				},
-				"openGitWindow": {
+				"icon": {
 					"type": "button",
-					"text": "",
 					"top": 4,
 					"left": 4,
 					"width": 36,
@@ -102,9 +70,11 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/git.png",
+					"icon": "/RESOURCES/Images/Common/git.png",
 					"style": "toolbar",
-					"visibility": "visible"
+					"visibility": "visible",
+					"imageHugsTitle": true,
+					"focusable": false
 				},
 				"more": {
 					"type": "button",
@@ -115,7 +85,7 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/more.png",
+					"icon": "/RESOURCES/Images/Common/more.png",
 					"style": "toolbar",
 					"iconFrames": 4,
 					"visibility": "visible",
@@ -124,17 +94,18 @@
 				"branch": {
 					"type": "button",
 					"text": "Form.branch",
-					"top": 22,
+					"top": 19,
 					"left": 22,
 					"width": 135,
 					"height": 26,
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/branch_18.png",
+					"icon": "/RESOURCES/Images/widget/branch_mini.png",
 					"imageHugsTitle": true,
 					"textPlacement": "right",
-					"style": "toolbar"
+					"style": "toolbar",
+					"popupPlacement": "linked"
 				},
 				"initRepository": {
 					"type": "button",
@@ -147,11 +118,26 @@
 						"onClick"
 					],
 					"visibility": "hidden"
+				},
+				"localChanges": {
+					"type": "button",
+					"top": 51,
+					"left": 22,
+					"width": 51,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"icon": "/RESOURCES/Images/widget/changes_mini.png",
+					"textPlacement": "right",
+					"style": "toolbar",
+					"fontWeight": "bold",
+					"imageHugsTitle": true
 				}
 			}
 		}
 	],
-	"geometryStamp": 697,
+	"geometryStamp": 756,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
