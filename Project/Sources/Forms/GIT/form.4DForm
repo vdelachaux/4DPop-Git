@@ -23,8 +23,8 @@
 			"objects": {
 				"Rectangle": {
 					"type": "rectangle",
-					"top": 0,
-					"left": 0,
+					"top": -1,
+					"left": 3,
 					"width": 1120,
 					"height": 910,
 					"sizingX": "grow",
@@ -168,13 +168,13 @@
 					"text": ":xliff:fetch",
 					"top": 6,
 					"left": 7,
-					"width": 52,
+					"width": 60,
 					"height": 54,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/main/Fetch.png",
+					"icon": "/RESOURCES/Images/Main/fetch.png",
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
@@ -186,8 +186,8 @@
 					"type": "button",
 					"text": ":xliff:pull",
 					"top": 6,
-					"left": 65,
-					"width": 52,
+					"left": 68,
+					"width": 60,
 					"height": 54,
 					"events": [
 						"onClick"
@@ -205,8 +205,8 @@
 					"type": "button",
 					"text": ":xliff:push",
 					"top": 6,
-					"left": 121,
-					"width": 52,
+					"left": 129,
+					"width": 60,
 					"height": 54,
 					"events": [
 						"onClick"
@@ -223,17 +223,17 @@
 				"open": {
 					"type": "button",
 					"text": ":xliff:open",
-					"top": 2,
-					"left": 1014,
-					"width": 86,
-					"height": 62,
+					"top": 11,
+					"left": 1051,
+					"width": 60,
+					"height": 45,
 					"events": [
 						"onClick"
 					],
 					"method": "GIT OBJECTS",
 					"focusable": false,
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/main/open.png",
+					"icon": "/RESOURCES/Images/Main/more.png",
 					"sizingX": "move",
 					"fontSize": 11
 				},
@@ -1041,5 +1041,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 16
+	"geometryStamp": 39
 }

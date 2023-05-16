@@ -17,7 +17,7 @@
 			"objects": {
 				"fetch": {
 					"type": "input",
-					"left": 81,
+					"left": 79,
 					"top": 54,
 					"width": 27,
 					"height": 16,
@@ -35,17 +35,17 @@
 				},
 				"swap": {
 					"type": "picture",
-					"top": 51,
+					"top": 56,
 					"left": 108,
-					"width": 18,
-					"height": 22,
-					"picture": "/RESOURCES/Images/widget/swap.png",
+					"width": 17,
+					"height": 13,
+					"picture": "/RESOURCES/Images/Widget/swap.png",
 					"pictureFormat": "scaled",
 					"visibility": "visible"
 				},
 				"push": {
 					"type": "input",
-					"left": 126,
+					"left": 127,
 					"top": 54,
 					"width": 29,
 					"height": 16,
@@ -128,16 +128,16 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/widget/changes_mini.png",
+					"icon": "/RESOURCES/Images/Widget/changes.png",
 					"textPlacement": "right",
 					"style": "toolbar",
 					"fontWeight": "bold",
-					"imageHugsTitle": true
+					"imageHugsTitle": false
 				}
 			}
 		}
 	],
-	"geometryStamp": 756,
+	"geometryStamp": 800,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
