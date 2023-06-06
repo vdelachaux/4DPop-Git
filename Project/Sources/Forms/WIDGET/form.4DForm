@@ -63,14 +63,14 @@
 				},
 				"icon": {
 					"type": "button",
-					"top": 4,
-					"left": 4,
-					"width": 36,
-					"height": 36,
+					"top": 7,
+					"left": 7,
+					"width": 16,
+					"height": 16,
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/Common/git.png",
+					"icon": "/RESOURCES/Images/Common/git16.png",
 					"style": "toolbar",
 					"visibility": "visible",
 					"imageHugsTitle": true,
@@ -95,17 +95,17 @@
 					"type": "button",
 					"text": "Form.branch",
 					"top": 19,
-					"left": 22,
-					"width": 135,
+					"left": 7,
+					"width": 150,
 					"height": 26,
 					"events": [
 						"onClick"
 					],
 					"icon": "/RESOURCES/Images/widget/branch_mini.png",
-					"imageHugsTitle": true,
 					"textPlacement": "right",
-					"style": "toolbar",
-					"popupPlacement": "linked"
+					"style": "custom",
+					"popupPlacement": "linked",
+					"textAlign": "center"
 				},
 				"initRepository": {
 					"type": "button",
@@ -122,22 +122,21 @@
 				"localChanges": {
 					"type": "button",
 					"top": 51,
-					"left": 22,
-					"width": 51,
+					"left": 17,
+					"width": 56,
 					"height": 22,
 					"events": [
 						"onClick"
 					],
 					"icon": "/RESOURCES/Images/Widget/changes.png",
 					"textPlacement": "right",
-					"style": "toolbar",
-					"fontWeight": "bold",
-					"imageHugsTitle": false
+					"style": "custom",
+					"fontWeight": "bold"
 				}
 			}
 		}
 	],
-	"geometryStamp": 800,
+	"geometryStamp": 815,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
