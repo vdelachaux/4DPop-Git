@@ -502,7 +502,15 @@ Function _doTag($tag : Text)
 				//______________________________________________________
 			: (Position:C15("/SOURCES/Forms"; $file.path)=1)
 				
-				$menu.icon("|Images/ObjectIcons/Icon_601.png")
+				If ($file.path="@method.4dm")
+					
+					$menu.icon("|Images/ObjectIcons/Icon_602.png")
+					
+				Else 
+					
+					$menu.icon("|Images/ObjectIcons/Icon_601.png")
+					
+				End if 
 				
 				//______________________________________________________
 			: (Position:C15("/SOURCES/DatabaseMethods"; $file.path)=1)
@@ -516,7 +524,6 @@ Function _doTag($tag : Text)
 				
 				//______________________________________________________
 		End case 
-		
 	End for each 
 	
 	If ($menu.popup().selected)
@@ -529,11 +536,44 @@ Function _doTag($tag : Text)
 	// Transforms the given system path into a 4D path name
 Function _resolvePath($path : Text) : Text
 	
-	$path:=Replace string:C233($path; "/SOURCES/Classes"; "[class]")
-	$path:=Replace string:C233($path; "/SOURCES/Methods/"; "")
-	$path:=Replace string:C233($path; "/SOURCES/DatabaseMethods"; "[databaseMethod]")
-	$path:=Replace string:C233($path; "/SOURCES/Triggers"; "[trigger]")
-	$path:=Replace string:C233($path; "/SOURCES/Forms"; "[projectForm]")
-	$path:=Replace string:C233($path; "/ObjectMethods"; "")
+	Case of 
+			
+			//______________________________________________________
+		: (Position:C15("/SOURCES/Classes"; $path)=1)
+			
+			$path:=Replace string:C233($path; "/SOURCES/Classes"; "[class]")
+			
+			//______________________________________________________
+		: (Position:C15("/SOURCES/Methods"; $path)=1)
+			
+			$path:=Replace string:C233($path; "/SOURCES/Methods/"; "")
+			
+			//______________________________________________________
+		: (Position:C15("/SOURCES/Forms"; $path)=1)
+			
+			$path:=Replace string:C233($path; "/SOURCES/Forms"; "[projectForm]")
+			
+			If ($path="@method.4dm")
+				
+				$path:=Replace string:C233($path; "/method.4dm"; "/{formMethod}")
+				
+			Else 
+				
+				$path:=Replace string:C233($path; "/ObjectMethods"; "")
+				
+			End if 
+			
+			//______________________________________________________
+		: (Position:C15("/SOURCES/DatabaseMethods"; $path)=1)
+			
+			$path:=Replace string:C233($path; "/SOURCES/DatabaseMethods"; "[databaseMethod]")
+			
+			//______________________________________________________
+		: (Position:C15("/SOURCES/Triggers"; $path)=1)
+			
+			$path:=Replace string:C233($path; "/SOURCES/Triggers"; "[trigger]")
+			
+			//______________________________________________________
+	End case 
 	
 	return Replace string:C233($path; ".4dm"; "")
