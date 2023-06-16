@@ -36,6 +36,9 @@ Function init()
 	
 	This:C1470.button("initRepository")
 	
+	This:C1470.button("todo")
+	This:C1470.button("fixme")
+	
 	This:C1470.initRepository.setHelpTip(Get localized string:C991("clickToInitializeAsAGitRepository"))
 	This:C1470.fetch.setHelpTip(Get localized string:C991("numberOfCommitsToBePulled"))
 	This:C1470.push.setHelpTip(Get localized string:C991("numberOfCommitsToBePushed"))
@@ -132,6 +135,12 @@ Function handleEvents($e : Object)
 			: (This:C1470.icon.catch($e; On Clicked:K2:4))
 				
 				GIT OPEN
+				
+				//==============================================
+			: (This:C1470.todo.catch($e; On Clicked:K2:4))\
+				 | (This:C1470.fixme.catch($e; On Clicked:K2:4))
+				
+				This:C1470._doTag($e.objectName)
 				
 				//==============================================
 		End case 
@@ -450,3 +459,81 @@ Function _doMoreMenu()
 				//______________________________________________________
 		End case 
 	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+Function _doTag($tag : Text)
+	
+	var $t : Text
+	var $todo : Collection
+	var $file : 4D:C1709.File
+	var $menu : cs:C1710.menu
+	
+	$todo:=New collection:C1472
+	
+	For each ($file; Folder:C1567("/SOURCES/"; *).files(fk recursive:K87:7).query("extension = .4dm"))
+		
+		$t:=$file.getText()
+		
+		If (Match regex:C1019("(?mi-s)//\\s*"+$tag+":"; $t; 1))
+			
+			$todo.push($file)
+			
+		End if 
+	End for each 
+	
+	$menu:=cs:C1710.menu.new("no-localization")
+	
+	For each ($file; $todo)
+		
+		$menu.append($file.name; $file.path)
+		
+		Case of 
+				
+				//______________________________________________________
+			: (Position:C15("/SOURCES/Classes"; $file.path)=1)
+				
+				$menu.icon("|Images/ObjectIcons/Icon_628.png")
+				
+				//______________________________________________________
+			: (Position:C15("/SOURCES/Methods"; $file.path)=1)
+				
+				$menu.icon("|Images/ObjectIcons/Icon_602.png")
+				
+				//______________________________________________________
+			: (Position:C15("/SOURCES/Forms"; $file.path)=1)
+				
+				$menu.icon("|Images/ObjectIcons/Icon_601.png")
+				
+				//______________________________________________________
+			: (Position:C15("/SOURCES/DatabaseMethods"; $file.path)=1)
+				
+				$menu.icon("|Images/ObjectIcons/Icon_622.png")
+				
+				//______________________________________________________
+			: (Position:C15("/SOURCES/Triggers"; $file.path)=1)
+				
+				$menu.icon("|Images/ObjectIcons/Icon_600.png")
+				
+				//______________________________________________________
+		End case 
+		
+	End for each 
+	
+	If ($menu.popup().selected)
+		
+		METHOD OPEN PATH:C1213(This:C1470._resolvePath($menu.choice); *)
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Transforms the given system path into a 4D path name
+Function _resolvePath($path : Text) : Text
+	
+	$path:=Replace string:C233($path; "/SOURCES/Classes"; "[class]")
+	$path:=Replace string:C233($path; "/SOURCES/Methods/"; "")
+	$path:=Replace string:C233($path; "/SOURCES/DatabaseMethods"; "[databaseMethod]")
+	$path:=Replace string:C233($path; "/SOURCES/Triggers"; "[trigger]")
+	$path:=Replace string:C233($path; "/SOURCES/Forms"; "[projectForm]")
+	$path:=Replace string:C233($path; "/ObjectMethods"; "")
+	
+	return Replace string:C233($path; ".4dm"; "")

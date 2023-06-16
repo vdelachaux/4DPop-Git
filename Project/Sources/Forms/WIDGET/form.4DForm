@@ -132,11 +132,37 @@
 					"textPlacement": "right",
 					"style": "custom",
 					"fontWeight": "bold"
+				},
+				"todo": {
+					"type": "button",
+					"top": 5,
+					"left": 96,
+					"width": 14,
+					"height": 14,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagTodo.png",
+					"visibility": "visible"
+				},
+				"fixme": {
+					"type": "button",
+					"top": 5,
+					"left": 115,
+					"width": 14,
+					"height": 14,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagFixMe.png",
+					"visibility": "visible"
 				}
 			}
 		}
 	],
-	"geometryStamp": 815,
+	"geometryStamp": 840,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
