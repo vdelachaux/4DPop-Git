@@ -1,5 +1,4 @@
-//%attributes = {}
-If (Non:C34(Is compiled mode:C492))
+If (Not:C34(Is compiled mode:C492))
 	
 	ARRAY TEXT:C222($componentsArray; 0)
 	COMPONENT LIST:C1001($componentsArray)
