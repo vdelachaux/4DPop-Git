@@ -94,18 +94,17 @@
 				"branch": {
 					"type": "button",
 					"text": "Form.branch",
-					"top": 19,
+					"top": 28,
 					"left": 7,
 					"width": 150,
-					"height": 26,
+					"height": 18,
 					"events": [
 						"onClick"
 					],
 					"icon": "/RESOURCES/Images/widget/branch_mini.png",
 					"textPlacement": "right",
 					"style": "custom",
-					"popupPlacement": "linked",
-					"textAlign": "center"
+					"popupPlacement": "linked"
 				},
 				"initRepository": {
 					"type": "button",
@@ -162,7 +161,7 @@
 			}
 		}
 	],
-	"geometryStamp": 840,
+	"geometryStamp": 858,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
