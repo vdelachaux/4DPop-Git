@@ -1,5 +1,9 @@
 Class extends form
 
+property icon; more; branch; localChanges; initRepository; todo; fixme : cs:C1710.button
+property fetch; push : cs:C1710.input
+property git : cs:C1710.git
+
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
@@ -10,6 +14,9 @@ Class constructor
 	This:C1470.currentBranch:=""
 	
 	This:C1470.timer:=20  // Timer value for refresh
+	
+	This:C1470.PACKAGE:=Folder:C1567("/PACKAGE"; *)
+	This:C1470.SOURCES:=Folder:C1567("/SOURCES/"; *)
 	
 	// 📌 The initialization is deferred to the first update
 	
@@ -39,10 +46,10 @@ Function init()
 	This:C1470.button("todo")
 	This:C1470.button("fixme")
 	
-	This:C1470.initRepository.setHelpTip(Get localized string:C991("clickToInitializeAsAGitRepository"))
-	This:C1470.fetch.setHelpTip(Get localized string:C991("numberOfCommitsToBePulled"))
-	This:C1470.push.setHelpTip(Get localized string:C991("numberOfCommitsToBePushed"))
-	This:C1470.localChanges.setHelpTip(Get localized string:C991("numberOfChangesInTheLocalDirectory"))
+	This:C1470.initRepository.setHelpTip("clickToInitializeAsAGitRepository")
+	This:C1470.fetch.setHelpTip("numberOfCommitsToBePulled")
+	This:C1470.push.setHelpTip("numberOfCommitsToBePushed")
+	This:C1470.localChanges.setHelpTip("numberOfChangesInTheLocalDirectory")
 	
 	Form:C1466.fetchNumber:=0
 	Form:C1466.pushNumber:=0
@@ -64,7 +71,7 @@ Function init()
 		
 	End if 
 	
-	$folder:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)
+	$folder:=Folder:C1567(This:C1470.PACKAGE.platformPath; fk platform path:K87:2)  // Unsndboxed
 	
 	While ($folder#Null:C1517)\
 		 && Not:C34($folder.folder(".git").exists)
@@ -76,11 +83,11 @@ Function init()
 	If ($folder#Null:C1517)\
 		 && ($folder.exists)
 		
-		This:C1470.gitInstance:=cs:C1710.git.new($folder)
+		This:C1470.git:=cs:C1710.git.new($folder)
 		
 	Else 
 		
-		This:C1470.gitInstance:=Null:C1517
+		This:C1470.git:=Null:C1517
 		
 	End if 
 	
@@ -118,7 +125,7 @@ Function handleEvents($e : Object)
 				//==============================================
 			: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
 				
-				This:C1470.gitInstance:=cs:C1710.git.new()
+				This:C1470.git:=cs:C1710.git.new()
 				This:C1470.refresh()
 				
 				//==============================================
@@ -170,11 +177,11 @@ Function update()
 		
 	End if 
 	
-	$git:=This:C1470.gitInstance
+	$git:=This:C1470.git
 	
 	If ($git#Null:C1517)
 		
-		$branch:=$git.currentBranch
+		$branch:=Form:C1466.branch || $git.currentBranch
 		
 		If ($branch#This:C1470.currentBranch)
 			
@@ -207,7 +214,7 @@ Function update()
 				This:C1470.branch.foregroundColor:=Foreground color:K23:1
 				This:C1470.branch.fontStyle:=Plain:K14:1
 				This:C1470.branch.setPicture("/Images/widget/branch_mini.png")
-				This:C1470.branch.setHelpTip(Replace string:C233(Get localized string:C991("IsTheCurrentBranch"); "{$branch}"; $branch))
+				This:C1470.branch.setHelpTip(Replace string:C233(Get localized string:C991("IsTheCurrentBranch"); "{branch}"; $branch))
 				
 			Else 
 				
@@ -217,10 +224,16 @@ Function update()
 				This:C1470.branch.setHelpTip(Replace string:C233(\
 					Replace string:C233(Replace string:C233(\
 					Get localized string:C991("warningBranch"); "{branch}"; $branch)\
-					; "{project}"; Folder:C1567("/PACKAGE"; *).name)\
-					; "{version}\" de 4D.\"}"; This:C1470.version))
+					; "{project}"; This:C1470.PACKAGE.name)\
+					; "{version}"; This:C1470.version))
 				
 			End if 
+			
+			Form:C1466.branch:=This:C1470.currentBranch
+			
+			This:C1470.branch.setTitle(This:C1470.currentBranch)
+			This:C1470.branch.bestSize(Align center:K42:3; 50; 140)
+			
 		End if 
 		
 		Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
@@ -240,8 +253,6 @@ Function update()
 		
 	End if 
 	
-	This:C1470.branch.setTitle(This:C1470.currentBranch)
-	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doChangesMenu()
 	
@@ -252,7 +263,7 @@ Function _doChangesMenu()
 	var $git : cs:C1710.git
 	var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
 	
-	$git:=This:C1470.gitInstance
+	$git:=This:C1470.git
 	
 	If ($git.status()=0)
 		
@@ -319,11 +330,63 @@ Function _doChangesMenu()
 		End case 
 	End for each 
 	
-	$menu:=cs:C1710.menu.new()\
-		.append(":xliff:classes"; $classes)\
-		.append(":xliff:methods"; $methods)\
-		.append(":xliff:forms"; $forms)\
-		.append(":xliff:others"; $others)
+	$menu:=cs:C1710.menu.new()
+	
+	If ($classes#Null:C1517)
+		
+		If ($classes.itemCount()>0)
+			
+			$menu.append(":xliff:classes"; $classes)\
+				.icon("|Images/ObjectIcons/Icon_628.png")
+			
+		Else 
+			
+			$classes.release()
+			
+		End if 
+	End if 
+	
+	If ($methods#Null:C1517)
+		
+		If ($methods.itemCount()>0)
+			
+			$menu.append(":xliff:methods"; $methods)\
+				.icon("|Images/ObjectIcons/Icon_602.png")
+			
+		Else 
+			
+			$methods.release()
+			
+		End if 
+	End if 
+	
+	If ($forms#Null:C1517)
+		
+		If ($forms.itemCount()>0)
+			
+			$menu.append(":xliff:forms"; $forms)\
+				.icon("|Images/ObjectIcons/Icon_602.png")
+			
+		Else 
+			
+			$forms.release()
+			
+		End if 
+	End if 
+	
+	If ($others#Null:C1517)
+		
+		If ($others.itemCount()>0)
+			
+			$menu.append(":xliff:others"; $others)\
+				.icon("|Images/ObjectIcons/Icon_459.png")
+			
+		Else 
+			
+			$others.release()
+			
+		End if 
+	End if 
 	
 	If (Not:C34($menu.popup().selected))
 		
@@ -389,7 +452,7 @@ Function _doBranchMenu()
 	var $git : cs:C1710.git
 	var $menu : cs:C1710.menu
 	
-	$git:=This:C1470.gitInstance
+	$git:=This:C1470.git
 	
 	$git.branch()
 	
@@ -399,18 +462,17 @@ Function _doBranchMenu()
 		
 		For each ($o; $git.branches)
 			
-			$menu.append($o.name).mark($o.current)
+			$menu.append($o.name; $o.name).mark($o.current)
 			
 		End for each 
 		
-		If (Not:C34($menu.popup().selected))
+		//TODO:Change branch
+		If ($menu.popup().selected)
 			
-			return 
+			Form:C1466.branch:=$menu.choice
+			This:C1470.refresh()
 			
 		End if 
-		
-		//TODO:Change branch
-		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
@@ -419,13 +481,13 @@ Function _doMoreMenu()
 	var $git : cs:C1710.git
 	var $menu : cs:C1710.menu
 	
-	$git:=This:C1470.gitInstance
+	$git:=This:C1470.git
 	
 	$menu:=cs:C1710.menu.new()\
-		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Common/git.png")\
+		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
 		.line()\
 		.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
-		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/show.png")\
+		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($git.execute("config --get remote.origin.url"))\
 		.line()\
@@ -470,7 +532,7 @@ Function _doTag($tag : Text)
 	
 	$todo:=New collection:C1472
 	
-	For each ($file; Folder:C1567("/SOURCES/"; *).files(fk recursive:K87:7).query("extension = .4dm"))
+	For each ($file; This:C1470.SOURCES.files(fk recursive:K87:7).query("extension = .4dm"))
 		
 		$t:=$file.getText()
 		

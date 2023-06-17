@@ -199,16 +199,14 @@ Initialiser un dépôt git ici quand même ?</target>
           <target>Nombre de modifications dans le répertoire local</target>
         </trans-unit>
         <trans-unit id="vqr16GW3Hw3H9dsw6das1w" resname="IsTheCurrentBranch">
-          <source>"{$branch}" is the current branch</source>
-          <target>"{$branch}" est la branche courante</target>
+          <source>"{branch}" is the current branch</source>
+          <target>"{branch}" est la branche courante</target>
         </trans-unit>
         <trans-unit id="Hso4Db_Z0G+C2O5xrHwudQ" resname="warningBranch">
-          <source>WARNING:
-You are editing the"{branch}" branch of "{project}"
-with a "{version}" version of 4D."</source>
-          <target>ATTENTION :
-Vous éditez la branche "{branch}" de "{project}"
-avec une version "{version}" de 4D."</target>
+          <source>⚠️ You are editing the"{branch}" branch of "{project}"
+with 4D "{version}"</source>
+          <target>⚠️ Vous éditez la branche "{branch}" de "{project}"
+avec 4D "{version}"</target>
         </trans-unit>
         <trans-unit id="q7Ma8DFf_d2FwID04ZQjzA" resname="classes">
           <source>Classes</source>

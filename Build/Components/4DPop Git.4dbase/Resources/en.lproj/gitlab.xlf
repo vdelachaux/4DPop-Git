@@ -199,16 +199,14 @@ Initialize a git repository here anyway?</target>
           <target>Number of changes in the local directory</target>
         </trans-unit>
         <trans-unit id="vqr16GW3Hw3H9dsw6das1w" resname="IsTheCurrentBranch">
-          <source>"{$branch}" is the current branch</source>
-          <target>"{$branch}" is the current branch</target>
+          <source>"{branch}" is the current branch</source>
+          <target>"{branch}" is the current branch</target>
         </trans-unit>
         <trans-unit id="Hso4Db_Z0G+C2O5xrHwudQ" resname="warningBranch">
-          <source>WARNING:
-You are editing the"{branch}" branch of "{project}"
-with a "{version}" version of 4D."</source>
-          <target>WARNING:
-You are editing the"{branch}" branch of "{project}"
-with a "{version}" version of 4D."</target>
+          <source>⚠️ You are editing the"{branch}" branch of "{project}"
+with 4D "{version}"</source>
+          <target>⚠️ You are editing the"{branch}" branch of "{project}"
+with 4D "{version}"</target>
         </trans-unit>
         <trans-unit id="q7Ma8DFf_d2FwID04ZQjzA" resname="classes">
           <source>Classes</source>
