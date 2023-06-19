@@ -4,7 +4,7 @@ property form : cs:C1710.formDelegate
 property icon; more; branch; localChanges; initRepository; todo; fixme : cs:C1710.buttonDelegate
 property fetch; push : cs:C1710.inputDelegate
 property gitItems : cs:C1710.groupDelegate
-property git : cs:C1710.git
+property git : cs:C1710.Git
 
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
@@ -85,7 +85,7 @@ Function init()
 	If ($folder#Null:C1517)\
 		 && ($folder.exists)
 		
-		This:C1470.git:=cs:C1710.git.new($folder)
+		This:C1470.git:=cs:C1710.Git.new($folder)
 		
 	Else 
 		
@@ -127,7 +127,7 @@ Function handleEvents($e : Object)
 				//==============================================
 			: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
 				
-				This:C1470.git:=cs:C1710.git.new()
+				This:C1470.git:=cs:C1710.Git.new()
 				This:C1470.form.refresh()
 				
 				//==============================================
@@ -168,7 +168,7 @@ Function update()
 	var $changes : Integer
 	var $success : Boolean
 	var $c : Collection
-	var $git : cs:C1710.git
+	var $git : cs:C1710.Git
 	
 	$git:=This:C1470.git
 	
@@ -265,7 +265,7 @@ Function _doChangesMenu()
 	var $icon : Text
 	var $o : Object
 	var $c : Collection
-	var $git : cs:C1710.git
+	var $git : cs:C1710.Git
 	var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
 	
 	$git:=This:C1470.git
@@ -454,7 +454,7 @@ Function _doChangesMenu()
 Function _doBranchMenu()
 	
 	var $o : Object
-	var $git : cs:C1710.git
+	var $git : cs:C1710.Git
 	var $menu : cs:C1710.menu
 	
 	$git:=This:C1470.git
@@ -483,7 +483,7 @@ Function _doBranchMenu()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doMoreMenu()
 	
-	var $git : cs:C1710.git
+	var $git : cs:C1710.Git
 	var $menu : cs:C1710.menu
 	
 	$git:=This:C1470.git
