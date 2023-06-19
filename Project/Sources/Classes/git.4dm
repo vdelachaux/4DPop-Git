@@ -251,7 +251,7 @@ Function status($short : Boolean) : Integer
 				
 				This:C1470.changes.push(New object:C1471(\
 					"status"; $t[[1]]+$t[[2]]; \
-					"path"; Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")))
+					"path"; Replace string:C233(Delete string:C232($t; 1; 2); "\""; "")))
 				
 			End for each 
 		End if 
