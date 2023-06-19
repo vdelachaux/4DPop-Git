@@ -25,11 +25,10 @@
 					"enterable": false,
 					"focusable": false,
 					"fill": "transparent",
-					"fontSize": 12,
+					"fontSize": 11,
 					"textAlign": "right",
 					"dataSourceTypeHint": "integer",
 					"contextMenu": "none",
-					"fontWeight": "bold",
 					"visibility": "visible",
 					"borderStyle": "none"
 				},
@@ -37,8 +36,8 @@
 					"type": "picture",
 					"top": 56,
 					"left": 108,
-					"width": 17,
-					"height": 13,
+					"width": 16,
+					"height": 16,
 					"picture": "/RESOURCES/Images/Widget/swap.png",
 					"pictureFormat": "scaled",
 					"visibility": "visible"
@@ -53,18 +52,17 @@
 					"enterable": false,
 					"focusable": false,
 					"fill": "transparent",
-					"fontSize": 12,
+					"fontSize": 11,
 					"dataSourceTypeHint": "integer",
 					"contextMenu": "none",
-					"fontWeight": "bold",
 					"textAlign": "left",
 					"visibility": "visible",
 					"borderStyle": "none"
 				},
 				"icon": {
 					"type": "button",
-					"top": 7,
-					"left": 7,
+					"top": 6,
+					"left": 5,
 					"width": 16,
 					"height": 16,
 					"events": [
@@ -78,7 +76,7 @@
 				},
 				"more": {
 					"type": "button",
-					"top": 1,
+					"top": 3,
 					"left": 135,
 					"width": 22,
 					"height": 22,
@@ -97,11 +95,11 @@
 					"top": 28,
 					"left": 7,
 					"width": 150,
-					"height": 18,
+					"height": 17,
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/widget/branch_mini.png",
+					"icon": "/RESOURCES/Images/Widget/branch.png",
 					"textPlacement": "right",
 					"style": "custom",
 					"popupPlacement": "linked"
@@ -130,11 +128,12 @@
 					"icon": "/RESOURCES/Images/Widget/changes.png",
 					"textPlacement": "right",
 					"style": "custom",
-					"fontWeight": "bold"
+					"fontSize": 11,
+					"popupPlacement": "linked"
 				},
 				"todo": {
 					"type": "button",
-					"top": 5,
+					"top": 7,
 					"left": 96,
 					"width": 14,
 					"height": 14,
@@ -147,8 +146,8 @@
 				},
 				"fixme": {
 					"type": "button",
-					"top": 5,
-					"left": 115,
+					"top": 7,
+					"left": 117,
 					"width": 14,
 					"height": 14,
 					"events": [
@@ -161,7 +160,7 @@
 			}
 		}
 	],
-	"geometryStamp": 858,
+	"geometryStamp": 889,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
@@ -178,5 +177,5 @@
 	"shared": true,
 	"width": 160,
 	"height": 80,
-	"method": "WIDGET"
+	"method": "formMethod"
 }

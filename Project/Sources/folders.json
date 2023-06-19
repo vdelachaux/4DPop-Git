@@ -1,23 +1,10 @@
 {
-	"(EXTENSION)": {
-		"methods": [
-			"(EXTENSION)"
-		],
-		"forms": [
-			"(EXTENSION)"
-		],
-		"classes": [
-			"_EXTENSION"
-		]
-	},
+	"(#️⃣ API)": {},
+	"(EXTENSION)": {},
 	"(GIT_1)": {},
 	"(git)": {},
 	"(MAIN)": {},
-	"(PALETT_1)": {
-		"forms": [
-			"(PALLET)"
-		]
-	},
+	"(PALETT_1)": {},
 	"(PALETT)": {},
 	"(WIDGET)": {},
 	"# 🚧 DEV": {
@@ -36,10 +23,24 @@
 			"update"
 		]
 	},
-	"#️⃣ API": {},
 	"♻️ LIBRAIRIES": {
 		"groups": [
-			"ui"
+			"👩‍💻 UI",
+			"database",
+			"env"
+		],
+		"methods": [
+			"noError"
+		],
+		"classes": [
+			"_classCore",
+			"colour",
+			"coord",
+			"dim",
+			"evt",
+			"menu",
+			"menuBar",
+			"motor"
 		]
 	},
 	"⚙️ MACROS": {},
@@ -49,7 +50,37 @@
 			"jwt"
 		]
 	},
-	"📦 COMPONENT": {
+	"👩‍💻 UI": {
+		"methods": [
+			"COMPILER_UI",
+			"dropableWidgetMethod",
+			"form_spreadToSubforms",
+			"formGetInstance",
+			"formMethod",
+			"subformWidgetMethod"
+		],
+		"classes": [
+			"buttonDelegate",
+			"comboBoxDelegate",
+			"dropDownDelegate",
+			"formDelegate",
+			"groupDelegate",
+			"hListDelegate",
+			"inputDelegate",
+			"listboxDelegate",
+			"pictureDelegate",
+			"progress",
+			"scrollableDelegate",
+			"selectorDelegate",
+			"staticDelegate",
+			"stepperDelegate",
+			"subformDelegate",
+			"thermometerDelegate",
+			"widgetDelegate",
+			"windowDelegate"
+		]
+	},
+	"📦 MAIN": {
 		"methods": [
 			"COMPILER_component",
 			"GIT",
@@ -72,42 +103,36 @@
 		"methods": [
 			"_4DPopGit",
 			"COMPILER_4DPop",
-			"main",
-			"WIDGET"
+			"main"
 		],
 		"forms": [
 			"WIDGET"
 		],
 		"classes": [
-			"_WIDGET"
+			"_WIDGET_Controller"
 		]
 	},
-	"ui": {
+	"database": {
 		"methods": [
-			"COMPILER_formClasses",
-			"form_spreadToSubforms"
+			"COMPILER_database",
+			"databaseNonThreadSafe"
 		],
 		"classes": [
-			"button",
-			"dropDown",
-			"form",
-			"formObject",
-			"group",
-			"input",
-			"listbox",
-			"menu",
-			"picture",
-			"progress",
-			"scrollable",
-			"selector",
-			"stepper",
-			"subform",
-			"thermometer",
-			"widget"
+			"database"
+		]
+	},
+	"env": {
+		"methods": [
+			"COMPILER_env",
+			"envScreens"
+		],
+		"classes": [
+			"env"
 		]
 	},
 	"trash": {
 		"groups": [
+			"(#️⃣ API)",
 			"(EXTENSION)",
 			"(GIT_1)",
 			"(git)",
