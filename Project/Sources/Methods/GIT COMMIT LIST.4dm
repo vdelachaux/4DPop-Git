@@ -2,7 +2,7 @@
 var $ine : Text
 var $o : Object
 var $c : Collection
-var $git : cs:C1710.git
+var $git : cs:C1710.Git
 
 If (FORM Get current page:C276=2)
 	

@@ -14,7 +14,7 @@ Case of
 		//______________________________________________________
 	: (True:C214)
 		
-		$git:=cs:C1710.git.new()
+		$git:=cs:C1710.Git.new()
 		$tVersion:=$git.version("short")
 		
 		$git.status()
@@ -70,7 +70,7 @@ Case of
 		//______________________________________________________
 	: (False:C215)
 		
-		$o:=cs:C1710.git.new()
+		$o:=cs:C1710.Git.new()
 		
 		$o.execute("log --abbrev-commit --oneline")
 		$o.execute("log --abbrev-commit --format=%s,%an,%h,%aD")

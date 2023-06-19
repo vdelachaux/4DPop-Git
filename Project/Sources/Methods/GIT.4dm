@@ -13,7 +13,7 @@ End if
 var $action : Text
 var $v
 var $o : Object
-var $git : cs:C1710.git
+var $git : cs:C1710.Git
 
 $action:=Value type:C1509($in)=Is object:K8:27 ? String:C10($in.action) : String:C10($in)
 $git:=Form:C1466.git

@@ -59,7 +59,7 @@ Case of
 		
 		COLLECTION TO ARRAY:C1562(Form:C1466.gitInstances; (OBJECT Get pointer:C1124(Object named:K67:5; "instances"))->)
 		
-		If (cs:C1710.git.new().local)
+		If (cs:C1710.Git.new().local)
 			
 			$index:=Find in array:C230((OBJECT Get pointer:C1124(Object named:K67:5; "instances"))->; "@/usr/local/bin/git@")
 			(OBJECT Get pointer:C1124(Object named:K67:5; "instances"))->:=$index
