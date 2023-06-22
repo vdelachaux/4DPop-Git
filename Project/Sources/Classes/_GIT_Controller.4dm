@@ -365,6 +365,7 @@ Function update()
 	
 	var $indx : Integer
 	var $commit; $detail; $o : Object
+	var $c : Collection
 	var $git : cs:C1710.Git
 	
 	$git:=This:C1470.Git
@@ -510,9 +511,11 @@ Function update()
 					//______________________________________________________
 			End case 
 			
-			If (Position:C15("Binary file"; $git.result)>0)
+			$c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+			
+			If ($c.length>0) && ($c[2]="Binary file@")
 				
-				Form:C1466.diff:="Binary files"
+				Form:C1466.diff:="Binary"
 				
 			Else 
 				
