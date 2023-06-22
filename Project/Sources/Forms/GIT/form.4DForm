@@ -5,7 +5,7 @@
 	},
 	"windowSizingX": "variable",
 	"windowSizingY": "variable",
-	"windowMinWidth": 0,
+	"windowMinWidth": 840,
 	"windowMinHeight": 0,
 	"windowMaxWidth": 32767,
 	"windowMaxHeight": 32767,
@@ -665,7 +665,7 @@
 			"objects": {
 				"commits": {
 					"type": "listbox",
-					"left": 180,
+					"left": 181,
 					"top": 60,
 					"width": 940,
 					"height": 459,
@@ -689,6 +689,8 @@
 					"selectedItemsSource": "formGetInstance.commits.items",
 					"horizontalPadding": 2,
 					"showHeaders": false,
+					"rowHeight": "25px",
+					"verticalAlign": "middle",
 					"columns": [
 						{
 							"header": {
@@ -700,9 +702,25 @@
 								"name": "Footer5"
 							},
 							"dataSource": "This:C1470.title",
-							"width": 400,
+							"width": 550,
 							"enterable": false,
 							"minWidth": 400
+						},
+						{
+							"header": {
+								"name": "Header13",
+								"text": "Header13"
+							},
+							"name": "Column13",
+							"dataSource": "This:C1470.author.avatar",
+							"resizable": false,
+							"enterable": false,
+							"width": 20,
+							"dataSourceTypeHint": "picture",
+							"pictureFormat": "proportionalCenter",
+							"footer": {
+								"name": "Footer13"
+							}
 						},
 						{
 							"header": {
@@ -714,9 +732,9 @@
 							"footer": {
 								"name": "Footer6"
 							},
-							"width": 230,
+							"width": 150,
 							"enterable": false,
-							"minWidth": 200,
+							"minWidth": 150,
 							"maxWidth": 230
 						},
 						{
@@ -748,7 +766,8 @@
 							"enterable": false,
 							"width": 180,
 							"minWidth": 180,
-							"maxWidth": 400
+							"maxWidth": 180,
+							"resizable": false
 						}
 					]
 				},
@@ -777,9 +796,9 @@
 				},
 				"detail_list": {
 					"type": "listbox",
-					"left": 180,
+					"left": 181,
 					"top": 654,
-					"width": 518,
+					"width": 517,
 					"height": 255,
 					"events": [
 						"onSelectionChange"
@@ -1028,7 +1047,7 @@
 				},
 				"detailDiff": {
 					"type": "input",
-					"left": 701,
+					"left": 702,
 					"top": 521,
 					"width": 402,
 					"height": 373,
@@ -1061,5 +1080,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 103
+	"geometryStamp": 121
 }

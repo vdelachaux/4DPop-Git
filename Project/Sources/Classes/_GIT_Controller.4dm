@@ -55,6 +55,12 @@ Class constructor
 	This:C1470.UNSTAGED_STATUS:=["??"; " M"; " D"; " R"; " C"]  //; "MD"; "AM"; "AD"]
 	This:C1470.STAGED_STATUS:=["A "; "D "; "M "; "R "; "C "]
 	
+	This:C1470.MOVED_FILE:=Get localized string:C991("fileMoved")
+	This:C1470.NEW_FILE:=Get localized string:C991("newFile")
+	This:C1470.MODIFIED_FILE:=Get localized string:C991("modifiedFile")
+	This:C1470.DELETED_FILE:=Get localized string:C991("fileRemoved")
+	This:C1470.BINARY_FILE:=Get localized string:C991("binaryFile")
+	
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -373,6 +379,7 @@ Function onLoad()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
 	
+	var $t : Text
 	var $indx : Integer
 	var $commit; $detail; $o : Object
 	var $c : Collection
@@ -488,8 +495,9 @@ Function update()
 		: (This:C1470.form.page=This:C1470.pages.commits)
 			
 			$commit:=This:C1470.commits.item
+			$detail:=This:C1470.detailCommit.item
 			
-			If ($commit=Null:C1517)
+			If ($commit=Null:C1517) || ($detail=Null:C1517)
 				
 				Form:C1466.diff:=""
 				This:C1470.detailDiff.hide()
@@ -498,8 +506,16 @@ Function update()
 				
 			End if 
 			
-			$detail:=This:C1470.detailCommit.item
 			This:C1470.detailDiff.show()
+			
+			$c:=Split string:C1554($detail.label; " -> "; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+			
+			If ($c.length=2)
+				
+				Form:C1466.diff:=Replace string:C233(Replace string:C233(This:C1470.MOVED_FILE; "{origin}"; $c[0]); "{dest}"; $c[1])
+				return 
+				
+			End if 
 			
 			Case of 
 					
@@ -507,11 +523,6 @@ Function update()
 				: (Length:C16(String:C10($commit.parent.short))=0)
 					
 					$git.diff($detail.path; $commit.fingerprint.short)
-					
-					//______________________________________________________
-				: ($commit.status="A")
-					
-					$git.diff($detail.path; $commit.fingerprint.short+"^")
 					
 					//______________________________________________________
 				Else 
@@ -523,15 +534,31 @@ Function update()
 			
 			$c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 			
-			If ($c.length>0) && ($c[2]="Binary file@")
+			For each ($t; $c)
 				
-				Form:C1466.diff:="Binary"
+				If ($t="Binary file@")
+					
+					Form:C1466.diff:=$detail.added ? This:C1470.NEW_FILE\
+						 : $detail.modified ? This:C1470.MODIFIED_FILE\
+						 : $detail.deleted ? This:C1470.DELETED_FILE\
+						 : This:C1470.BINARY_FILE
+					
+					Form:C1466.diff+=": \r  • "+$detail.path
+					
+					return 
+					
+				End if 
 				
-			Else 
+				$indx+=1
 				
-				Form:C1466.diff:=This:C1470.GetStyledDiffText($detail)
-				
-			End if 
+				If ($indx=10)
+					
+					break
+					
+				End if 
+			End for each 
+			
+			Form:C1466.diff:=This:C1470.GetStyledDiffText($detail)
 			
 			//______________________________________________________
 	End case 
@@ -667,10 +694,7 @@ Function _selectorManager($e : cs:C1710.evt)
 	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
 	
 	var $o : Object
-	$o:=$list.GetParameter({\
-		key: "data"; \
-		type: Is object:K8:27\
-		})
+	$o:=$list.GetParameter({key: "data"; type: Is object:K8:27})
 	
 	Case of 
 			
@@ -937,11 +961,6 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 			This:C1470.DoDiff(Form:C1466.current)
 			
 			//______________________________________________________
-		Else 
-			
-			ASSERT:C1129(False:C215; "Form event activated unnecessarily ("+$e.description+")")
-			
-			//______________________________________________________
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1005,19 +1024,7 @@ Function _commitsManager()
 	
 	If ($commit.author.avatar=Null:C1517)
 		
-		$t:=Generate digest:C1147($commit.author.mail; MD5 digest:K66:1)
-		
-		If (Form:C1466[$t]=Null:C1517)
-			
-			If (HTTP Get:C1157("https://www.gravatar.com/avatar/"+$t; $x)=200)
-				
-				BLOB TO PICTURE:C682($x; $p)
-				Form:C1466[$t]:=$p  // Cache avatar
-				
-			End if 
-		End if 
-		
-		$commit.author.avatar:=Form:C1466[$t]
+		$commit.author.avatar:=This:C1470.getAvatar($commit.author.mail)
 		
 	End if 
 	
@@ -1466,7 +1473,7 @@ Function updateCommitList()
 			
 			Form:C1466.commits.push({\
 				title: $c[0]; \
-				author: {name: $c[1]; mail: $c[7]}; \
+				author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
 				stamp: String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?); \
 				fingerprint: {short: $c[2]; long: $c[4]}; \
 				parent: {short: $c[5]; long: $c[6]}\
@@ -1656,6 +1663,27 @@ Function handleMenus($what : Text; $current : Object)
 			
 			//———————————————————————————————————————
 	End case 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getAvatar($authorMail : Text) : Picture
+	
+	var $t : Text
+	var $p : Picture
+	var $x : Blob
+	
+	$t:=Generate digest:C1147($authorMail; MD5 digest:K66:1)
+	
+	If (Form:C1466[$t]=Null:C1517)
+		
+		If (HTTP Get:C1157("https://www.gravatar.com/avatar/"+$t; $x)=200)
+			
+			BLOB TO PICTURE:C682($x; $p)
+			Form:C1466[$t]:=$p  // Cache avatar
+			
+		End if 
+	End if 
+	
+	return Form:C1466[$t]
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function meta($item : Object) : Object
