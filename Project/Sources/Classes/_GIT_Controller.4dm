@@ -276,6 +276,16 @@ Function handleEvents($e : cs:C1710.evt)
 				
 				$git.commit(This:C1470.subject.getValue(); Form:C1466.amend)
 				
+				If ($git.success)
+					
+					This:C1470.subject.clear()
+					This:C1470.description.clear()
+					This:C1470.amend.clear()
+					
+					This:C1470.onActivate()
+					
+				End if 
+				
 				//==============================================
 			: (This:C1470.commits.catch($e; On Selection Change:K2:29))
 				
