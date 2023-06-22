@@ -42,7 +42,6 @@
 				},
 				"Button": {
 					"type": "button",
-					"text": "Git",
 					"top": 12,
 					"left": 11,
 					"width": 48,
@@ -100,5 +99,6 @@
 	],
 	"rightMargin": 0,
 	"bottomMargin": 0,
-	"method": "method.4dm"
+	"method": "method.4dm",
+	"geometryStamp": 2
 }

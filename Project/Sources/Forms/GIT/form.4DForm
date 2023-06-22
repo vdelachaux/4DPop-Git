@@ -11,9 +11,13 @@
 	"windowMaxHeight": 32767,
 	"events": [
 		"onLoad",
+		"onClick",
 		"onActivate",
+		"onDoubleClick",
 		"onUnload",
 		"onTimer",
+		"onSelectionChange",
+		"onAfterEdit",
 		"onPageChange"
 	],
 	"windowTitle": "4DPop Git",
@@ -43,7 +47,7 @@
 					"events": [],
 					"action": "gotoPage",
 					"showHeaders": false,
-					"fill": "transparent",
+					"fill": "automatic",
 					"resizingMode": "legacy",
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.menu",
@@ -60,9 +64,10 @@
 					"scrollbarHorizontal": "hidden",
 					"scrollbarVertical": "hidden",
 					"selectionMode": "single",
-					"currentItemSource": "Form:C1466.menuCurrentItem",
-					"currentItemPositionSource": "Form:C1466.menuItemPosition",
-					"selectedItemsSource": "Form:C1466.menuSelectedItems",
+					"currentItemSource": "formGetInstance.menu.item",
+					"currentItemPositionSource": "formGetInstance.menu.itemPosition",
+					"selectedItemsSource": "formGetInstance.menu.items",
+					"stroke": "automatic",
 					"columns": [
 						{
 							"header": {
@@ -98,9 +103,9 @@
 				},
 				"project": {
 					"type": "input",
-					"left": 9,
+					"left": 3,
 					"top": 63,
-					"width": 137,
+					"width": 171,
 					"height": 17,
 					"dataSource": "Form:C1466.project.name",
 					"fill": "transparent",
@@ -108,8 +113,7 @@
 					"fontWeight": "bold",
 					"hideFocusRing": true,
 					"sizingX": "fixed",
-					"textAlign": "left",
-					"stroke": "#696969",
+					"textAlign": "center",
 					"enterable": false,
 					"focusable": false,
 					"contextMenu": "none"
@@ -142,7 +146,7 @@
 					"top": 893,
 					"width": 117,
 					"height": 14,
-					"dataSource": "Form:C1466.git.version",
+					"dataSource": "Form:C1466.version",
 					"fill": "transparent",
 					"borderStyle": "none",
 					"hideFocusRing": true,
@@ -166,10 +170,10 @@
 				"fetch": {
 					"type": "button",
 					"text": ":xliff:fetch",
-					"top": 6,
+					"top": 7,
 					"left": 7,
-					"width": 60,
-					"height": 54,
+					"width": 36,
+					"height": 51,
 					"events": [
 						"onClick"
 					],
@@ -178,17 +182,16 @@
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "#696969",
-					"visibility": "visible",
-					"method": "GIT OBJECTS"
+					"stroke": "automatic",
+					"visibility": "visible"
 				},
 				"pull": {
 					"type": "button",
 					"text": ":xliff:pull",
-					"top": 6,
+					"top": 7,
 					"left": 68,
-					"width": 60,
-					"height": 54,
+					"width": 36,
+					"height": 51,
 					"events": [
 						"onClick"
 					],
@@ -197,8 +200,7 @@
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "#696969",
-					"method": "GIT OBJECTS",
+					"stroke": "automatic",
 					"visibility": "visible"
 				},
 				"push": {
@@ -206,8 +208,8 @@
 					"text": ":xliff:push",
 					"top": 6,
 					"left": 129,
-					"width": 60,
-					"height": 54,
+					"width": 36,
+					"height": 52,
 					"events": [
 						"onClick"
 					],
@@ -216,26 +218,25 @@
 					"textPlacement": "bottom",
 					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "#696969",
-					"visibility": "visible",
-					"method": "GIT OBJECTS"
+					"stroke": "automatic",
+					"visibility": "visible"
 				},
 				"open": {
 					"type": "button",
-					"text": ":xliff:open",
 					"top": 11,
 					"left": 1051,
-					"width": 60,
-					"height": 45,
+					"width": 50,
+					"height": 47,
 					"events": [
 						"onClick"
 					],
-					"method": "GIT OBJECTS",
 					"focusable": false,
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/Main/more.png",
 					"sizingX": "move",
-					"fontSize": 11
+					"fontSize": 11,
+					"stroke": "automatic",
+					"text": ":xliff:open"
 				},
 				"gitLogo": {
 					"type": "picture",
@@ -243,7 +244,7 @@
 					"left": 3,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/Images/logo.png",
+					"picture": "/RESOURCES/Images/git.png",
 					"pictureFormat": "scaled",
 					"sizingY": "move"
 				},
@@ -275,8 +276,7 @@
 					"enterable": false,
 					"borderStyle": "none",
 					"sizingY": "grow",
-					"method": "GIT OBJECTS",
-					"dataSource": "Form.selector\t",
+					"dataSource": "Form:C1466.selector",
 					"fill": "transparent",
 					"hideFocusRing": true
 				}
@@ -315,16 +315,33 @@
 					"sizingY": "grow",
 					"borderStyle": "none",
 					"visibility": "visible",
-					"currentItemSource": "Form:C1466.currentUnstaged",
-					"currentItemPositionSource": "Form:C1466.itemPositionUnstaged",
-					"selectedItemsSource": "Form:C1466.selectedUnstaged",
+					"currentItemSource": "formGetInstance.unstaged.item",
+					"currentItemPositionSource": "formGetInstance.unstaged.itemPosition",
+					"selectedItemsSource": "formGetInstance.unstaged.items",
 					"sizingX": "grow",
 					"sortable": false,
-					"method": "GIT OBJECTS",
-					"metaSource": "GIT Metas",
+					"metaSource": "formGetInstance.meta(This:C1470)",
 					"fill": "transparent",
-					"horizontalPadding": 2,
+					"rowHeight": "1em",
 					"columns": [
+						{
+							"header": {
+								"name": "Header10",
+								"text": "Header10"
+							},
+							"name": "Column10",
+							"dataSource": "This:C1470.icon",
+							"dataSourceTypeHint": "picture",
+							"resizable": false,
+							"enterable": false,
+							"width": 20,
+							"footer": {
+								"name": "Footer10"
+							},
+							"verticalAlign": "middle",
+							"textAlign": "center",
+							"pictureFormat": "proportionalCenter"
+						},
 						{
 							"header": {
 								"text": "Header1",
@@ -363,13 +380,28 @@
 					"visibility": "visible",
 					"sizingX": "grow",
 					"sortable": false,
-					"currentItemSource": "Form:C1466.currentStaged",
-					"currentItemPositionSource": "Form:C1466.itemPositionStaged",
-					"selectedItemsSource": "Form:C1466.selectedStaged",
-					"method": "GIT OBJECTS",
-					"metaSource": "GIT Metas",
+					"currentItemSource": "formGetInstance.staged.item",
+					"currentItemPositionSource": "formGetInstance.staged.itemPosition",
+					"selectedItemsSource": "formGetInstance.staged.items",
+					"metaSource": "formGetInstance.meta(This:C1470)",
 					"fill": "transparent",
 					"columns": [
+						{
+							"header": {
+								"name": "Header11",
+								"text": "Header11"
+							},
+							"name": "Column11",
+							"width": 20,
+							"resizable": false,
+							"enterable": false,
+							"dataSourceTypeHint": "picture",
+							"pictureFormat": "proportionalCenter",
+							"footer": {
+								"name": "Footer11"
+							},
+							"dataSource": "This:C1470.icon"
+						},
 						{
 							"header": {
 								"text": "Header1",
@@ -411,8 +443,7 @@
 					"shortcutShift": true,
 					"shortcutAlt": false,
 					"shortcutKey": "s",
-					"focusable": false,
-					"method": "GIT OBJECTS"
+					"focusable": false
 				},
 				"Text3": {
 					"type": "text",
@@ -441,27 +472,6 @@
 					"shortcutShift": true,
 					"shortcutAlt": false,
 					"shortcutKey": "s",
-					"focusable": false,
-					"method": "GIT OBJECTS"
-				},
-				"diffTool": {
-					"type": "button",
-					"text": "diffTool",
-					"top": 941,
-					"left": 12,
-					"width": 87,
-					"height": 38,
-					"events": [
-						"onClick"
-					],
-					"shortcutAccel": true,
-					"shortcutControl": false,
-					"shortcutShift": false,
-					"shortcutAlt": false,
-					"shortcutKey": "d",
-					"sizingY": "move",
-					"style": "flat",
-					"method": "GIT OBJECTS",
 					"focusable": false
 				},
 				"vSplitter_2": {
@@ -536,7 +546,7 @@
 					"scrollbarHorizontal": "automatic",
 					"scrollbarVertical": "automatic",
 					"enterable": false,
-					"focusable": false,
+					"focusable": true,
 					"fontSize": 12,
 					"styledText": true,
 					"storeDefaultStyle": true,
@@ -570,7 +580,7 @@
 					"stroke": "#c0c0c0",
 					"sizingY": "move"
 				},
-				"commitSubject": {
+				"subject": {
 					"type": "input",
 					"left": 494,
 					"top": 830,
@@ -583,10 +593,9 @@
 					"hideFocusRing": true,
 					"events": [
 						"onAfterEdit"
-					],
-					"method": "GIT OBJECTS"
+					]
 				},
-				"commitDescription": {
+				"description": {
 					"hideFocusRing": true,
 					"type": "input",
 					"left": 494,
@@ -611,10 +620,9 @@
 					"style": "regular",
 					"sizingX": "move",
 					"focusable": true,
-					"sizingY": "move",
-					"method": "GIT OBJECTS"
+					"sizingY": "move"
 				},
-				"comitAmend": {
+				"amend": {
 					"type": "checkbox",
 					"text": ":xliff:amend",
 					"top": 872,
@@ -627,8 +635,7 @@
 					"dataSource": "Form:C1466.amend",
 					"dataSourceTypeHint": "boolean",
 					"sizingY": "move",
-					"focusable": false,
-					"method": "GIT OBJECTS"
+					"focusable": false
 				},
 				"stageAll": {
 					"type": "button",
@@ -647,9 +654,8 @@
 					"shortcutKey": "s",
 					"sizingY": "fixed",
 					"style": "toolbar",
-					"method": "GIT OBJECTS",
 					"focusable": false,
-					"icon": "/RESOURCES/Images/main/stageAll.png",
+					"icon": "/RESOURCES/Images/Main/stageAll.png",
 					"sizingX": "move",
 					"tooltip": ":xliff:stageAll"
 				}
@@ -668,7 +674,6 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commits",
-					"showHeaders": false,
 					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
 					"selectionMode": "single",
@@ -679,11 +684,11 @@
 					"sizingY": "grow",
 					"borderStyle": "none",
 					"textAlign": "left",
-					"method": "GIT OBJECTS",
-					"currentItemSource": "Form:C1466.commitsCurrent",
-					"currentItemPositionSource": "Form:C1466.commitsPosition",
-					"selectedItemsSource": "Form:C1466.commitsSelected",
+					"currentItemSource": "formGetInstance.commits.item",
+					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
+					"selectedItemsSource": "formGetInstance.commits.items",
 					"horizontalPadding": 2,
+					"showHeaders": false,
 					"columns": [
 						{
 							"header": {
@@ -711,7 +716,8 @@
 							},
 							"width": 230,
 							"enterable": false,
-							"minWidth": 200
+							"minWidth": 200,
+							"maxWidth": 230
 						},
 						{
 							"header": {
@@ -740,8 +746,8 @@
 							},
 							"dataSourceTypeHint": "text",
 							"enterable": false,
-							"width": 200,
-							"minWidth": 200,
+							"width": 180,
+							"minWidth": 180,
 							"maxWidth": 400
 						}
 					]
@@ -780,7 +786,6 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commitDetail",
-					"method": "GIT OBJECTS",
 					"resizingMode": "legacy",
 					"showHeaders": false,
 					"horizontalLineStroke": "transparent",
@@ -793,14 +798,30 @@
 					"scrollbarHorizontal": "hidden",
 					"visibility": "hidden",
 					"focusable": true,
-					"metaSource": "GIT Metas",
-					"currentItemSource": "Form:C1466.commitFilesCurrent",
-					"currentItemPositionSource": "Form:C1466.commitFilesPosition",
-					"selectedItemsSource": "Form:C1466.commitFilesSelected",
+					"metaSource": "formGetInstance.meta(This:C1470)",
+					"currentItemSource": "formGetInstance.detailCommit.item",
+					"currentItemPositionSource": "formGetInstance.detailCommit.itemPosition",
+					"selectedItemsSource": "formGetInstance.detailCommit.items",
 					"hideFocusRing": true,
 					"fill": "automatic",
 					"horizontalPadding": 2,
 					"columns": [
+						{
+							"header": {
+								"name": "Header12",
+								"text": "Header12"
+							},
+							"name": "Column12",
+							"width": 22,
+							"resizable": false,
+							"enterable": false,
+							"dataSource": "This:C1470.icon",
+							"dataSourceTypeHint": "picture",
+							"pictureFormat": "proportionalCenter",
+							"footer": {
+								"name": "Footer12"
+							}
+						},
 						{
 							"header": {
 								"text": "Header1",
@@ -815,13 +836,13 @@
 						}
 					]
 				},
-				"detail_authorName": {
+				"authorName": {
 					"type": "input",
 					"left": 319,
 					"top": 530,
 					"width": 345,
 					"height": 17,
-					"dataSource": "Form:C1466.commitsCurrent.author.name",
+					"dataSource": "formGetInstance.commits.item.author.name",
 					"enterable": false,
 					"contextMenu": "none",
 					"borderStyle": "none",
@@ -829,7 +850,7 @@
 					"focusable": false,
 					"visibility": "hidden"
 				},
-				"detail_authorLabel": {
+				"authorLabel": {
 					"type": "text",
 					"text": "AUTHOR",
 					"top": 531,
@@ -840,13 +861,13 @@
 					"visibility": "hidden",
 					"textAlign": "right"
 				},
-				"detail_time": {
+				"stamp": {
 					"type": "input",
 					"left": 319,
 					"top": 562,
 					"width": 345,
 					"height": 17,
-					"dataSource": "Form:C1466.commitsCurrent.stamp",
+					"dataSource": "formGetInstance.commits.item.stamp",
 					"enterable": false,
 					"contextMenu": "none",
 					"borderStyle": "none",
@@ -855,7 +876,7 @@
 					"stroke": "#808080",
 					"visibility": "hidden"
 				},
-				"detail_shaLabel": {
+				"shaLabel": {
 					"type": "text",
 					"text": "SHA",
 					"top": 581,
@@ -866,13 +887,13 @@
 					"textAlign": "right",
 					"visibility": "hidden"
 				},
-				"detail_sha": {
+				"sha": {
 					"type": "input",
 					"left": 259,
 					"top": 581,
 					"width": 325,
 					"height": 17,
-					"dataSource": "Form:C1466.commitsCurrent.fingerprint.long",
+					"dataSource": "formGetInstance.commits.item.fingerprint.long",
 					"enterable": false,
 					"contextMenu": "none",
 					"borderStyle": "none",
@@ -881,7 +902,7 @@
 					"stroke": "automatic",
 					"visibility": "hidden"
 				},
-				"detail_parentLabel": {
+				"parentLabel": {
 					"type": "text",
 					"text": "PARENT",
 					"top": 599,
@@ -892,13 +913,13 @@
 					"textAlign": "right",
 					"visibility": "hidden"
 				},
-				"detail_parent": {
+				"parent": {
 					"type": "input",
 					"left": 259,
 					"top": 599,
 					"width": 151,
 					"height": 17,
-					"dataSource": "Form:C1466.commitsCurrent.parent.short",
+					"dataSource": "formGetInstance.commits.item.parent.short",
 					"enterable": false,
 					"contextMenu": "none",
 					"borderStyle": "none",
@@ -909,10 +930,9 @@
 					"visibility": "hidden",
 					"events": [
 						"onClick"
-					],
-					"method": "GIT OBJECTS"
+					]
 				},
-				"detail_separator": {
+				"detailSeparator": {
 					"type": "line",
 					"top": 521,
 					"left": 699,
@@ -924,7 +944,7 @@
 					"sizingY": "grow",
 					"visibility": "hidden"
 				},
-				"detail_splitter": {
+				"detailSplitter": {
 					"type": "splitter",
 					"left": 699,
 					"top": 521,
@@ -934,7 +954,7 @@
 					"visibility": "hidden",
 					"borderStyle": "none"
 				},
-				"detail_line": {
+				"titleBottom": {
 					"type": "line",
 					"top": 653,
 					"left": 180,
@@ -947,13 +967,13 @@
 					"sizingY": "fixed",
 					"visibility": "hidden"
 				},
-				"detail_authorName1": {
+				"title": {
 					"type": "input",
 					"left": 180,
 					"top": 631,
 					"width": 518,
 					"height": 17,
-					"dataSource": "Form:C1466.commitsCurrent.title",
+					"dataSource": "formGetInstance.commits.item.title",
 					"enterable": false,
 					"contextMenu": "none",
 					"borderStyle": "none",
@@ -963,7 +983,7 @@
 					"textAlign": "center",
 					"sizingX": "grow"
 				},
-				"detail_line1": {
+				"titleTop": {
 					"type": "line",
 					"top": 626,
 					"left": 180,
@@ -976,14 +996,14 @@
 					"sizingY": "fixed",
 					"visibility": "hidden"
 				},
-				"detail_authorAvatar": {
+				"authorAvatar": {
 					"type": "input",
 					"left": 259,
 					"top": 530,
 					"width": 56,
 					"height": 49,
 					"dataSourceTypeHint": "picture",
-					"dataSource": "Form:C1466.commitsCurrent.author.avatar",
+					"dataSource": "formGetInstance.commits.item.author.avatar",
 					"pictureFormat": "proportionalTopLeft",
 					"borderStyle": "none",
 					"contextMenu": "none",
@@ -991,13 +1011,13 @@
 					"focusable": false,
 					"visibility": "hidden"
 				},
-				"detail_time1": {
+				"authorMail": {
 					"type": "input",
 					"left": 319,
 					"top": 546,
 					"width": 345,
 					"height": 17,
-					"dataSource": "Form:C1466.commitsCurrent.author.mail",
+					"dataSource": "formGetInstance.commits.item.author.mail",
 					"enterable": false,
 					"contextMenu": "none",
 					"borderStyle": "none",
@@ -1006,7 +1026,7 @@
 					"stroke": "#808080",
 					"visibility": "hidden"
 				},
-				"diff1": {
+				"detailDiff": {
 					"type": "input",
 					"left": 701,
 					"top": 521,
@@ -1030,8 +1050,8 @@
 			}
 		}
 	],
-	"method": "method.4dm",
-	"width": 1120,
+	"method": "formMethod",
+	"width": 1125,
 	"height": 910,
 	"memorizeGeometry": true,
 	"editor": {
@@ -1041,5 +1061,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 39
+	"geometryStamp": 103
 }

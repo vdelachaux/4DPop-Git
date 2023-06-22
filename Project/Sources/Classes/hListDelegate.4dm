@@ -353,6 +353,16 @@ Function set itemSublist($sublist : Integer)
 	
 	This:C1470._setItem("sublist"; $sublist)
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getSublist($pos : Integer) : Integer
+	
+	return This:C1470._getItem("sublist"; $pos)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getSublistByRef($ref : Integer) : Integer
+	
+	return This:C1470._getItem("sublist"; This:C1470.getItemPositionByRef($ref))
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The expanded state of the sub-list of the current element
 Function get itemExpanded() : Boolean

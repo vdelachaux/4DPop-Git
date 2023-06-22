@@ -1,21 +1,26 @@
+property success : Boolean
+property error; warning : Text
+property user; workingBranch : Object
+property errors; warnings; branches; changes; history; remotes; stashes; tags : Collection
+
 Class constructor($folder : 4D:C1709.Folder)
 	
 	This:C1470.success:=True:C214
 	
 	This:C1470.error:=""
-	This:C1470.errors:=New collection:C1472
+	This:C1470.errors:=[]
 	
 	This:C1470.warning:=""
-	This:C1470.warnings:=New collection:C1472
+	This:C1470.warnings:=[]
 	
-	This:C1470.user:=New object:C1471
-	This:C1470.workingBranch:=New object:C1471
-	This:C1470.branches:=New collection:C1472
-	This:C1470.changes:=New collection:C1472
-	This:C1470.history:=New collection:C1472
-	This:C1470.remotes:=New collection:C1472
-	This:C1470.stashes:=New collection:C1472
-	This:C1470.tags:=New collection:C1472
+	This:C1470.user:={}
+	This:C1470.workingBranch:={}
+	This:C1470.branches:=[]
+	This:C1470.changes:=[]
+	This:C1470.history:=[]
+	This:C1470.remotes:=[]
+	This:C1470.stashes:=[]
+	This:C1470.tags:=[]
 	
 	This:C1470.HEAD:=""
 	
@@ -54,18 +59,17 @@ Class constructor($folder : 4D:C1709.Folder)
 		
 	End while 
 	
-	
 	This:C1470.gitignore:=This:C1470.workingDirectory.file(".gitignore")
 	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
 	
 	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
 	
-	This:C1470.version:=""
 	This:C1470.result:=""
 	
 	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
 	
-	If (This:C1470.root#Null:C1517) & (This:C1470.root.exists)
+	If (This:C1470.root#Null:C1517)\
+		 & (This:C1470.root.exists)
 		
 		This:C1470.update()
 		
@@ -75,7 +79,30 @@ Class constructor($folder : 4D:C1709.Folder)
 		
 	End if 
 	
-/*————————————————————————————————————————————————————————*/
+	If (This:C1470.execute("version"))
+		
+		This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
+		
+		var $len; $pos : Integer
+		
+		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
+			
+			This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
+			
+		Else 
+			
+			// Store full result
+			This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
+			
+		End if 
+	End if 
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get version() : Text
+	
+	return This:C1470._version
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get currentBranch() : Text
 	
 	var $t : Text
@@ -84,10 +111,10 @@ Function get currentBranch() : Text
 	$t:=Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5)
 	$c:=Split string:C1554($t; "\r"; sk ignore empty strings:K86:1)
 	$c:=Split string:C1554($c[0]; "/")
-	return $c.remove(0; 2).join("/")  //$c[$c.length-1]
+	return $c.remove(0; 2).join("/")
 	
 	//mark:-
-/*—————————————————————————————————————————————————————-——*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function init()
 	
 	var $len; $pos : Integer
@@ -125,33 +152,27 @@ Function init()
 		
 		If (This:C1470.execute("version"))
 			
-			This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
+			This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
 			
 			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
 				
-				This:C1470.version:=Substring:C12(This:C1470.result; $pos; $len)
+				This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
 				
 			Else 
 				
 				// Store full result
-				This:C1470.version:=Replace string:C233(This:C1470.result; "\n"; "")
+				This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
 				
 			End if 
 		End if 
 	End if 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
 	
-	var $t : Text
-	var $c : Collection
+	This:C1470.HEAD:=Split string:C1554(Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5); "\r"; sk ignore empty strings:K86:1)[0]
 	
-	$t:=Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5)
-	$c:=Split string:C1554($t; "\r"; sk ignore empty strings:K86:1)
-	
-	This:C1470.HEAD:=$c[0]
-	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	var $errorStream; $outputStream : Text
@@ -191,11 +212,11 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 		LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
 		This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
 		
-		This:C1470.history.insert(0; New object:C1471(\
-			"cmd"; "$ "+$command; \
-			"success"; This:C1470.success; \
-			"out"; $outputStream; \
-			"error"; $errorStream))
+		This:C1470.history.insert(0; {\
+			cmd: "$ "+$command; \
+			success: This:C1470.success; \
+			out: $outputStream; \
+			error: $errorStream})
 		
 		If (Not:C34(Bool:C1537(This:C1470.debug)))
 			
@@ -232,7 +253,7 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	return This:C1470.success
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function status($short : Boolean) : Integer
 	
 	var $cmd; $t : Text
@@ -241,17 +262,17 @@ Function status($short : Boolean) : Integer
 	
 	This:C1470.changes.clear()
 	
-	$cmd:="status"+($short ? " -s" : "")+" -uall"
+	$cmd:="status"+($short ? " -s" : "")+" -uall --porcelain"
 	
 	If (This:C1470.execute($cmd))
 		
 		If (Position:C15("\n"; String:C10(This:C1470.result))>0)
 			
-			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2))
+			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 				
-				This:C1470.changes.push(New object:C1471(\
-					"status"; $t[[1]]+$t[[2]]; \
-					"path"; Replace string:C233(Delete string:C232($t; 1; 2); "\""; "")))
+				This:C1470.changes.push({\
+					status: $t[[1]]+$t[[2]]; \
+					path: Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")})
 				
 			End for each 
 		End if 
@@ -259,7 +280,7 @@ Function status($short : Boolean) : Integer
 	
 	return This:C1470.changes.length
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function add($something)
 	
 	var $item
@@ -274,13 +295,13 @@ Function add($something)
 					//——————————————————————
 				: ($something="all")  // Update the index and adds new files
 					
-					This:C1470.result:=New collection:C1472
+					This:C1470.result:=[]
 					This:C1470.execute("add -A")
 					
 					//——————————————————————
 				: ($something="update")  // Update the index, but adds no new files
 					
-					This:C1470.result:=New collection:C1472
+					This:C1470.result:=[]
 					This:C1470.execute("add -u")
 					
 					//——————————————————————
@@ -315,7 +336,7 @@ Function add($something)
 			//_____________________________
 	End case 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function untrack($something)
 	
 	var $item
@@ -351,7 +372,7 @@ Function untrack($something)
 			//_____________________________
 	End case 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function unstage($something)
 	
 	var $item
@@ -361,7 +382,19 @@ Function unstage($something)
 			//_____________________________
 		: (Value type:C1509($something)=Is text:K8:3)
 			
-			This:C1470.execute("reset HEAD "+This:C1470._quoted($something))
+			var $c : Collection
+			$c:=Split string:C1554($something; " -> ")
+			
+			If ($c.length>1)  // Moved
+				
+				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[0]))
+				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[1]))
+				
+			Else 
+				
+				This:C1470.execute("reset HEAD "+This:C1470._quoted($something))
+				
+			End if 
 			
 			//_____________________________
 		: (Value type:C1509($something)=Is collection:K8:32)
@@ -387,7 +420,7 @@ Function unstage($something)
 			//_____________________________
 	End case 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function commit($message : Text; $amend : Boolean)
 	
 	This:C1470.status()
@@ -412,17 +445,27 @@ Function commit($message : Text; $amend : Boolean)
 		
 	End if 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function fetch($origin : Boolean) : Boolean
 	
-	return $origin ? This:C1470._fetchCurrent() : This:C1470._fetchAll()
+	return $origin ? This:C1470.fetchCurrent() : This:C1470.fetchAll()
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function fetchAll() : Boolean
+	
+	return This:C1470.execute("fetch --prune --tags --all")
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function fetchCurrent() : Boolean
+	
+	return This:C1470.execute("fetch --prune --tags origin")
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function pull() : Boolean
 	
 	return This:C1470.execute("pull --rebase --autostash origin -q")
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function push($origin : Text; $branch : Text) : Boolean
 	
 	If (Count parameters:C259>=2)
@@ -436,7 +479,7 @@ Function push($origin : Text; $branch : Text) : Boolean
 	End if 
 	
 	//MARK:-branch
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branch($whatToDo : Text; $name : Text; $newName : Text)
 	
 	var $t : Text
@@ -449,7 +492,7 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 		: (Length:C16($whatToDo)=0)\
 			 | ($whatToDo="list")  // Update branch list
 			
-			This:C1470.branches:=New collection:C1472
+			This:C1470.branches:=[]
 			
 			If (This:C1470.execute("branch --list -v"))
 				
@@ -459,19 +502,19 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 					
 					If ($c[0]="*")  // Current branch
 						
-						$o:=New object:C1471(\
-							"name"; $c[1]; \
-							"ref"; $c[2]; \
-							"current"; True:C214)
+						$o:={\
+							name: $c[1]; \
+							ref: $c[2]; \
+							current: True:C214}
 						
 						This:C1470.workingBranch:=$o
 						
 					Else 
 						
-						$o:=New object:C1471(\
-							"name"; $c[0]; \
-							"ref"; $c[1]; \
-							"current"; False:C215)
+						$o:={\
+							name: $c[0]; \
+							ref: $c[1]; \
+							current: False:C215}
 						
 					End if 
 					
@@ -570,7 +613,7 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 			//———————————————————————————————————
 	End case 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function checkout($something)
 	
 	var $item
@@ -606,7 +649,7 @@ Function checkout($something)
 			//_____________________________
 	End case 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchFetchNumber($branch : Text) : Integer
 	
 	var $local; $remote; $t : Text
@@ -651,7 +694,7 @@ Function branchFetchNumber($branch : Text) : Integer
 		End if 
 	End if 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchPushNumber($branch : Text) : Integer
 	
 	If (Length:C16($branch)>0)
@@ -666,8 +709,8 @@ Function branchPushNumber($branch : Text) : Integer
 	
 	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
-	//MARK:-dif
-/*————————————————————————————————————————————————————————*/
+	//MARK:-diff
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diff($pathname : Text; $option : Text)
 	
 	var $success : Boolean
@@ -689,7 +732,7 @@ Function diff($pathname : Text; $option : Text)
 		
 	End if 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diffList($parent : Text; $current : Text) : Boolean
 	
 	// empty tree id
@@ -697,7 +740,7 @@ Function diffList($parent : Text; $current : Text) : Boolean
 	
 	return This:C1470.execute("diff --name-status "+$parent+" "+$current)
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diffTool($pathname : Text)
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS"; "false")
@@ -705,7 +748,7 @@ Function diffTool($pathname : Text)
 	This:C1470.execute("difftool -y "+This:C1470._quoted($pathname))
 	
 	//MARK:-
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateRemotes()
 	
 	var $t : Text
@@ -721,15 +764,16 @@ Function updateRemotes()
 			
 			If (This:C1470.remotes.query("name=:1"; $c[0]).length=0)
 				
-				This:C1470.remotes.push(New object:C1471(\
-					"name"; $c[0]; \
-					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)))
+				This:C1470.remotes.push({\
+					name: $c[0]; \
+					url: Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+					})
 				
 			End if 
 		End for each 
 	End if 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateTags()
 	
 	var $t : Text
@@ -745,7 +789,7 @@ Function updateTags()
 		End for each 
 	End if 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function open($whatToDo : Text)
 	
 	var $errorStream; $outputStream; $inputStream : Text
@@ -785,11 +829,10 @@ Function open($whatToDo : Text)
 			//——————————————————————
 	End case 
 	
-/*————————————————————————————————————————————————————————*/
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function stash($name : Text)
 	
 	var $line : Text
-	var $o : Object
 	
 	ARRAY LONGINT:C221($pos; 0x0000)
 	ARRAY LONGINT:C221($len; 0x0000)
@@ -800,33 +843,19 @@ Function stash($name : Text)
 		: (Length:C16($name)=0)\
 			 | ($name="list")  // Update list
 			
-			This:C1470.stashes:=New collection:C1472
+			This:C1470.stashes:=[]
 			
 			If (This:C1470.execute("stash list"))
 				
 				For each ($line; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					
-					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)(?::\\s([[:alnum:]]{7})\\s([^$]*))?$"; $line; 1; $pos; $len))
+					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)([^$]*)$"; $line; 1; $pos; $len))
 						
-						If ($pos{3}#-1)
-							
-							$o:=New object:C1471(\
-								"name"; Substring:C12($line; $pos{1}; $len{1}); \
-								"message"; Substring:C12($line; $pos{2}; $len{2}); \
-								"ref"; Substring:C12($line; $pos{3}; $len{3}); \
-								"refMessage"; Substring:C12($line; $pos{4}; $len{4})\
-								)
-							
-						Else 
-							
-							$o:=New object:C1471(\
-								"name"; Substring:C12($line; $pos{1}; $len{1}); \
-								"message"; Substring:C12($line; $pos{2}; $len{2})\
-								)
-							
-						End if 
-						
-						This:C1470.stashes.push($o)
+						//FIXME:regex
+						This:C1470.stashes.push({\
+							name: Substring:C12($line; $pos{1}; $len{1}); \
+							message: Substring:C12($line; $pos{3}; $len{3})\
+							})
 						
 					End if 
 				End for each 
@@ -841,31 +870,19 @@ Function stash($name : Text)
 	End case 
 	
 	//MARK:-[PRIVATE]
-/*————————————————————————————————————————————————————————*/
-Function _fetchAll() : Boolean
-	
-	return This:C1470.execute("fetch --prune --tags --all")
-	
-/*————————————————————————————————————————————————————————*/
-Function _fetchCurrent() : Boolean
-	
-	return This:C1470.execute("fetch --prune --tags origin")
-	
-/*————————————————————————————————————————————————————————*/
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _pushError($message : Text)
 	
 	This:C1470.error:=$message
 	This:C1470.errors.push($message)
 	
-/*————————————————————————————————————————————————————————*/
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _pushWarning($message : Text)
 	
 	This:C1470.warning:=$message
 	This:C1470.warnings.push($message)
 	
-/*————————————————————————————————————————————————————————*/
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _quoted($string : Text) : Text
 	
 	return Char:C90(Quote:K15:44)+$string+Char:C90(Quote:K15:44)
-	
-	

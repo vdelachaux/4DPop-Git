@@ -68,7 +68,7 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/Common/git16.png",
+					"icon": "/RESOURCES/Images/Widget/git.png",
 					"style": "toolbar",
 					"visibility": "visible",
 					"imageHugsTitle": true,
@@ -83,7 +83,7 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/Common/more.png",
+					"icon": "/RESOURCES/Images/Widget/more.png",
 					"style": "toolbar",
 					"iconFrames": 4,
 					"visibility": "visible",
@@ -160,7 +160,7 @@
 			}
 		}
 	],
-	"geometryStamp": 889,
+	"geometryStamp": 891,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

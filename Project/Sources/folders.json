@@ -46,7 +46,7 @@
 	"⚙️ MACROS": {},
 	"👥 NAMESPACE": {
 		"classes": [
-			"git",
+			"Git",
 			"jwt"
 		]
 	},
@@ -56,6 +56,7 @@
 			"dropableWidgetMethod",
 			"form_spreadToSubforms",
 			"formGetInstance",
+			"formMenuHandle",
 			"formMethod",
 			"subformWidgetMethod"
 		],
@@ -83,20 +84,16 @@
 	"📦 MAIN": {
 		"methods": [
 			"COMPILER_component",
-			"GIT",
-			"GIT COMMIT LIST",
-			"GIT Diff",
-			"GIT DISPLAY COMMIT",
-			"GIT Metas",
-			"GIT OBJECTS",
 			"GIT OPEN",
-			"GIT Path",
-			"GIT UI"
+			"GIT Path"
 		],
 		"forms": [
 			"GIT",
 			"GIT PATTERN",
 			"GIT SETTINGS"
+		],
+		"classes": [
+			"_GIT_Controller"
 		]
 	},
 	"4️⃣ 4DPop": {
