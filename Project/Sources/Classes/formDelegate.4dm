@@ -230,6 +230,7 @@ Function onLoad()
 							If (Asserted:C1132($o#Null:C1517; "FIXME:Add missing event map for "+$event))
 								
 								// Update the widget
+								$widget.events:=$widget.events || []
 								$widget.events.push($o.k)
 								
 								// Keep the event
@@ -409,6 +410,7 @@ Function get resourceScheme() : Text
 	/// Return the given resource path with scheme suffix if any
 Function resourceFromScheme($path : Text) : Text
 	
+	var $t : Text
 	var $c : Collection
 	var $file : 4D:C1709.File
 	
@@ -419,8 +421,13 @@ Function resourceFromScheme($path : Text) : Text
 		$c:=Split string:C1554($file.fullName; ".")
 		$c[0]:=$c[0]+This:C1470._darkExtension
 		
-		$path:=Replace string:C233($path; $file.fullName; $c.join("."))
+		$t:=Replace string:C233($path; $file.fullName; $c.join("."))
 		
+		If (File:C1566($t).exists)
+			
+			$path:=$t
+			
+		End if 
 	End if 
 	
 	return $path

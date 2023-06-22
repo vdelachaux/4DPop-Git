@@ -1,5 +1,3 @@
-//Class extends formDelegate
-
 property form : cs:C1710.formDelegate
 property icon; more; branch; localChanges; initRepository; todo; fixme : cs:C1710.buttonDelegate
 property fetch; push : cs:C1710.inputDelegate
@@ -94,21 +92,21 @@ Function init()
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
-Function handleEvents($e : Object)
+Function handleEvents($e : cs:C1710.evt)
 	
-	$e:=$e || FORM Event:C1606
+	$e:=$e || cs:C1710.evt.new()
 	
-	If ($e.objectName=Null:C1517)  // <== FORM METHOD
+	If ($e.form)  // <== FORM METHOD
 		
 		Case of 
 				
 				//______________________________________________________
-			: ($e.code=On Load:K2:1)
+			: ($e.load)
 				
 				This:C1470.form.onLoad()
 				
 				//______________________________________________________
-			: ($e.code=On Timer:K2:25)
+			: ($e.timer)
 				
 				This:C1470.form.update()
 				
@@ -149,7 +147,7 @@ Function handleEvents($e : Object)
 			: (This:C1470.todo.catch($e; On Clicked:K2:4))\
 				 | (This:C1470.fixme.catch($e; On Clicked:K2:4))
 				
-				This:C1470._doTag($e.objectName)
+				This:C1470._doTagMenu($e.objectName)
 				
 				//==============================================
 		End case 
@@ -279,9 +277,10 @@ Function _doChangesMenu()
 	
 	For each ($o; $git.changes.orderBy("path"))
 		
-		$icon:=$o.status="@M@" ? "#Images/Widget/modified.png"\
-			 : $o.status="@D@" ? "#Images/Widget/deleted.png"\
-			 : $o.status="??" ? "#Images/Widget/added.png"\
+		$icon:=$o.status="@M@" ? "#Images/Main/modified.png"\
+			 : $o.status="@D@" ? "#Images/Main/deleted.png"\
+			 : $o.status="??" ? "#Images/Main/added.png"\
+			 : $o.status="@R@" ? "#Images/Main/moved.png"\
 			 : ""
 		
 		$c:=Split string:C1554($o.path; "/")
@@ -412,6 +411,7 @@ Function _doChangesMenu()
 				
 			Else 
 				
+				// Todo:Diff ?
 				METHOD OPEN PATH:C1213($tgt; *)
 				
 			End if 
@@ -528,20 +528,17 @@ Function _doMoreMenu()
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
-Function _doTag($tag : Text)
+Function _doTagMenu($tag : Text)
 	
-	var $t : Text
 	var $todo : Collection
 	var $file : 4D:C1709.File
 	var $menu : cs:C1710.menu
 	
 	$todo:=New collection:C1472
 	
-	For each ($file; This:C1470.SOURCES.files(fk recursive:K87:7).query("extension = .4dm"))
+	For each ($file; This:C1470.SOURCES.files(fk recursive:K87:7).query("extension = .4dm").orderBy("path"))
 		
-		$t:=$file.getText()
-		
-		If (Match regex:C1019("(?mi-s)//\\s*"+$tag+":"; $t; 1))
+		If (Match regex:C1019("(?mi-s)//\\s*"+$tag+":"; $file.getText(); 1))
 			
 			$todo.push($file)
 			
@@ -608,17 +605,17 @@ Function _resolvePath($path : Text) : Text
 			//______________________________________________________
 		: (Position:C15("/SOURCES/Classes"; $path)=1)
 			
-			$path:=Replace string:C233($path; "/SOURCES/Classes"; "[class]")
+			$path:="[class]"+Delete string:C232($path; 1; 16)
 			
 			//______________________________________________________
 		: (Position:C15("/SOURCES/Methods"; $path)=1)
 			
-			$path:=Replace string:C233($path; "/SOURCES/Methods/"; "")
+			$path:=Delete string:C232($path; 1; 17)
 			
 			//______________________________________________________
 		: (Position:C15("/SOURCES/Forms"; $path)=1)
 			
-			$path:=Replace string:C233($path; "/SOURCES/Forms"; "[projectForm]")
+			$path:="[projectForm]"+Delete string:C232($path; 1; 14)
 			
 			If ($path="@method.4dm")
 				
@@ -633,12 +630,12 @@ Function _resolvePath($path : Text) : Text
 			//______________________________________________________
 		: (Position:C15("/SOURCES/DatabaseMethods"; $path)=1)
 			
-			$path:=Replace string:C233($path; "/SOURCES/DatabaseMethods"; "[databaseMethod]")
+			$path:="[databaseMethod]"+Delete string:C232($path; 1; 24)
 			
 			//______________________________________________________
 		: (Position:C15("/SOURCES/Triggers"; $path)=1)
 			
-			$path:=Replace string:C233($path; "/SOURCES/Triggers"; "[trigger]")
+			$path:="[trigger]"+Delete string:C232($path; 1; 17)
 			
 			//______________________________________________________
 	End case 

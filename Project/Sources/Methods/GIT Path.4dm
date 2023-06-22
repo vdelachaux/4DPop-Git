@@ -46,7 +46,7 @@ Case of
 				//……………………………………………………………………………………………
 			: ($path="@.4DForm")  // Form definition
 				
-				return Replace string:C233($path; "Project/Sources/Forms/"; "")
+				return $path
 				
 				//……………………………………………………………………………………………
 			: ($path="@.4dm")  // Method

@@ -38,6 +38,11 @@ Class constructor($e : cs:C1710.evt)
 	
 	// MARK:-Form
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get form() : Boolean
+	
+	return This:C1470.objectName=Null:C1517
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get load() : Boolean
 	
 	return This:C1470.code=On Load:K2:1
