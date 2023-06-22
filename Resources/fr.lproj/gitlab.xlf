@@ -247,8 +247,36 @@ avec 4D "{version}"</target>
           <target>Actualiser</target>
         </trans-unit>
       </group>
+      <group resname="File">
+        <trans-unit id="RtkC6IdKC4I7IQD0yDnxUQ" resname="modifiedFile">
+          <source>Modified file</source>
+          <target>Fichier modifié</target>
+        </trans-unit>
+        <trans-unit id="zKOZOTTl853p25Dr_P9mZw" resname="newFile">
+          <source>New file</source>
+          <target>Nouveau fichier</target>
+        </trans-unit><trans-unit id="+za1OrqoL57PkN28OtwcrA" resname="fileRemoved">
+          <source>File deleted</source>
+          <target>Fichier supprimé</target>
+        </trans-unit>
+        <trans-unit id="gWWLclEEdScAY1ykZJlCOQ" resname="binaryFile">
+          <source>Binary file</source>
+          <target>Fichier binaire</target>
+        </trans-unit>
+        <trans-unit id="vTuBNtZPtuTQguHei7LDKQ" resname="fileMoved">
+          <source>File moved
+    • From: {origin}
+    • To: {dest}</source>
+          <target>Fichier déplacé
+    • De : {origin}
+    • Ves : {dest}</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
+
+
 
 
 </xliff>
