@@ -170,6 +170,16 @@ Function init()
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function installLFS() : Boolean
+	
+	return This:C1470.execute("lfs install")
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get lfs() : Boolean
+	
+	return This:C1470.root.folder("lfs").exists
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
 	
 	This:C1470.HEAD:=Split string:C1554(Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5); "\r"; sk ignore empty strings:K86:1)[0]
