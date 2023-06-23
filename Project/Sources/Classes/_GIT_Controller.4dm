@@ -61,6 +61,10 @@ Class constructor
 	This:C1470.DELETED_FILE:=Get localized string:C991("fileRemoved")
 	This:C1470.BINARY_FILE:=Get localized string:C991("binaryFile")
 	
+	var $p : Picture
+	READ PICTURE FILE:C678(File:C1566("/.PRODUCT_RESOURCES/Internal Components/runtime.4dbase/Resources/images/toolbox/users_groups/904.png").platformPath; $p)
+	This:C1470.JOHN_DOE:=$p
+	
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -1665,22 +1669,21 @@ Function handleMenus($what : Text; $current : Object)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function getAvatar($authorMail : Text) : Picture
+Function getAvatar($mail : Text) : Picture
 	
 	var $t : Text
-	var $p : Picture
-	var $x : Blob
 	
-	$t:=Generate digest:C1147($authorMail; MD5 digest:K66:1)
+	$t:=Generate digest:C1147($mail; MD5 digest:K66:1)
 	
 	If (Form:C1466[$t]=Null:C1517)
 		
-		If (HTTP Get:C1157("https://www.gravatar.com/avatar/"+$t; $x)=200)
-			
-			BLOB TO PICTURE:C682($x; $p)
-			Form:C1466[$t]:=$p  // Cache avatar
-			
-		End if 
+		var $callback : cs:C1710._gravatarRequest
+		$callback:=cs:C1710._gravatarRequest.new({user: $t}; This:C1470.JOHN_DOE)
+		
+		var $request : 4D:C1709.HTTPRequest
+		$request:=4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$t; $callback)
+		$request.wait()
+		
 	End if 
 	
 	return Form:C1466[$t]
