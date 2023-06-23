@@ -97,6 +97,8 @@ Class constructor($folder : 4D:C1709.Folder)
 		End if 
 	End if 
 	
+	This:C1470.BrancUnpulledCommit:=0
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get version() : Text
 	
@@ -708,6 +710,11 @@ Function branchPushNumber($branch : Text) : Integer
 	End if 
 	
 	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get notPushedNumber() : Integer
+	
+	return This:C1470.branchPushNumber()
 	
 	//MARK:-diff
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===

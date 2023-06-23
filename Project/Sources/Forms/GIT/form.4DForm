@@ -97,7 +97,23 @@
 								"name": "Footer1"
 							},
 							"dataSource": "This:C1470.label",
-							"enterable": false
+							"enterable": false,
+							"width": 110
+						},
+						{
+							"header": {
+								"name": "Header14",
+								"text": "Header14"
+							},
+							"name": "Column14",
+							"dataSource": "This:C1470.comment",
+							"resizable": false,
+							"enterable": false,
+							"width": 10,
+							"footer": {
+								"name": "Footer14"
+							},
+							"textAlign": "right"
 						}
 					]
 				},
@@ -691,6 +707,7 @@
 					"showHeaders": false,
 					"rowHeight": "25px",
 					"verticalAlign": "middle",
+					"sortable": false,
 					"columns": [
 						{
 							"header": {
@@ -1080,5 +1097,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 121
+	"geometryStamp": 123
 }

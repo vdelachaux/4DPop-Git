@@ -571,7 +571,7 @@ Function update()
 Function onActivate()
 	
 	var $t : Text
-	var $ref : Integer
+	var $notPushed; $ref : Integer
 	var $o : Object
 	var $git : cs:C1710.Git
 	var $list; $sublist : cs:C1710.Hlist
@@ -597,6 +597,9 @@ Function onActivate()
 		Form:C1466.staged.clear()
 		
 	End if 
+	
+	$notPushed:=$git.notPushedNumber
+	Form:C1466.menu[1].comment:=$notPushed=0 ? "" : String:C10($notPushed)+"↑"
 	
 	Form:C1466.menu:=Form:C1466.menu  // Redraw
 	
@@ -1446,12 +1449,15 @@ Function loadIcons()
 Function updateCommitList()
 	
 	var $line : Text
+	var $i; $notPushed : Integer
 	var $c : Collection
 	var $git : cs:C1710.Git
 	
 	$git:=This:C1470.Git
 	
 	Form:C1466.commits:=[]
+	
+	$notPushed:=$git.notPushedNumber
 	
 	$git.execute("log --abbrev-commit --format=%s|%an|%h|%aI|%H|%p|%P|%ae")
 	
@@ -1466,8 +1472,6 @@ Function updateCommitList()
 7 = author mail
 */
 	
-	//TODO:Highlight pulled commits
-	
 	// One commit per line
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
 		
@@ -1475,12 +1479,22 @@ Function updateCommitList()
 		
 		If ($c.length>=8)
 			
+			$i+=1
+			
+			If ($i<=$notPushed)
+				
+				$c[0]:="↑ "+$c[0]
+				
+			End if 
+			
 			Form:C1466.commits.push({\
 				title: $c[0]; \
 				author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
 				stamp: String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?); \
 				fingerprint: {short: $c[2]; long: $c[4]}; \
-				parent: {short: $c[5]; long: $c[6]}\
+				parent: {short: $c[5]; long: $c[6]}; \
+				notPushed: $i<=$notPushed; \
+				origin: $i=($notPushed+1)\
 				})
 			
 		End if 
