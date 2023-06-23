@@ -93,7 +93,8 @@
 			"GIT SETTINGS"
 		],
 		"classes": [
-			"_GIT_Controller"
+			"_GIT_Controller",
+			"_gravatarRequest"
 		]
 	},
 	"4️⃣ 4DPop": {
