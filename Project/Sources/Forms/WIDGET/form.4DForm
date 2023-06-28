@@ -22,15 +22,11 @@
 					"width": 27,
 					"height": 16,
 					"dataSource": "Form:C1466.fetchNumber",
-					"enterable": false,
-					"focusable": false,
-					"fill": "transparent",
-					"fontSize": 11,
 					"textAlign": "right",
 					"dataSourceTypeHint": "integer",
-					"contextMenu": "none",
-					"visibility": "visible",
-					"borderStyle": "none"
+					"class": "mini infos",
+					"focusable": false,
+					"contextMenu": "none"
 				},
 				"swap": {
 					"type": "picture",
@@ -49,15 +45,11 @@
 					"width": 29,
 					"height": 16,
 					"dataSource": "Form:C1466.pushNumber",
-					"enterable": false,
 					"focusable": false,
-					"fill": "transparent",
-					"fontSize": 11,
 					"dataSourceTypeHint": "integer",
 					"contextMenu": "none",
 					"textAlign": "left",
-					"visibility": "visible",
-					"borderStyle": "none"
+					"class": "mini infos"
 				},
 				"icon": {
 					"type": "button",
@@ -71,8 +63,7 @@
 					"icon": "/RESOURCES/Images/Widget/git.png",
 					"style": "toolbar",
 					"visibility": "visible",
-					"imageHugsTitle": true,
-					"focusable": false
+					"iconFrames": 1
 				},
 				"more": {
 					"type": "button",
@@ -85,8 +76,6 @@
 					],
 					"icon": "/RESOURCES/Images/Widget/more.png",
 					"style": "toolbar",
-					"iconFrames": 4,
-					"visibility": "visible",
 					"focusable": false
 				},
 				"branch": {
@@ -128,8 +117,8 @@
 					"icon": "/RESOURCES/Images/Widget/changes.png",
 					"textPlacement": "right",
 					"style": "custom",
-					"fontSize": 11,
-					"popupPlacement": "linked"
+					"popupPlacement": "linked",
+					"class": "mini"
 				},
 				"todo": {
 					"type": "button",
@@ -141,8 +130,7 @@
 						"onClick"
 					],
 					"style": "custom",
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagTodo.png",
-					"visibility": "visible"
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagTodo.png"
 				},
 				"fixme": {
 					"type": "button",
@@ -154,13 +142,12 @@
 						"onClick"
 					],
 					"style": "custom",
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagFixMe.png",
-					"visibility": "visible"
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagFixMe.png"
 				}
 			}
 		}
 	],
-	"geometryStamp": 891,
+	"geometryStamp": 906,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

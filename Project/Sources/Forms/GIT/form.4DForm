@@ -46,28 +46,20 @@
 					"height": 69,
 					"events": [],
 					"action": "gotoPage",
-					"showHeaders": false,
-					"fill": "automatic",
-					"resizingMode": "legacy",
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.menu",
-					"hideFocusRing": true,
-					"horizontalLineStroke": "transparent",
-					"verticalLineStroke": "transparent",
 					"sizingY": "fixed",
-					"borderStyle": "none",
-					"sortable": false,
 					"visibility": "visible",
 					"sizingX": "fixed",
 					"rowHeight": "2em",
-					"verticalAlign": "middle",
-					"scrollbarHorizontal": "hidden",
-					"scrollbarVertical": "hidden",
-					"selectionMode": "single",
 					"currentItemSource": "formGetInstance.menu.item",
 					"currentItemPositionSource": "formGetInstance.menu.itemPosition",
 					"selectedItemsSource": "formGetInstance.menu.items",
-					"stroke": "automatic",
+					"showHeaders": false,
+					"verticalLineStroke": "transparent",
+					"scrollbarVertical": "hidden",
+					"class": "flat",
+					"alternateFill": "automatic",
 					"columns": [
 						{
 							"header": {
@@ -124,15 +116,9 @@
 					"width": 171,
 					"height": 17,
 					"dataSource": "Form:C1466.project.name",
-					"fill": "transparent",
-					"borderStyle": "none",
-					"fontWeight": "bold",
 					"hideFocusRing": true,
-					"sizingX": "fixed",
 					"textAlign": "center",
-					"enterable": false,
-					"focusable": false,
-					"contextMenu": "none"
+					"class": "title infos"
 				},
 				"vSeparator_1": {
 					"type": "line",
@@ -140,7 +126,6 @@
 					"left": 179,
 					"width": 0,
 					"height": 850,
-					"stroke": "#c0c0c0",
 					"startPoint": "topLeft",
 					"class": " ",
 					"sizingY": "grow"
@@ -153,24 +138,17 @@
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#c0c0c0",
 					"right": 1120
 				},
 				"gitVersion": {
 					"type": "input",
 					"left": 22,
-					"top": 893,
+					"top": 891,
 					"width": 117,
 					"height": 14,
 					"dataSource": "Form:C1466.version",
-					"fill": "transparent",
-					"borderStyle": "none",
-					"hideFocusRing": true,
-					"contextMenu": "none",
-					"enterable": false,
-					"focusable": false,
-					"fontSize": 10,
-					"sizingY": "move"
+					"sizingY": "move",
+					"class": "infos mini"
 				},
 				"Line5": {
 					"type": "line",
@@ -180,7 +158,6 @@
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#c0c0c0",
 					"right": 1120
 				},
 				"fetch": {
@@ -196,10 +173,10 @@
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/Main/fetch.png",
 					"textPlacement": "bottom",
-					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "automatic",
-					"visibility": "visible"
+					"visibility": "visible",
+					"iconFrames": 1,
+					"class": "mini"
 				},
 				"pull": {
 					"type": "button",
@@ -214,10 +191,10 @@
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/main/Pull.png",
 					"textPlacement": "bottom",
-					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "automatic",
-					"visibility": "visible"
+					"visibility": "visible",
+					"iconFrames": 1,
+					"class": "mini"
 				},
 				"push": {
 					"type": "button",
@@ -232,10 +209,10 @@
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/main/Push.png",
 					"textPlacement": "bottom",
-					"fontSize": 11,
 					"borderStyle": "none",
-					"stroke": "automatic",
-					"visibility": "visible"
+					"visibility": "visible",
+					"iconFrames": 1,
+					"class": "mini"
 				},
 				"open": {
 					"type": "button",
@@ -246,17 +223,16 @@
 					"events": [
 						"onClick"
 					],
-					"focusable": false,
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/Main/more.png",
 					"sizingX": "move",
-					"fontSize": 11,
-					"stroke": "automatic",
-					"text": ":xliff:open"
+					"text": ":xliff:open",
+					"iconFrames": 1,
+					"class": "mini"
 				},
 				"gitLogo": {
 					"type": "picture",
-					"top": 892,
+					"top": 890,
 					"left": 3,
 					"width": 16,
 					"height": 16,
@@ -272,7 +248,6 @@
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "fixed",
-					"stroke": "#c0c0c0",
 					"right": 180
 				},
 				"selector": {
@@ -280,21 +255,25 @@
 					"left": 0,
 					"top": 154,
 					"width": 179,
-					"height": 720,
+					"height": 731,
 					"events": [
 						"onClick",
 						"onDoubleClick",
 						"onSelectionChange"
 					],
-					"scrollbarVertical": "automatic",
-					"scrollbarHorizontal": "hidden",
-					"focusable": true,
-					"enterable": false,
-					"borderStyle": "none",
 					"sizingY": "grow",
 					"dataSource": "Form:C1466.selector",
-					"fill": "transparent",
-					"hideFocusRing": true
+					"borderStyle": "none"
+				},
+				"Line8": {
+					"type": "line",
+					"top": 885,
+					"left": 0,
+					"width": 179,
+					"height": 0,
+					"startPoint": "topLeft",
+					"right": 179,
+					"sizingY": "move"
 				}
 			}
 		},
@@ -307,7 +286,7 @@
 					"left": 185,
 					"width": 182,
 					"height": 16,
-					"fontWeight": "bold"
+					"class": "title"
 				},
 				"unstaged": {
 					"type": "listbox",
@@ -321,24 +300,21 @@
 						"onSelectionChange"
 					],
 					"showHeaders": false,
-					"resizingMode": "legacy",
 					"scrollbarVertical": "visible",
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.unstaged",
-					"hideFocusRing": true,
-					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
 					"sizingY": "grow",
-					"borderStyle": "none",
 					"visibility": "visible",
 					"currentItemSource": "formGetInstance.unstaged.item",
 					"currentItemPositionSource": "formGetInstance.unstaged.itemPosition",
 					"selectedItemsSource": "formGetInstance.unstaged.items",
 					"sizingX": "grow",
-					"sortable": false,
 					"metaSource": "formGetInstance.meta(This:C1470)",
-					"fill": "transparent",
 					"rowHeight": "1em",
+					"alternateFill": "automatic",
+					"borderStyle": "none",
+					"class": "flat",
 					"columns": [
 						{
 							"header": {
@@ -438,7 +414,6 @@
 					"left": 480,
 					"width": 0,
 					"height": 850,
-					"stroke": "#c0c0c0",
 					"startPoint": "topLeft",
 					"sizingY": "grow"
 				},
@@ -469,7 +444,7 @@
 					"width": 177,
 					"height": 16,
 					"sizingY": "fixed",
-					"fontWeight": "bold"
+					"class": "title"
 				},
 				"unstage": {
 					"type": "button",
@@ -506,8 +481,7 @@
 					"width": 300,
 					"height": 0,
 					"startPoint": "topLeft",
-					"sizingX": "grow",
-					"stroke": "#c0c0c0"
+					"sizingX": "grow"
 				},
 				"Line2": {
 					"type": "line",
@@ -516,8 +490,7 @@
 					"width": 299,
 					"height": 0,
 					"startPoint": "topLeft",
-					"sizingX": "grow",
-					"stroke": "#c0c0c0"
+					"sizingX": "grow"
 				},
 				"Line3": {
 					"type": "line",
@@ -526,8 +499,7 @@
 					"width": 299,
 					"height": 0,
 					"startPoint": "topLeft",
-					"sizingX": "grow",
-					"stroke": "#c0c0c0"
+					"sizingX": "grow"
 				},
 				"hAirbag": {
 					"type": "button",
@@ -556,18 +528,14 @@
 					"width": 617,
 					"height": 719,
 					"dataSource": "Form:C1466.diff",
-					"borderStyle": "none",
 					"sizingX": "grow",
 					"sizingY": "grow",
 					"scrollbarHorizontal": "automatic",
 					"scrollbarVertical": "automatic",
-					"enterable": false,
-					"focusable": true,
-					"fontSize": 12,
 					"styledText": true,
 					"storeDefaultStyle": true,
 					"visibility": "hidden",
-					"fill": "automatic"
+					"class": "infos"
 				},
 				"Input1": {
 					"type": "input",
@@ -577,13 +545,8 @@
 					"height": 17,
 					"dataSource": "Form:C1466.currentUnstaged.path",
 					"sizingX": "grow",
-					"enterable": false,
-					"contextMenu": "none",
-					"focusable": false,
-					"borderStyle": "none",
 					"textAlign": "center",
-					"stroke": "#696969",
-					"fontSize": 12
+					"class": "infos"
 				},
 				"Line4": {
 					"type": "line",
@@ -593,7 +556,6 @@
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"stroke": "#c0c0c0",
 					"sizingY": "move"
 				},
 				"subject": {
@@ -635,7 +597,6 @@
 					],
 					"style": "regular",
 					"sizingX": "move",
-					"focusable": true,
 					"sizingY": "move"
 				},
 				"amend": {
@@ -650,8 +611,7 @@
 					],
 					"dataSource": "Form:C1466.amend",
 					"dataSourceTypeHint": "boolean",
-					"sizingY": "move",
-					"focusable": false
+					"sizingY": "move"
 				},
 				"stageAll": {
 					"type": "button",
@@ -673,7 +633,8 @@
 					"focusable": false,
 					"icon": "/RESOURCES/Images/Main/stageAll.png",
 					"sizingX": "move",
-					"tooltip": ":xliff:stageAll"
+					"tooltip": ":xliff:stageAll",
+					"iconFrames": 1
 				}
 			}
 		},
@@ -690,24 +651,17 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commits",
-					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
-					"selectionMode": "single",
-					"scrollbarHorizontal": "hidden",
-					"scrollbarVertical": "visible",
 					"sizingX": "grow",
-					"hideFocusRing": true,
 					"sizingY": "grow",
 					"borderStyle": "none",
-					"textAlign": "left",
 					"currentItemSource": "formGetInstance.commits.item",
 					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
 					"selectedItemsSource": "formGetInstance.commits.items",
-					"horizontalPadding": 2,
 					"showHeaders": false,
 					"rowHeight": "25px",
-					"verticalAlign": "middle",
-					"sortable": false,
+					"class": "flat",
+					"alternateFill": "automatic",
 					"columns": [
 						{
 							"header": {
@@ -822,25 +776,18 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commitDetail",
-					"resizingMode": "legacy",
 					"showHeaders": false,
-					"horizontalLineStroke": "transparent",
-					"verticalLineStroke": "transparent",
-					"selectionMode": "single",
 					"borderStyle": "none",
-					"sortable": false,
 					"sizingY": "grow",
 					"sizingX": "grow",
-					"scrollbarHorizontal": "hidden",
 					"visibility": "hidden",
-					"focusable": true,
 					"metaSource": "formGetInstance.meta(This:C1470)",
 					"currentItemSource": "formGetInstance.detailCommit.item",
 					"currentItemPositionSource": "formGetInstance.detailCommit.itemPosition",
 					"selectedItemsSource": "formGetInstance.detailCommit.items",
-					"hideFocusRing": true,
-					"fill": "automatic",
-					"horizontalPadding": 2,
+					"alternateFill": "automatic",
+					"class": "flat",
+					"verticalLineStroke": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -879,12 +826,8 @@
 					"width": 345,
 					"height": 17,
 					"dataSource": "formGetInstance.commits.item.author.name",
-					"enterable": false,
-					"contextMenu": "none",
-					"borderStyle": "none",
-					"fontWeight": "bold",
-					"focusable": false,
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"class": "infos title"
 				},
 				"authorLabel": {
 					"type": "text",
@@ -893,9 +836,8 @@
 					"left": 187,
 					"width": 62,
 					"height": 16,
-					"stroke": "#808080",
 					"visibility": "hidden",
-					"textAlign": "right"
+					"class": "comment label"
 				},
 				"stamp": {
 					"type": "input",
@@ -904,13 +846,10 @@
 					"width": 345,
 					"height": 17,
 					"dataSource": "formGetInstance.commits.item.stamp",
-					"enterable": false,
-					"contextMenu": "none",
-					"borderStyle": "none",
 					"fontWeight": "normal",
-					"focusable": false,
 					"stroke": "#808080",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"class": "infos"
 				},
 				"shaLabel": {
 					"type": "text",
@@ -919,9 +858,8 @@
 					"left": 187,
 					"width": 62,
 					"height": 16,
-					"stroke": "#808080",
-					"textAlign": "right",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"class": "comment label"
 				},
 				"sha": {
 					"type": "input",
@@ -930,13 +868,10 @@
 					"width": 325,
 					"height": 17,
 					"dataSource": "formGetInstance.commits.item.fingerprint.long",
-					"enterable": false,
-					"contextMenu": "none",
-					"borderStyle": "none",
 					"fontWeight": "normal",
-					"focusable": false,
 					"stroke": "automatic",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"class": "infos"
 				},
 				"parentLabel": {
 					"type": "text",
@@ -945,9 +880,8 @@
 					"left": 187,
 					"width": 62,
 					"height": 16,
-					"stroke": "#808080",
-					"textAlign": "right",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"class": "comment label"
 				},
 				"parent": {
 					"type": "input",
@@ -956,17 +890,13 @@
 					"width": 151,
 					"height": 17,
 					"dataSource": "formGetInstance.commits.item.parent.short",
-					"enterable": false,
-					"contextMenu": "none",
-					"borderStyle": "none",
-					"fontWeight": "normal",
-					"focusable": false,
 					"stroke": "#1e90ff",
 					"textDecoration": "underline",
 					"visibility": "hidden",
 					"events": [
 						"onClick"
-					]
+					],
+					"class": "infos"
 				},
 				"detailSeparator": {
 					"type": "line",
@@ -1012,12 +942,11 @@
 					"dataSource": "formGetInstance.commits.item.title",
 					"enterable": false,
 					"contextMenu": "none",
-					"borderStyle": "none",
-					"fontWeight": "bold",
 					"focusable": false,
 					"visibility": "hidden",
 					"textAlign": "center",
-					"sizingX": "grow"
+					"sizingX": "grow",
+					"class": "title infos"
 				},
 				"titleTop": {
 					"type": "line",
@@ -1041,11 +970,11 @@
 					"dataSourceTypeHint": "picture",
 					"dataSource": "formGetInstance.commits.item.author.avatar",
 					"pictureFormat": "proportionalTopLeft",
-					"borderStyle": "none",
 					"contextMenu": "none",
 					"enterable": false,
 					"focusable": false,
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"class": "infos"
 				},
 				"authorMail": {
 					"type": "input",
@@ -1054,13 +983,10 @@
 					"width": 345,
 					"height": 17,
 					"dataSource": "formGetInstance.commits.item.author.mail",
-					"enterable": false,
-					"contextMenu": "none",
-					"borderStyle": "none",
 					"fontWeight": "normal",
-					"focusable": false,
 					"stroke": "#808080",
-					"visibility": "hidden"
+					"visibility": "hidden",
+					"class": "infos"
 				},
 				"detailDiff": {
 					"type": "input",
@@ -1069,19 +995,15 @@
 					"width": 402,
 					"height": 373,
 					"dataSource": "Form:C1466.diff",
-					"borderStyle": "none",
 					"sizingX": "grow",
 					"sizingY": "grow",
 					"scrollbarHorizontal": "automatic",
 					"scrollbarVertical": "automatic",
-					"enterable": false,
-					"focusable": false,
 					"fontSize": 12,
 					"styledText": true,
 					"storeDefaultStyle": true,
 					"visibility": "hidden",
-					"contextMenu": "none",
-					"fill": "automatic"
+					"class": "infos"
 				}
 			}
 		}
@@ -1097,5 +1019,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 123
+	"geometryStamp": 217
 }
