@@ -47,6 +47,7 @@
 	"👥 NAMESPACE": {
 		"classes": [
 			"Git",
+			"GithubAPI",
 			"jwt"
 		]
 	},

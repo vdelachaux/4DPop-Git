@@ -1398,6 +1398,75 @@ Function Switch($branch : Object)
 	
 	This:C1470.Git.branch("use"; $branch.name)
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function CreateGithubRepository($token : Text)
+	
+	var $file : 4D:C1709.File
+	var $request : 4D:C1709.HTTPRequest
+	var $git : cs:C1710.Git
+	var $GithubAPI : cs:C1710.GithubAPI
+	
+	$GithubAPI:=cs:C1710.GithubAPI.new().authToken($token)
+	
+	// Check token validity
+	$request:=4D:C1709.HTTPRequest.new($GithubAPI.URL+"/octocat"; $GithubAPI)
+	$request.wait()
+	
+	If ($request.response.status#200)
+		
+		ALERT:C41($request.response.body.message)
+		return 
+		
+	End if 
+	
+	// Try creating the repository
+	$GithubAPI.method:="POST"
+	
+	$GithubAPI.body:={\
+		accept: "application/vnd.github+json"; \
+		name: $GithubAPI.CommpliantRepositoryName(Form:C1466.project); \
+		private: True:C214\
+		}
+	
+	$request:=4D:C1709.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
+	$request.wait()
+	
+	If ($request.response.status#201)
+		
+		ALERT:C41($request.response.body.errors.extract("message").join("\n"))
+		return 
+		
+	End if 
+	
+	$git:=This:C1470.Git
+	
+	// Create readme
+	$file:=File:C1566("/PACKAGE/README.md"; *)
+	
+	If (Not:C34($file.exists))
+		
+		File:C1566("/PACKAGE/README.md"; *).setText("# "+Form:C1466.project)
+		
+	End if 
+	
+	$git.add("README.md")
+	//$git.commit("first commit")
+	
+	// Add the origin to to the repository
+	If ($git.execute("remote add origin "+$request.response.body.clone_url))
+		
+		// Create the main branch
+		If ($git.execute("branch -M main"))
+			
+			// Push
+			If ($git.execute("push -u origin main"))
+				
+				//
+				
+			End if 
+		End if 
+	End if 
+	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function loadIcons()
