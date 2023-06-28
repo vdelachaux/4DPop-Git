@@ -1,0 +1,167 @@
+ /* =====================================================
+    MAIN 
+  =====================================================*/	
+* {
+	fontTheme: "normal";
+	stroke: automatic;
+}
+
+text.label {
+	text-align: right;
+}
+
+input {
+	contextMenu: automatic;
+}
+
+input.infos {
+	enterable: false;
+	focusable: true;
+	fill: transparent;
+	borderStyle: "none";
+}
+
+.mini {
+	fontSize:11;
+}
+
+.tiny {
+	fontSize:9;
+}
+
+.comment {
+	stroke: #808080;
+	fontStyle: italic;
+}
+	@media (prefers-color-scheme: dark) {
+			.comment {
+				stroke: white;
+			}
+		}
+		
+.title {
+	fontWeight: bold;
+}
+
+.error {
+	stroke: #EE0000;
+}
+
+.warning {
+	stroke: #F09700;
+}
+
+.background {
+	fill:automatic;
+	stroke:transparent;
+}
+
+button.link {
+	style: "custom";
+	text-decoration: underline;
+	stroke: #1E90FF;
+	cursor: pointer;
+}
+
+.dev {
+	focusable: false;
+	stroke: #CD14CC;
+	style: "flat";
+	fontSize:11;
+	contextMenu: "none";
+}
+
+[dataSourceTypeHint="picture"].dev {
+	fill: #CD14CC;
+	borderStyle:"dotted";
+}
+
+line, 
+rectangle {
+	stroke: #C0C0C0;
+}
+	@media (prefers-color-scheme: dark) {
+			line, 
+			rectangle {
+				stroke: #404040;
+			}
+		}
+
+rectangle {
+	fill: transparent;
+}
+
+listbox {
+	scrollbarHorizontal: hidden;
+	resizingMode: legacy;
+	horizontalLineStroke: transparent;
+	horizontalPadding:2;
+	fill: automatic;
+	verticalAlign: middle;
+	alternateFill: automaticAlternate;
+	dragging: none;
+	dropping: none;
+	sortable: false;
+	movableRows: false;
+	hideExtraBlankRows: true;
+	hideFocusRing: true;
+	selectionMode: "single";
+}
+
+header {
+	fontWeight: bold;
+}
+
+list {
+	enterable: false;
+	hideFocusRing: true;
+	scrollbarVertical: "automatic";
+	scrollbarHorizontal: "hidden";
+}
+
+#OK,
+#bOK {
+	defaultButton: true;
+	shortcutKey:[Return];
+	action: accept;
+	text: ":xliff:bOK";
+}
+
+#Cancel,
+#bCancel {
+	shortcutKey:[Esc];
+	action: "cancel";
+	text: ":xliff:bCancel";
+}
+
+#help,
+#bHelp {
+	style: "help";
+	tooltip: ":xliff:moreInformation";
+}
+
+[defaultButton] {
+	shortcutKey:[Return];
+	action: accept;
+}
+
+[action="cancel"] {
+	shortcutKey:[Esc];
+}
+
+[style="toolbar"],
+[type="radio"],
+[style="custom"] {
+	focusable: false;
+}
+
+[style="toolbar"],
+[type="radio"] {
+	iconFrames: 4;
+	fontSize:11;
+}
+
+[style="help"] {
+	tooltip: ":xliff:moreInformation";
+}
+

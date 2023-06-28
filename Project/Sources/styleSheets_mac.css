@@ -1,0 +1,6 @@
+checkbox,
+radio,
+button,
+[type="dropdown"] {
+	focusable: false;
+}
