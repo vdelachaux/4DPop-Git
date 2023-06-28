@@ -328,7 +328,7 @@ Function _doChangesMenu()
 			Else 
 				
 				$others:=$others || This:C1470.menu.new()
-				$others.append($c.remove(0; 2).join("/"); $o.path).icon($icon)
+				$others.append($c.join("/"); $o.path).icon($icon)
 				
 				//______________________________________________________
 		End case 
