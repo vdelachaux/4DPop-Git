@@ -60,6 +60,7 @@
 					"scrollbarVertical": "hidden",
 					"class": "flat",
 					"alternateFill": "automatic",
+					"borderStyle": "none",
 					"columns": [
 						{
 							"header": {
@@ -134,11 +135,11 @@
 					"type": "line",
 					"top": 82,
 					"left": 0,
-					"width": 1120,
+					"width": 1125,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"right": 1120
+					"right": 1125
 				},
 				"gitVersion": {
 					"type": "input",
@@ -154,11 +155,11 @@
 					"type": "line",
 					"top": 59,
 					"left": 0,
-					"width": 1120,
+					"width": 1125,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"right": 1120
+					"right": 1125
 				},
 				"fetch": {
 					"type": "button",
@@ -216,10 +217,10 @@
 				},
 				"open": {
 					"type": "button",
-					"top": 11,
+					"top": 6,
 					"left": 1051,
 					"width": 50,
-					"height": 47,
+					"height": 52,
 					"events": [
 						"onClick"
 					],
@@ -525,7 +526,7 @@
 					"type": "input",
 					"left": 486,
 					"top": 84,
-					"width": 617,
+					"width": 622,
 					"height": 719,
 					"dataSource": "Form:C1466.diff",
 					"sizingX": "grow",
@@ -552,7 +553,7 @@
 					"type": "line",
 					"top": 818,
 					"left": 481,
-					"width": 639,
+					"width": 644,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
@@ -562,7 +563,7 @@
 					"type": "input",
 					"left": 494,
 					"top": 830,
-					"width": 609,
+					"width": 614,
 					"height": 17,
 					"dataSource": "Form:C1466.commitSubject",
 					"placeholder": ":xliff:commitSubject",
@@ -578,7 +579,7 @@
 					"type": "input",
 					"left": 494,
 					"top": 849,
-					"width": 609,
+					"width": 614,
 					"height": 17,
 					"dataSource": "Form:C1466.commitDescription",
 					"placeholder": ":xliff:description",
@@ -590,7 +591,7 @@
 					"text": ":xliff:commit",
 					"top": 880,
 					"left": 841,
-					"width": 264,
+					"width": 269,
 					"height": 22,
 					"events": [
 						"onClick"
@@ -644,7 +645,7 @@
 					"type": "listbox",
 					"left": 181,
 					"top": 60,
-					"width": 940,
+					"width": 944,
 					"height": 459,
 					"events": [
 						"onSelectionChange"
@@ -662,6 +663,7 @@
 					"rowHeight": "25px",
 					"class": "flat",
 					"alternateFill": "automatic",
+					"resizingMode": "rightToLeft",
 					"columns": [
 						{
 							"header": {
@@ -705,7 +707,7 @@
 							},
 							"width": 150,
 							"enterable": false,
-							"minWidth": 150,
+							"minWidth": 100,
 							"maxWidth": 230
 						},
 						{
@@ -742,27 +744,16 @@
 						}
 					]
 				},
-				"Splitter1": {
-					"type": "splitter",
-					"left": 180,
-					"top": 520,
-					"width": 940,
-					"height": 1,
-					"borderStyle": "none",
-					"sizingX": "grow",
-					"splitterMode": "resize",
-					"right": 1120
-				},
-				"Line6": {
+				"hMainLine": {
 					"type": "line",
 					"top": 519,
-					"left": 180,
-					"width": 940,
+					"left": 181,
+					"width": 944,
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
 					"stroke": "#c0c0c0",
-					"right": 1120,
+					"right": 1125,
 					"sizingY": "move"
 				},
 				"detail_list": {
@@ -903,7 +894,7 @@
 					"top": 521,
 					"left": 699,
 					"width": 0,
-					"height": 409,
+					"height": 388,
 					"stroke": "#c0c0c0",
 					"startPoint": "topLeft",
 					"class": " ",
@@ -915,7 +906,7 @@
 					"left": 699,
 					"top": 521,
 					"width": 1,
-					"height": 410,
+					"height": 388,
 					"sizingY": "grow",
 					"visibility": "hidden",
 					"borderStyle": "none"
@@ -992,7 +983,7 @@
 					"type": "input",
 					"left": 702,
 					"top": 521,
-					"width": 402,
+					"width": 406,
 					"height": 373,
 					"dataSource": "Form:C1466.diff",
 					"sizingX": "grow",
@@ -1004,6 +995,17 @@
 					"storeDefaultStyle": true,
 					"visibility": "hidden",
 					"class": "infos"
+				},
+				"hMainSplitter": {
+					"type": "splitter",
+					"left": 180,
+					"top": 519,
+					"width": 945,
+					"height": 1,
+					"borderStyle": "system",
+					"sizingX": "grow",
+					"splitterMode": "resize",
+					"right": 1125
 				}
 			}
 		}
@@ -1019,5 +1021,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 217
+	"geometryStamp": 341
 }
