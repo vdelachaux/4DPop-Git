@@ -247,7 +247,7 @@ Function handleEvents($e : cs:C1710.evt)
 				//==============================================
 			: (This:C1470.stageAll.catch($e; On Clicked:K2:4))
 				
-				This:C1470.Stage(Form:C1466.unstaged)
+				This:C1470.StageAll()
 				
 				//==============================================
 			: (This:C1470.unstage.catch($e; On Clicked:K2:4))
@@ -402,7 +402,7 @@ Function update()
 			//______________________________________________________
 		: (This:C1470.form.page=This:C1470.pages.changes)
 			
-			If ($git.changes.length=0)
+			If ($git.status()=0)
 				
 				Form:C1466.staged.clear()
 				This:C1470.stage.disable()
@@ -1316,6 +1316,14 @@ Function Stage($items : Collection)
 		This:C1470.Git.add($o.path)
 		
 	End for each 
+	
+	This:C1470.DoDiff()
+	This:C1470.onActivate()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function StageAll()
+	
+	This:C1470.Git.add("all")
 	
 	This:C1470.DoDiff()
 	This:C1470.onActivate()
