@@ -71,7 +71,6 @@
 			"inputDelegate",
 			"listboxDelegate",
 			"pictureDelegate",
-			"progress",
 			"scrollableDelegate",
 			"selectorDelegate",
 			"staticDelegate",
