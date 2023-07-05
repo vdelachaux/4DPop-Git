@@ -189,12 +189,12 @@ Function update()
 				
 				If (This:C1470.release)
 					
-					$success:=(This:C1470.currentBranch=(This:C1470.version)+"@")\
+					$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
 						 || (This:C1470.currentBranch=(This:C1470.major+"RX"))
 					
 				Else 
 					
-					$success:=(This:C1470.currentBranch=(This:C1470.version)+"@")\
+					$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
 						 || (This:C1470.currentBranch=(This:C1470.major+".X"))
 					
 				End if 
