@@ -781,10 +781,15 @@ Function updateRemotes()
 			
 			If (This:C1470.remotes.query("name=:1"; $c[0]).length=0)
 				
-				This:C1470.remotes.push({\
+				//fixme:bug in v20
+				//This.remotes.push({\
 					name: $c[0]; \
-					url: Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+					url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
 					})
+				This:C1470.remotes.push(New object:C1471(\
+					"name"; $c[0]; \
+					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+					))
 				
 			End if 
 		End for each 
@@ -869,10 +874,15 @@ Function stash($name : Text)
 					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)([^$]*)$"; $line; 1; $pos; $len))
 						
 						//FIXME:regex
-						This:C1470.stashes.push({\
-							name: Substring:C12($line; $pos{1}; $len{1}); \
-							message: Substring:C12($line; $pos{3}; $len{3})\
+						//fixme:bug in v20
+						//This.stashes.push({\
+							name: Substring($line; $pos{1}; $len{1}); \
+							message: Substring($line; $pos{3}; $len{3})\
 							})
+						This:C1470.stashes.push(New object:C1471(\
+							"name"; Substring:C12($line; $pos{1}; $len{1}); \
+							"message"; Substring:C12($line; $pos{3}; $len{3})\
+							))
 						
 					End if 
 				End for each 
