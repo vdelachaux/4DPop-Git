@@ -405,9 +405,12 @@ Function _doChangesMenu()
 			//——————————————————————————————————
 		: (Value type:C1509($tgt)=Is text:K8:3)  // Classe, Method,…
 			
-			If ($tgt="@.4DForm")
+			$c:=Split string:C1554($tgt; "/")
+			
+			If ($c.last()="@.4DForm")  // Form
 				
-				FORM EDIT:C1749(String:C10(Split string:C1554($tgt; "/")[0]))
+				$c.pop()
+				FORM EDIT:C1749(String:C10($c.last()))
 				
 			Else 
 				

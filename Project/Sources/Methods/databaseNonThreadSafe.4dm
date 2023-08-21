@@ -11,6 +11,8 @@ End if
 var $t : Text
 var $c : Collection
 
+ARRAY TEXT:C222($methods; 0x0000)
+
 Case of 
 		
 		//mark:-init
@@ -66,7 +68,6 @@ Case of
 		//mark:-methods
 	: ($signal.action="methods")
 		
-		ARRAY TEXT:C222($methods; 0x0000)
 		METHOD GET NAMES:C1166($methods; $signal.filter="" ? "@" : $signal.filter; *)
 		
 		$c:=New shared collection:C1527
@@ -86,7 +87,6 @@ Case of
 		//mark:-methodAvailable
 	: ($signal.action="methodAvailable")
 		
-		ARRAY TEXT:C222($methods; 0x0000)
 		METHOD GET NAMES:C1166($methods; *)
 		
 		Use ($signal)
