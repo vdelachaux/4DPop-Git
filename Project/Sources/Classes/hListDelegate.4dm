@@ -258,7 +258,7 @@ Function get expandable() : Boolean
 Function collapseAll($keep : Boolean)
 	
 	var $itemText : Text
-	var $expanded; $keep : Boolean
+	var $expanded : Boolean
 	var $count; $current; $i; $itemRef; $subList : Integer
 	
 	$keep:=Count parameters:C259=0 ? This:C1470.itemSublist>0 : $keep

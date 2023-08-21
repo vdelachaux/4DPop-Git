@@ -375,8 +375,6 @@ Function get highlight() : Text
 	/// Sets the entry order of the current form for the current process
 Function setEntryOrder($widgetNames : Collection)
 	
-	ARRAY TEXT:C222($entryOrder; 0x0000)
-	
 	If (Value type:C1509($widgetNames[0])=Is object:K8:27)
 		
 		$widgetNames:=$widgetNames.extract("name")

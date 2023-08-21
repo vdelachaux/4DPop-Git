@@ -50,7 +50,8 @@
 						"onClick"
 					],
 					"icon": "/RESOURCES/Images/git.png",
-					"style": "toolbar"
+					"style": "toolbar",
+					"iconFrames": 1
 				},
 				"Text": {
 					"type": "text",
