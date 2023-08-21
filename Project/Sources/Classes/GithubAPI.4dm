@@ -46,12 +46,12 @@ Function CommpliantRepositoryName($name : Text) : Text
 	var $len; $pos : Integer
 	var $c : Collection
 	
+	$name:=Lowercase:C14($name)
 	$c:=[]
 	
 	While (Match regex:C1019("(?mi-s)([^[:alnum:]]+)"; $name; 1; $pos; $len))
 		
 		$c.push(Substring:C12($name; 1; $pos-1))
-		
 		$name:=Delete string:C232($name; 1; $pos+$len-1)
 		
 	End while 
