@@ -1,16 +1,33 @@
 //%attributes = {}
 var $description; $fullName; $gitURL; $name; $ownerURL; $remoteURL : Text
-var $token; $url : Text
+var $url : Text
 var $private : Boolean
-var $body; $owner : Object
+var $body; $o; $owner : Object
+var $file : 4D:C1709.File
 var $request : 4D:C1709.HTTPRequest
 var $GithubAPI : cs:C1710.GithubAPI
 
-$token:="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"  // (Classic)
-//$token:="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"  // (fine-grained)
-//$token:="ghp_zVW6Wii3b6LSNNYIdKgfgp8PwAQRdJ1lPpP1" // Invalid
+// TODO:search first into project preferences folder
 
-$GithubAPI:=cs:C1710.GithubAPI.new().authToken($token)
+$file:=Folder:C1567(fk user preferences folder:K87:10).file("github.credentials")
+
+If (Not:C34($file.exists))
+	
+	TRACE:C157
+	return 
+	
+End if 
+
+$o:=JSON Parse:C1218($file.getText())
+
+If ($o.token=Null:C1517)
+	
+	TRACE:C157
+	return 
+	
+End if 
+
+$GithubAPI:=cs:C1710.GithubAPI.new().authToken($o.token)
 
 // Check token validity
 $request:=4D:C1709.HTTPRequest.new($GithubAPI.URL+"/octocat"; $GithubAPI)
@@ -23,7 +40,7 @@ If ($request.response.status#200)
 	
 End if 
 
-$name:="test-repo"  // Nom de la base reformaté
+$name:=$GithubAPI.CommpliantRepositoryName("REPO de TEST")
 $description:="Nouveau repo!"
 $private:=True:C214
 
