@@ -4,6 +4,7 @@
 [![license](https://img.shields.io/github/license/vdelachaux/4DPop-Git)](LICENSE)
 [![release](https://img.shields.io/github/v/release/vdelachaux/4DPop-Git?include_prereleases)](https://github.com/vdelachaux/4DPop-Git/releases/latest)
 [![Build](https://github.com/vdelachaux/4DPop-Git/actions/workflows/build.yml/badge.svg)](https://github.com/vdelachaux/4DPop-Git/actions/workflows/build.yml)
+<img src="https://img.shields.io/github/downloads/vdelachaux/4DPop-Git/total"/>
 
 # 4DPop Git
 
