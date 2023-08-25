@@ -2,7 +2,4 @@
 <!DOCTYPE base SYSTEM "http://www.4d.com/dtd/2007/base.dtd" >
 <base name="4DPop Git" uuid="FC74FB50D104469EA1B266A217A82654" collation_locale="en">
 	<schema name="DEFAULT_SCHEMA"/>
-	<base_extra __stringCompHash="icu:73.2.0" __keywordBuildingHash="icu:73.2.0">
-		<journal_file filepath="./data.journal" sequence_number="1" datalink="F90A1F68F0AA4B1DAB6E1FDEAFCD15DE"/>
-	</base_extra>
 </base>

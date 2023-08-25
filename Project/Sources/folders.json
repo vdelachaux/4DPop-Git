@@ -37,6 +37,7 @@
 			"coord",
 			"dim",
 			"evt",
+			"http",
 			"menu",
 			"menuBar",
 			"motor"
@@ -46,8 +47,7 @@
 	"👥 NAMESPACE": {
 		"classes": [
 			"Git",
-			"GithubAPI",
-			"jwt"
+			"GithubAPI"
 		]
 	},
 	"👩‍💻 UI": {
