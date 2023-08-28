@@ -1,11 +1,6 @@
 //%attributes = {}
-var $description; $fullName; $gitURL; $name; $ownerURL; $remoteURL : Text
-var $url : Text
-var $private : Boolean
-var $body; $o; $owner : Object
-var $file : 4D:C1709.File
-var $request : 4D:C1709.HTTPRequest
-var $GithubAPI : cs:C1710.GithubAPI
+var $zen : Text
+var $gh : cs:C1710.GithubAPI
 
 /*
 
@@ -19,10 +14,17 @@ git push -u origin main
 
 */
 
-$GithubAPI:=cs:C1710.GithubAPI.new()
+$gh:=cs:C1710.GithubAPI.new()
 
-// Try creating a repository
-$GithubAPI.CreateRepository("TEST REPO")
+$gh._getToken()
+
+//$zen:=$gh.zen()
+
+//// Try creating a repository
+$gh.CreateRepos("TEST REPO")
+
+//// Try delete a repository
+$gh.DeleteRepos("TEST REPO")
 
 /*
 
