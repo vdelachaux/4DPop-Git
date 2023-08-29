@@ -16,15 +16,15 @@ git push -u origin main
 
 $gh:=cs:C1710.GithubAPI.new()
 
-$gh._getToken()
+//$gh._getToken()
 
 //$zen:=$gh.zen()
 
 //// Try creating a repository
-$gh.CreateRepos("TEST REPO")
+//$gh.CreateRepos("TEST REPO")
 
 //// Try delete a repository
-$gh.DeleteRepos("TEST REPO")
+$gh.DeleteRepos("test-repo")
 
 /*
 

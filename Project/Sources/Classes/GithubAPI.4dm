@@ -219,8 +219,6 @@ Function DeleteRepos($name : Text; $owner : Text)
 	
 	This:C1470.method:=$method  // Restore default method
 	
-	
-	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CheckTokenValidity($token : Text) : Boolean
 	
@@ -236,6 +234,8 @@ Function zen($token : Text) : Text
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
 	
+	var $error : Text
+	var $response : Object
 	var $request : 4D:C1709.HTTPRequest
 	
 	$request:=This:C1470.HTTPRequest.new($url; This:C1470)
@@ -244,15 +244,28 @@ Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
 		
 		$request.wait()
 		
-		This:C1470.success:=$request.response.status=($status=0 ? 200 : $status)
+		$response:=$request.response
+		
+		This:C1470.success:=$response.status=($status=0 ? 200 : $status)
 		
 		If (Not:C34(This:C1470.success))
 			
-			This:C1470._pushError($request.response.body.message)
+			If ($response.body.errors#Null:C1517)\
+				 && ($response.body.errors.length>0)
+				
+				$error:=$response.body.errors.extract("message").join("\r")
+				
+			Else 
+				
+				$error:=String:C10($response.body.message#Null:C1517 ? $response.body.message : $response.statusText)
+				
+			End if 
+			
+			This:C1470._pushError($error)
 			
 			If (This:C1470.dev)
 				
-				ALERT:C41($request.response.body.message)
+				ALERT:C41($error)
 				
 			End if 
 		End if 
@@ -260,7 +273,7 @@ Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
 	
 	This:C1470.latest:=$request
 	
-	return $request.response
+	return $response
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onResponse($request : 4D:C1709.HTTPRequest; $event : Object)
@@ -279,7 +292,7 @@ Function _getToken()
 	var $file : 4D:C1709.File
 	
 	// First, search the project folder
-	$file:=Folder:C1567(fk database folder:K87:14; *).file("github.credentials")
+	$file:=Folder:C1567(fk database folder:K87:14; *).file("Preferences/github.credentials")
 	
 	If (Not:C34($file.exists))
 		
