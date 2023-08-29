@@ -107,13 +107,7 @@ Function get version() : Text
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get currentBranch() : Text
 	
-	var $t : Text
-	var $c : Collection
-	
-	$t:=Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5)
-	$c:=Split string:C1554($t; "\r"; sk ignore empty strings:K86:1)
-	$c:=Split string:C1554($c[0]; "/")
-	return $c.remove(0; 2).join("/")
+	return Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/")
 	
 	//mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -182,7 +176,7 @@ Function get lfs() : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
 	
-	This:C1470.HEAD:=Split string:C1554(Delete string:C232(This:C1470.root.file("HEAD").getText(); 1; 5); "\r"; sk ignore empty strings:K86:1)[0]
+	This:C1470.HEAD:=Split string:C1554(This:C1470.root.file("HEAD").getText(); "\n"; sk ignore empty strings:K86:1)[0]
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function execute($command : Text; $inputStream : Text) : Boolean
@@ -783,9 +777,9 @@ Function updateRemotes()
 				
 				//fixme:bug in v20
 				//This.remotes.push({\
-					name: $c[0]; \
-					url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
-					})
+																																			name: $c[0]; \
+																																			url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+																																			})
 				This:C1470.remotes.push(New object:C1471(\
 					"name"; $c[0]; \
 					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
@@ -876,9 +870,9 @@ Function stash($name : Text)
 						//FIXME:regex
 						//fixme:bug in v20
 						//This.stashes.push({\
-							name: Substring($line; $pos{1}; $len{1}); \
-							message: Substring($line; $pos{3}; $len{3})\
-							})
+																																																	name: Substring($line; $pos{1}; $len{1}); \
+																																																	message: Substring($line; $pos{3}; $len{3})\
+																																																	})
 						This:C1470.stashes.push(New object:C1471(\
 							"name"; Substring:C12($line; $pos{1}; $len{1}); \
 							"message"; Substring:C12($line; $pos{3}; $len{3})\

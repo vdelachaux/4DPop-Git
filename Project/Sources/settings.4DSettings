@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><preferences stamp="8">
+<?xml version="1.0" encoding="UTF-8"?><preferences stamp="9">
 	<com.4d>
 		<general execute_host_database_event="true"/>
 		<compiler>
@@ -6,5 +6,8 @@
 			<typage default_for_button="2"/>
 			<method_suffix arrays="" interprocess_arrays="" interprocess_variables="" methods="" variables=""/>
 		</compiler>
+		<database>
+			<misc mac_use_lf="true" no_bom="true" prefer_null_than_blank_values="true" standard_xpath="true" use_ast_interpreter="false"/>
+		</database>
 	</com.4d>
 </preferences>
