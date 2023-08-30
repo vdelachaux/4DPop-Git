@@ -1,5 +1,5 @@
-//%attributes = {}
 //USE: envScreens
+
 Class extends _classCore
 
 property homeFolder; desktopFolder; documentsFolder; systemFolder; applicationsFolder : 4D:C1709.Folder

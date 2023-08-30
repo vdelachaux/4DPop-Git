@@ -1584,7 +1584,7 @@ Function updateCommitList()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleMenus($what : Text; $current : Object)
 	
-	var $t : Text
+	var $ignore : Text
 	var $tgt
 	var $data : Object
 	var $file; $gitignore : 4D:C1709.File
@@ -1634,8 +1634,6 @@ Function handleMenus($what : Text; $current : Object)
 				$git.status()
 				
 				This:C1470.form.refresh()
-				
-				Form:C1466.ƒ.updateUI()
 				
 			End if 
 			
@@ -1696,7 +1694,7 @@ Function handleMenus($what : Text; $current : Object)
 			$file:=File:C1566($current.path)
 			
 			$gitignore:=$git.workingDirectory.file(".gitignore")
-			$t:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
+			$ignore:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
 			Case of 
 					
@@ -1709,29 +1707,29 @@ Function handleMenus($what : Text; $current : Object)
 						
 					End if 
 					
-					$t+="\r"+$current.path
+					$ignore+="\r"+$current.path
 					
 					//____________________________
 				: ($what="ignoreExtension")
 					
 					// #TO_DO: Must unstack all indexed files with this extension
 					
-					$t+="\r*"+$file.extension
+					$ignore+="\r*"+$file.extension
 					
 					//____________________________
 				: ($what="ignoreCustom")
 					
 					$data:=New object:C1471(\
-						"window"; Open form window:C675("GIT PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
+						"window"; Open form window:C675("PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
 						"pattern"; $current.path; \
 						"files"; $git.changes)
 					
-					DIALOG:C40("GIT PATTERN"; $data)
+					DIALOG:C40("PATTERN"; $data)
 					CLOSE WINDOW:C154
 					
 					If (Bool:C1537(OK))
 						
-						$t+="\r"+$data.pattern
+						$ignore+="\r"+$data.pattern
 						
 					End if 
 					
@@ -1743,13 +1741,11 @@ Function handleMenus($what : Text; $current : Object)
 					//____________________________
 			End case 
 			
-			$gitignore.setText($t; "UTF-8"; Document with LF:K24:22)
+			$gitignore.setText($ignore; "UTF-8"; Document with LF:K24:22)
 			
 			$git.status()
 			
 			This:C1470.form.refresh()
-			
-			Form:C1466.ƒ.updateUI()
 			
 			//______________________________________________________
 		Else 

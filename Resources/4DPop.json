@@ -5,8 +5,5 @@
   "widget": {
     "name": "WIDGET",
     "width": 160
-  },
-  "tools": {
-    "method": "main"
   }
 }

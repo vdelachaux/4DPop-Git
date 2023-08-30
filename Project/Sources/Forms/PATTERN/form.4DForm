@@ -27,8 +27,8 @@
 					"type": "text",
 					"text": ":xliff:gitUsesGlobbingPatternsToMatchAgainstFileNames",
 					"top": 21,
-					"left": 84,
-					"width": 570,
+					"left": 64,
+					"width": 530,
 					"height": 16,
 					"fontTheme": "main",
 					"fontWeight": "normal",
@@ -36,9 +36,9 @@
 				},
 				"pattern": {
 					"type": "input",
-					"left": 84,
+					"left": 64,
 					"top": 98,
-					"width": 570,
+					"width": 530,
 					"height": 17,
 					"dataSource": "Form:C1466.pattern",
 					"events": [
@@ -49,18 +49,18 @@
 				},
 				"Static Picture1": {
 					"type": "picture",
-					"top": 10,
-					"left": 10,
-					"width": 64,
-					"height": 64,
-					"picture": "/RESOURCES/4DPop.png",
+					"top": 20,
+					"left": 18,
+					"width": 32,
+					"height": 32,
+					"picture": "/RESOURCES/Images/git.png",
 					"pictureFormat": "scaled"
 				},
 				"done": {
 					"type": "button",
 					"text": ":xliff:validate",
 					"top": 296,
-					"left": 533,
+					"left": 473,
 					"width": 121,
 					"height": 22,
 					"events": [
@@ -73,7 +73,7 @@
 					"type": "button",
 					"text": ":xliff:cancel",
 					"top": 296,
-					"left": 432,
+					"left": 372,
 					"width": 81,
 					"height": 22,
 					"events": [
@@ -86,8 +86,8 @@
 					"type": "text",
 					"text": ":xliff:clicHelpButtonToGetMoreInformationsAboutThePatternFormats",
 					"top": 43,
-					"left": 84,
-					"width": 570,
+					"left": 64,
+					"width": 530,
 					"height": 26,
 					"fontTheme": "additional",
 					"textAlign": "justify",
@@ -97,7 +97,7 @@
 					"type": "text",
 					"text": ":xliff:pattern",
 					"top": 77,
-					"left": 84,
+					"left": 64,
 					"width": 568,
 					"height": 16,
 					"fontTheme": "normal",
@@ -107,7 +107,7 @@
 					"type": "text",
 					"text": ":xliff:preview",
 					"top": 142,
-					"left": 84,
+					"left": 64,
 					"width": 83,
 					"height": 16,
 					"fontTheme": "normal",
@@ -115,22 +115,20 @@
 				},
 				"preview": {
 					"type": "listbox",
-					"left": 84,
+					"left": 64,
 					"top": 161,
-					"width": 570,
+					"width": 530,
 					"height": 115,
 					"events": [],
-					"dataSource": "Form:C1466.preview",
-					"showHeaders": false,
-					"horizontalLineStroke": "transparent",
-					"verticalLineStroke": "transparent",
-					"selectionMode": "none",
+					"dataSource": "Form:C1466._preview",
 					"listboxType": "collection",
-					"resizingMode": "legacy",
 					"hideFocusRing": true,
 					"scrollbarHorizontal": "hidden",
 					"scrollbarVertical": "automatic",
 					"sizingY": "grow",
+					"hideSystemHighlight": true,
+					"selectionMode": "none",
+					"showHeaders": false,
 					"columns": [
 						{
 							"header": {
@@ -147,11 +145,11 @@
 				},
 				"Input": {
 					"type": "input",
-					"left": 398,
+					"left": 338,
 					"top": 145,
 					"width": 256,
 					"height": 15,
-					"dataSource": "Replace string:C233(Get localized string:C991(\"filesMatches\");\"{count}\";String:C10(Form:C1466.preview.length))",
+					"dataSource": "Replace string:C233(Get localized string:C991(\"filesMatches\"); \"{count}\"; String:C10(Form:C1466.preview.length))",
 					"contextMenu": "none",
 					"enterable": false,
 					"borderStyle": "none",
@@ -160,24 +158,31 @@
 					"fill": "transparent",
 					"focusable": false
 				},
-				"Button": {
+				"help": {
 					"type": "button",
 					"text": "Button",
 					"top": 20,
-					"left": 632,
+					"left": 572,
 					"width": 22,
 					"height": 22,
 					"events": [
 						"onClick"
 					],
 					"style": "help",
-					"method": "ObjectMethods/Button.4dm",
 					"focusable": false
 				}
 			}
 		}
 	],
-	"method": "method.4dm",
-	"width": 674,
-	"height": 338
+	"method": "formMethod",
+	"width": 630,
+	"height": 338,
+	"geometryStamp": 20,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
 }

@@ -1,25 +1,7 @@
 {
-	"(#️⃣ API)": {},
-	"(EXTENSION)": {},
-	"(GIT_1)": {},
-	"(git)": {},
-	"(MAIN)": {},
-	"(PALETT_1)": {},
-	"(PALETT)": {},
-	"(WIDGET)": {},
 	"# 🚧 DEV": {
 		"methods": [
-			"_o_button",
-			"_o_group",
-			"_o_list",
-			"_o_listbox",
-			"_o_menu",
-			"_o_picture",
-			"_o_static",
-			"_o_widget",
-			"00_TEST",
-			"COMPILER_o_classes",
-			"update"
+			"00_TEST"
 		]
 	},
 	"♻️ LIBRAIRIES": {
@@ -84,23 +66,24 @@
 		"methods": [
 			"COMPILER_component",
 			"GIT OPEN",
-			"GIT Path"
+			"GIT Path",
+			"GIT UPDATE"
 		],
 		"forms": [
 			"GIT",
-			"GIT PATTERN",
-			"GIT SETTINGS"
+			"GIT SETTINGS",
+			"PATTERN"
 		],
 		"classes": [
 			"_GIT_Controller",
-			"_gravatarRequest"
+			"_gravatarRequest",
+			"_PATTERN_Controller"
 		]
 	},
 	"4️⃣ 4DPop": {
 		"methods": [
 			"_4DPopGit",
-			"COMPILER_4DPop",
-			"main"
+			"COMPILER_4DPop"
 		],
 		"forms": [
 			"WIDGET"
@@ -127,16 +110,5 @@
 			"env"
 		]
 	},
-	"trash": {
-		"groups": [
-			"(#️⃣ API)",
-			"(EXTENSION)",
-			"(GIT_1)",
-			"(git)",
-			"(MAIN)",
-			"(PALETT_1)",
-			"(PALETT)",
-			"(WIDGET)"
-		]
-	}
+	"trash": {}
 }

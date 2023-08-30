@@ -210,7 +210,7 @@ style = 13: OS X Gradient
 	/// Returns True if the current button is a 3D button
 Function is3DButton($message : Text) : Boolean
 	
-	return [Object type 3D button:K79:17; Object type 3D checkbox:K79:27; Object type 3D radio button:K79:24].indexOf(This:C1470.type)#-1
+	return [Object type 3D button:K79:17; Object type 3D checkbox:K79:27; Object type 3D radio button:K79:24].includes(This:C1470.type)
 	
 	
 	//MARK:-
