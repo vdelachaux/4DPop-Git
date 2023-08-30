@@ -291,7 +291,7 @@ Function set font($font : Text)
 				
 				For each ($font; $desiredFonts)
 					
-					If (This:C1470._fontList().indexOf($font)#-1)
+					If (This:C1470._fontList().includes($font))
 						
 						OBJECT SET FONT:C164(*; This:C1470.name; $font)
 						break
@@ -500,7 +500,8 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 			// <NOTHING MORE TO DO>
 			
 			//______________________________________________________
-		: (This:C1470.type=Object type push button:K79:16)
+		: (This:C1470.type=Object type push button:K79:16)\
+			 || (This:C1470.type=Object type 3D button:K79:17)
 			
 			$o.minWidth:=60
 			
@@ -521,7 +522,7 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 		Object type radio button:K79:23; \
 		Object type static picture:K79:3; \
 		Object type static text:K79:2; \
-		Object type listbox:K79:8].indexOf(This:C1470.type)#-1)
+		Object type listbox:K79:8].includes(This:C1470.type))
 		
 		If ($o.maxWidth#Null:C1517)
 			
@@ -541,29 +542,22 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 				
 				If (Num:C11($o.alignment)=Align left:K42:2)
 					
+					// Add 10 pixels
 					$width:=$width+10
 					
 				End if 
 				
 				//______________________________
-			: (This:C1470.type=Object type push button:K79:16)
+			: (This:C1470.type=Object type push button:K79:16)\
+				 || (This:C1470.type=Object type 3D button:K79:17)
 				
 				// Add 10% for margins
 				$width:=Round:C94($width*1.1; 0)
 				
 				//______________________________
-			: (This:C1470.type=Object type 3D button:K79:17)
-				
-				// Fixme:Best size has been improved with 20R2
-				If (Num:C11(Application version:C493)<2020)
-					
-					$width:=$width+10
-					
-				End if 
-				
-				//______________________________
 			Else 
 				
+				// Add 10 pixels
 				$width:=$width+10
 				
 				//______________________________
@@ -575,8 +569,8 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 			
 		End if 
 		
-		
 		Case of 
+				
 				//______________________________________________________
 			: ($o.alignment=Align right:K42:4)
 				
@@ -608,6 +602,7 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 	End if 
 	
 	This:C1470.updateCoordinates($left; $top; $right; $bottom)
+	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===

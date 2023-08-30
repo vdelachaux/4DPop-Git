@@ -1,4 +1,4 @@
-property currentForm : Text
+property currentForm; _worker; _callback; _darkExtension : Text
 property isSubform; toBeInitialized; visible : Boolean
 property pageNumber : Integer
 property definition; pages : Object
@@ -90,6 +90,9 @@ Class constructor($param)
 	// MARK:Delegates 📦
 	This:C1470.__DELEGATES__:=[]
 	
+	This:C1470.static:=cs:C1710.staticDelegate
+	This:C1470.__DELEGATES__.push(This:C1470.static)
+	
 	This:C1470.button:=cs:C1710.buttonDelegate
 	This:C1470.__DELEGATES__.push(This:C1470.button)
 	
@@ -116,9 +119,6 @@ Class constructor($param)
 	
 	This:C1470.selector:=cs:C1710.selectorDelegate
 	This:C1470.__DELEGATES__.push(This:C1470.selector)
-	
-	This:C1470.static:=cs:C1710.staticDelegate
-	This:C1470.__DELEGATES__.push(This:C1470.static)
 	
 	This:C1470.stepper:=cs:C1710.stepperDelegate
 	This:C1470.__DELEGATES__.push(This:C1470.stepper)
@@ -193,8 +193,10 @@ Function handleEvents()
 Function onLoad()
 	
 	var $event; $key : Text
-	var $o; $page; $widget : Object
+	var $o; $page : Object
 	var $events; $widgets : Collection
+	var $widget : cs:C1710.widgetDelegate
+	
 	
 	// Defines the container reference in subform instances
 	For each ($o; This:C1470.instantiatedSubforms)
@@ -204,7 +206,7 @@ Function onLoad()
 	End for each 
 	
 	// Add the widgets events that we cannot select in the form properties 😇
-	// ⚠️ OBJECT GET EVENTS return an empty array if no object method
+	// ⚠️ OBJECT GET EVENTS return an empty array if no object method, so we analyze the json form
 	
 	$widgets:=This:C1470._getInstantiated()
 	
@@ -218,7 +220,7 @@ Function onLoad()
 				
 				For each ($key; $page.objects)
 					
-					$widget:=$widgets.query("name = :1"; $key).pop()
+					$widget:=$widgets.query("name = :1"; $key).first()
 					
 					If ($widget#Null:C1517)\
 						 && ($page.objects[$key].events#Null:C1517)
@@ -230,8 +232,7 @@ Function onLoad()
 							If (Asserted:C1132($o#Null:C1517; "FIXME:Add missing event map for "+$event))
 								
 								// Update the widget
-								$widget.events:=$widget.events || []
-								$widget.events.push($o.k)
+								$widget.addEvent($o.k)
 								
 								// Keep the event
 								$events.push($o.k)
@@ -1178,7 +1179,7 @@ Function _getInstantiated($class : Object; $instanceName : Text) : Variant
 			For each ($key; This:C1470.__SUPER__)
 				
 				If (Value type:C1509(This:C1470.__SUPER__[$key])=Is object:K8:27)\
-					 && (This:C1470.instantiableWidgets.indexOf(OB Class:C1730(This:C1470.__SUPER__[$key]))#-1)
+					 && (This:C1470.instantiableWidgets.includes(OB Class:C1730(This:C1470.__SUPER__[$key])))
 					
 					$c.push(This:C1470.__SUPER__[$key])
 					

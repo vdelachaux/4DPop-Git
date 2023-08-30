@@ -218,12 +218,12 @@ Function isMethodAvailable($name : Text) : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isComponentAvailable($name : Text) : Boolean
 	
-	return This:C1470.components.indexOf($name)#-1
+	return This:C1470.components.includes($name)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isPluginAvailable($name : Text) : Boolean
 	
-	return This:C1470.plugins.indexOf($name)#-1
+	return This:C1470.plugins.includes($name)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Check if the database folder is writable

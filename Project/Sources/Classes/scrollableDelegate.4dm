@@ -10,7 +10,7 @@ Class constructor($name : Text)
 		Object type listbox:K79:8; \
 		Object type picture input:K79:5; \
 		Object type hierarchical list:K79:7; \
-		Object type text input:K79:4].indexOf(This:C1470.type)#-1)
+		Object type text input:K79:4].includes(This:C1470.type))
 	
 	This:C1470.getScrollbars()
 	

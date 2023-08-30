@@ -28,13 +28,16 @@ Class constructor($e : cs:C1710.evt)
 	
 	$e:=$e || FORM Event:C1606
 	
-	var $key : Text
-	
-	For each ($key; $e)
+	If ($e#Null:C1517)
 		
-		This:C1470[$key]:=$e[$key]
+		var $key : Text
 		
-	End for each 
+		For each ($key; $e)
+			
+			This:C1470[$key]:=$e[$key]
+			
+		End for each 
+	End if 
 	
 	// MARK:-Form
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==

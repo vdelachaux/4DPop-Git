@@ -1,5 +1,7 @@
 Class extends staticDelegate
 
+property _events : Collection
+
 Class constructor($name : Text)
 	
 	Super:C1705($name)
@@ -332,12 +334,12 @@ Function catch($e; $events) : Boolean
 				//______________________________________________________
 			: (This:C1470._events.length>0)
 				
-				$catch:=(This:C1470._events.indexOf($e.code)#-1)
+				$catch:=(This:C1470._events.includes($e.code))
 				
 				//______________________________________________________
 			: (Count parameters:C259>=2) && (Value type:C1509($events)=Is collection:K8:32)  // Old mechanism [COMPATIBILITY]
 				
-				$catch:=($events.indexOf($e.code)#-1)
+				$catch:=($events.includes($e.code))
 				
 				//______________________________________________________
 			: (Count parameters:C259>=2) && (Value type:C1509($events)=Is integer:K8:5)  // Old mechanism [COMPATIBILITY]
@@ -368,6 +370,8 @@ Function catch($e; $events) : Boolean
 Function _setEvents($events; $mode : Integer)
 	
 	ARRAY LONGINT:C221($eventCodes; 0x0000)
+	
+	This:C1470._events:=This:C1470._events || []
 	
 	Case of 
 			
@@ -401,8 +405,11 @@ Function _setEvents($events; $mode : Integer)
 	// Update widget events
 	// FIXME:Note that the arrEvents array is returned empty if no object method is associated with the object or if no form method is associated with the form.
 	OBJECT GET EVENTS:C1238(*; This:C1470.name; $eventCodes)
-	This:C1470._events:=[]
-	ARRAY TO COLLECTION:C1563(This:C1470._events; $eventCodes)
+	var $c : Collection
+	$c:=[]
+	ARRAY TO COLLECTION:C1563($c; $eventCodes)
+	This:C1470._events.combine($c)
+	
 	
 	//mark:-[Attached data]
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==

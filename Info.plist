@@ -6,15 +6,15 @@
     <key>CFBundleName</key>
     <string>4DPop Git</string>
     <key>CFBundleShortVersionString</key>
-    <string>20</string>
+    <string>20R3</string>
     <key>CFBundleLongVersionString</key>
-    <string>20 (152)</string>
+    <string>20R3 (154)</string>
     <key>CFBundleGetInfoString</key>
-    <string>20</string>
+    <string>20R3</string>
     <key>CFBundleDisplayName</key>
     <string>4DPop Git</string>
     <key>CFBundleVersion</key>
-    <string>153</string>
+    <string>155</string>
     <key>NSHumanReadableCopyright</key>
     <string>©vdl 2020-2023</string>
   </dict>
