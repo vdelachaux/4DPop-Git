@@ -61,10 +61,6 @@ Class constructor
 	This:C1470.DELETED_FILE:=Get localized string:C991("fileRemoved")
 	This:C1470.BINARY_FILE:=Get localized string:C991("binaryFile")
 	
-	var $p : Picture
-	READ PICTURE FILE:C678(File:C1566("/.PRODUCT_RESOURCES/Internal Components/runtime.4dbase/Resources/images/toolbox/users_groups/904.png").platformPath; $p)
-	This:C1470.JOHN_DOE:=$p
-	
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -1431,10 +1427,10 @@ Function CreateGithubRepository($token : Text)
 	//$GithubAPI.method:="POST"
 	
 	//$GithubAPI.body:={\
-		accept: "application/vnd.github+json"; \
-		name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-		private: True\
-		}
+				accept: "application/vnd.github+json"; \
+				name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+				private: True\
+				}
 	
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
@@ -1765,7 +1761,7 @@ Function getAvatar($mail : Text) : Picture
 	If (Form:C1466[$t]=Null:C1517)
 		
 		var $callback : cs:C1710._gravatarRequest
-		$callback:=cs:C1710._gravatarRequest.new({user: $t}; This:C1470.JOHN_DOE)
+		$callback:=cs:C1710._gravatarRequest.new({user: $t})
 		
 		var $request : 4D:C1709.HTTPRequest
 		$request:=4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$t; $callback)

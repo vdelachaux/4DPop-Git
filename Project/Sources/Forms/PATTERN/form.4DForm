@@ -47,15 +47,6 @@
 					],
 					"multiline": "no"
 				},
-				"Static Picture1": {
-					"type": "picture",
-					"top": 20,
-					"left": 18,
-					"width": 32,
-					"height": 32,
-					"picture": "/RESOURCES/Images/git.png",
-					"pictureFormat": "scaled"
-				},
 				"done": {
 					"type": "button",
 					"text": ":xliff:validate",
@@ -177,12 +168,13 @@
 	"method": "formMethod",
 	"width": 630,
 	"height": 338,
-	"geometryStamp": 20,
+	"geometryStamp": 23,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
 		"views": {
 			"View 1": {}
 		}
-	}
+	},
+	"inheritedForm": "_TEMPLATE"
 }

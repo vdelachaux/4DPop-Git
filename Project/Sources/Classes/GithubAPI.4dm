@@ -15,6 +15,11 @@ Class constructor($method : Text; $headers : Object; $body)
 	This:C1470.headers["User-Agent"]:="4DPop-git"
 	This:C1470.headers["X-GitHub-Api-Version"]:="2022-11-28"
 	
+	This:C1470.clientId:="0b65d7deae9a2a88bcf4"
+	This:C1470.clientSecret:=This:C1470._secret()
+	
+	This:C1470.success:=False:C215
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateRepos($name : Text; $public : Boolean; $description : Text)
 	
@@ -232,6 +237,103 @@ Function zen($token : Text) : Text
 	return String:C10(This:C1470.Request(This:C1470.URL+"/zen"; True:C214).body)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getUser($token : Text) : Object
+	
+	If (Not:C34(This:C1470.validToken))
+		
+		This:C1470._getToken()
+		
+	End if 
+	
+	This:C1470._prepareRequest({token: $token})
+	This:C1470.user:=This:C1470.Request(This:C1470.URL+"/user"; True:C214).body
+	
+	return This:C1470.user
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function AuthorizeApp() : Boolean
+	
+	// Lien vers les informations d’autorisation d’une OAuth app
+	// Pour que les utilisateurs puissent vérifier et révoquer leurs autorisations d’application.
+	// "https://Github.com/settings/connections/applications/<AppClientID>"
+	
+	
+	// Requests device and user verification codes from GitHub
+	//POST https://github.com/login/device/code
+	
+	This:C1470.method:="POST"
+	
+	This:C1470._prepareRequest()
+	
+	This:C1470.body.clientId:=This:C1470.clientId
+	This:C1470.body.scope:="repo user"
+	
+	This:C1470.Request("https://github.com/login/device/code"; True:C214)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getAppToken() : Object
+	
+	var $param; $token : Object
+	var $ws : 4D:C1709.WebServer
+	var $oAuth2 : cs:C1710.NetKit.OAuth2Provider
+	
+	$token:=Storage:C1525.OAuth2
+	
+	If (This:C1470._IsValidAppToken($token))
+		
+		return $token
+		
+	End if 
+	
+	// Start web server if any
+	$ws:=WEB Server:C1674
+	
+	If (Not:C34($ws.isRunning))
+		
+		$ws.start({\
+			rootFolder: Folder:C1567(fk database folder:K87:14).folder("www"); \
+			HTTTPort: 8858\
+			})
+		
+	End if 
+	
+	$param:={\
+		token: $token; \
+		permission: "signedIn"; \
+		clientId: This:C1470.clientId; \
+		clientSecret: This:C1470.clientSecret; \
+		redirectURI: "http://127.0.0.1:50993/authorize/"; \
+		scope: "repo, user"; \
+		authenticateURI: "https://github.com/login/oauth/authorize"; \
+		tokenURI: "https://github.com/login/oauth/access_token"; \
+		timeout: 60; \
+		authenticationPage: Folder:C1567($ws.rootFolder).file("authentication.htm"); \
+		authenticationErrorPage: Folder:C1567($ws.rootFolder).file("error.htm")\
+		}
+	
+	$oAuth2:=cs:C1710.NetKit.OAuth2Provider.new($param)
+	
+	$token:=$oAuth2.getToken()
+	This:C1470.success:=$token#Null:C1517
+	
+	If (This:C1470.success)
+		
+		Use (Storage:C1525)
+			
+			Storage:C1525.OAuth2:=OB Copy:C1225($token; ck shared:K85:29)
+			
+		End use 
+	End if 
+	
+	return $token
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _IsValidAppToken($token : Object) : Boolean
+	
+	return (Date:C102($token.tokenExpiration)>=Current date:C33)\
+		 && ((Time:C179($token.tokenExpiration)+60)>=Current time:C178)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
 	
 	var $error : Text
@@ -250,16 +352,34 @@ Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
 		
 		If (Not:C34(This:C1470.success))
 			
-			If ($response.body.errors#Null:C1517)\
-				 && ($response.body.errors.length>0)
-				
-				$error:=$response.body.errors.extract("message").join("\r")
-				
-			Else 
-				
-				$error:=String:C10($response.body.message#Null:C1517 ? $response.body.message : $response.statusText)
-				
-			End if 
+			Case of 
+					
+					//______________________________________________________
+				: ($response=Null:C1517)
+					
+					$error:="Unknown error"
+					
+					//______________________________________________________
+				: (Value type:C1509($response.body)=Is object:K8:27)
+					
+					If ($response.body.errors#Null:C1517)\
+						 && ($response.body.errors.length>0)
+						
+						$error:=$response.body.errors.extract("message").join("\r")
+						
+					Else 
+						
+						$error:=String:C10($response.body.message#Null:C1517 ? $response.body.message : $response.statusText)
+						
+					End if 
+					
+					//______________________________________________________
+				Else 
+					
+					$error:=String:C10($response.status)+" - "+String:C10($response.statusText)
+					
+					//______________________________________________________
+			End case 
 			
 			This:C1470._pushError($error)
 			
@@ -329,7 +449,8 @@ Function _getToken()
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _prepareRequest($o : Object)
 	
-	If ($o.token#Null:C1517) && (Length:C16(String:C10($o.token))>0)
+	If ($o.token#Null:C1517)\
+		 && (Length:C16(String:C10($o.token))>0)
 		
 		This:C1470.headers.Authorization:="Bearer "+String:C10($o.token)
 		
@@ -338,6 +459,25 @@ Function _prepareRequest($o : Object)
 	This:C1470.body:={\
 		accept: $o.accept#Null:C1517 ? String:C10($o.accept) : "application/vnd.github+json"\
 		}
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _secret() : Text
+	
+	var $x; $y : Blob
+	var $c : Collection
+	
+	$x:=Folder:C1567(fk resources folder:K87:11).file("vdl").getContent()
+	
+	$c:=[]
+	$c.push("-----BEGIN *-----")
+	$c.push("MEgCQQC6OwTFqEKzVHgZOWViy1cFZWzeP1AnMtyNmujoc99tEolO3cM4/lDLIgQq")
+	$c.push("deYt6UuWAbc+OCsCb9/VyzUO4zV/AgMBAAE=")
+	$c.push("-----END *-----")
+	
+	TEXT TO BLOB:C554(Replace string:C233($c.join("\n"); "*"; "RSA PUBLIC KEY"); $y; UTF8 text without length:K22:17)
+	DECRYPT BLOB:C690($x; $y)
+	
+	return Convert to text:C1012($x; "US-ASCII")
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _compliantRepositoryName($name : Text) : Text
