@@ -63,6 +63,11 @@
 		]
 	},
 	"📦 MAIN": {
+		"groups": [
+			"GIT",
+			"PATTERN",
+			"SETTINGS"
+		],
 		"methods": [
 			"COMPILER_component",
 			"GIT OPEN",
@@ -70,26 +75,22 @@
 			"GIT UPDATE"
 		],
 		"forms": [
-			"GIT",
-			"GIT SETTINGS",
-			"PATTERN"
+			"_TEMPLATE",
+			"DEVICE ACTIVATION"
 		],
 		"classes": [
-			"_GIT_Controller",
-			"_gravatarRequest",
-			"_PATTERN_Controller"
+			"_ghCLI",
+			"_ghCLIauth",
+			"_gravatarRequest"
 		]
 	},
 	"4️⃣ 4DPop": {
+		"groups": [
+			"WIDGET"
+		],
 		"methods": [
 			"_4DPopGit",
 			"COMPILER_4DPop"
-		],
-		"forms": [
-			"WIDGET"
-		],
-		"classes": [
-			"_WIDGET_Controller"
 		]
 	},
 	"database": {
@@ -108,6 +109,35 @@
 		],
 		"classes": [
 			"env"
+		]
+	},
+	"GIT": {
+		"forms": [
+			"GIT"
+		],
+		"classes": [
+			"_GIT_Controller"
+		]
+	},
+	"PATTERN": {
+		"forms": [
+			"PATTERN"
+		],
+		"classes": [
+			"_PATTERN_Controller"
+		]
+	},
+	"SETTINGS": {
+		"forms": [
+			"SETTINGS"
+		]
+	},
+	"WIDGET": {
+		"forms": [
+			"WIDGET"
+		],
+		"classes": [
+			"_WIDGET_Controller"
 		]
 	},
 	"trash": {}

@@ -1,0 +1,106 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"events": [
+		"onLoad",
+		"onTimer"
+	],
+	"windowTitle": "window title",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"Text": {
+					"type": "text",
+					"text": "Git Instance:",
+					"top": 27,
+					"left": 13,
+					"width": 179,
+					"height": 16,
+					"class": "label"
+				},
+				"instances": {
+					"type": "dropdown",
+					"left": 205,
+					"top": 24,
+					"width": 261,
+					"height": 22,
+					"events": [
+						"onDataChange"
+					],
+					"dataSource": "Form:C1466.instances"
+				},
+				"Text1": {
+					"type": "text",
+					"text": "Global User Information:",
+					"top": 82,
+					"left": 13,
+					"width": 179,
+					"height": 16,
+					"class": "label"
+				},
+				"Input": {
+					"type": "input",
+					"left": 205,
+					"top": 107,
+					"width": 261,
+					"height": 17,
+					"dataSource": "Form:C1466.user.name+\" (\"+Form:C1466.user.login+\")\"",
+					"class": "infos"
+				},
+				"Input1": {
+					"type": "input",
+					"left": 205,
+					"top": 134,
+					"width": 261,
+					"height": 17,
+					"dataSource": "Form:C1466.user.email",
+					"class": "infos"
+				},
+				"Input2": {
+					"type": "input",
+					"left": 139,
+					"top": 107,
+					"width": 53,
+					"height": 49,
+					"dataSource": "Form:C1466.avatar",
+					"fill": "transparent",
+					"dataSourceTypeHint": "picture",
+					"enterable": false,
+					"pictureFormat": "proportionalTopLeft",
+					"borderStyle": "none"
+				},
+				"Line": {
+					"type": "line",
+					"top": 69,
+					"left": 33,
+					"width": 445,
+					"height": 0
+				}
+			}
+		}
+	],
+	"rightMargin": 20,
+	"bottomMargin": 20,
+	"method": "method.4dm",
+	"geometryStamp": 69,
+	"inheritedForm": "_TEMPLATE",
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
+}

@@ -99,6 +99,17 @@ Class constructor($folder : 4D:C1709.Folder)
 	
 	This:C1470.BrancUnpulledCommit:=0
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getConfig($what : Text) : Text
+	
+	This:C1470.execute("config --global --get "+$what)
+	
+	If (This:C1470.success)
+		
+		return This:C1470.history[0].out
+		
+	End if 
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get version() : Text
 	
@@ -222,7 +233,8 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 			cmd: "$ "+$command; \
 			success: This:C1470.success; \
 			out: $outputStream; \
-			error: $errorStream})
+			error: $errorStream\
+			})
 		
 		If (Not:C34(Bool:C1537(This:C1470.debug)))
 			
@@ -777,9 +789,9 @@ Function updateRemotes()
 				
 				//fixme:bug in v20
 				//This.remotes.push({\
-																																			name: $c[0]; \
-																																			url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
-																																			})
+																																								name: $c[0]; \
+																																								url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+																																								})
 				This:C1470.remotes.push(New object:C1471(\
 					"name"; $c[0]; \
 					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
@@ -870,9 +882,9 @@ Function stash($name : Text)
 						//FIXME:regex
 						//fixme:bug in v20
 						//This.stashes.push({\
-																																																	name: Substring($line; $pos{1}; $len{1}); \
-																																																	message: Substring($line; $pos{3}; $len{3})\
-																																																	})
+																																																								name: Substring($line; $pos{1}; $len{1}); \
+																																																								message: Substring($line; $pos{3}; $len{3})\
+																																																								})
 						This:C1470.stashes.push(New object:C1471(\
 							"name"; Substring:C12($line; $pos{1}; $len{1}); \
 							"message"; Substring:C12($line; $pos{3}; $len{3})\

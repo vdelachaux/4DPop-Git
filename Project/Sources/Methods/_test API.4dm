@@ -15,6 +15,9 @@ git push -u origin main
 */
 
 $gh:=cs:C1710.GithubAPI.new()
+//$token:=$gh.getAppToken()
+
+//$gh.AuthorizeApp()
 
 //$gh._getToken()
 
@@ -24,7 +27,7 @@ $gh:=cs:C1710.GithubAPI.new()
 //$gh.CreateRepos("TEST REPO")
 
 //// Try delete a repository
-$gh.DeleteRepos("test-repo")
+//$gh.DeleteRepos("test-repo")
 
 /*
 
