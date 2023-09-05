@@ -28,6 +28,7 @@
 	"⚙️ MACROS": {},
 	"👥 NAMESPACE": {
 		"classes": [
+			"gh",
 			"Git",
 			"GithubAPI"
 		]
@@ -79,8 +80,6 @@
 			"DEVICE ACTIVATION"
 		],
 		"classes": [
-			"_ghCLI",
-			"_ghCLIauth",
 			"_gravatarRequest"
 		]
 	},

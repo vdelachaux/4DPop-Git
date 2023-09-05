@@ -86,7 +86,7 @@ Function init()
 		":xliff:CommonMenuFile"; $menuFile; \
 		":xliff:CommonMenuEdit"; $menuEdit]).set()
 	
-	// Mark:0️⃣ Toolbar
+	// Mark:Page 0️⃣ Toolbar
 	This:C1470.toolbarLeft:=This:C1470.form.group.new()
 	This:C1470.fetch:=This:C1470.form.button.new("fetch").addToGroup(This:C1470.toolbarLeft)
 	This:C1470.pull:=This:C1470.form.button.new("pull").addToGroup(This:C1470.toolbarLeft)
@@ -94,11 +94,11 @@ Function init()
 	
 	This:C1470.open:=This:C1470.form.button.new("open")
 	
-	// Mark:0️⃣ Left pannel
+	// Mark:Page 0️⃣ Left pannel
 	This:C1470.view:=This:C1470.form.listbox.new("menu")
 	This:C1470.selector:=This:C1470.form.hList.new("selector")
 	
-	// Mark:1️⃣ Changes
+	// Mark:Page 1️⃣ Changes
 	This:C1470.unstaged:=This:C1470.form.listbox.new("unstaged")
 	This:C1470.stage:=This:C1470.form.button.new("stage")
 	This:C1470.stageAll:=This:C1470.form.button.new("stageAll")
@@ -106,20 +106,20 @@ Function init()
 	This:C1470.staged:=This:C1470.form.listbox.new("staged")
 	This:C1470.unstage:=This:C1470.form.button.new("unstage")
 	
-	// Mark:1️⃣ Diff pannel
+	// Mark:Page 1️⃣ Diff pannel
 	This:C1470.diff:=This:C1470.form.input.new("diff")
 	
-	// Mark:1️⃣ Commit panel
+	// Mark:Page 1️⃣ Commit panel
 	This:C1470.commitment:=This:C1470.form.group.new()
 	This:C1470.subject:=This:C1470.form.input.new("subject").addToGroup(This:C1470.commitment)
 	This:C1470.description:=This:C1470.form.input.new("description").addToGroup(This:C1470.commitment)
 	This:C1470.amend:=This:C1470.form.button.new("amend").addToGroup(This:C1470.commitment)
 	This:C1470.commit:=This:C1470.form.button.new("commit").addToGroup(This:C1470.commitment)
 	
-	// Mark:2️⃣ Commits
+	// Mark:Page 2️⃣ Commits
 	This:C1470.commits:=This:C1470.form.listbox.new("commits")
 	
-	// Mark:2️⃣ Commit
+	// Mark:Page 2️⃣ Commit
 	This:C1470.detail:=This:C1470.form.group.new()
 	This:C1470.detailCommit:=This:C1470.form.listbox.new("detail_list").addToGroup(This:C1470.detail)
 	This:C1470.authorLabel:=This:C1470.form.static.new("authorLabel").addToGroup(This:C1470.detail)
@@ -1405,68 +1405,93 @@ Function Switch($branch : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateGithubRepository($token : Text)
 	
+	var $remote : Text
+	var $private : Boolean
+	var $file : 4D:C1709.File
+	var $gh : cs:C1710.gh
+	var $git : cs:C1710.Git
+	
+	$git:=This:C1470.Git
+	$gh:=cs:C1710.gh.new()
+	
+	If ($gh.authorized)
+		
+		$private:=True:C214
+		$remote:=$gh.CreateRepo(Form:C1466.project; $private)
+		
+		If (Length:C16($remote)>0)
+			
+			// Create the main branch
+			If ($git.execute("branch -M main"))
+				
+				// Add remote url
+				If ($git.execute("git remote set-url --add "+$remote))
+					
+					// Create readme
+					$file:=File:C1566("/PACKAGE/README.md"; *)
+					
+					If (Not:C34($file.exists))
+						
+						$file.setText("# Welcome to "+Form:C1466.project)
+						
+					End if 
+					
+					$git.add("README.md")
+					$git.add(".gitignore")
+					$git.add(".gitattributes")
+					$git.commit()
+					
+					// Push
+					If ($git.execute("push -u origin main"))
+						
+						//
+						
+					End if 
+				End if 
+			End if 
+		End if 
+	End if 
+	
 	//var $file : 4D.File
 	//var $request : 4D.HTTPRequest
 	//var $git : cs.Git
 	//var $GithubAPI : cs.GithubAPI
-	
 	//$GithubAPI:=cs.GithubAPI.new().authToken($token)
-	
 	//// Check token validity
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/octocat"; $GithubAPI)
 	//$request.wait()
-	
 	//If ($request.response.status#200)
-	
 	//ALERT($request.response.body.message)
 	//return 
-	
 	//End if 
-	
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
-	
 	//$GithubAPI.body:={\
 				accept: "application/vnd.github+json"; \
 				name: $GithubAPI.CommpliantRepositoryName(Form.project); \
 				private: True\
 				}
-	
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
-	
 	//If ($request.response.status#201)
-	
 	//ALERT($request.response.body.errors.extract("message").join("\n"))
 	//return 
-	
 	//End if 
-	
 	//$git:=This.Git
-	
 	//// Create readme
 	//$file:=File("/PACKAGE/README.md"; *)
-	
 	//If (Not($file.exists))
-	
-	//File("/PACKAGE/README.md"; *).setText("# "+Form.project)
-	
+	//File("/PACKAGE/README.md"; *).setText("# Welcome to "+Form.project)
 	//End if 
-	
 	//$git.add("README.md")
 	////$git.commit("first commit")
-	
 	//// Add the origin to to the repository
 	//If ($git.execute("remote add origin "+$request.response.body.clone_url))
-	
 	//// Create the main branch
 	//If ($git.execute("branch -M main"))
-	
 	//// Push
 	//If ($git.execute("push -u origin main"))
-	
 	////
-	
 	//End if 
 	//End if 
 	//End if 

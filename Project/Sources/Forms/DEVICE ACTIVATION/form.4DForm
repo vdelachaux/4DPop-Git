@@ -3,16 +3,14 @@
 		"version": "1",
 		"kind": "form"
 	},
-	"windowSizingX": "variable",
+	"windowSizingX": "fixed",
 	"windowSizingY": "variable",
 	"windowMinWidth": 0,
 	"windowMinHeight": 0,
 	"windowMaxWidth": 32767,
 	"windowMaxHeight": 32767,
-	"rightMargin": 0,
-	"bottomMargin": 0,
 	"events": [
-		"onLoad"
+		"onTimer"
 	],
 	"windowTitle": "window title",
 	"destination": "detailScreen",
@@ -24,26 +22,57 @@
 			"objects": {
 				"wa": {
 					"type": "webArea",
-					"left": 2,
-					"top": 83,
-					"width": 565,
-					"height": 766,
-					"urlSource": ""
+					"left": 0,
+					"top": 99,
+					"width": 570,
+					"height": 901,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"bottom": 1000,
+					"right": 570,
+					"events": [
+						"onEndURLLoading"
+					],
+					"method": "ObjectMethods/wa.4dm",
+					"urlSource": "Form:C1466.url",
+					"borderStyle": "none"
 				},
 				"Input": {
 					"type": "input",
-					"left": 91,
-					"top": 14,
-					"width": 380,
+					"left": 0,
+					"top": 0,
+					"width": 570,
 					"height": 58,
 					"dataSource": "Form:C1466.otc",
 					"fontSize": 48,
-					"textAlign": "center"
+					"textAlign": "center",
+					"class": "infos",
+					"sizingX": "grow",
+					"right": 570
+				},
+				"Line": {
+					"type": "line",
+					"top": 97,
+					"left": 2,
+					"width": 568,
+					"height": 0,
+					"sizingX": "grow"
+				},
+				"Text": {
+					"type": "text",
+					"text": "For your convenience, this unique code has been copied to the clipboard.\rYou can paste it when Github asks you to.",
+					"top": 63,
+					"left": 0,
+					"width": 570,
+					"height": 31,
+					"right": 570,
+					"textAlign": "center",
+					"class": "comment"
 				}
 			}
 		}
 	],
-	"geometryStamp": 16,
+	"geometryStamp": 94,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",
@@ -51,5 +80,7 @@
 		"views": {
 			"View 1": {}
 		}
-	}
+	},
+	"width": 570,
+	"height": 1000
 }

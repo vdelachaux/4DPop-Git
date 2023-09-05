@@ -81,7 +81,7 @@ Class constructor($folder : 4D:C1709.Folder)
 	
 	If (This:C1470.execute("version"))
 		
-		This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
+		This:C1470._version:=This:C1470.result
 		
 		var $len; $pos : Integer
 		
@@ -92,7 +92,7 @@ Class constructor($folder : 4D:C1709.Folder)
 		Else 
 			
 			// Store full result
-			This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
+			This:C1470._version:=This:C1470.result
 			
 		End if 
 	End if 
@@ -147,19 +147,19 @@ Function init()
 		
 		If (This:C1470.execute("config --get user.name"))
 			
-			This:C1470.user.name:=Replace string:C233(This:C1470.result; "\n"; "")
+			This:C1470.user.name:=This:C1470.result
 			
 		End if 
 		
 		If (This:C1470.execute("config --get user.email"))
 			
-			This:C1470.user.email:=Replace string:C233(This:C1470.result; "\n"; "")
+			This:C1470.user.email:=This:C1470.result
 			
 		End if 
 		
 		If (This:C1470.execute("version"))
 			
-			This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
+			This:C1470._version:=This:C1470.result
 			
 			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
 				
@@ -168,7 +168,7 @@ Function init()
 			Else 
 				
 				// Store full result
-				This:C1470._version:=Replace string:C233(This:C1470.result; "\n"; "")
+				This:C1470._version:=This:C1470.result
 				
 			End if 
 		End if 
@@ -253,12 +253,13 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 				This:C1470.error:=""
 				This:C1470.warning:=""
 				
-				This:C1470.result:=$outputStream
+				// Delete the last line break, if any
+				This:C1470.result:=Split string:C1554($outputStream; "\n"; sk ignore empty strings:K86:1).join("\n")
 				
 				//——————————————————————
 			: (Length:C16($errorStream)>0)
 				
-				This:C1470._pushError(This:C1470.history[0].cmd+" - "+$errorStream)
+				This:C1470._pushError(This:C1470.history[0].cmd+" - "+Split string:C1554($errorStream; "\n"; sk ignore empty strings:K86:1).join("\n"))
 				
 				//——————————————————————
 		End case 
@@ -789,9 +790,9 @@ Function updateRemotes()
 				
 				//fixme:bug in v20
 				//This.remotes.push({\
-																																								name: $c[0]; \
-																																								url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
-																																								})
+																																													name: $c[0]; \
+																																													url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+																																													})
 				This:C1470.remotes.push(New object:C1471(\
 					"name"; $c[0]; \
 					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
@@ -882,9 +883,9 @@ Function stash($name : Text)
 						//FIXME:regex
 						//fixme:bug in v20
 						//This.stashes.push({\
-																																																								name: Substring($line; $pos{1}; $len{1}); \
-																																																								message: Substring($line; $pos{3}; $len{3})\
-																																																								})
+																																																															name: Substring($line; $pos{1}; $len{1}); \
+																																																															message: Substring($line; $pos{3}; $len{3})\
+																																																															})
 						This:C1470.stashes.push(New object:C1471(\
 							"name"; Substring:C12($line; $pos{1}; $len{1}); \
 							"message"; Substring:C12($line; $pos{3}; $len{3})\
