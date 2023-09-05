@@ -1,0 +1,5 @@
+{
+	"commandLine": "/usr/local/Cellar/gh/2.33.0/bin/gh repo delete test-repo --yes",
+	"response": "",
+	"responseError": "HTTP 404: Not Found (https://api.github.com/repos/vdelachaux/test-repo)\n"
+}
