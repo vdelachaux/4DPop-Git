@@ -246,6 +246,10 @@ with 4D "{version}"</target>
           <source>Refresh</source>
           <target>Refresh</target>
         </trans-unit>
+        <trans-unit id="1RqbUAsfb2UASwgY39iNqw" resname="String 1">
+          <source/>
+          <target/>
+        </trans-unit>
       </group>
       <group resname="File">
         <trans-unit id="zKOZOTTl853p25Dr_P9mZw" resname="newFile">
@@ -275,6 +279,7 @@ with 4D "{version}"</target>
       </group>
     </body>
   </file>
+
 
 
 

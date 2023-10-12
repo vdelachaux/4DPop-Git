@@ -73,7 +73,10 @@
 			"COMPILER_component",
 			"GIT OPEN",
 			"GIT Path",
-			"GIT UPDATE"
+			"GIT SETTINGS",
+			"GIT UPDATE",
+			"Method25",
+			"Method26"
 		],
 		"forms": [
 			"_TEMPLATE",

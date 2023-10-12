@@ -10,6 +10,16 @@
 
 No need to read the <a href="https://git-scm.com/docs/git">**git**</a> command documentation or to be an expert of the Terminal, everything is done automatically for you, just stay focused on your work.
 
+## Git must be installed on your computer
+
+### macOS
+
+Git comes with [Xcode](https://developer.apple.com/xcode/), so there's nothing more to do if this is installed. Otherwise, you can install the latest version of Git from [this page](https://git-scm.com/download/mac).
+
+### Windows
+If you have not already done so, Git must be installed from [this page] (https://git-scm.com/download/win).
+
+
 ## Note
 
 The master branch is under development with the main branch of 4D. Thus, some commands or features may not be available in the latest public release and you will not be able to compile or it could generate runtime errors.

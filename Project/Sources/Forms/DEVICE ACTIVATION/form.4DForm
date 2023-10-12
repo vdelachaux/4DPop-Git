@@ -23,12 +23,12 @@
 				"wa": {
 					"type": "webArea",
 					"left": 0,
-					"top": 99,
+					"top": 0,
 					"width": 570,
-					"height": 901,
+					"height": 900,
 					"sizingX": "grow",
 					"sizingY": "grow",
-					"bottom": 1000,
+					"bottom": 900,
 					"right": 570,
 					"events": [
 						"onEndURLLoading"
@@ -36,43 +36,11 @@
 					"method": "ObjectMethods/wa.4dm",
 					"urlSource": "Form:C1466.url",
 					"borderStyle": "none"
-				},
-				"Input": {
-					"type": "input",
-					"left": 0,
-					"top": 0,
-					"width": 570,
-					"height": 58,
-					"dataSource": "Form:C1466.otc",
-					"fontSize": 48,
-					"textAlign": "center",
-					"class": "infos",
-					"sizingX": "grow",
-					"right": 570
-				},
-				"Line": {
-					"type": "line",
-					"top": 97,
-					"left": 2,
-					"width": 568,
-					"height": 0,
-					"sizingX": "grow"
-				},
-				"Text": {
-					"type": "text",
-					"text": "For your convenience, this unique code has been copied to the clipboard.\rYou can paste it when Github asks you to.",
-					"top": 63,
-					"left": 0,
-					"width": 570,
-					"height": 31,
-					"right": 570,
-					"textAlign": "center",
-					"class": "comment"
 				}
 			}
 		}
 	],
-	"geometryStamp": 94,
+	"geometryStamp": 102,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",
@@ -81,6 +49,6 @@
 			"View 1": {}
 		}
 	},
-	"width": 570,
-	"height": 1000
+	"rightMargin": 0,
+	"bottomMargin": 0
 }

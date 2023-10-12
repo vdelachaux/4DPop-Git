@@ -39,14 +39,6 @@ Function get lastError() : Text
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Secret()
-	
-	var $cmd; $error; $in; $out : Text
-	$cmd:=This:C1470.exe+" secret list --user"
-	LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
-	This:C1470.success:=Bool:C1537(OK)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function FindExe()
 	
 	var $cmd; $error; $in; $out : Text
