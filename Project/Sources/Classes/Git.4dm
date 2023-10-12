@@ -1,5 +1,5 @@
 property success : Boolean
-property error; warning : Text
+property error; HEAD; warning : Text
 property user; workingBranch : Object
 property errors; warnings; branches; changes; history; remotes; stashes; tags : Collection
 
@@ -118,7 +118,7 @@ Function get version() : Text
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get currentBranch() : Text
 	
-	return Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/")
+	return Split string:C1554(Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/"); "\r")[0]
 	
 	//mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -216,7 +216,17 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 				//———————————————————————————————
 			: (Is Windows:C1573)
 				
-				$command:="Resources/git/git "+$command
+				$exe:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
+				If (Not:C34($exe.exists))
+					$exe:=Folder:C1567(fk resources folder:K87:11).file("git/git")
+				End if 
+				
+				$command:=$exe.path+" "+$command
+				
+				//$command:=Folder(fk applications folder).parent.file("Program Files/Git/bin/git.exe").path+$command
+				//$command:=Folder(fk applications folder).file("Git/bin/git.exe").path+$command
+				////C:\Program Files\
+					//$command:="Resources/git/git "+$command
 				
 				//———————————————————————————————
 			Else 
@@ -790,9 +800,9 @@ Function updateRemotes()
 				
 				//fixme:bug in v20
 				//This.remotes.push({\
-																																													name: $c[0]; \
-																																													url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
-																																													})
+																																																							name: $c[0]; \
+																																																							url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+																																																							})
 				This:C1470.remotes.push(New object:C1471(\
 					"name"; $c[0]; \
 					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
@@ -883,9 +893,9 @@ Function stash($name : Text)
 						//FIXME:regex
 						//fixme:bug in v20
 						//This.stashes.push({\
-																																																															name: Substring($line; $pos{1}; $len{1}); \
-																																																															message: Substring($line; $pos{3}; $len{3})\
-																																																															})
+																																																																													name: Substring($line; $pos{1}; $len{1}); \
+																																																																													message: Substring($line; $pos{3}; $len{3})\
+																																																																													})
 						This:C1470.stashes.push(New object:C1471(\
 							"name"; Substring:C12($line; $pos{1}; $len{1}); \
 							"message"; Substring:C12($line; $pos{3}; $len{3})\
