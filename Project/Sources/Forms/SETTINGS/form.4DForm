@@ -3,8 +3,8 @@
 		"version": "1",
 		"kind": "form"
 	},
-	"windowSizingX": "variable",
-	"windowSizingY": "variable",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
 	"windowMinWidth": 0,
 	"windowMinHeight": 0,
 	"windowMaxWidth": 32767,
@@ -13,27 +13,89 @@
 		"onLoad",
 		"onTimer"
 	],
-	"windowTitle": "window title",
 	"destination": "detailScreen",
 	"pages": [
 		{
-			"objects": {}
+			"objects": {
+				"Button": {
+					"type": "button",
+					"text": "Git",
+					"top": 20,
+					"left": 9,
+					"width": 50,
+					"height": 50,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/git.png",
+					"iconFrames": 1,
+					"method": "ObjectMethods/Button.4dm"
+				},
+				"Button1": {
+					"type": "button",
+					"text": "Github",
+					"top": 20,
+					"left": 79,
+					"width": 50,
+					"height": 50,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/github.svg",
+					"iconFrames": 1,
+					"method": "ObjectMethods/Button1.4dm"
+				},
+				"Line2": {
+					"type": "line",
+					"top": 75,
+					"left": 18,
+					"width": 480,
+					"height": 1
+				},
+				"Line": {
+					"type": "line",
+					"top": 9,
+					"left": 258,
+					"width": 0,
+					"height": 194,
+					"stroke": "#6495ed",
+					"visibility": "hidden"
+				},
+				"close": {
+					"type": "button",
+					"text": "",
+					"top": 4,
+					"left": 484,
+					"width": 26,
+					"height": 29,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "/RESOURCES/Images/close.png",
+					"iconFrames": 4,
+					"action": "cancel",
+					"visibility": "hidden"
+				}
+			}
 		},
 		{
 			"objects": {
 				"Text": {
 					"type": "text",
 					"text": "Git Instance:",
-					"top": 27,
-					"left": 13,
-					"width": 179,
+					"top": 99,
+					"left": 42,
+					"width": 159,
 					"height": 16,
 					"class": "label"
 				},
 				"instances": {
 					"type": "dropdown",
-					"left": 205,
-					"top": 24,
+					"left": 214,
+					"top": 96,
 					"width": 261,
 					"height": 22,
 					"events": [
@@ -44,16 +106,16 @@
 				"Text1": {
 					"type": "text",
 					"text": "Global User Information:",
-					"top": 82,
-					"left": 13,
-					"width": 179,
+					"top": 134,
+					"left": 42,
+					"width": 159,
 					"height": 16,
 					"class": "label"
 				},
 				"Input": {
 					"type": "input",
-					"left": 205,
-					"top": 107,
+					"left": 214,
+					"top": 159,
 					"width": 261,
 					"height": 17,
 					"dataSource": "Form:C1466.user.name+\" (\"+Form:C1466.user.login+\")\"",
@@ -61,8 +123,8 @@
 				},
 				"Input1": {
 					"type": "input",
-					"left": 205,
-					"top": 134,
+					"left": 214,
+					"top": 186,
 					"width": 261,
 					"height": 17,
 					"dataSource": "Form:C1466.user.email",
@@ -70,8 +132,8 @@
 				},
 				"Input2": {
 					"type": "input",
-					"left": 139,
-					"top": 107,
+					"left": 148,
+					"top": 159,
 					"width": 53,
 					"height": 49,
 					"dataSource": "Form:C1466.avatar",
@@ -81,26 +143,94 @@
 					"pictureFormat": "proportionalTopLeft",
 					"borderStyle": "none"
 				},
-				"Line": {
+				"Line1": {
 					"type": "line",
-					"top": 69,
-					"left": 33,
-					"width": 445,
-					"height": 0
+					"top": 75,
+					"left": 18,
+					"width": 480,
+					"height": 1
+				}
+			}
+		},
+		{
+			"objects": {
+				"ghAvailable": {
+					"type": "checkbox",
+					"text": "Available",
+					"top": 101,
+					"left": 65,
+					"width": 120,
+					"height": 17,
+					"events": [
+						"onClick"
+					],
+					"enterable": false,
+					"method": "ObjectMethods/ghAvailable.4dm"
+				},
+				"ghAuthorized": {
+					"type": "checkbox",
+					"text": "Authorized",
+					"top": 127,
+					"left": 65,
+					"width": 120,
+					"height": 17,
+					"events": [
+						"onClick"
+					],
+					"enterable": false,
+					"method": "ObjectMethods/ghAuthorized.4dm"
+				},
+				"log": {
+					"type": "button",
+					"text": "xxxx",
+					"top": 176,
+					"left": 369,
+					"width": 119,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"visibility": "hidden",
+					"method": "ObjectMethods/log.4dm"
+				},
+				"ghScope": {
+					"type": "input",
+					"left": 186,
+					"top": 127,
+					"width": 266,
+					"height": 17,
+					"class": "infos comment",
+					"dataSource": "Form:C1466.gh.status.scope.join(\", \")",
+					"visibility": "hidden"
 				}
 			}
 		}
 	],
-	"rightMargin": 20,
-	"bottomMargin": 20,
 	"method": "method.4dm",
-	"geometryStamp": 69,
+	"geometryStamp": 264,
 	"inheritedForm": "_TEMPLATE",
 	"editor": {
+		"groups": {
+			"Group": [
+				"Text",
+				"instances",
+				"Text1",
+				"Input",
+				"Input1",
+				"Input2"
+			],
+			"Group1": [
+				"ghAvailable",
+				"ghAuthorized",
+				"ghScope"
+			]
+		},
 		"activeView": "View 1",
 		"defaultView": "View 1",
 		"views": {
 			"View 1": {}
 		}
-	}
+	},
+	"width": 516,
+	"height": 226
 }

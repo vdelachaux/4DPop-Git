@@ -78,6 +78,8 @@ Function init()
 	$menuFile.append(".Close"; "close"; 0).shortcut("W").method($menuHandle)
 	$menuFile.line(1)
 	$menuFile.append("Diff"; "diff"; 2).shortcut("D").method($menuHandle)
+	$menuFile.line(3)
+	$menuFile.append("Settings"; "settings"; 4).method($menuHandle)
 	
 	var $menuEdit : cs:C1710.menu
 	$menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
@@ -762,6 +764,12 @@ Function _openManager()
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable(This:C1470.Git.execute("config --get remote.origin.url"))
 	
+	If (File:C1566("/usr/local/bin/fork").exists)
+		
+		$menu.line().append("Open with Fork"; "fork").icon("/RESOURCES/Images/Menus/fork.png")
+		
+	End if 
+	
 	If ($menu.popup().selected)
 		
 		Case of 
@@ -781,6 +789,12 @@ Function _openManager()
 				
 				OPEN URL:C673(Replace string:C233(This:C1470.Git.result; "\n"; ""))
 				
+				//———————————————————————————————————————
+			: ($menu.choice="fork")
+				
+				var $error; $in; $out : Text
+				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open"; $in; $out; $error)
 				
 				//———————————————————————————————————————
 		End case 
@@ -1467,10 +1481,10 @@ Function CreateGithubRepository($token : Text)
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
 	//$GithubAPI.body:={\
-				accept: "application/vnd.github+json"; \
-				name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-				private: True\
-				}
+						accept: "application/vnd.github+json"; \
+						name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+						private: True\
+						}
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
 	//If ($request.response.status#201)
@@ -1688,6 +1702,11 @@ Function handleMenus($what : Text; $current : Object)
 					
 					//——————————————————————————————————
 			End case 
+			
+			//______________________________________________________
+		: ($what="settings")
+			
+			GIT SETTINGS(True:C214)
 			
 			//______________________________________________________
 		: ($what="show")

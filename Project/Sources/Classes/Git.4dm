@@ -1,7 +1,12 @@
-property success : Boolean
-property error; HEAD; warning : Text
+property success; local; debug : Boolean
+property command; error; HEAD; result; warning : Text
+property BrancUnpulledCommit : Integer
 property user; workingBranch : Object
 property errors; warnings; branches; changes; history; remotes; stashes; tags : Collection
+property workingDirectory; root : 4D:C1709.Folder
+property gitignore; gitattributes : 4D:C1709.File
+
+property _version : Text
 
 Class constructor($folder : 4D:C1709.Folder)
 	
@@ -63,6 +68,36 @@ Class constructor($folder : 4D:C1709.Folder)
 	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
 	
 	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
+	
+	Case of 
+			
+			//______________________________________________________
+		: (Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215)
+			
+			This:C1470.command:="/usr/local/bin/git "
+			
+			//______________________________________________________
+		: (Is Windows:C1573)
+			
+			var $exe : 4D:C1709.File
+			$exe:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
+			
+			If (Not:C34($exe.exists))
+				
+				// Use the embedded
+				$exe:=Folder:C1567(fk resources folder:K87:11).file("git/git")
+				
+			End if 
+			
+			This:C1470.command:=$exe.path+" "
+			
+			//______________________________________________________
+		Else 
+			
+			This:C1470.command:="git "
+			
+			//______________________________________________________
+	End case 
 	
 	This:C1470.result:=""
 	
@@ -192,93 +227,59 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function execute($command : Text; $inputStream : Text) : Boolean
 	
-	var $errorStream; $outputStream : Text
-	
-	This:C1470.success:=(Length:C16($command)>0)
-	
-	If (This:C1470.success)
-		
-		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
-		
-		If (This:C1470.workingDirectory#Null:C1517)
-			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
-			
-		End if 
-		
-		Case of 
-				
-				//———————————————————————————————
-			: (This:C1470.local)
-				
-				$command:="/usr/local/bin/git "+$command
-				
-				//———————————————————————————————
-			: (Is Windows:C1573)
-				
-				$exe:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
-				If (Not:C34($exe.exists))
-					$exe:=Folder:C1567(fk resources folder:K87:11).file("git/git")
-				End if 
-				
-				$command:=$exe.path+" "+$command
-				
-				//$command:=Folder(fk applications folder).parent.file("Program Files/Git/bin/git.exe").path+$command
-				//$command:=Folder(fk applications folder).file("Git/bin/git.exe").path+$command
-				////C:\Program Files\
-					//$command:="Resources/git/git "+$command
-				
-				//———————————————————————————————
-			Else 
-				
-				$command:="git "+$command
-				
-				//———————————————————————————————
-		End case 
-		
-		LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
-		This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
-		
-		This:C1470.history.insert(0; {\
-			cmd: "$ "+$command; \
-			success: This:C1470.success; \
-			out: $outputStream; \
-			error: $errorStream\
-			})
-		
-		If (Not:C34(Bool:C1537(This:C1470.debug)))
-			
-			If (This:C1470.history.length>20)
-				
-				This:C1470.history.resize(20)
-				
-			End if 
-		End if 
-		
-		Case of 
-				
-				//——————————————————————
-			: (This:C1470.success)
-				
-				This:C1470.error:=""
-				This:C1470.warning:=""
-				
-				// Delete the last line break, if any
-				This:C1470.result:=Split string:C1554($outputStream; "\n"; sk ignore empty strings:K86:1).join("\n")
-				
-				//——————————————————————
-			: (Length:C16($errorStream)>0)
-				
-				This:C1470._pushError(This:C1470.history[0].cmd+" - "+Split string:C1554($errorStream; "\n"; sk ignore empty strings:K86:1).join("\n"))
-				
-				//——————————————————————
-		End case 
-		
-	Else 
+	If (Length:C16($command)=0)
 		
 		This:C1470._pushError("Missing command parameter")
+		return 
 		
 	End if 
+	
+	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
+	
+	If (This:C1470.workingDirectory#Null:C1517)
+		
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
+		
+	End if 
+	
+	$command:=This:C1470.command+$command
+	
+	var $errorStream; $outputStream : Text
+	LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
+	This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
+	
+	This:C1470.history.insert(0; {\
+		cmd: "$ "+$command; \
+		success: This:C1470.success; \
+		out: $outputStream; \
+		error: $errorStream\
+		})
+	
+	If (Not:C34(Bool:C1537(This:C1470.debug)))\
+		 && (This:C1470.history.length>20)
+		
+		This:C1470.history.resize(20)
+		
+	End if 
+	
+	Case of 
+			
+			//——————————————————————
+		: (This:C1470.success)
+			
+			This:C1470.error:=""
+			This:C1470.warning:=""
+			
+			// Delete the last line break, if any
+			This:C1470.result:=Split string:C1554($outputStream; "\n"; sk ignore empty strings:K86:1).join("\n")
+			
+			//——————————————————————
+		: (Length:C16($errorStream)>0)
+			
+			This:C1470._pushError(This:C1470.history[0].cmd+" - "+Split string:C1554($errorStream; "\n"; sk ignore empty strings:K86:1).join("\n"))
+			
+			//——————————————————————
+	End case 
 	
 	return This:C1470.success
 	
@@ -287,7 +288,7 @@ Function status($short : Boolean) : Integer
 	
 	var $cmd; $t : Text
 	
-	$short:=Count parameters:C259=0 ? True:C214 : $short
+	$short:=Count parameters:C259>=1 ? $short : True:C214  // Default is True
 	
 	This:C1470.changes.clear()
 	
@@ -310,45 +311,43 @@ Function status($short : Boolean) : Integer
 	return This:C1470.changes.length
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function add($something)
-	
-	var $item
+Function add($what)
 	
 	Case of 
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is text:K8:3)
+		: (Value type:C1509($what)=Is text:K8:3)
 			
 			Case of 
 					
 					//——————————————————————
-				: ($something="all")  // Update the index and adds new files
+				: ($what="all")  // Update the index and adds new files
 					
-					This:C1470.result:=[]
 					This:C1470.execute("add -A")
 					
 					//——————————————————————
-				: ($something="update")  // Update the index, but adds no new files
+				: ($what="update")  // Update the index, but adds no new files
 					
-					This:C1470.result:=[]
 					This:C1470.execute("add -u")
 					
 					//——————————————————————
 				Else   // Add the given file
 					
-					This:C1470.execute("add "+Char:C90(Quote:K15:44)+$something+Char:C90(Quote:K15:44))
+					This:C1470.execute("add "+This:C1470._quoted($what))
 					
 					//——————————————————————
 			End case 
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is collection:K8:32)
+		: (Value type:C1509($what)=Is collection:K8:32)
 			
-			For each ($item; $something)
+			var $item
+			
+			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)
 					
-					This:C1470.execute("add "+Char:C90(Quote:K15:44)+$item+Char:C90(Quote:K15:44))
+					This:C1470.execute("add "+This:C1470._quoted($item))
 					
 				Else 
 					
@@ -366,21 +365,21 @@ Function add($something)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function untrack($something)
-	
-	var $item
+Function untrack($what)
 	
 	Case of 
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is text:K8:3)
+		: (Value type:C1509($what)=Is text:K8:3)
 			
-			This:C1470.execute("rm --cached "+This:C1470._quoted($something))
+			This:C1470.execute("rm --cached "+This:C1470._quoted($what))
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is collection:K8:32)
+		: (Value type:C1509($what)=Is collection:K8:32)
 			
-			For each ($item; $something)
+			var $item
+			
+			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)
 					
@@ -402,17 +401,15 @@ Function untrack($something)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function unstage($something)
-	
-	var $item
+Function unstage($what)
 	
 	Case of 
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is text:K8:3)
+		: (Value type:C1509($what)=Is text:K8:3)
 			
 			var $c : Collection
-			$c:=Split string:C1554($something; " -> ")
+			$c:=Split string:C1554($what; " -> ")
 			
 			If ($c.length>1)  // Moved
 				
@@ -421,14 +418,16 @@ Function unstage($something)
 				
 			Else 
 				
-				This:C1470.execute("reset HEAD "+This:C1470._quoted($something))
+				This:C1470.execute("reset HEAD "+This:C1470._quoted($what))
 				
 			End if 
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is collection:K8:32)
+		: (Value type:C1509($what)=Is collection:K8:32)
 			
-			For each ($item; $something)
+			var $item
+			
+			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)
 					
@@ -456,7 +455,7 @@ Function commit($message : Text; $amend : Boolean)
 	
 	If (This:C1470.changes.length>0)
 		
-		$message:=Length:C16($message)=0 ? "Initial commit" : $message
+		$message:=Length:C16($message)>0 ? $message : "Initial commit"
 		
 		If ($amend)
 			
@@ -503,6 +502,7 @@ Function push($origin : Text; $branch : Text) : Boolean
 		
 	Else 
 		
+		// FIXME:What if "master" is not the main branch?
 		return This:C1470.execute("push origin master -q")
 		
 	End if 
@@ -643,21 +643,21 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function checkout($something)
+Function checkout($what)
 	
 	var $item
 	
 	Case of 
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is text:K8:3)
+		: (Value type:C1509($what)=Is text:K8:3)
 			
-			This:C1470.execute("checkout -- "+This:C1470._quoted($something))
+			This:C1470.execute("checkout -- "+This:C1470._quoted($what))
 			
 			//_____________________________
-		: (Value type:C1509($something)=Is collection:K8:32)
+		: (Value type:C1509($what)=Is collection:K8:32)
 			
-			For each ($item; $something)
+			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)
 					
@@ -713,7 +713,7 @@ Function branchFetchNumber($branch : Text) : Integer
 		
 	Else 
 		
-		//fixme:To test
+		// FIXME:To test
 		This:C1470.execute("log origin..")
 		
 		If (Match regex:C1019("(?m-si)^[[:xdigit:]]{5,}"; This:C1470.result; 1; *))
@@ -747,19 +747,17 @@ Function get notPushedNumber() : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diff($pathname : Text; $option : Text)
 	
-	var $success : Boolean
-	
 	If (Count parameters:C259>=2)
 		
-		$success:=This:C1470.execute("diff -w "+String:C10($option)+" -- "+This:C1470._quoted($pathname))
+		This:C1470.execute("diff -w "+String:C10($option)+" -- "+This:C1470._quoted($pathname))
 		
 	Else 
 		
-		$success:=This:C1470.execute("diff -w -- "+This:C1470._quoted($pathname))
+		This:C1470.execute("diff -w -- "+This:C1470._quoted($pathname))
 		
 	End if 
 	
-	If ($success)
+	If (This:C1470.success)
 		
 		This:C1470.result:=Replace string:C233(This:C1470.result; "\r\n"; "\n")
 		This:C1470.result:=Replace string:C233(This:C1470.result; "\r"; "\n")
@@ -769,7 +767,7 @@ Function diff($pathname : Text; $option : Text)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diffList($parent : Text; $current : Text) : Boolean
 	
-	// empty tree id
+	// Empty tree id
 	$parent:=Length:C16($parent)=0 ? "4b825dc642cb6eb9a060e54bf8d69288fbee4904" : $parent
 	
 	return This:C1470.execute("diff --name-status "+$parent+" "+$current)
@@ -798,15 +796,10 @@ Function updateRemotes()
 			
 			If (This:C1470.remotes.query("name=:1"; $c[0]).length=0)
 				
-				//fixme:bug in v20
-				//This.remotes.push({\
-																																																							name: $c[0]; \
-																																																							url: Substring($c[1]; 1; Position:C15(" ("; $c[1])-1)\
-																																																							})
-				This:C1470.remotes.push(New object:C1471(\
-					"name"; $c[0]; \
-					"url"; Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
-					))
+				This:C1470.remotes.push({\
+					name: $c[0]; \
+					url: Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
+					})
 				
 			End if 
 		End for each 
@@ -815,11 +808,11 @@ Function updateRemotes()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateTags()
 	
-	var $t : Text
-	
 	This:C1470.tags.clear()
 	
 	If (This:C1470.execute("tag"))
+		
+		var $t : Text
 		
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
@@ -890,16 +883,11 @@ Function stash($name : Text)
 					
 					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)([^$]*)$"; $line; 1; $pos; $len))
 						
-						//FIXME:regex
-						//fixme:bug in v20
-						//This.stashes.push({\
-																																																																													name: Substring($line; $pos{1}; $len{1}); \
-																																																																													message: Substring($line; $pos{3}; $len{3})\
-																																																																													})
-						This:C1470.stashes.push(New object:C1471(\
-							"name"; Substring:C12($line; $pos{1}; $len{1}); \
-							"message"; Substring:C12($line; $pos{3}; $len{3})\
-							))
+						// FIXME:regex
+						This:C1470.stashes.push({\
+							name: Substring:C12($line; $pos{1}; $len{1}); \
+							message: Substring:C12($line; $pos{3}; $len{3})\
+							})
 						
 					End if 
 				End for each 
@@ -917,6 +905,7 @@ Function stash($name : Text)
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _pushError($message : Text)
 	
+	This:C1470.success:=False:C215
 	This:C1470.error:=$message
 	This:C1470.errors.push($message)
 	

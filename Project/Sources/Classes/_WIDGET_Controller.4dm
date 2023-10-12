@@ -74,14 +74,14 @@ Function init()
 	$folder:=Folder:C1567(This:C1470.PACKAGE.platformPath; fk platform path:K87:2)  // Unsndboxed
 	
 	While ($folder#Null:C1517)\
-		 && Not:C34($folder.folder(".git").exists)
+		 & Not:C34($folder.folder(".git").exists)
 		
 		$folder:=$folder.parent
 		
 	End while 
 	
 	If ($folder#Null:C1517)\
-		 && ($folder.exists)
+		 & ($folder.exists)
 		
 		This:C1470.git:=cs:C1710.Git.new($folder)
 		
@@ -499,11 +499,28 @@ Function _doMoreMenu()
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($git.execute("config --get remote.origin.url"))\
 		.line()\
-		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
+		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")\
+		.line()\
+		.append("Settings"; "settings")
+	
+	If (File:C1566("/usr/local/bin/fork").exists)
+		
+		$menu.append("Open with Fork"; "fork").icon("/RESOURCES/Images/Menus/fork.png")
+		
+	End if 
+	
 	
 	If ($menu.popup(This:C1470.more).selected)
 		
 		Case of 
+				
+				//———————————————————————————————————————
+			: ($menu.choice="fork")
+				
+				var $cmd; $error; $in; $out : Text
+				$cmd:="/usr/local/bin/fork open"
+				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
+				LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
 				
 				//———————————————————————————————————————
 			: ($menu.choice="tool")
@@ -525,6 +542,11 @@ Function _doMoreMenu()
 			: ($menu.choice="refresh")
 				
 				This:C1470.form.refresh()
+				
+				//———————————————————————————————————————
+			: ($menu.choice="settings")
+				
+				GIT SETTINGS
 				
 				//______________________________________________________
 		End case 
