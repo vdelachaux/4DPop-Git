@@ -224,8 +224,8 @@ Function onDataError($worker : 4D:C1709.SystemWorker; $info : Object)
 		$winRef:=Open form window:C675("DEVICE ACTIVATION"; Movable form dialog box:K39:8; Horizontally centered:K39:1; At the top:K39:5)
 		
 		var $menubar : cs:C1710.menuBar
-		$menubar:=cs:C1710.menuBar.new()
-		$menubar.set($menubar.defaultMinimalMenuBar())
+		$menubar:=cs:C1710.menuBar.new().defaultMinimalMenuBar()
+		$menubar.set()
 		
 		var $otc : Text
 		$otc:=Substring:C12($info.data; $pos{1}; $len{1})

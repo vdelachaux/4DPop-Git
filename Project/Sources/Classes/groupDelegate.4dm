@@ -15,9 +15,7 @@ in this case, all named objects are initialized with widget class
 
 property members : Collection
 
-Class constructor($members : Variant)
-	
-	C_OBJECT:C1216(${2})
+Class constructor($members : Variant;  ... )
 	
 	C_LONGINT:C283($i)
 	C_TEXT:C284($t)
@@ -45,7 +43,7 @@ Class constructor($members : Variant)
 			
 			For ($i; 1; Count parameters:C259; 1)
 				
-				This:C1470.addMember(${$i})
+				This:C1470.add(${$i})
 				
 			End for 
 			
@@ -54,7 +52,7 @@ Class constructor($members : Variant)
 			
 			This:C1470.members:=[]
 			
-			This:C1470.addMember($members)
+			This:C1470.add($members)
 			
 			//___________________________
 		Else 
@@ -70,32 +68,23 @@ The .data property is used to get or set this data.
 */
 	This:C1470._data:=Null:C1517
 	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// Returns the user data attached to the group
-Function get data() : Variant
-	
-	return This:C1470._data
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// Defines the user data attached to the group
-Function set data($data)
-	
-	This:C1470._data:=$data
-	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function addMember($member) : cs:C1710.groupDelegate
+Function add($member) : cs:C1710.groupDelegate
 	
 	var $t : Text
+	var $type : Integer
+	
+	$type:=Value type:C1509($member)
 	
 	Case of 
 			
 			//___________________________
-		: (Value type:C1509($member)=Is collection:K8:32)
+		: ($type=Is collection:K8:32)
 			
 			This:C1470.members:=This:C1470.members.combine($member)
 			
 			//___________________________
-		: (Value type:C1509($member)=Is object:K8:27)
+		: ($type=Is object:K8:27)
 			
 			If (OB Instance of:C1731($member; cs:C1710.groupDelegate))
 				
@@ -108,7 +97,7 @@ Function addMember($member) : cs:C1710.groupDelegate
 			End if 
 			
 			//___________________________
-		: (Value type:C1509($member)=Is text:K8:3)  // Comma separated list of object names
+		: ($type=Is text:K8:3)  // Comma separated list of object names
 			
 			For each ($t; Split string:C1554($member; ","))
 				
@@ -137,19 +126,23 @@ or
 .belongsTo("name") --> bool
 	
 **/
-Function belongsTo($formObject : Variant) : Boolean
+Function belongsTo($widget) : Boolean
+	
+	var $type : Integer
+	
+	$type:=Value type:C1509($widget)
 	
 	Case of 
 			
 			//______________________________________________________
-		: (Value type:C1509($formObject)=Is object:K8:27)
+		: ($type=Is object:K8:27)
 			
-			return This:C1470.members.includes($formObject)
+			return This:C1470.members.includes($widget)
 			
 			//______________________________________________________
-		: (Value type:C1509($formObject)=Is text:K8:3)
+		: ($type=Is text:K8:3)
 			
-			return This:C1470.members.query("name=:1"; $formObject).pop()#Null:C1517
+			return This:C1470.members.query("name=:1"; $widget).pop()#Null:C1517
 			
 			//______________________________________________________
 		Else 
@@ -158,6 +151,18 @@ Function belongsTo($formObject : Variant) : Boolean
 			
 			//______________________________________________________
 	End case 
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// Returns the user data attached to the group
+Function get data() : Variant
+	
+	return This:C1470._data
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// Defines the user data attached to the group
+Function set data($data)
+	
+	This:C1470._data:=$data
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Returns the coordinates of the rectangle enclosing the group.
@@ -573,27 +578,18 @@ Function show($visible : Boolean) : cs:C1710.groupDelegate
 	
 	var $o : cs:C1710.staticDelegate
 	
-	If (Count parameters:C259>=1)
+	$visible:=Count parameters:C259=0 ? True:C214 : $visible
+	
+	For each ($o; This:C1470.members)
 		
-		For each ($o; This:C1470.members)
-			
-			$o.show($visible)
-			
-		End for each 
+		$o.show($visible)
 		
-	Else 
-		
-		For each ($o; This:C1470.members)
-			
-			$o.show()
-			
-		End for each 
-	End if 
+	End for each 
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function hide : cs:C1710.groupDelegate
+Function hide() : cs:C1710.groupDelegate
 	
 	var $o : cs:C1710.staticDelegate
 	
@@ -610,42 +606,33 @@ Function enable($enabled : Boolean) : cs:C1710.groupDelegate
 	
 	var $o : cs:C1710.staticDelegate
 	
-	If (Count parameters:C259>=1)
+	$enabled:=Count parameters:C259=0 ? True:C214 : $enabled
+	
+	For each ($o; This:C1470.members)
 		
-		For each ($o; This:C1470.members)
+		If ($o.type=Object type subform:K79:40)
 			
-			If ($o.type=Object type subform:K79:40)
+			If ($enabled)
 				
-				If ($enabled)
-					
-					$o.enable()
-					
-				Else 
-					
-					$o.disable()
-					
-				End if 
+				$o.enable()
 				
 			Else 
 				
-				$o.enable($enabled)
+				$o.disable()
 				
 			End if 
-		End for each 
-		
-	Else 
-		
-		For each ($o; This:C1470.members)
 			
-			$o.enable()
+		Else 
 			
-		End for each 
-	End if 
+			$o.enable($enabled)
+			
+		End if 
+	End for each 
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function disable : cs:C1710.groupDelegate
+Function disable() : cs:C1710.groupDelegate
 	
 	var $o : cs:C1710.staticDelegate
 	
@@ -662,21 +649,10 @@ Function setFontStyle($style : Integer) : cs:C1710.groupDelegate
 	
 	var $o : cs:C1710.staticDelegate
 	
-	If (Count parameters:C259>=1)
+	For each ($o; This:C1470.members)
 		
-		For each ($o; This:C1470.members)
-			
-			$o.setFontStyle($style)
-			
-		End for each 
+		$o.setFontStyle()
 		
-	Else 
-		
-		For each ($o; This:C1470.members)
-			
-			$o.setFontStyle()
-			
-		End for each 
-	End if 
+	End for each 
 	
 	return This:C1470

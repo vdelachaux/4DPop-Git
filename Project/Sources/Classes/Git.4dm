@@ -3,7 +3,7 @@ property command; error; HEAD; result; warning : Text
 property BrancUnpulledCommit : Integer
 property user; workingBranch : Object
 property errors; warnings; branches; changes; history; remotes; stashes; tags : Collection
-property workingDirectory; root : 4D:C1709.Folder
+property cwd; root : 4D:C1709.Folder
 property gitignore; gitattributes : 4D:C1709.File
 
 property _version : Text
@@ -29,9 +29,10 @@ Class constructor($folder : 4D:C1709.Folder)
 	
 	This:C1470.HEAD:=""
 	
-	If ($folder#Null:C1517) && ($folder.exists)
+	If ($folder#Null:C1517)\
+		 && ($folder.exists)
 		
-		This:C1470.workingDirectory:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
+		This:C1470.cwd:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
 		
 	Else 
 		
@@ -46,16 +47,16 @@ Class constructor($folder : 4D:C1709.Folder)
 		
 		If ($folder#Null:C1517) && ($folder.exists)
 			
-			This:C1470.workingDirectory:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
+			This:C1470.cwd:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
 			
 		Else 
 			
-			This:C1470.workingDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
+			This:C1470.cwd:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
 			
 		End if 
 	End if 
 	
-	This:C1470.root:=This:C1470.workingDirectory.folder(".git")
+	This:C1470.root:=This:C1470.cwd.folder(".git")
 	
 	While (This:C1470.root#Null:C1517)\
 		 && Not:C34(This:C1470.root.exists)
@@ -64,8 +65,8 @@ Class constructor($folder : 4D:C1709.Folder)
 		
 	End while 
 	
-	This:C1470.gitignore:=This:C1470.workingDirectory.file(".gitignore")
-	This:C1470.gitattributes:=This:C1470.workingDirectory.file(".gitattributes")
+	This:C1470.gitignore:=This:C1470.cwd.file(".gitignore")
+	This:C1470.gitattributes:=This:C1470.cwd.file(".gitattributes")
 	
 	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
 	
@@ -236,9 +237,9 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
 	
-	If (This:C1470.workingDirectory#Null:C1517)
+	If (This:C1470.cwd#Null:C1517)
 		
-		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
 		
 	End if 
 	
@@ -833,12 +834,12 @@ Function open($whatToDo : Text)
 			//——————————————————————
 		: ($whatToDo="terminal")  // Open terminal in the working directory
 			
-			LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.workingDirectory.path+"'"; $inputStream; $outputStream; $errorStream)
+			LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.cwd.path+"'"; $inputStream; $outputStream; $errorStream)
 			
 			//——————————————————————
 		: ($whatToDo="show")  // Open on disk the current directory
 			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workingDirectory.platformPath))
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
 			LAUNCH EXTERNAL PROCESS:C811("open ."; $inputStream; $outputStream; $errorStream)
 			
 			//——————————————————————

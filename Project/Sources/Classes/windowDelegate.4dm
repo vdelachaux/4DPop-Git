@@ -1,16 +1,8 @@
-/*dependencies
-{
-  "classes": [
-    "_classCore"
-  ]
-}
-*/
-
-Class extends _classCore
-
 Class constructor($param)
 	
 	Super:C1705()
+	
+	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
 	
 	This:C1470.ref:=Current form window:C827
 	
@@ -19,19 +11,20 @@ Class constructor($param)
 			//______________________________________________________
 		: ($param=Null:C1517)
 			
-			//
+			This:C1470.ref:=Current form window:C827
 			
 			//______________________________________________________
-		: (This:C1470.isNum($param))
+		: (Value type:C1509($param)=Is longint:K8:6)\
+			 | (Value type:C1509($param)=Is real:K8:4)
 			
-			This:C1470.ref:=$param#0 ? $param : This:C1470.ref
+			This:C1470.ref:=$param#0 ? $param : Current form window:C827
 			
 			//______________________________________________________
 		: (Value type:C1509($param)=Is object:K8:27)
 			
 			This:C1470.__SUPER__:=$param
 			
-			This:C1470.ref:=$param.ref || This:C1470.ref
+			This:C1470.ref:=$param.ref || Current form window:C827
 			
 			//______________________________________________________
 		Else 
@@ -41,63 +34,69 @@ Class constructor($param)
 			//______________________________________________________
 	End case 
 	
-	This:C1470.ready:=True:C214
-	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get type() : Integer
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		return Window kind:C445(This:C1470.ref)
+		return 
 		
 	End if 
+	
+	return Window kind:C445(This:C1470.ref)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get process() : Integer
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		return Window process:C446(This:C1470.ref)
+		return 
 		
 	End if 
+	
+	return Window process:C446(This:C1470.ref)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get next() : Integer
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		return Next window:C448(This:C1470.ref)
+		return 
 		
 	End if 
+	
+	return Next window:C448(This:C1470.ref)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isFrontmost() : Boolean
 	
-	If (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		If (This:C1470.type=Floating window:K27:4)
-			
-			return Frontmost window:C447(*)=This:C1470.ref
-			
-		Else 
-			
-			return Frontmost window:C447=This:C1470.ref
-			
-		End if 
+		return 
+		
+	End if 
+	
+	If (This:C1470.type=Floating window:K27:4)
+		
+		return Frontmost window:C447(*)=This:C1470.ref
+		
+	Else 
+		
+		return Frontmost window:C447=This:C1470.ref
+		
 	End if 
 	
 	//MARK:-[COORDINATES]
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get width() : Integer
 	
-	If (This:C1470.ready)
+	If (This:C1470.ref=Null:C1517)
 		
-		return This:C1470.dimensions.width
+		return 
 		
 	End if 
+	
+	return This:C1470.dimensions.width
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set width($width : Integer)
@@ -114,11 +113,13 @@ Function set width($width : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get height() : Integer
 	
-	If (This:C1470.ready)
+	If (This:C1470.ref=Null:C1517)
 		
-		return This:C1470.dimensions.height
+		return 
 		
 	End if 
+	
+	return This:C1470.dimensions.height
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set height($height : Integer)
@@ -135,11 +136,13 @@ Function set height($height : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get left() : Integer
 	
-	If (This:C1470.ready)
+	If (This:C1470.ref=Null:C1517)
 		
-		return This:C1470.coordinates.left
+		return 
 		
 	End if 
+	
+	return This:C1470.coordinates.left
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set left($left : Integer)
@@ -156,11 +159,13 @@ Function set left($left : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get top() : Integer
 	
-	If (This:C1470.ready)
+	If (This:C1470.ref=Null:C1517)
 		
-		return This:C1470.coordinates.top
+		return 
 		
 	End if 
+	
+	return This:C1470.coordinates.top
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set top($top : Integer)
@@ -177,56 +182,63 @@ Function set top($top : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get right() : Integer
 	
-	If (This:C1470.ready)
+	If (This:C1470.ref=Null:C1517)
 		
-		return This:C1470.coordinates.right
+		return 
 		
 	End if 
+	
+	return This:C1470.coordinates.right
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set right($right : Integer)
 	
 	var $_; $bottom; $left; $top : Integer
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($left; $top; $_; $bottom; This:C1470.ref)
-		SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	GET WINDOW RECT:C443($left; $top; $_; $bottom; This:C1470.ref)
+	SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get bottom() : Integer
 	
-	If (This:C1470.ready)
+	If (This:C1470.ref=Null:C1517)
 		
-		return This:C1470.coordinates.bottom
+		return 
 		
 	End if 
+	
+	return This:C1470.coordinates.bottom
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set bottom($bottom : Integer)
 	
 	var $_; $left; $right; $top : Integer
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($left; $top; $right; $_; This:C1470.ref)
-		SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	GET WINDOW RECT:C443($left; $top; $right; $_; This:C1470.ref)
+	SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get title() : Text
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		return Get window title:C450(This:C1470.ref)
+		return 
 		
 	End if 
+	
+	return Get window title:C450(This:C1470.ref)
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set title($title : Text)
@@ -241,55 +253,61 @@ Function get coordinates() : Object
 	
 	var $bottom; $left; $right; $top : Integer
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
-		
-		return {\
-			left: $left; \
-			top: $top; \
-			right: $right; \
-			bottom: $bottom}
+		return 
 		
 	End if 
+	
+	GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
+	
+	return {\
+		left: $left; \
+		top: $top; \
+		right: $right; \
+		bottom: $bottom}
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function setCoordinates($left : Integer; $top : Integer; $right : Integer; $bottom : Integer)
 	
-	If (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get dimensions() : Object
 	
 	var $height; $width : Integer
 	
-	If (This:C1470.ready)\
-		 && (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
-		
-		return {\
-			width: $width; \
-			height: $height}
+		return 
 		
 	End if 
+	
+	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
+	
+	return {\
+		width: $width; \
+		height: $height}
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function setDimensions($width : Integer; $height : Integer)
 	
 	var $bottom; $left; $right; $top : Integer
 	
-	If (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
-		SET WINDOW RECT:C444($left; $top; $left+$width; $top+$height; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
+	SET WINDOW RECT:C444($left; $top; $left+$width; $top+$height; This:C1470.ref; *)
 	
 	//MARK:-[HANDLING]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -362,17 +380,22 @@ Function vibrate($count : Integer)
 	var $i; $shift : Integer
 	var $o : Object
 	
+	
+	If (This:C1470.ref=Null:C1517)
+		
+		return 
+		
+	End if 
+	
 	$count:=$count=0 ? 6 : $count
 	
-	If (This:C1470.ref#Null:C1517)
+	$o:=This:C1470.coordinates
+	
+	For ($i; 1; $count; 1)
 		
-		$o:=This:C1470.coordinates
+		$shift:=($i%2)=0 ? 15 : -15
+		SET WINDOW RECT:C444($o.left+$shift; $o.top; $o.right+$shift; $o.bottom; This:C1470.ref; *)
+		DELAY PROCESS:C323(Current process:C322; 2)
 		
-		For ($i; 1; $count; 1)
-			
-			$shift:=($i%2)=0 ? 15 : -15
-			SET WINDOW RECT:C444($o.left+$shift; $o.top; $o.right+$shift; $o.bottom; This:C1470.ref; *)
-			DELAY PROCESS:C323(Current process:C322; 1)
-			
-		End for 
-	End if 
+	End for 
+	
