@@ -1,6 +1,6 @@
 Class constructor($e : cs:C1710.evt)
 	
-	// MARK:Common
+	// MARK:Common properties
 	This:C1470.objectName:=Null:C1517
 	This:C1470.code:=Null:C1517
 	This:C1470.description:=Null:C1517

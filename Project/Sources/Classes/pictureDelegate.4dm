@@ -111,7 +111,7 @@ Function getCoordinates()->$coordinates : Object
 	
 	$coordinates:=Super:C1706.getCoordinates()
 	
-	This:C1470.getScrollbars()
+	This:C1470._getScrollbars()
 	This:C1470.getScrollPosition()
 	This:C1470.getDimensions()
 	

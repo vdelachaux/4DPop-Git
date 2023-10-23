@@ -335,7 +335,7 @@ Function onLoad()
 	This:C1470.unstaged.setVerticalScrollbar(2)
 	This:C1470.staged.setVerticalScrollbar(2)
 	This:C1470.commits.setVerticalScrollbar(2)
-	This:C1470.detailCommit.setVerticalScrollbar(0; 2)
+	This:C1470.detailCommit.setVerticalScrollbar(2)
 	
 	This:C1470.stage.bestSize(Align right:K42:4).disable()
 	This:C1470.unstage.bestSize(Align right:K42:4).disable()
@@ -1481,10 +1481,10 @@ Function CreateGithubRepository($token : Text)
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
 	//$GithubAPI.body:={\
-						accept: "application/vnd.github+json"; \
-						name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-						private: True\
-						}
+								accept: "application/vnd.github+json"; \
+								name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+								private: True\
+								}
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
 	//If ($request.response.status#201)
@@ -1733,7 +1733,7 @@ Function handleMenus($what : Text; $current : Object)
 			
 			$file:=File:C1566($current.path)
 			
-			$gitignore:=$git.workingDirectory.file(".gitignore")
+			$gitignore:=$git.cwd.file(".gitignore")
 			$ignore:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
 			Case of 

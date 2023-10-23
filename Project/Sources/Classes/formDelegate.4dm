@@ -1,36 +1,21 @@
-property currentForm; _worker; _callback; _darkExtension : Text
-property isSubform; toBeInitialized; visible : Boolean
-property pageNumber : Integer
-property definition; pages : Object
-property entryOrder; instantiableWidgets; mapEvents : Collection
+property isSubform; toBeInitialized : Boolean
+property pages : Object
+property entryOrder; _instantiableWidgets; _mapEvents : Collection
+
+property window : cs:C1710.windowDelegate
+property constraints : cs:C1710.constraintsDelegate
 
 property __CLASS__ : Object
 property __DELEGATES__ : Collection
-
-//property static : cs.staticDelegate
-//property button : cs.buttonDelegate
-//property comboBox : cs.comboBoxDelegate
-//property dropDown : cs.dropDownDelegate
-//property group : cs.groupDelegate
-//property hList : cs.hListDelegate
-//property input : cs.inputDelegate
-//property listbox : cs.listboxDelegate
-//property picture : cs.pictureDelegate
-//property selector : cs.selectorDelegate
-//property stepper : cs.stepperDelegate
-//property subform : cs.subformDelegate
-//property thermometer : cs.thermometerDelegate
-//property widget : cs.widgetDelegate
-//property window : cs.windowDelegate
 
 Class constructor($param)
 	
 	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
 	
 	This:C1470.currentForm:=Current form name:C1298
-	This:C1470.visible:=True:C214
 	
 	// MARK: Default values ⚙️
+	//TODO:Test if  OBJECT Get subform container value could be usable to make it automatic
 	This:C1470.isSubform:=False:C215
 	This:C1470.toBeInitialized:=True:C214
 	
@@ -38,17 +23,10 @@ Class constructor($param)
 	FORM GET PROPERTIES:C674(String:C10(This:C1470.currentForm); $width; $height; $numPages)
 	This:C1470.pageNumber:=$numPages
 	
-	This:C1470.pages:={}
-	
-	var $i : Integer
-	For ($i; 1; $numPages; 1)
-		
-		This:C1470.pages["page_"+String:C10($i)]:=$i
-		
-	End for 
+	This:C1470.setPageNames()
 	
 	This:C1470._worker:=Null:C1517
-	This:C1470._callback:=Null:C1517
+	This:C1470._callback:=Formula:C1597(formCallBack).source
 	This:C1470._darkExtension:="_dark"
 	This:C1470.entryOrder:=[]
 	
@@ -70,11 +48,12 @@ Class constructor($param)
 		: (Value type:C1509($param)=Is object:K8:27)
 			
 			This:C1470.__SUPER__:=$param
+			$param.__CLASS__:=OB Class:C1730($param)
 			
 			This:C1470._worker:=String:C10($param.worker) || This:C1470._worker
 			This:C1470._callback:=String:C10($param.callback) || This:C1470._callback
-			This:C1470.isSubform:=$param.isSubform#Null:C1517 ? Bool:C1537($param.isSubform) : This:C1470.isSubform
-			This:C1470.toBeInitialized:=$param.toBeInitialized#Null:C1517 ? Bool:C1537($param.toBeInitialized) : This:C1470.toBeInitialized
+			This:C1470.isSubform:=$param.isSubform || This:C1470.isSubform
+			This:C1470.toBeInitialized:=$param.toBeInitialized || This:C1470.toBeInitialized
 			This:C1470._darkExtension:=String:C10($param.darkExtension) || This:C1470._darkExtension
 			This:C1470.entryOrder:=$param.entryOrder || This:C1470.entryOrder
 			This:C1470.pages:=$param.pages || This:C1470.pages
@@ -129,13 +108,19 @@ Class constructor($param)
 	This:C1470.thermometer:=cs:C1710.thermometerDelegate
 	This:C1470.__DELEGATES__.push(This:C1470.thermometer)
 	
+	This:C1470.webArea:=cs:C1710.webAreaDelegate
+	This:C1470.__DELEGATES__.push(This:C1470.webArea)
+	
 	This:C1470.widget:=cs:C1710.widgetDelegate
 	This:C1470.__DELEGATES__.push(This:C1470.widget)
 	
 	This:C1470.window:=cs:C1710.windowDelegate.new(This:C1470)
 	This:C1470.__DELEGATES__.push(This:C1470.window)
 	
-	This:C1470.instantiableWidgets:=[\
+	This:C1470.constraints:=cs:C1710.constraintsDelegate.new()
+	This:C1470.__DELEGATES__.push(This:C1470.constraints)
+	
+	This:C1470._instantiableWidgets:=[\
 		This:C1470.static; \
 		This:C1470.button; \
 		This:C1470.comboBox; \
@@ -148,6 +133,7 @@ Class constructor($param)
 		This:C1470.stepper; \
 		This:C1470.subform; \
 		This:C1470.thermometer; \
+		This:C1470.webArea; \
 		This:C1470.widget]
 	
 	// MARK:Dev 🚧
@@ -172,22 +158,25 @@ Class constructor($param)
 	
 	If ($file.exists)
 		
-		This:C1470.definition:=JSON Parse:C1218($file.getText())
+		This:C1470._definition:=JSON Parse:C1218($file.getText())
 		
 	End if 
 	
-	This:C1470.mapEvents:=This:C1470._mapEventsDefinition()
+	This:C1470._cursorsHash:=This:C1470._cursors()
+	
+	// FIXME= Useful?
+	This:C1470._mapEvents:=This:C1470._mapEventsDefinition()
 	
 	// MARK:-[Standard Suite]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function init()
 	
-	This:C1470._standardSuite("init")
+	This:C1470._standardSuite(Current method name:C684)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function handleEvents()
+Function handleEvents($e : cs:C1710.evt)
 	
-	This:C1470._standardSuite("handleEvents")
+	This:C1470._standardSuite(Current method name:C684; $e)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
@@ -196,7 +185,6 @@ Function onLoad()
 	var $o; $page : Object
 	var $events; $widgets : Collection
 	var $widget : cs:C1710.widgetDelegate
-	
 	
 	// Defines the container reference in subform instances
 	For each ($o; This:C1470.instantiatedSubforms)
@@ -207,14 +195,13 @@ Function onLoad()
 	
 	// Add the widgets events that we cannot select in the form properties 😇
 	// ⚠️ OBJECT GET EVENTS return an empty array if no object method, so we analyze the json form
-	
 	$widgets:=This:C1470._getInstantiated()
 	
 	If ($widgets.length>0)
 		
 		$events:=[]
 		
-		For each ($page; This:C1470.definition.pages)
+		For each ($page; This:C1470._definition.pages)
 			
 			If ($page#Null:C1517)
 				
@@ -222,24 +209,36 @@ Function onLoad()
 					
 					$widget:=$widgets.query("name = :1"; $key).first()
 					
-					If ($widget#Null:C1517)\
-						 && ($page.objects[$key].events#Null:C1517)
+					If ($widget=Null:C1517)\
+						 || ($page.objects[$key].events=Null:C1517)
 						
-						For each ($event; $page.objects[$key].events)
-							
-							$o:=This:C1470.mapEvents.query("e = :1"; $event).pop()
-							
-							If (Asserted:C1132($o#Null:C1517; "FIXME:Add missing event map for "+$event))
-								
-								// Update the widget
-								$widget.addEvent($o.k)
-								
-								// Keep the event
-								$events.push($o.k)
-								
-							End if 
-						End for each 
+						continue
+						
 					End if 
+					
+					// Saving initial value
+					If (OB Instance of:C1731($widget; cs:C1710.inputDelegate))
+						
+						//%W-550.2
+						$widget.backup()
+						//%W+550.2
+						
+					End if 
+					
+					For each ($event; $page.objects[$key].events)
+						
+						$o:=This:C1470._mapEvents.query("e = :1"; $event).pop()
+						
+						If (Asserted:C1132($o#Null:C1517; "FIXME: Add missing event map for "+$event))
+							
+							// Update the widget
+							$widget.addEvent($o.k)
+							
+							// Keep the event
+							$events.push($o.k)
+							
+						End if 
+					End for each 
 				End for each 
 			End if 
 		End for each 
@@ -251,27 +250,25 @@ Function onLoad()
 		End if 
 	End if 
 	
-	This:C1470._standardSuite("onLoad")
+	This:C1470._standardSuite(Current method name:C684)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update($stopTimer : Boolean)
 	
-	$stopTimer:=Count parameters:C259=0 ? True:C214 : $stopTimer
-	
-	If ($stopTimer)
+	If (Count parameters:C259>=1 ? $stopTimer : True:C214)
 		
 		SET TIMER:C645(0)
 		
 	End if 
 	
-	This:C1470._standardSuite("update")
+	This:C1470._standardSuite(Current method name:C684)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onBoundVariableChange()
 	
 	If (Asserted:C1132(This:C1470.isSubform; "Warning: This form is not declared as a subform"))
 		
-		This:C1470._standardSuite("onBoundVariableChange")
+		This:C1470._standardSuite(Current method name:C684)
 		
 	End if 
 	
@@ -279,34 +276,36 @@ Function onBoundVariableChange()
 Function saveContext()
 	
 	// TODO:Generic?
-	This:C1470._standardSuite("saveContext")
+	This:C1470._standardSuite(Current method name:C684)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function restoreContext()
 	
 	// TODO:Generic?
-	This:C1470._standardSuite("restoreContext")
+	This:C1470._standardSuite(Current method name:C684)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onOutsideCall()
 	
-	This:C1470._standardSuite("onOutsideCall")
+	This:C1470._standardSuite(Current method name:C684)
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _standardSuite($name : Text)
+Function _standardSuite($name : Text; $e : cs:C1710.evt)
 	
-	If (This:C1470.__SUPER__#Null:C1517)
+	$name:=Split string:C1554($name; ".").last()
+	
+	If (Asserted:C1132(This:C1470.__SUPER__#Null:C1517; "👀 "+$name+"() must be overriden by the subclass!"))\
+		 & (Asserted:C1132(OB Instance of:C1731(This:C1470.__SUPER__[$name]; 4D:C1709.Function); "The function "+$name+"() is not define into the class "+This:C1470.__SUPER__.__CLASS__.name))
 		
-		If (Asserted:C1132(OB Instance of:C1731(This:C1470.__SUPER__[$name]; 4D:C1709.Function); "The function "+$name+"() is not define into the class "+This:C1470.__SUPER__.__CLASS__.name))
+		If ($name="handleEvents")
+			
+			This:C1470.__SUPER__[$name]($e)
+			
+		Else 
 			
 			This:C1470.__SUPER__[$name]()
 			
 		End if 
-		
-	Else 
-		
-		ASSERT:C1129(False:C215; "👀 "+$name+"() must be overriden by the subclass!")
-		
 	End if 
 	
 	// MARK:-[Focus]
@@ -323,12 +322,18 @@ Function focus($widget)
 	Case of 
 			
 			//______________________________________________________
+		: ($widget=Null:C1517)
+			
+			GOTO OBJECT:C206(*; "")
+			
+			//______________________________________________________
 		: (Value type:C1509($widget)=Is text:K8:3)
 			
 			GOTO OBJECT:C206(*; $widget)
 			
 			//______________________________________________________
-		: (Value type:C1509($widget)=Is object:K8:27) && (OB Instance of:C1731($widget; cs:C1710.widgetDelegate))
+		: (Value type:C1509($widget)=Is object:K8:27)\
+			 && (OB Instance of:C1731($widget; cs:C1710.widgetDelegate))
 			
 			GOTO OBJECT:C206(*; $widget.name)
 			
@@ -345,6 +350,18 @@ Function focus($widget)
 Function removeFocus()
 	
 	GOTO OBJECT:C206(*; "")
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Go to next focusable widget
+Function focusNext()
+	
+	POST EVENT:C467(Key down event:K17:4; Tab:K15:37; Tickcount:C458; 0; 0; 0; Current process:C322)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Go to previous focusable widget
+Function focusPrevious()
+	
+	POST EVENT:C467(Key down event:K17:4; Tab:K15:37; Tickcount:C458; 0; 0; Command key mask:K16:1; Current process:C322)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// Returns the text currently selected
@@ -405,6 +422,18 @@ Function get resourceScheme() : Text
 	
 	return This:C1470.darkScheme ? This:C1470._darkExtension : ""
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// Returns the current dark suffix.
+Function get darkSuffix() : Text
+	
+	return This:C1470._darkExtension
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// Sers the dark suffix.
+Function set darkSuffix($suffix : Text)
+	
+	This:C1470._darkExtension:=$suffix
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Return the given resource path with scheme suffix if any
 Function resourceFromScheme($path : Text) : Text
@@ -439,7 +468,7 @@ Function setTimer($tickCount : Integer)
 	SET TIMER:C645($tickCount)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Starts a timer and sets its delay, ASAP if omitted.
+	/// Starts a timer to be exuted ASAP
 Function refresh($tickCount : Integer)
 	
 	$tickCount:=Count parameters:C259=0 ? -1 : $tickCount
@@ -456,7 +485,7 @@ Function stopTimer()
 	/// Gets the associated worker
 Function get worker() : Variant
 	
-	return String:C10(This:C1470._worker)
+	return This:C1470._worker#Null:C1517 ? This:C1470._worker : ""
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 	/// Sets the associated worker
@@ -476,7 +505,7 @@ Function set worker($worker)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Assigns a task to the associated worker
-Function callWorker($method; $param; $param1; $paramN)
+Function callWorker($method; $param;  ... )
 	
 /**
 .callWorker ( method : Text )
@@ -490,8 +519,6 @@ Function callWorker($method; $param; $param1; $paramN)
 	// .callWorker ( process : Integer ; method : Text ; param : Collection )
 	// .callWorker ( process : Integer ; method : Text ; param1, param2, …, paramN )
 	// ---------------------------------------------------------------------------------
-	
-	C_VARIANT:C1683(${2})
 	
 	var $code : Text
 	var $i : Integer
@@ -542,37 +569,67 @@ Function callWorker($method; $param; $param1; $paramN)
 	End if 
 	
 	// MARK:-[Subform]
-	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get containerName() : Text
 	
-	If (Asserted:C1132(This:C1470.isSubform; "Warning: This form is not declared as a subform"))
+	If (This:C1470._isDebugWindow())
 		
-		return This:C1470.__SUPER__.__CONTAINER__.parent.container
+		return This:C1470.isSubform ? This:C1470.__SUPER__.__CONTAINER__.parent.container : ""
 		
+	Else 
+		
+		If (Asserted:C1132(Bool:C1537(This:C1470.isSubform); "Warning: This form is not declared as a subform"))
+			
+			return This:C1470.__SUPER__.__CONTAINER__.parent.container
+			
+		End if 
 	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get container() : Object
 	
-	If (Asserted:C1132(This:C1470.isSubform; "Warning: This form is not declared as a subform"))
+	If (This:C1470._isDebugWindow())
 		
-		return This:C1470.__SUPER__.__CONTAINER__.__SUPER__
+		return This:C1470.isSubform ? This:C1470.__SUPER__.__CONTAINER__.__SUPER__ : Null:C1517
 		
+	Else 
+		
+		If (Asserted:C1132(Bool:C1537(This:C1470.isSubform); "Warning: This form is not declared as a subform"))
+			
+			return This:C1470.__SUPER__.__CONTAINER__.__SUPER__
+			
+		End if 
 	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get containerInstance() : Object
 	
-	If (Asserted:C1132(This:C1470.isSubform; "Warning: This form is not declared as a subform"))
+	If (This:C1470._isDebugWindow())
 		
-		return This:C1470.container[This:C1470.containerName]
+		return This:C1470.isSubform ? This:C1470.container[This:C1470.containerName] : Null:C1517
 		
+	Else 
+		
+		If (Asserted:C1132(Bool:C1537(This:C1470.isSubform); "Warning: This form is not declared as a subform"))
+			
+			return This:C1470.container[This:C1470.containerName]
+			
+		End if 
 	End if 
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get containerValue() : Variant
+	
+	return This:C1470.getContainerValue()
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set getContainerValue($value)
+	
+	This:C1470.setContainerValue($value)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Sets the container value
-Function setValue($value)
+Function setContainerValue($value)
 	
 	If (Asserted:C1132(This:C1470.isSubform; "Warning: This form is not declared as a subform"))
 		
@@ -581,13 +638,19 @@ Function setValue($value)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Returns the container value
-Function getValue() : Variant
+Function getContainerValue() : Variant
 	
-	If (Asserted:C1132(This:C1470.isSubform; "Warning: This form is not declared as a subform"))
+	If (This:C1470._isDebugWindow())
 		
 		return OBJECT Get subform container value:C1785
 		
+	Else 
+		
+		If (Asserted:C1132(This:C1470.isSubform; "Warning: This form is not declared as a subform"))
+			
+			return OBJECT Get subform container value:C1785
+			
+		End if 
 	End if 
 	
 	// MARK:-[Events]
@@ -684,7 +747,7 @@ Function callMeBack($param; $param1; $paramN)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Generates a callback of the current form with the given method
-Function callMe($method : Text; $param1; $paramN)
+Function callMe($method : Text; $param;  ... )
 	
 /*
 .callMe ( method : Text )
@@ -692,11 +755,8 @@ Function callMe($method : Text; $param1; $paramN)
 .callMe ( method : Text ; param1, param2, …, paramN )
 */
 	
-	C_VARIANT:C1683(${2})
-	
 	var $code : Text
 	var $i : Integer
-	var $parameters : Collection
 	
 	If (Count parameters:C259=1)
 		
@@ -706,11 +766,9 @@ Function callMe($method : Text; $param1; $paramN)
 		
 		$code:="CALL FORM:C1391("+String:C10(This:C1470.window.ref)+"; \""+$method+"\""
 		
-		If (Value type:C1509($2)=Is collection:K8:32)
+		If (Value type:C1509($param)=Is collection:K8:32)
 			
-			$parameters:=$2
-			
-			For ($i; 0; $parameters.length-1; 1)
+			For ($i; 0; $param.length-1; 1)
 				
 				$code:=$code+"; $1["+String:C10($i)+"]"
 				
@@ -718,11 +776,11 @@ Function callMe($method : Text; $param1; $paramN)
 			
 		Else 
 			
-			$parameters:=[]
+			$param:=[]
 			
 			For ($i; 2; Count parameters:C259; 1)
 				
-				$parameters.push(${$i})
+				$param.push(${$i})
 				$code:=$code+"; $1["+String:C10($i-2)+"]"
 				
 			End for 
@@ -730,13 +788,13 @@ Function callMe($method : Text; $param1; $paramN)
 		
 		$code:=$code+")"
 		
-		Formula from string:C1601($code).call(Null:C1517; $parameters)
+		Formula from string:C1601($code).call(Null:C1517; $param)
 		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Executes a project method in the context of a subform (without returned value)
-Function callChild($subform; $method : Text; $param; $param1; $paramN)
+Function callChild($subform; $method : Text; $param;  ... )
 	
 	// .executeInSubform ( subform : Object | Text ; method : Text )
 	// .executeInSubform ( subform : Object | Text ; method : Text ; param : Collection )
@@ -744,11 +802,8 @@ Function callChild($subform; $method : Text; $param; $param1; $paramN)
 	
 	// TODO:Returned value
 	
-	C_VARIANT:C1683(${3})
-	
 	var $code; $target : Text
 	var $i : Integer
-	var $parameters : Collection
 	
 	If (Value type:C1509($subform)=Is object:K8:27)
 		
@@ -775,11 +830,9 @@ Function callChild($subform; $method : Text; $param; $param1; $paramN)
 			
 			$code:="EXECUTE METHOD IN SUBFORM:C1085(\""+$target+"\"; \""+$method+"\";*"
 			
-			If (Value type:C1509($3)=Is collection:K8:32)
+			If (Value type:C1509($param)=Is collection:K8:32)
 				
-				$parameters:=$3
-				
-				For ($i; 0; $parameters.length-1; 1)
+				For ($i; 0; $param.length-1; 1)
 					
 					$code:=$code+"; $1["+String:C10($i)+"]"
 					
@@ -787,11 +840,11 @@ Function callChild($subform; $method : Text; $param; $param1; $paramN)
 				
 			Else 
 				
-				$parameters:=[]
+				$param:=[]
 				
 				For ($i; 3; Count parameters:C259; 1)
 					
-					$parameters.push(${$i})
+					$param.push(${$i})
 					
 					$code:=$code+"; $1["+String:C10($i-3)+"]"
 					
@@ -800,7 +853,7 @@ Function callChild($subform; $method : Text; $param; $param1; $paramN)
 			
 			$code:=$code+")"
 			
-			Formula from string:C1601($code).call(Null:C1517; $parameters)
+			Formula from string:C1601($code).call(Null:C1517; $param)
 			
 		End if 
 		
@@ -842,7 +895,32 @@ Function get page() : Integer
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Displays a given page
-Function goToPage($page)
+Function setPageNames($names : Collection)
+	
+	var $i : Integer
+	
+	This:C1470.pages:={}
+	
+	If ($names=Null:C1517)
+		
+		For ($i; 1; This:C1470.pageNumber; 1)
+			
+			This:C1470.pages["page_"+String:C10($i)]:=$i
+			
+		End for 
+		
+	Else 
+		
+		For ($i; 0; $names.length-1; 1)
+			
+			This:C1470.pages[$names[$i]]:=$i+1
+			
+		End for 
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Displays a given page
+Function goToPage($page; $parent : Boolean)
 	
 	ASSERT:C1129((Value type:C1509($page)=Is text:K8:3) || (Value type:C1509($page)=Is real:K8:4) || (Value type:C1509($page)=Is integer:K8:5); "page parameter must be a text or a number")
 	
@@ -852,9 +930,11 @@ Function goToPage($page)
 		
 	End if 
 	
-	If (Asserted:C1132(($page>0) & ($page<=This:C1470.pageNumber); "The page "+String:C10($page)+" doesn't exists"))
+	If (Asserted:C1132(($page>0)\
+		 & ($page<=This:C1470.pageNumber); "The page "+String:C10($page)+" doesn't exists"))
 		
-		If (This:C1470.isSubform)
+		If (This:C1470.isSubform)\
+			 & Not:C34($parent)
 			
 			FORM GOTO PAGE:C247($page; *)
 			
@@ -867,9 +947,10 @@ Function goToPage($page)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Displays the first page
-Function firstPage()
+Function firstPage($parent : Boolean)
 	
-	If (This:C1470.isSubform)
+	If (This:C1470.isSubform)\
+		 & Not:C34($parent)
 		
 		FORM GOTO PAGE:C247(1; *)
 		
@@ -881,9 +962,10 @@ Function firstPage()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Displays the last page
-Function lastPage()
+Function lastPage($parent : Boolean)
 	
-	If (This:C1470.isSubform)
+	If (This:C1470.isSubform)\
+		 & Not:C34($parent)
 		
 		FORM GOTO PAGE:C247(This:C1470.pageNumber; *)
 		
@@ -895,9 +977,10 @@ Function lastPage()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Displays the next page
-Function nextPage()
+Function nextPage($parent : Boolean)
 	
-	If (This:C1470.isSubform)
+	If (This:C1470.isSubform)\
+		 & Not:C34($parent)
 		
 		var $page : Integer
 		$page:=FORM Get current page:C276(*)+1
@@ -919,9 +1002,10 @@ Function nextPage()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Displays the next page
-Function previousPage()
+Function previousPage($parent : Boolean)
 	
-	If (This:C1470.isSubform)
+	If (This:C1470.isSubform)\
+		 & Not:C34($parent)
 		
 		var $page : Integer
 		$page:=FORM Get current page:C276(*)-1
@@ -944,11 +1028,17 @@ Function previousPage()
 	// MARK:-[Cursor]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Sets the mouse cursor
-Function setCursor($cursor : Integer)
+Function setCursor($cursor)
 	
-	If (Count parameters:C259>=1)
+	If ($cursor#Null:C1517)
 		
-		SET CURSOR:C469($cursor)
+		If (Value type:C1509($cursor)=Is text:K8:3)
+			
+			$cursor:=Num:C11(This:C1470._cursorsHash[$cursor])
+			
+		End if 
+		
+		SET CURSOR:C469(Num:C11($cursor))
 		
 	Else 
 		
@@ -961,76 +1051,6 @@ Function setCursor($cursor : Integer)
 Function releaseCursor()
 	
 	SET CURSOR:C469
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Sets "not allowed" cursor
-Function setCursorNotAllowed($display : Boolean)
-	
-	If (Count parameters:C259=0 ? True:C214 : $display)
-		
-		SET CURSOR:C469(9019)
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Sets "allowed drag" cursor
-Function setCursorDragCopy($display : Boolean)
-	
-	If (Count parameters:C259=0 ? True:C214 : $display)
-		
-		SET CURSOR:C469(9016)
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Sets "arrow" cursor
-Function setCursorArrow($display : Boolean)
-	
-	If (Count parameters:C259=0 ? True:C214 : $display)
-		
-		SET CURSOR:C469(1303)
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Sets "text" cursor
-Function setCursorText($display : Boolean)
-	
-	If (Count parameters:C259=0 ? True:C214 : $display)
-		
-		SET CURSOR:C469(256)
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Sets "crosshair" cursor
-Function setCursorCrosshair($display : Boolean)
-	
-	If (Count parameters:C259=0 ? True:C214 : $display)
-		
-		SET CURSOR:C469(1382)
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Sets "watch" cursor
-Function setCursorWatch($display : Boolean)
-	
-	If (Count parameters:C259=0 ? True:C214 : $display)
-		
-		SET CURSOR:C469(260)
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Sets "pointing hand" cursor
-Function setCursorPointingHand($display : Boolean)
-	
-	If (Count parameters:C259=0 ? True:C214 : $display)
-		
-		SET CURSOR:C469(9000)
-		
-	End if 
 	
 	// MARK:-[Drag & Drop]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1179,7 +1199,7 @@ Function _getInstantiated($class : Object; $instanceName : Text) : Variant
 			For each ($key; This:C1470.__SUPER__)
 				
 				If (Value type:C1509(This:C1470.__SUPER__[$key])=Is object:K8:27)\
-					 && (This:C1470.instantiableWidgets.includes(OB Class:C1730(This:C1470.__SUPER__[$key])))
+					 && (This:C1470._instantiableWidgets.includes(OB Class:C1730(This:C1470.__SUPER__[$key])))
 					
 					$c.push(This:C1470.__SUPER__[$key])
 					
@@ -1292,7 +1312,19 @@ Function _mapEventsDefinition() : Collection
 	
 	return $c
 	
-	//MARK:-[RESIZING]
+	//MARK:-[DIMENSIONS & RESIZING]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get dimensions() : Object
+	
+	var $height; $width : Integer
+	
+	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
+	
+	return {\
+		width: $width; \
+		height: $height\
+		}
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function setHorizontalResising($resize : Boolean; $min : Integer; $max : Integer)
 	
@@ -1434,3 +1466,38 @@ Function set maxHeight($height : Integer)
 	
 	FORM GET VERTICAL RESIZING:C1078($resize; $min)
 	FORM SET VERTICAL RESIZING:C893($resize; $min; $height)
+	
+	// MARK:-
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _isDebugWindow() : Boolean
+	
+	return Position:C15(Formula from string:C1601(":C1578(\"common_STR#1029:6\")").call(); Get window title:C450(Frontmost window:C447))=1
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _cursors() : Object
+	
+	return {\
+		pointingHandCursor: 9000; \
+		openHandCursor: 9013; \
+		closedHandCursor: 9014; \
+		contextualMenuCursor: 9015; \
+		dragCopyCursor: 9015; \
+		notAllowedCursor: 9019; \
+		IBeamCursor: 1; \
+		pointerCursor: 355; \
+		pointerToRightCursor: 355; \
+		crosshairCursor: 2; \
+		dragLinkCursor: 9017; \
+		helpCursor: 9018; \
+		zoomOutCursor: 559; \
+		zoomInCursor: 560; \
+		moveCursor: 9001; \
+		horizontalResizeCursor: 9003; \
+		verticalResizeCursor: 9004; \
+		resizeNorthWestSouthEastCursor: 9005; \
+		resizeNorthEastSouthWestCursor: 90900613; \
+		resizeleftrightCursor: 9021; \
+		resizeUpDownCursor: 9009; \
+		verticalSplitCursor: 9010; \
+		horizontalSplitCursor: 9011\
+		}

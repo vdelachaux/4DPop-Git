@@ -7,7 +7,7 @@ Class constructor($name : Text)  //; $datasource : Variant)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function asynchronous() : cs:C1710.thermometerDelegate
 	
-	return This:C1470.indicatorType(Asynchronous progress bar:K42:36)
+	return This:C1470.setIndicatorType(Asynchronous progress bar:K42:36)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isAsynchronous() : Boolean
@@ -19,9 +19,9 @@ Function isAsynchronous() : Boolean
 	return ($type=Asynchronous progress bar:K42:36) | ($type=Barber shop:K42:35) | ($type=0)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function barber : cs:C1710.thermometerDelegate
+Function barber() : cs:C1710.thermometerDelegate
 	
-	return This:C1470.indicatorType(Barber shop:K42:35)
+	return This:C1470.setIndicatorType(Barber shop:K42:35)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isBarber() : Boolean
@@ -29,9 +29,9 @@ Function isBarber() : Boolean
 	return This:C1470.getIndicatorType()=Barber shop:K42:35
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function progress : cs:C1710.thermometerDelegate
+Function progress() : cs:C1710.thermometerDelegate
 	
-	return This:C1470.indicatorType(Progress bar:K42:34)
+	return This:C1470.setIndicatorType(Progress bar:K42:34)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isProgress() : Boolean
@@ -39,7 +39,7 @@ Function isProgress() : Boolean
 	return This:C1470.getIndicatorType()=Progress bar:K42:34
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function indicatorType($type : Integer) : cs:C1710.thermometerDelegate
+Function setIndicatorType($type : Integer) : cs:C1710.thermometerDelegate
 	
 	OBJECT SET INDICATOR TYPE:C1246(*; This:C1470.name; $type)
 	This:C1470.indicatorType:=$type

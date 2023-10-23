@@ -2,6 +2,10 @@
 This class is the parent class of all form objects classes
 */
 
+property name : Text
+property type : Integer
+property _coordinates : cs:C1710.coord
+
 Class constructor($name : Text)
 	
 	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
@@ -15,91 +19,7 @@ Class constructor($name : Text)
 		
 	End if 
 	
-	// MARK:-
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get colors() : Object
-	
-	var $altBackground; $background; $foreground : Text
-	
-	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background; $altBackground)
-	return {\
-		foreground: $foreground; \
-		background: $background; \
-		altBackground: $altBackground}
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set colors($colors : Object)
-	
-	var $altBackground; $background; $foreground
-	
-	$foreground:=Value type:C1509($colors.foreground)=Is text:K8:3 ? $colors.foreground : Num:C11($colors.foreground)
-	
-	If ($colors.background#Null:C1517)
-		
-		$background:=Value type:C1509($colors.background)=Is text:K8:3 ? $colors.background : Num:C11($colors.background)
-		
-		If ($colors.altBackground#Null:C1517)
-			
-			$altBackground:=Value type:C1509($colors.altBackground)=Is text:K8:3 ? $colors.altBackground : Num:C11($colors.altBackground)
-			OBJECT SET RGB COLORS:C628(*; This:C1470.name; $foreground; $background; $altBackground)
-			
-		Else 
-			
-			OBJECT SET RGB COLORS:C628(*; This:C1470.name; $foreground; $background)
-			
-		End if 
-		
-	Else 
-		
-		OBJECT SET RGB COLORS:C628(*; This:C1470.name; $foreground)
-		
-	End if 
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get foregroundColor() : Variant
-	
-	var $foreground
-	
-	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground)
-	return $foreground
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set foregroundColor($color)
-	
-	OBJECT SET RGB COLORS:C628(*; This:C1470.name; $color)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get backgroundColor() : Variant
-	
-	var $foreground; $background
-	
-	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background)
-	return $background
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set backgroundColor($color)
-	
-	var $foreground; $background; $altBackground
-	
-	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background)
-	OBJECT SET RGB COLORS:C628(*; This:C1470.name; $foreground; $color)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get altBackgroundColor() : Variant
-	
-	var $foreground; $background; $altBackground
-	
-	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background; $altBackground)
-	return $altBackground
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set altBackgroundColor($color)
-	
-	var $foreground; $background; $altBackground
-	
-	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background; $altBackground)
-	OBJECT SET RGB COLORS:C628(*; This:C1470.name; $foreground; $background; $color)
-	
+	//MARK:-[Object]
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get title() : Text
 	
@@ -110,39 +30,79 @@ Function set title($title : Text)
 	
 	This:C1470.setTitle($title)
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setTitle($title : Text) : cs:C1710.staticDelegate
+	
+	var $t : Text
+	
+	If (Length:C16($title)>0)\
+		 & (Length:C16($title)<=255)
+		
+		//%W-533.1
+		If ($title[[1]]#Char:C90(1))
+			
+			$t:=Get localized string:C991($title)
+			$t:=Length:C16($t)>0 ? $t : $title  // Revert if no localization
+			
+		End if 
+		//%W+533.1
+		
+	Else 
+		
+		$t:=$title
+		
+	End if 
+	
+	OBJECT SET TITLE:C194(*; This:C1470.name; $t)
+	
+	return This:C1470
+	
+	//MARK:-[Coordinates & Sizing]
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get width() : Integer
 	
-	var $bottom; $left; $right; $top : Integer
-	OBJECT GET COORDINATES:C663(*; This:C1470.name; $left; $top; $right; $bottom)
-	return $right-$left
+	return cs:C1710.coord.new(This:C1470.name).width
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set width($width : Integer)
 	
+	This:C1470.setWidth($width)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setWidth($width : Integer) : cs:C1710.staticDelegate
+	
 	var $o : Object
+	
 	$o:=This:C1470.getCoordinates()
 	$o.right:=$o.left+$width
 	
 	OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
 	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
 	
+	return This:C1470
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get height() : Integer
 	
-	var $bottom; $left; $right; $top : Integer
-	OBJECT GET COORDINATES:C663(*; This:C1470.name; $left; $top; $right; $bottom)
-	return $bottom-$top
+	return cs:C1710.coord.new(This:C1470.name).height
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set height($height : Integer)
 	
+	This:C1470.setHeight($height)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setHeight($height : Integer) : cs:C1710.staticDelegate
+	
 	var $o : Object
+	
 	$o:=This:C1470.getCoordinates()
 	$o.bottom:=$o.top+$height
 	
 	OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
 	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
+	
+	return This:C1470
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get dimensions() : Object
@@ -175,11 +135,91 @@ Function set dimensions($dimensions : Object)
 	OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
 	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setDimensions($width : Integer; $height : Integer) : cs:C1710.staticDelegate
+	
+	var $o : Object
+	
+	$o:=This:C1470.getCoordinates()
+	$o.right:=$o.left+$width
+	
+	If (Count parameters:C259>=2)
+		
+		$o.bottom:=$o.top+$height
+		
+	End if 
+	
+	OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
+	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
+	
+	return This:C1470
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get coordinates() : Object
 	
 	This:C1470.getCoordinates()
 	return This:C1470._coordinates
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getCoordinates() : Object
+	
+	var $bottom; $left; $right; $top : Integer
+	
+	OBJECT GET COORDINATES:C663(*; This:C1470.name; $left; $top; $right; $bottom)
+	This:C1470.updateCoordinates($left; $top; $right; $bottom)
+	
+	return This:C1470._coordinates
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setCoordinates($left; $top : Integer; $right : Integer; $bottom : Integer) : cs:C1710.staticDelegate
+	
+	var $o : Object
+	
+	If (Value type:C1509($left)=Is object:K8:27)
+		
+		$o:={\
+			left: Num:C11($left.left); \
+			top: Num:C11($left.top)}
+		
+		If ($left.right#Null:C1517)
+			
+			$o.right:=Num:C11($left.right)
+			
+		End if 
+		
+		If ($left.bottom#Null:C1517)
+			
+			$o.bottom:=Num:C11($left.bottom)
+			
+		End if 
+		
+	Else 
+		
+		$o:={\
+			left: Num:C11($left); \
+			top: Num:C11($top)}
+		
+		If (Count parameters:C259>=3)
+			
+			$o.right:=Num:C11($right)
+			$o.bottom:=Num:C11($bottom)
+			
+		End if 
+	End if 
+	
+	If ($o.right#Null:C1517)
+		
+		OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
+		
+	Else 
+		
+		OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top)
+		
+	End if 
+	
+	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
+	
+	return This:C1470
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get windowCoordinates() : Object
@@ -199,262 +239,6 @@ Function get windowCoordinates() : Object
 		top: $top; \
 		right: $right; \
 		bottom: $bottom}
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get visible() : Boolean
-	
-	return OBJECT Get visible:C1075(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set visible($visible : Boolean)
-	
-	OBJECT SET VISIBLE:C603(*; This:C1470.name; $visible)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get hidden() : Boolean
-	
-	return Not:C34(OBJECT Get visible:C1075(*; This:C1470.name))
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set hidden($hidden : Boolean)
-	
-	OBJECT SET VISIBLE:C603(*; This:C1470.name; Not:C34($hidden))
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get enabled() : Boolean
-	
-	return OBJECT Get enabled:C1079(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set enabled($enabled : Boolean)
-	
-	OBJECT SET ENABLED:C1123(*; This:C1470.name; $enabled)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get disabled() : Boolean
-	
-	return Not:C34(OBJECT Get enabled:C1079(*; This:C1470.name))
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set disabled($disabled : Boolean)
-	
-	OBJECT SET VISIBLE:C603(*; This:C1470.name; Not:C34($disabled))
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get horizontalAlignment() : Integer
-	
-	return OBJECT Get horizontal alignment:C707(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set horizontalAlignment($alignment : Integer)
-	
-	OBJECT SET HORIZONTAL ALIGNMENT:C706(*; This:C1470.name; $alignment+Num:C11($alignment=0))
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get verticalAlignment() : Integer
-	
-	return OBJECT Get vertical alignment:C1188(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set verticalAlignment($alignment : Integer)
-	
-	OBJECT SET VERTICAL ALIGNMENT:C1187(*; This:C1470.name; $alignment+Num:C11($alignment=0))
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get font() : Text
-	
-	return OBJECT Get font:C1069(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set font($font : Text)
-	
-	Case of 
-			
-			//______________________________________________________
-		: ($font="")\
-			 | ($font="default")\
-			 | ($font="system")  // Default font
-			
-			OBJECT SET FONT:C164(*; This:C1470.name; OBJECT Get font:C1069(*; ""))
-			
-			//______________________________________________________
-		: ($font="emoji")  // Compatible emoji font for Windows
-			
-			If (Is Windows:C1573)
-				
-				var $desiredFonts : Collection
-				$desiredFonts:=[\
-					"Segoe UI Emoji"; \
-					"Segoe UI Symbol"; \
-					"Yu Mincho"; \
-					"Yu Gothic"]
-				
-				For each ($font; $desiredFonts)
-					
-					If (This:C1470._fontList().includes($font))
-						
-						OBJECT SET FONT:C164(*; This:C1470.name; $font)
-						break
-						
-					End if 
-					
-				End for each 
-			End if 
-			
-			//______________________________________________________
-		Else 
-			
-			OBJECT SET FONT:C164(*; This:C1470.name; $font)
-			
-			//______________________________________________________
-	End case 
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _fontList() : Collection
-	
-	If (This:C1470._fonts=Null:C1517)
-		
-		ARRAY TEXT:C222($fonts; 0)
-		FONT LIST:C460($fonts)
-		This:C1470._fonts:=[]
-		ARRAY TO COLLECTION:C1563(This:C1470._fonts; $fonts)
-		
-	End if 
-	
-	return This:C1470._fonts
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get fontStyle() : Integer
-	
-	return OBJECT Get font style:C1071(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set fontStyle($tyle : Integer)
-	
-	OBJECT SET FONT STYLE:C166(*; This:C1470.name; $tyle)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get fontSize() : Integer
-	
-	return OBJECT Get font size:C1070(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set fontSize($size : Integer)
-	
-	OBJECT SET FONT SIZE:C165(*; This:C1470.name; $size)
-	
-	// MARK:-
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Adds this widget to a group
-Function addToGroup($group : cs:C1710.groupDelegate) : cs:C1710.staticDelegate
-	
-	If (Asserted:C1132(OB Instance of:C1731($group; cs:C1710.groupDelegate); "The parameter isn't a group"))
-		
-		$group.addMember(This:C1470)
-		
-	End if 
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function hide() : cs:C1710.staticDelegate
-	
-	OBJECT SET VISIBLE:C603(*; This:C1470.name; False:C215)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function show($state : Boolean) : cs:C1710.staticDelegate
-	
-	If (Count parameters:C259>=1)
-		
-		OBJECT SET VISIBLE:C603(*; This:C1470.name; $state)
-		
-	Else 
-		
-		OBJECT SET VISIBLE:C603(*; This:C1470.name; True:C214)
-		
-	End if 
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function hiddenFromView() : cs:C1710.staticDelegate
-	
-	OBJECT SET COORDINATES:C1248(*; This:C1470.name; -100; -100; -100; -100)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function enable($state : Boolean) : cs:C1710.staticDelegate
-	
-	If (Count parameters:C259>=1)
-		
-		OBJECT SET ENABLED:C1123(*; This:C1470.name; $state)
-		
-	Else 
-		
-		OBJECT SET ENABLED:C1123(*; This:C1470.name; True:C214)
-		
-	End if 
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function disable() : cs:C1710.staticDelegate
-	
-	OBJECT SET ENABLED:C1123(*; This:C1470.name; False:C215)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setTitle($title : Text) : cs:C1710.staticDelegate
-	
-	var $t : Text
-	
-	If (Length:C16($title)>0)\
-		 & (Length:C16($title)<=255)
-		
-		//%W-533.1
-		If ($title[[1]]#Char:C90(1))
-			
-			$t:=Get localized string:C991($title)
-			$t:=Length:C16($t)>0 ? $t : $title  // Revert if no localization
-			
-		End if 
-		//%W+533.1
-		
-	Else 
-		
-		$t:=$title
-		
-	End if 
-	
-	OBJECT SET TITLE:C194(*; This:C1470.name; $t)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setFont($font : Text) : cs:C1710.staticDelegate
-	
-	OBJECT SET FONT:C164(*; This:C1470.name; $font)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setFontStyle($style : Integer) : cs:C1710.staticDelegate
-	
-	If (Count parameters:C259>=1)
-		
-		OBJECT SET FONT STYLE:C166(*; This:C1470.name; $style)
-		
-	Else 
-		
-		OBJECT SET FONT STYLE:C166(*; This:C1470.name; Plain:K14:1)  // Reset to normal
-		
-	End if 
-	
-	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C1710.staticDelegate
@@ -522,7 +306,8 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 		Object type radio button:K79:23; \
 		Object type static picture:K79:3; \
 		Object type static text:K79:2; \
-		Object type listbox:K79:8].includes(This:C1470.type))
+		Object type listbox:K79:8; \
+		Object type text input:K79:4].includes(This:C1470.type))
 		
 		If ($o.maxWidth#Null:C1517)
 			
@@ -543,7 +328,7 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 				If (Num:C11($o.alignment)=Align left:K42:2)
 					
 					// Add 10 pixels
-					$width:=$width+10
+					//$width:=$width+10
 					
 				End if 
 				
@@ -598,10 +383,9 @@ Function bestSize($alignment; $minWidth : Integer; $maxWidth : Integer) : cs:C17
 		End case 
 		
 		OBJECT SET COORDINATES:C1248(*; This:C1470.name; $left; $top; $right; $bottom)
+		This:C1470.updateCoordinates($left; $top; $right; $bottom)
 		
 	End if 
-	
-	This:C1470.updateCoordinates($left; $top; $right; $bottom)
 	
 	return This:C1470
 	
@@ -726,57 +510,6 @@ Function moveAndResizeVertically($offset : Integer; $resize : Integer) : cs:C171
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setCoordinates($left; $top : Integer; $right : Integer; $bottom : Integer) : cs:C1710.staticDelegate
-	
-	var $o : Object
-	
-	If (Value type:C1509($left)=Is object:K8:27)
-		
-		$o:={\
-			left: Num:C11($left.left); \
-			top: Num:C11($left.top)}
-		
-		If ($left.right#Null:C1517)
-			
-			$o.right:=Num:C11($left.right)
-			
-		End if 
-		
-		If ($left.bottom#Null:C1517)
-			
-			$o.bottom:=Num:C11($left.bottom)
-			
-		End if 
-		
-	Else 
-		
-		$o:={\
-			left: Num:C11($left); \
-			top: Num:C11($top)}
-		
-		If (Count parameters:C259>=3)
-			
-			$o.right:=Num:C11($right)
-			$o.bottom:=Num:C11($bottom)
-			
-		End if 
-	End if 
-	
-	If ($o.right#Null:C1517)
-		
-		OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
-		
-	Else 
-		
-		OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top)
-		
-	End if 
-	
-	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateCoordinates($left : Integer; $top : Integer; $right : Integer; $bottom : Integer) : cs:C1710.staticDelegate
 	
 	If (Count parameters:C259<4)
@@ -785,11 +518,13 @@ Function updateCoordinates($left : Integer; $top : Integer; $right : Integer; $b
 		
 	End if 
 	
-	This:C1470._coordinates:={\
-		left: $left; \
-		top: $top; \
-		right: $right; \
-		bottom: $bottom}
+	//This._coordinates:={\
+				left: $left; \
+				top: $top; \
+				right: $right; \
+				bottom: $bottom}
+	
+	This:C1470._coordinates:=cs:C1710.coord.new($left; $top; $right; $bottom)
 	
 	// Keep the position defined in structure
 	This:C1470.initialPosition:=This:C1470.initialPosition || This:C1470._coordinates
@@ -807,50 +542,135 @@ Function restorePosition()
 	
 	This:C1470.setCoordinates(This:C1470.initialPosition)
 	
+	//MARK:-[Entry]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get enabled() : Boolean
+	
+	return OBJECT Get enabled:C1079(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set enabled($enabled : Boolean)
+	
+	OBJECT SET ENABLED:C1123(*; This:C1470.name; $enabled)
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setDimensions($width : Integer; $height : Integer) : cs:C1710.staticDelegate
+Function enable($state : Boolean) : cs:C1710.staticDelegate
 	
-	var $o : Object
+	OBJECT SET ENABLED:C1123(*; This:C1470.name; Count parameters:C259=0 ? True:C214 : $state)
+	return This:C1470
 	
-	$o:=This:C1470.getCoordinates()
-	$o.right:=$o.left+$width
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get disabled() : Boolean
 	
-	If (Count parameters:C259>=2)
-		
-		$o.bottom:=$o.top+$height
-		
-	End if 
+	return Not:C34(OBJECT Get enabled:C1079(*; This:C1470.name))
 	
-	OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
-	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set disabled($disabled : Boolean)
+	
+	OBJECT SET VISIBLE:C603(*; This:C1470.name; Not:C34($disabled))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function disable() : cs:C1710.staticDelegate
+	
+	OBJECT SET ENABLED:C1123(*; This:C1470.name; False:C215)
 	
 	return This:C1470
 	
+	//MARK:-[Display]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get visible() : Boolean
+	
+	return OBJECT Get visible:C1075(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set visible($visible : Boolean)
+	
+	OBJECT SET VISIBLE:C603(*; This:C1470.name; $visible)
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setHeight($height : Integer) : cs:C1710.staticDelegate
+Function show($state : Boolean) : cs:C1710.staticDelegate
 	
-	var $o : Object
+	OBJECT SET VISIBLE:C603(*; This:C1470.name; Count parameters:C259=0 ? True:C214 : $state)
+	return This:C1470
 	
-	$o:=This:C1470.getCoordinates()
-	$o.bottom:=$o.top+$height
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get hidden() : Boolean
 	
-	OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
-	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
+	return Not:C34(OBJECT Get visible:C1075(*; This:C1470.name))
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set hidden($hidden : Boolean)
+	
+	OBJECT SET VISIBLE:C603(*; This:C1470.name; Not:C34($hidden))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function hide() : cs:C1710.staticDelegate
+	
+	OBJECT SET VISIBLE:C603(*; This:C1470.name; False:C215)
 	
 	return This:C1470
 	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setWidth($width : Integer) : cs:C1710.staticDelegate
+	// MARK:-[Colors]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get colors() : cs:C1710.colour
 	
-	var $o : Object
+	var $altBackground; $background; $foreground : Text
 	
-	$o:=This:C1470.getCoordinates()
-	$o.right:=$o.left+$width
+	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background; $altBackground)
+	return {\
+		foreground: $foreground; \
+		background: $background; \
+		altBackground: $altBackground}
 	
-	OBJECT SET COORDINATES:C1248(*; This:C1470.name; $o.left; $o.top; $o.right; $o.bottom)
-	This:C1470.updateCoordinates($o.left; $o.top; $o.right; $o.bottom)
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set colors($colors : Object)
 	
-	return This:C1470
+	This:C1470.setColors($colors)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get backgroundColor() : Variant
+	
+	var $foreground; $background
+	
+	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background)
+	return $background
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set backgroundColor($color)
+	
+	var $foreground; $background; $altBackground
+	
+	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background)
+	OBJECT SET RGB COLORS:C628(*; This:C1470.name; $foreground; $color)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get altBackgroundColor() : Variant
+	
+	var $foreground; $background; $altBackground
+	
+	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background; $altBackground)
+	return $altBackground
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set altBackgroundColor($color)
+	
+	var $foreground; $background; $altBackground
+	
+	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground; $background; $altBackground)
+	OBJECT SET RGB COLORS:C628(*; This:C1470.name; $foreground; $background; $color)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get foregroundColor() : Variant
+	
+	var $foreground
+	
+	OBJECT GET RGB COLORS:C1074(*; This:C1470.name; $foreground)
+	return $foreground
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set foregroundColor($color)
+	
+	OBJECT SET RGB COLORS:C628(*; This:C1470.name; $color)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function setColors($foreground : Variant; $background : Variant; $altBackground : Variant) : cs:C1710.staticDelegate
@@ -921,6 +741,17 @@ Function setColors($foreground : Variant; $background : Variant; $altBackground 
 	
 	return This:C1470
 	
+	//MARK:-[Text]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get horizontalAlignment() : Integer
+	
+	return OBJECT Get horizontal alignment:C707(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set horizontalAlignment($alignment : Integer)
+	
+	OBJECT SET HORIZONTAL ALIGNMENT:C706(*; This:C1470.name; $alignment+Num:C11($alignment=0))
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function alignLeft() : cs:C1710.staticDelegate
 	
@@ -932,6 +763,16 @@ Function alignRight() : cs:C1710.staticDelegate
 	
 	OBJECT SET HORIZONTAL ALIGNMENT:C706(*; This:C1470.name; Align right:K42:4)
 	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get verticalAlignment() : Integer
+	
+	return OBJECT Get vertical alignment:C1188(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set verticalAlignment($alignment : Integer)
+	
+	OBJECT SET VERTICAL ALIGNMENT:C1187(*; This:C1470.name; $alignment+Num:C11($alignment=0))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function alignTop() : cs:C1710.staticDelegate
@@ -960,13 +801,120 @@ Function alignCenter($vertical : Boolean) : cs:C1710.staticDelegate
 	
 	return This:C1470
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get font() : Text
+	
+	return OBJECT Get font:C1069(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set font($font : Text)
+	
+	This:C1470.setFont($font)
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function getCoordinates() : Object
+Function setFont($font : Text) : cs:C1710.staticDelegate
 	
-	var $bottom; $left; $right; $top : Integer
+	Case of 
+			
+			//______________________________________________________
+		: ($font="")\
+			 | ($font="default")\
+			 | ($font="system")  // Default font
+			
+			OBJECT SET FONT:C164(*; This:C1470.name; OBJECT Get font:C1069(*; ""))
+			
+			//______________________________________________________
+		: ($font="emoji")  // Compatible emoji font for Windows
+			
+			If (Is Windows:C1573)
+				
+				var $desiredFonts : Collection
+				$desiredFonts:=[\
+					"Segoe UI Emoji"; \
+					"Segoe UI Symbol"; \
+					"Yu Mincho"; \
+					"Yu Gothic"]
+				
+				For each ($font; $desiredFonts)
+					
+					If (This:C1470._fontList().includes($font))
+						
+						OBJECT SET FONT:C164(*; This:C1470.name; $font)
+						break
+						
+					End if 
+					
+				End for each 
+			End if 
+			
+			//______________________________________________________
+		Else 
+			
+			OBJECT SET FONT:C164(*; This:C1470.name; $font)
+			
+			//______________________________________________________
+	End case 
 	
-	OBJECT GET COORDINATES:C663(*; This:C1470.name; $left; $top; $right; $bottom)
-	This:C1470.updateCoordinates($left; $top; $right; $bottom)
+	return This:C1470
 	
-	return This:C1470._coordinates
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _fontList() : Collection
+	
+	If (This:C1470._fonts=Null:C1517)
+		
+		ARRAY TEXT:C222($fonts; 0)
+		FONT LIST:C460($fonts)
+		This:C1470._fonts:=[]
+		ARRAY TO COLLECTION:C1563(This:C1470._fonts; $fonts)
+		
+	End if 
+	
+	return This:C1470._fonts
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get fontStyle() : Integer
+	
+	return OBJECT Get font style:C1071(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set fontStyle($tyle : Integer)
+	
+	This:C1470.setFontStyle($tyle)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setFontStyle($style : Integer) : cs:C1710.staticDelegate
+	
+	OBJECT SET FONT STYLE:C166(*; This:C1470.name; $style)
+	
+	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get fontSize() : Integer
+	
+	return OBJECT Get font size:C1070(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set fontSize($size : Integer)
+	
+	OBJECT SET FONT SIZE:C165(*; This:C1470.name; $size)
+	
+	// MARK:-[Miscellaneous]
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Adds this widget to a group
+Function addToGroup($group : cs:C1710.groupDelegate) : cs:C1710.staticDelegate
+	
+	If (Asserted:C1132(OB Instance of:C1731($group; cs:C1710.groupDelegate); "The parameter isn't a group"))
+		
+		$group.add(This:C1470)
+		
+	End if 
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function hiddenFromView() : cs:C1710.staticDelegate
+	
+	OBJECT SET COORDINATES:C1248(*; This:C1470.name; -100; -100; -100; -100)
+	
+	return This:C1470
 	

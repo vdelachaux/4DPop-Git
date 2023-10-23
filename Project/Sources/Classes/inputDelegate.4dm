@@ -35,51 +35,7 @@ Function get filter() : Text
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set filter($filter)
 	
-	var $separator : Text
-	
-	If (Value type:C1509($filter)=Is longint:K8:6)\
-		 | (Value type:C1509($filter)=Is real:K8:4)  // Predefined formats
-		
-		Case of 
-				
-				//………………………………………………………………………
-			: ($filter=Is integer:K8:5)\
-				 | ($filter=Is longint:K8:6)\
-				 | ($filter=Is integer 64 bits:K8:25)
-				
-				OBJECT SET FILTER:C235(*; This:C1470.name; "&\"0-9;-;+\"")
-				
-				//………………………………………………………………………
-			: ($filter=Is real:K8:4)
-				
-				GET SYSTEM FORMAT:C994(Decimal separator:K60:1; $separator)
-				OBJECT SET FILTER:C235(*; This:C1470.name; "&\"0-9;"+$separator+";.;-;+\"")
-				
-				//………………………………………………………………………
-			: ($filter=Is time:K8:8)
-				
-				GET SYSTEM FORMAT:C994(Time separator:K60:11; $separator)
-				OBJECT SET FILTER:C235(*; This:C1470.name; "&\"0-9;"+$separator+";:\"")
-				
-				//………………………………………………………………………
-			: ($filter=Is date:K8:7)
-				
-				GET SYSTEM FORMAT:C994(Date separator:K60:10; $separator)
-				OBJECT SET FILTER:C235(*; This:C1470.name; "&\"0-9;"+$separator+";/\"")
-				
-				//………………………………………………………………………
-			Else 
-				
-				OBJECT SET FILTER:C235(*; This:C1470.name; "")  // Text as default
-				
-				//………………………………………………………………………
-		End case 
-		
-	Else 
-		
-		OBJECT SET FILTER:C235(*; This:C1470.name; String:C10($filter))
-		
-	End if 
+	This:C1470.setFilter($filter)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get placeholder() : Text
@@ -248,7 +204,38 @@ Function setFilter($filter; $separator : Text) : cs:C1710.inputDelegate
 		
 	End if 
 	
-	OBJECT SET FILTER:C235(*; This:C1470.name; String:C10($filter))
+	$filter:=String:C10($filter)
+	
+	Case of 
+			
+			//______________________________________________________
+		: ($filter="email")
+			
+			OBJECT SET FILTER:C235(*; This:C1470.name; "&\"a-z;0-9;@;.;-;_\"")
+			
+			//______________________________________________________
+		: ($filter="url")
+			
+			OBJECT SET FILTER:C235(*; This:C1470.name; "&\"a-z;0-9;@;.;-;_;:;#;%;/;?;=\"")
+			
+			//______________________________________________________
+		: ($filter="noSpaceNorCr")
+			
+			OBJECT SET FILTER:C235(*; This:C1470.name; "&\"!-ÿ\"")
+			
+			//______________________________________________________
+		: ($filter="noCr")
+			
+			OBJECT SET FILTER:C235(*; This:C1470.name; "&\" -ÿ\"")
+			
+			//______________________________________________________
+		Else 
+			
+			OBJECT SET FILTER:C235(*; This:C1470.name; $filter)
+			
+			//______________________________________________________
+	End case 
+	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -283,3 +270,64 @@ Function setPlaceholder($placeholder : Text) : cs:C1710.inputDelegate
 	
 	return This:C1470
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get autoSpellcheck() : Boolean
+	
+	return OBJECT Get auto spellcheck:C1174(*; This:C1470.name)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set autoSpellcheck($enabled : Boolean)
+	
+	OBJECT SET AUTO SPELLCHECK:C1173(*; This:C1470.name; $enabled)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get dictionary() : Object
+	
+	This:C1470.$dictionaries:=This:C1470.$dictionaries || This:C1470._getDictionaries()
+	
+	return This:C1470.$dictionaries.query("id = :1"; SPELL Get current dictionary:C1205).first()
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set dictionary($dictionary)
+	
+	This:C1470.$dictionaries:=This:C1470.$dictionaries || This:C1470._getDictionaries()
+	
+	If (This:C1470.$dictionaries.query("id = :1 OR name = :1 OR code = :1"; $dictionary).pop()=Null:C1517)\
+		 && (Position:C15("_"; $dictionary)>0)
+		
+		$dictionary:=Split string:C1554($dictionary; "_")[0]
+		
+	End if 
+	
+	If (Asserted:C1132(This:C1470.$dictionaries.query("id = :1 OR name = :1 OR code = :1"; $dictionary).pop()#Null:C1517; \
+		"The dictionary \""+String:C10($dictionary)+"\" isn't installed"))
+		
+		SPELL SET CURRENT DICTIONARY:C904($dictionary)
+		
+	End if 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _getDictionaries() : Collection
+	
+	var $i : Integer
+	var $c : Collection
+	
+	ARRAY TEXT:C222($files; 0)
+	ARRAY TEXT:C222($names; 0)
+	ARRAY LONGINT:C221($IDs; 0)
+	
+	SPELL GET DICTIONARY LIST:C1204($IDs; $files; $names)
+	
+	$c:=[]
+	
+	For ($i; 1; Size of array:C274($IDs); 1)
+		
+		$c.push({\
+			id: $IDs{$i}; \
+			code: $files{$i}; \
+			name: $names{$i}\
+			})
+		
+	End for 
+	
+	return $c

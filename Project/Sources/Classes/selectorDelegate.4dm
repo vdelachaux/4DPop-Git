@@ -102,7 +102,7 @@ Function set current($current)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Selects an element by its position or by its value (or that of the linked data).
-Function select($element)
+Function select($element) : cs:C1710.selectorDelegate
 	
 	var $index : Integer
 	
@@ -140,3 +140,5 @@ Function select($element)
 			
 			//______________________________________________________
 	End case 
+	
+	return This:C1470

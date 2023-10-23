@@ -107,7 +107,7 @@ Function get selectionHighlight() : Boolean
 	return Bool:C1537(LISTBOX Get property:C917(*; This:C1470.name; lk hide selection highlight:K53:41))
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set selectionHighlight($on : Boolean) : cs:C1710.listboxDelegate
+Function set selectionHighlight($on : Boolean)
 	
 	LISTBOX SET PROPERTY:C1440(*; This:C1470.name; lk hide selection highlight:K53:41; $on ? lk yes:K53:69 : lk no:K53:68)
 	
@@ -379,22 +379,37 @@ Function columnNumber($name : Text) : Integer
 	return $indx
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function columnName($number : Integer) : Text
+Function getColumnName($columnNumber : Integer) : Text
 	
-	ARRAY BOOLEAN:C223($isVisible; 0)
-	ARRAY POINTER:C280($columnsPtr; 0)
-	ARRAY POINTER:C280($footersPtr; 0)
-	ARRAY POINTER:C280($headersPtr; 0)
-	ARRAY POINTER:C280($stylesPtr; 0)
-	ARRAY TEXT:C222($columns; 0)
+	If (This:C1470.definition=Null:C1517)
+		
+		This:C1470.updateDefinition()
+		
+	End if 
 	
-	LISTBOX GET ARRAYS:C832(*; This:C1470.name; \
-		$columns; $headers; \
-		$columnsPtr; $headersPtr; \
-		$isVisible; \
-		$stylesPtr)
+	return String:C10(This:C1470.definition[$columnNumber-1].name)
 	
-	return $columns{$number}
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getHeaderName($columnNumber : Integer) : Text
+	
+	If (This:C1470.definition=Null:C1517)
+		
+		This:C1470.updateDefinition()
+		
+	End if 
+	
+	return String:C10(This:C1470.definition[$columnNumber-1].header)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getFooterName($columnNumber : Integer) : Text
+	
+	If (This:C1470.definition=Null:C1517)
+		
+		This:C1470.updateDefinition()
+	
+	End if 
+	
+	return String:C10(This:C1470.definition[$columnNumber-1].footer)
 	
 	// MARK:- [⚠️ ARRAY TYPE LIST BOXES]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -404,7 +419,7 @@ Function setRowForegroundColor($row : Integer; $color; $target)
 	If (This:C1470.isArray(Current method name:C684))
 		
 		$target:=Count parameters:C259>=3\
-			 ? Value type:C1509($target)=Is text:K8:3 ? $target : This:C1470.columnName(Num:C11($target))\
+			 ? Value type:C1509($target)=Is text:K8:3 ? $target : This:C1470.getColumnName(Num:C11($target))\
 			 : This:C1470.name
 		
 		LISTBOX SET ROW COLOR:C1270(*; $target; $row; $color)
@@ -420,7 +435,7 @@ Function resetForegroundColor($target)
 	If (This:C1470.isArray(Current method name:C684))
 		
 		$target:=Count parameters:C259>=1\
-			 ? Value type:C1509($target)=Is text:K8:3 ? $target : This:C1470.columnName(Num:C11($target))\
+			 ? Value type:C1509($target)=Is text:K8:3 ? $target : This:C1470.getColumnName(Num:C11($target))\
 			 : This:C1470.name
 		
 		For ($row; 1; This:C1470.rowsNumber; 1)
@@ -431,13 +446,13 @@ Function resetForegroundColor($target)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setRowFontStyle($row : Integer; $tyle : Integer)
+Function setRowFontStyle($row : Integer; $style : Integer)
 	
 	If (This:C1470.isArray(Current method name:C684))
 		
 		// Default is plain
-		$tyle:=Count parameters:C259>=2 ? $tyle : Plain:K14:1
-		LISTBOX SET ROW FONT STYLE:C1268(*; This:C1470.name; $row; $tyle)
+		$style:=Count parameters:C259>=2 ? $style : Plain:K14:1
+		LISTBOX SET ROW FONT STYLE:C1268(*; This:C1470.name; $row; $style)
 		
 	End if 
 	
@@ -448,13 +463,14 @@ Function cellPosition($e : cs:C1710.evt) : Object
 	
 	var $button; $column; $row; $x; $y : Integer
 	
-	$e:=$e || FORM Event:C1606
+	$e:=$e || cs:C1710.evt.new()
 	
 	If ($e.code=On Clicked:K2:4)\
 		 | ($e.code=On Double Clicked:K2:5)\
 		 | ($e.code=On Selection Change:K2:29)\
 		 | ($e.code=On Expand:K2:41)\
-		 | ($e.code=On Delete Action:K2:56)
+		 | ($e.code=On Delete Action:K2:56)\
+		 | ($e.code=On Losing Focus:K2:8)
 		
 		// ⚠️  Column is always 0
 		LISTBOX GET CELL POSITION:C971(*; This:C1470.name; $column; $row)
@@ -476,16 +492,17 @@ Function cellPosition($e : cs:C1710.evt) : Object
 		
 	End if 
 	
-	return New object:C1471(\
-		"column"; $column; \
-		"row"; $row)
+	return {\
+		column: $column; \
+		row: $row\
+		}
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// ⚠️ 
 Function getCoordinates() : Object
 	
 	This:C1470.getScrollPosition()
-	This:C1470.getScrollbars()
+	This:C1470._getScrollbars()
 	This:C1470.updateDefinition()
 	This:C1470.updateCell()
 	
@@ -514,11 +531,12 @@ Function rowCoordinates($row : Integer) : Object
 	
 	$bottom:=($bottom>This:C1470.coordinates.bottom) ? This:C1470.coordinates.bottom : $bottom
 	
-	return New object:C1471(\
-		"left"; $left; \
-		"top"; $top; \
-		"right"; $right; \
-		"bottom"; $bottom)
+	return {\
+		left: $left; \
+		top: $top; \
+		right: $right; \
+		bottom: $bottom\
+		}
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function cellCoordinates($column : Integer; $row : Integer) : Object
@@ -547,7 +565,7 @@ Function cellCoordinates($column : Integer; $row : Integer) : Object
 	
 	LISTBOX GET CELL COORDINATES:C1330(*; This:C1470.name; $column; $row; $left; $top; $right; $bottom)
 	
-	This:C1470.cellBox:=This:C1470.cellBox || New object:C1471
+	This:C1470.cellBox:=This:C1470.cellBox || {}
 	
 	This:C1470.cellBox.left:=$left
 	This:C1470.cellBox.top:=$top
@@ -602,7 +620,7 @@ Function select($row : Integer) : cs:C1710.listboxDelegate
 		
 		This:C1470.item:=This:C1470.getValue()[$row-1]
 		This:C1470.itemPosition:=$row-1
-		This:C1470.items:=New collection:C1472(This:C1470.item)
+		This:C1470.items:=[This:C1470.item]
 		
 	Else 
 		
@@ -807,25 +825,26 @@ Function updateDefinition() : cs:C1710.listboxDelegate
 		$stylesPtr; \
 		$footers; $footersPtr)
 	
-	This:C1470.definition:=New collection:C1472
+	This:C1470.definition:=[]
 	
 	ARRAY TO COLLECTION:C1563(This:C1470.definition; \
 		$columns; "name"; \
 		$headers; "header"; \
 		$footers; "footer")
 	
-	This:C1470.columns:=New object:C1471
+	This:C1470.columns:={}
 	
 	$o:=This:C1470._columnProperties()
 	
 	For ($i; 1; Size of array:C274($columns); 1)
 		
-		This:C1470.columns[$columns{$i}]:=New object:C1471(\
-			"number"; $i; \
-			"visible"; $isVisible{$i}; \
-			"enterable"; OBJECT Get enterable:C1067(*; $columns{$i}); \
-			"height"; LISTBOX Get row height:C1408(*; This:C1470.name; $i); \
-			"pointer"; $columnsPtr{$i})
+		This:C1470.columns[$columns{$i}]:={\
+			number: $i; \
+			visible: $isVisible{$i}; \
+			enterable: OBJECT Get enterable:C1067(*; $columns{$i}); \
+			height: LISTBOX Get row height:C1408(*; This:C1470.name; $i); \
+			pointer: $columnsPtr{$i}\
+			}
 		
 		For each ($key; $o)
 			
@@ -834,7 +853,7 @@ Function updateDefinition() : cs:C1710.listboxDelegate
 		End for each 
 	End for 
 	
-	This:C1470.getScrollbars()
+	This:C1470._getScrollbars()
 	
 	return This:C1470
 	
@@ -958,7 +977,7 @@ Function getProperties($column : Text) : Object
 		
 	End if 
 	
-	$properties:=New object:C1471
+	$properties:={}
 	
 	For each ($key; $o)
 		
@@ -1067,7 +1086,7 @@ Function saveProperties()
 	var $unit : Integer
 	var $o; $properties : Object
 	
-	$properties:=New object:C1471
+	$properties:={}
 	
 	$o:=This:C1470._listboxProperties()
 	
@@ -1144,29 +1163,29 @@ Function _listboxProperties() : Object
 	
 	$o:=This:C1470._commonProperties()
 	
-	$o.detailFormName:=New object:C1471("k"; lk detail form name:K53:44)
-	$o.displayFooter:=New object:C1471("k"; lk display footer:K53:20)
-	$o.displayHeader:=New object:C1471("k"; lk display header:K53:4)
-	$o.doubleClickOnRow:=New object:C1471("k"; lk double click on row:K53:43)
-	$o.extraRows:=New object:C1471("k"; lk extra rows:K53:38)
-	$o.hideSelectionHighlight:=New object:C1471("k"; lk hide selection highlight:K53:41)
-	$o.highlightSet:=New object:C1471("k"; lk highlight set:K53:66)
-	$o.horScrollbarHeight:=New object:C1471("k"; lk hor scrollbar height:K53:7)
-	$o.movableRows:=New object:C1471("k"; lk movable rows:K53:76)
-	$o.namedSelection:=New object:C1471("k"; lk named selection:K53:67)
-	$o.resizingMode:=New object:C1471("k"; lk resizing mode:K53:36)
-	$o.rowHeightUnit:=New object:C1471("k"; lk row height unit:K53:42)
-	$o.selectionMode:=New object:C1471("k"; lk selection mode:K53:35)
-	$o.singleClickEdit:=New object:C1471("k"; lk single click edit:K53:70)
-	$o.sortable:=New object:C1471("k"; lk sortable:K53:45)
-	$o.verScrollbarWidth:=New object:C1471("k"; lk ver scrollbar width:K53:9)
+	$o.detailFormName:={k: lk detail form name:K53:44}
+	$o.displayFooter:={k: lk display footer:K53:20}
+	$o.displayHeader:={k: lk display header:K53:4}
+	$o.doubleClickOnRow:={k: lk double click on row:K53:43}
+	$o.extraRows:={k: lk extra rows:K53:38}
+	$o.hideSelectionHighlight:={k: lk hide selection highlight:K53:41}
+	$o.highlightSet:={k: lk highlight set:K53:66}
+	$o.horScrollbarHeight:={k: lk hor scrollbar height:K53:7}
+	$o.movableRows:={k: lk movable rows:K53:76}
+	$o.namedSelection:={k: lk named selection:K53:67}
+	$o.resizingMode:={k: lk resizing mode:K53:36}
+	$o.rowHeightUnit:={k: lk row height unit:K53:42}
+	$o.selectionMode:={k: lk selection mode:K53:35}
+	$o.singleClickEdit:={k: lk single click edit:K53:70}
+	$o.sortable:={k: lk sortable:K53:45}
+	$o.verScrollbarWidth:={k: lk ver scrollbar width:K53:9}
 	
 	Case of 
 			
 			//______________________________________________________
 		: (This:C1470.isCollection() || This:C1470.isEntitySelection())
 			
-			$o.metaExpression:=New object:C1471("k"; lk meta expression:K53:75)
+			$o.metaExpression:={k: lk meta expression:K53:75}
 			
 			//______________________________________________________
 	End case 
@@ -1180,29 +1199,25 @@ Function _columnProperties() : Object
 	
 	$o:=This:C1470._commonProperties()
 	
-	$o.allowWordwrap:=New object:C1471("k"; lk allow wordwrap:K53:39)
-	$o.columnMaxWidth:=New object:C1471("k"; lk column max width:K53:51)
-	$o.columnMinWidth:=New object:C1471("k"; lk column min width:K53:50)
-	$o.columnResizable:=New object:C1471("k"; lk column resizable:K53:40)
-	$o.displayType:=New object:C1471("k"; lk display type:K53:46)
-	$o.multiStyle:=New object:C1471("k"; lk multi style:K53:71)
+	$o.allowWordwrap:={k: lk allow wordwrap:K53:39}
+	$o.columnMaxWidth:={k: lk column max width:K53:51}
+	$o.columnMinWidth:={k: lk column min width:K53:50}
+	$o.columnResizable:={k: lk column resizable:K53:40}
+	$o.displayType:={k: lk display type:K53:46}
+	$o.multiStyle:={k: lk multi style:K53:71}
 	
 	return $o
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _commonProperties() : Object
 	
-	var $o : Object
-	$o:=New object:C1471
-	
-	$o.autoRowHeight:=New object:C1471("k"; lk auto row height:K53:72)
-	$o.backgroundColorExpression:=New object:C1471("k"; lk background color expression:K53:47)
-	$o.cellHorizontalPadding:=New object:C1471("k"; lk cell horizontal padding:K53:77)
-	$o.cellVerticalPadding:=New object:C1471("k"; lk cell vertical padding:K53:78)
-	$o.fontColorExpression:=New object:C1471("k"; lk font color expression:K53:48)
-	$o.fontStyleExpression:=New object:C1471("k"; lk font style expression:K53:49)
-	$o.truncate:=New object:C1471("k"; lk truncate:K53:37)
-	
-	return $o
-	
+	return {\
+		autoRowHeight: {k: lk auto row height:K53:72}; \
+		backgroundColorExpression: {k: lk background color expression:K53:47}; \
+		cellHorizontalPadding: {k: lk cell horizontal padding:K53:77}; \
+		cellVerticalPadding: {k: lk cell vertical padding:K53:78}; \
+		fontColorExpression: {k: lk font color expression:K53:48}; \
+		fontStyleExpression: {k: lk font style expression:K53:49}; \
+		truncate: {k: lk truncate:K53:37}\
+		}
 	
