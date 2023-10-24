@@ -39,8 +39,6 @@ UNSTAGED_STATUS : Collection
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
-	
 	This:C1470.isSubform:=False:C215
 	This:C1470.toBeInitialized:=False:C215
 	
@@ -1088,7 +1086,7 @@ Function DoDiff($item : Object)
 			//––––––––––––––––––––––––––––––––––––––––––––––––
 		: ($item.added)
 			
-			$tgt:=GIT Path($item.path)
+			$tgt:=This:C1470.Git.getPath($item.path)
 			
 			Case of 
 					
@@ -1389,7 +1387,7 @@ Function Discard($items : Collection)
 			
 			If ($o.status="??")
 				
-				$tgt:=GIT Path($o.path)
+				$tgt:=This:C1470.Git.getPath($o.path)
 				
 				Case of 
 						
@@ -1501,10 +1499,10 @@ Function CreateGithubRepository($token : Text)
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
 	//$GithubAPI.body:={\
-												accept: "application/vnd.github+json"; \
-												name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-												private: True\
-												}
+														accept: "application/vnd.github+json"; \
+														name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+														private: True\
+														}
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
 	//If ($request.response.status#201)
@@ -1695,7 +1693,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="open")
 			
-			$tgt:=GIT Path($current.path)
+			$tgt:=This:C1470.Git.getPath($current.path)
 			
 			Case of 
 					

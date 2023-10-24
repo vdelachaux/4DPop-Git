@@ -72,7 +72,6 @@
 		"methods": [
 			"COMPILER_component",
 			"GIT OPEN",
-			"GIT Path",
 			"GIT SETTINGS",
 			"GIT UPDATE"
 		],

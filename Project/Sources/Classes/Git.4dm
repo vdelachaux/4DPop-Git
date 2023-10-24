@@ -138,6 +138,72 @@ Class constructor($folder : 4D:C1709.Folder)
 	This:C1470.BrancUnpulledCommit:=0
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function execute($command : Text; $inputStream : Text) : Boolean
+	
+	var $errorStream; $outputStream : Text
+	
+	If (This:C1470.command=Null:C1517)  // not ready
+		
+		return 
+		
+	End if 
+	
+	If (Length:C16($command)=0)
+		
+		This:C1470._pushError("Missing command parameter")
+		return 
+		
+	End if 
+	
+	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
+	
+	If (This:C1470.cwd#Null:C1517)
+		
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
+		
+	End if 
+	
+	$command:=This:C1470.command+$command
+	
+	LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
+	This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
+	
+	This:C1470.history.insert(0; {\
+		cmd: "$ "+$command; \
+		success: This:C1470.success; \
+		out: $outputStream; \
+		error: $errorStream\
+		})
+	
+	If (Not:C34(Bool:C1537(This:C1470.debug)))\
+		 && (This:C1470.history.length>20)
+		
+		This:C1470.history.resize(20)
+		
+	End if 
+	
+	Case of 
+			
+			//——————————————————————
+		: (This:C1470.success)
+			
+			This:C1470.error:=""
+			This:C1470.warning:=""
+			
+			// Delete the last line break, if any
+			This:C1470.result:=Split string:C1554(This:C1470._normalizeLF($outputStream); "\n"; sk ignore empty strings:K86:1).join("\n")
+			
+			//——————————————————————
+		: (Length:C16($errorStream)>0)
+			
+			This:C1470._pushError(This:C1470.history[0].cmd+" - "+Split string:C1554($errorStream; "\n"; sk ignore empty strings:K86:1).join("\n"))
+			
+			//——————————————————————
+	End case 
+	
+	return This:C1470.success
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getConfig($what : Text) : Text
 	
 	This:C1470.execute("config --global --get "+$what)
@@ -230,71 +296,6 @@ Function get lfs() : Boolean
 Function update()
 	
 	This:C1470.HEAD:=Split string:C1554(This:C1470._normalizeLF(This:C1470.root.file("HEAD").getText()); "\n"; sk ignore empty strings:K86:1)[0]
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function execute($command : Text; $inputStream : Text) : Boolean
-	
-	If (This:C1470.command=Null:C1517)  // not ready
-		
-		return 
-		
-	End if 
-	
-	If (Length:C16($command)=0)
-		
-		This:C1470._pushError("Missing command parameter")
-		return 
-		
-	End if 
-	
-	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
-	
-	If (This:C1470.cwd#Null:C1517)
-		
-		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
-		
-	End if 
-	
-	$command:=This:C1470.command+$command
-	
-	var $errorStream; $outputStream : Text
-	LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
-	This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
-	
-	This:C1470.history.insert(0; {\
-		cmd: "$ "+$command; \
-		success: This:C1470.success; \
-		out: $outputStream; \
-		error: $errorStream\
-		})
-	
-	If (Not:C34(Bool:C1537(This:C1470.debug)))\
-		 && (This:C1470.history.length>20)
-		
-		This:C1470.history.resize(20)
-		
-	End if 
-	
-	Case of 
-			
-			//——————————————————————
-		: (This:C1470.success)
-			
-			This:C1470.error:=""
-			This:C1470.warning:=""
-			
-			// Delete the last line break, if any
-			This:C1470.result:=Split string:C1554($outputStream; "\n"; sk ignore empty strings:K86:1).join("\n")
-			
-			//——————————————————————
-		: (Length:C16($errorStream)>0)
-			
-			This:C1470._pushError(This:C1470.history[0].cmd+" - "+Split string:C1554($errorStream; "\n"; sk ignore empty strings:K86:1).join("\n"))
-			
-			//——————————————————————
-	End case 
-	
-	return This:C1470.success
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function status($short : Boolean) : Integer
@@ -770,12 +771,6 @@ Function diff($pathname : Text; $option : Text)
 		
 	End if 
 	
-	If (This:C1470.success)
-		
-		This:C1470.result:=This:C1470._normalizeLF(This:C1470.result)
-		
-	End if 
-	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diffList($parent : Text; $current : Text) : Boolean
 	
@@ -944,15 +939,7 @@ Function _pushWarning($message : Text)
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _quoted($string : Text) : Text
 	
-	If (Is macOS:C1572)
-		
-		return Char:C90(Quote:K15:44)+$string+Char:C90(Quote:K15:44)
-		
-	Else 
-		
-		return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
-		
-	End if 
+	return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _normalizeLF($text : Text) : Text
@@ -961,3 +948,96 @@ Function _normalizeLF($text : Text) : Text
 	$text:=Replace string:C233($text; "\r"; "\n")
 	
 	return $text
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
+	
+	$root:=$root || Folder:C1567(fk database folder:K87:14; *)
+	$path:=Replace string:C233($path; "\""; "")
+	
+	Case of 
+			
+			//———————————————————————————————————————————
+		: (Position:C15(")"; $path)>0)  // Trash
+			
+			return File:C1566($root.path+$path)
+			
+			//———————————————————————————————————————————
+		: ($path="Documentation/@")  // Documentation
+			
+			return File:C1566($root.path+$path)
+			
+			//———————————————————————————————————————————
+		: ($path="@/Methods/@")  // Project methods
+			
+			return Replace string:C233(Replace string:C233($path; ".4dm"; ""); "Project/Sources/Methods/"; "")
+			
+			//———————————————————————————————————————————
+		: ($path="@/Classes/@")
+			
+			return "[class]"+Replace string:C233(Replace string:C233($path; ".4dm"; ""); "Project/Sources/Classes"; "")
+			
+			//———————————————————————————————————————————
+		: ($path="@/Forms/@")
+			
+			Case of 
+					
+					//……………………………………………………………………………………………
+				: ($path="@.4DForm")  // Form definition
+					
+					return $path
+					
+					//……………………………………………………………………………………………
+				: ($path="@.4dm")  // Method
+					
+					$path:=Replace string:C233($path; ".4dm"; "")
+					
+					If ($path="@/ObjectMethods/@")  // Object method
+						
+						$path:=Replace string:C233($path; "Project/Sources/Forms/"; "")
+						$path:=Replace string:C233($path; "ObjectMethods"; "")
+						return "[projectForm]/"+$path
+						
+					Else   // Form method
+						
+						$path:=Replace string:C233($path; "Project/Sources/Forms/"; "")
+						$path:=Replace string:C233($path; "method"; "")
+						return "[projectForm]/"+$path+"{formMethod}"
+						
+					End if 
+					
+					//……………………………………………………………………………………………
+				Else 
+					
+					return $path[[Length:C16($path)]]="/" ? Folder:C1567($root.path+$path) : File:C1566($root.path+$path)
+					
+					//……………………………………………………………………………………………
+			End case 
+			
+			//———————————————————————————————————————————
+		: ($path="/RESOURCES/@")\
+			 | ($path="/PACKAGE/@")\
+			 | ($path="/SOURCES/@")\
+			 | ($path="/PROJECT/@")\
+			 | ($path="/DATA/@")\
+			 | ($path="/LOGS/@")
+			
+			$path:=Replace string:C233($path; "/RESOURCES/"; "/RESOURCES/")
+			$path:=Replace string:C233($path; "/PACKAGE/"; "/PACKAGE/")
+			$path:=Replace string:C233($path; "/SOURCES/"; "/SOURCES/")
+			$path:=Replace string:C233($path; "/PROJECT/"; "/PROJECT/")
+			$path:=Replace string:C233($path; "/DATA/"; "/DATA/")
+			$path:=Replace string:C233($path; "/LOGS/"; "/LOGS/")
+			
+			return ($path="@/" ? Folder:C1567($path) : File:C1566($path))
+			
+			//———————————————————————————————————————————
+		Else 
+			
+			return File:C1566($root.path+$path)
+			
+			//———————————————————————————————————————————
+	End case 
+	
+	
+	

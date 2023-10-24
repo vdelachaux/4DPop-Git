@@ -7,8 +7,6 @@ property git : cs:C1710.Git
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
-	
 	This:C1470.isSubform:=True:C214
 	This:C1470.toBeInitialized:=False:C215
 	
@@ -398,7 +396,7 @@ Function _doChangesMenu()
 		
 	End if 
 	
-	$tgt:=GIT Path($menu.choice; Folder:C1567(fk database folder:K87:14; *))
+	$tgt:=This:C1470.git.getPath($menu.choice; Folder:C1567(fk database folder:K87:14; *))
 	
 	Case of 
 			
