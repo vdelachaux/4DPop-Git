@@ -839,20 +839,34 @@ Function open($whatToDo : Text)
 	
 	var $errorStream; $outputStream; $inputStream : Text
 	
-	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
-	
 	Case of 
 			
 			//——————————————————————
 		: ($whatToDo="terminal")  // Open terminal in the working directory
 			
-			LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.cwd.path+"'"; $inputStream; $outputStream; $errorStream)
+			If (Is macOS:C1572)
+				
+				LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.cwd.path+"'"; $inputStream; $outputStream; $errorStream)
+				
+			Else 
+				
+				LAUNCH EXTERNAL PROCESS:C811("wt -d \""+String:C10(This:C1470.cwd.path)+"\""; $inputStream; $outputStream; $errorStream)
+				
+			End if 
 			
 			//——————————————————————
 		: ($whatToDo="show")  // Open on disk the current directory
 			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
-			LAUNCH EXTERNAL PROCESS:C811("open ."; $inputStream; $outputStream; $errorStream)
+			If (Is macOS:C1572)
+				
+				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
+				LAUNCH EXTERNAL PROCESS:C811("open ."; $inputStream; $outputStream; $errorStream)
+				
+			Else 
+				
+				SHOW ON DISK:C922(This:C1470.cwd.platformPath; *)
+				
+			End if 
 			
 			//——————————————————————
 	End case 

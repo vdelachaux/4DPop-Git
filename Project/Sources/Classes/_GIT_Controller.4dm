@@ -764,8 +764,9 @@ Function _openManager()
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable(This:C1470.Git.execute("config --get remote.origin.url"))
 	
-	If (File:C1566("/usr/local/bin/fork").exists)
+	If (Is macOS:C1572) && (File:C1566("/usr/local/bin/fork").exists)
 		
+		//FIXME: Test on Windows
 		$menu.line().append("Open with Fork"; "fork").icon("/RESOURCES/Images/Menus/fork.png")
 		
 	End if 
@@ -1481,10 +1482,10 @@ Function CreateGithubRepository($token : Text)
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
 	//$GithubAPI.body:={\
-								accept: "application/vnd.github+json"; \
-								name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-								private: True\
-								}
+										accept: "application/vnd.github+json"; \
+										name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+										private: True\
+										}
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
 	//If ($request.response.status#201)
