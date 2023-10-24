@@ -4,7 +4,7 @@
   <file datatype="plaintext" original="Undefined" source-language="en" target-language="en">
     <header>
       <prop-group name="4DPop XLIFF Pro">
-        <prop prop-type="version">3.0</prop>
+        <prop prop-type="version">3.1</prop>
       </prop-group>
     </header>
     <body>
@@ -13,11 +13,11 @@
           <source>WORKSPACE</source>
           <target>WORKSPACE</target>
         </trans-unit>
-        <trans-unit id="ZqzIky/4T6wr9uni1/5qTQ" resname="index">
+        <trans-unit id="ZqzIky_4T6wr9uni1_5qTQ" resname="index">
           <source>INDEX</source>
           <target>INDEX</target>
         </trans-unit>
-        <trans-unit id="A/tVonj+/Sgw29iHS8T5xg" resname="stage">
+        <trans-unit id="A_tVonj+_Sgw29iHS8T5xg" resname="stage">
           <source>Stage</source>
           <target>Stage</target>
         </trans-unit>
@@ -45,7 +45,7 @@
           <source>Push</source>
           <target>Push</target>
         </trans-unit>
-        <trans-unit id="Ns9zxuxcdnyD/+nRGs/EWA" resname="open">
+        <trans-unit id="Ns9zxuxcdnyD_+nRGs_EWA" resname="open">
           <source>Open in…</source>
           <target>Open in…</target>
         </trans-unit>
@@ -53,7 +53,7 @@
           <source>Changes</source>
           <target>Changes</target>
         </trans-unit>
-        <trans-unit id="oPUK6zDP1HgG1/zUvx1KQQ" resname="stageAll">
+        <trans-unit id="oPUK6zDP1HgG1_zUvx1KQQ" resname="stageAll">
           <source>Stage All</source>
           <target>Stage All</target>
         </trans-unit>
@@ -69,7 +69,7 @@
           <source>Ignore All "{extension}" Files</source>
           <target>Ignore All "{extension}" Files</target>
         </trans-unit>
-        <trans-unit id="RiZW9flrLvgH5T/HOqUcpg" resname="customPattern">
+        <trans-unit id="RiZW9flrLvgH5T_HOqUcpg" resname="customPattern">
           <source>Custom Pattern…</source>
           <target>Custom Pattern…</target>
         </trans-unit>
@@ -77,7 +77,7 @@
           <source>Show in Finder</source>
           <target>Show in Finder</target>
         </trans-unit>
-        <trans-unit id="f5P/vS0d8N1G/nnZlGE4IA" resname="discardChanges">
+        <trans-unit id="f5P_vS0d8N1G_nnZlGE4IA" resname="discardChanges">
           <source>Discard Changes…</source>
           <target>Discard Changes…</target>
         </trans-unit>
@@ -89,7 +89,7 @@
           <source>Discard</source>
           <target>Discard</target>
         </trans-unit>
-        <trans-unit id="OPdyJO+MPMGl95uQTWY+/w" resname="doYouWantToDiscardAllChangesInTheSelectedFiles">
+        <trans-unit id="OPdyJO+MPMGl95uQTWY+_w" resname="doYouWantToDiscardAllChangesInTheSelectedFiles">
           <source>Do you want to discard all changes in the selected files?
 
 All uncommitted changes will be lost.</source>
@@ -112,7 +112,7 @@ All uncommitted changes will be lost.</target>
           <source>Description</source>
           <target>Description</target>
         </trans-unit>
-        <trans-unit id="/eyMZ4K1DaJMWuOxzdidTg" resname="ignoreFile">
+        <trans-unit id="_eyMZ4K1DaJMWuOxzdidTg" resname="ignoreFile">
           <source>Ignore file "{file}"</source>
           <target>Ignore file "{file}"</target>
         </trans-unit>
@@ -135,6 +135,14 @@ All uncommitted changes will be lost.</target>
         <trans-unit id="SWGm9PkXcypHYSKG+ywBeQ" resname="areYouSureYouWantToDeleteTheFile">
           <source>Are you sure you want to delete the file "{name}"?</source>
           <target>Are you sure you want to delete the file "{name}"?</target>
+        </trans-unit>
+        <trans-unit id="xQasXoJ2ScXIbgFos23kvg" resname="gitNotInstalled">
+          <source>Git not installed.
+
+Do you want to download the installer?</source>
+          <target>Git not installed.
+
+Do you want to download the installer?</target>
         </trans-unit>
       </group>
       <group resname="pattern">
@@ -168,7 +176,7 @@ All uncommitted changes will be lost.</target>
           <source>This database is not under git control.</source>
           <target>This database is not under git control.</target>
         </trans-unit>
-        <trans-unit id="bYmOW/vbfk7dr+Nl2wHDHw" resname="initializeTheGitRepository">
+        <trans-unit id="bYmOW_vbfk7dr+Nl2wHDHw" resname="initializeTheGitRepository">
           <source>Initialize the git repository</source>
           <target>Initialize the git repository</target>
         </trans-unit>
@@ -279,6 +287,7 @@ with 4D "{version}"</target>
       </group>
     </body>
   </file>
+
 
 
 
