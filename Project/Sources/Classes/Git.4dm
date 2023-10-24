@@ -70,6 +70,8 @@ Class constructor($folder : 4D:C1709.Folder)
 	
 	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
 	
+	var $exe : 4D:C1709.File
+	
 	Case of 
 			
 			//______________________________________________________
@@ -80,17 +82,21 @@ Class constructor($folder : 4D:C1709.Folder)
 			//______________________________________________________
 		: (Is Windows:C1573)
 			
-			var $exe : 4D:C1709.File
 			$exe:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
 			
-			If (Not:C34($exe.exists))
+			If ($exe.exists)
+				
+				This:C1470.command:=$exe.path+" "
+				This:C1470.command:="git "
+				
+			Else 
 				
 				// Use the embedded
-				$exe:=Folder:C1567(fk resources folder:K87:11).file("git/git")
+				$exe:=Folder:C1567(Folder:C1567(fk resources folder:K87:11).platformPath; fk platform path:K87:2).file("bin/windows/git.exe")
+				
+				This:C1470.command:=$exe.path+" "
 				
 			End if 
-			
-			This:C1470.command:=$exe.path+" "
 			
 			//______________________________________________________
 		Else 
@@ -154,7 +160,11 @@ Function get version() : Text
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get currentBranch() : Text
 	
-	return Split string:C1554(Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/"); "\r")[0]
+	If (Length:C16(This:C1470.HEAD)>0)
+		
+		return Split string:C1554(Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/"); "r")[0]
+		
+	End if 
 	
 	//mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -223,10 +233,16 @@ Function get lfs() : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
 	
-	This:C1470.HEAD:=Split string:C1554(This:C1470.root.file("HEAD").getText(); "\n"; sk ignore empty strings:K86:1)[0]
+	This:C1470.HEAD:=Split string:C1554(This:C1470._normalizeLF(This:C1470.root.file("HEAD").getText()); "\n"; sk ignore empty strings:K86:1)[0]
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function execute($command : Text; $inputStream : Text) : Boolean
+	
+	If (This:C1470.command=Null:C1517)  // not ready
+		
+		return 
+		
+	End if 
 	
 	If (Length:C16($command)=0)
 		
@@ -760,8 +776,7 @@ Function diff($pathname : Text; $option : Text)
 	
 	If (This:C1470.success)
 		
-		This:C1470.result:=Replace string:C233(This:C1470.result; "\r\n"; "\n")
-		This:C1470.result:=Replace string:C233(This:C1470.result; "\r"; "\n")
+		This:C1470.result:=This:C1470._normalizeLF(This:C1470.result)
 		
 	End if 
 	
@@ -919,4 +934,20 @@ Function _pushWarning($message : Text)
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _quoted($string : Text) : Text
 	
-	return Char:C90(Quote:K15:44)+$string+Char:C90(Quote:K15:44)
+	If (Is macOS:C1572)
+		
+		return Char:C90(Quote:K15:44)+$string+Char:C90(Quote:K15:44)
+		
+	Else 
+		
+		return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
+		
+	End if 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _normalizeLF($text : Text) : Text
+	
+	$text:=Replace string:C233($text; "\r\n"; "\n")
+	$text:=Replace string:C233($text; "\r"; "\n")
+	
+	return $text
