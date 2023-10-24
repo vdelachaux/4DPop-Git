@@ -87,7 +87,6 @@ Class constructor($folder : 4D:C1709.Folder)
 			If ($exe.exists)
 				
 				This:C1470.command:=$exe.path+" "
-				This:C1470.command:="git "
 				
 			Else 
 				

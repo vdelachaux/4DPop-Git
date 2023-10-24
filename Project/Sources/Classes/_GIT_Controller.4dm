@@ -375,6 +375,25 @@ Function onLoad()
 	Form:C1466.commitSubject:=""
 	Form:C1466.commitDescription:=""
 	
+	Case of 
+		: (This:C1470.Git.success)
+			
+			//all is OK
+			
+		: (This:C1470.Git.error="Git not installed")
+			
+			CONFIRM:C162(Get localized string:C991("gitNotInstalled"))
+			
+			If (Bool:C1537(OK))
+				
+				OPEN URL:C673("https://git-scm.com/download/win")
+				
+			End if 
+			
+			CANCEL:C270
+			
+	End case 
+	
 	This:C1470.form.goToPage("changes")
 	This:C1470.form.refresh()
 	
@@ -1482,10 +1501,10 @@ Function CreateGithubRepository($token : Text)
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
 	//$GithubAPI.body:={\
-										accept: "application/vnd.github+json"; \
-										name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-										private: True\
-										}
+												accept: "application/vnd.github+json"; \
+												name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+												private: True\
+												}
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
 	//If ($request.response.status#201)
