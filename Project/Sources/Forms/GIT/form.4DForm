@@ -164,10 +164,10 @@
 				"fetch": {
 					"type": "button",
 					"text": ":xliff:fetch",
-					"top": 7,
+					"top": 3,
 					"left": 7,
 					"width": 36,
-					"height": 51,
+					"height": 58,
 					"events": [
 						"onClick"
 					],
@@ -182,10 +182,10 @@
 				"pull": {
 					"type": "button",
 					"text": ":xliff:pull",
-					"top": 7,
+					"top": 3,
 					"left": 68,
 					"width": 36,
-					"height": 51,
+					"height": 58,
 					"events": [
 						"onClick"
 					],
@@ -200,10 +200,10 @@
 				"push": {
 					"type": "button",
 					"text": ":xliff:push",
-					"top": 6,
+					"top": 3,
 					"left": 129,
 					"width": 36,
-					"height": 52,
+					"height": 58,
 					"events": [
 						"onClick"
 					],
@@ -217,10 +217,10 @@
 				},
 				"open": {
 					"type": "button",
-					"top": 6,
+					"top": 3,
 					"left": 1051,
 					"width": 50,
-					"height": 52,
+					"height": 58,
 					"events": [
 						"onClick"
 					],
@@ -1021,5 +1021,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 341
+	"geometryStamp": 363
 }
