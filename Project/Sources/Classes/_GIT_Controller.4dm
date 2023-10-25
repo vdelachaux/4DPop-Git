@@ -781,9 +781,9 @@ Function _openManager()
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable(This:C1470.Git.execute("config --get remote.origin.url"))
 	
+	$menu.line()
+	
 	If (Is macOS:C1572)
-		
-		$menu.line()
 		
 		If (File:C1566("/usr/local/bin/fork").exists)
 			
@@ -799,8 +799,17 @@ Function _openManager()
 		
 	Else 
 		
-		// TODO:On Windows
+		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			
+		End if 
 		
+		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").exists)
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			
+		End if 
 	End if 
 	
 	Case of 
@@ -828,17 +837,35 @@ Function _openManager()
 			//———————————————————————————————————————
 		: ($menu.choice="fork")
 			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
-			LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.cwd.platformPath)
+			
+			If (Is macOS:C1572)
+				
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
+				
+			Else 
+				
+				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").platformPath)
+				
+			End if 
 			
 			//———————————————————————————————————————
 		: ($menu.choice="githubDesktop")
 			
-			LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).path+"\"")
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.cwd.platformPath)
+			
+			If (Is macOS:C1572)
+				
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+This:C1470.Git.cwd.path+"\"")
+				
+			Else 
+				
+				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").platformPath+" "+This:C1470.Git.cwd.platformPath)
+				
+			End if 
 			
 			//———————————————————————————————————————
 	End case 
-	
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _stageUnstageManager($e : cs:C1710.evt)
@@ -1521,10 +1548,11 @@ Function CreateGithubRepository($token : Text)
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
 	//$GithubAPI.body:={\
-														accept: "application/vnd.github+json"; \
-														name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-														private: True\
-														}
+																accept: "application/vnd.github+json"; \
+																name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+																private: True\
+																}
+	
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
 	//If ($request.response.status#201)
