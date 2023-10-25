@@ -781,42 +781,64 @@ Function _openManager()
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable(This:C1470.Git.execute("config --get remote.origin.url"))
 	
-	If (Is macOS:C1572) && (File:C1566("/usr/local/bin/fork").exists)
+	If (Is macOS:C1572)
 		
-		//FIXME: Test on Windows
-		$menu.line().append("Open with Fork"; "fork").icon("/RESOURCES/Images/Menus/fork.png")
+		$menu.line()
+		
+		If (File:C1566("/usr/local/bin/fork").exists)
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			
+		End if 
+		
+		If (File:C1566("/usr/local/bin/github").exists)
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			
+		End if 
+		
+	Else 
+		
+		// TODO:On Windows
 		
 	End if 
 	
-	If ($menu.popup().selected)
-		
-		Case of 
-				
-				//———————————————————————————————————————
-			: ($menu.choice="terminal")
-				
-				This:C1470.Git.open($menu.choice)
-				
-				//———————————————————————————————————————
-			: ($menu.choice="show")
-				
-				This:C1470.Git.open($menu.choice)
-				
-				//———————————————————————————————————————
-			: ($menu.choice="github")
-				
-				OPEN URL:C673(Replace string:C233(This:C1470.Git.result; "\n"; ""))
-				
-				//———————————————————————————————————————
-			: ($menu.choice="fork")
-				
-				var $error; $in; $out : Text
-				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open"; $in; $out; $error)
-				
-				//———————————————————————————————————————
-		End case 
-	End if 
+	Case of 
+			
+			//———————————————————————————————————————
+		: (Not:C34($menu.popup().selected))
+			
+			// Too bad ;-)
+			
+			//———————————————————————————————————————
+		: ($menu.choice="terminal")
+			
+			This:C1470.Git.open($menu.choice)
+			
+			//———————————————————————————————————————
+		: ($menu.choice="show")
+			
+			This:C1470.Git.open($menu.choice)
+			
+			//———————————————————————————————————————
+		: ($menu.choice="github")
+			
+			OPEN URL:C673(Replace string:C233(This:C1470.Git.result; "\n"; ""))
+			
+			//———————————————————————————————————————
+		: ($menu.choice="fork")
+			
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
+			LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
+			
+			//———————————————————————————————————————
+		: ($menu.choice="githubDesktop")
+			
+			LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).path+"\"")
+			
+			//———————————————————————————————————————
+	End case 
+	
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _stageUnstageManager($e : cs:C1710.evt)

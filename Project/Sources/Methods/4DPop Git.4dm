@@ -1,4 +1,4 @@
-//%attributes = {}
+//%attributes = {"shared":true,"preemptive":"incapable"}
 // ----------------------------------------------------
 // Project method: GIT OPEN
 // ID[52DD5F426D1647FF837AF213147FFC6B]
@@ -7,7 +7,7 @@
 #DECLARE($run : Boolean)
 
 If (False:C215)
-	C_BOOLEAN:C305(GIT OPEN; $1)
+	C_BOOLEAN:C305(4DPop Git; $1)
 End if 
 
 var $winRef : Integer

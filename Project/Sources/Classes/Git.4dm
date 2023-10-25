@@ -224,7 +224,7 @@ Function get currentBranch() : Text
 	
 	If (Length:C16(This:C1470.HEAD)>0)
 		
-		return Split string:C1554(Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/"); "r")[0]
+		return Split string:C1554(Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/"); "\r")[0]
 		
 	End if 
 	
