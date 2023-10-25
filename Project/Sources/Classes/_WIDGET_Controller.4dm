@@ -139,7 +139,7 @@ Function handleEvents($e : cs:C1710.evt)
 				//==============================================
 			: (This:C1470.icon.catch($e; On Clicked:K2:4))
 				
-				GIT OPEN
+				4DPop Git
 				
 				//==============================================
 			: (This:C1470.todo.catch($e; On Clicked:K2:4))\
@@ -168,91 +168,91 @@ Function update()
 	
 	$git:=This:C1470.git
 	
-	If ($git#Null:C1517)
-		
-		$branch:=Form:C1466.branch || $git.currentBranch
-		
-		If ($branch#This:C1470.currentBranch)
-			
-			This:C1470.currentBranch:=$branch
-			
-			If (This:C1470.alpha)
-				
-				$success:=(This:C1470.currentBranch="main")\
-					 || (This:C1470.currentBranch="master")\
-					 || (This:C1470.currentBranch=(This:C1470.major+This:C1470.minor+"@"))\
-					 || (Split string:C1554(This:C1470.currentBranch; "/").length>1)
-				
-			Else 
-				
-				If (This:C1470.release)
-					
-					$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
-						 || (This:C1470.currentBranch=(This:C1470.major+"RX"))
-					
-				Else 
-					
-					$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
-						 || (This:C1470.currentBranch=(This:C1470.major+".X"))
-					
-				End if 
-			End if 
-			
-			If ($success)
-				
-				This:C1470.branch.foregroundColor:=Foreground color:K23:1
-				This:C1470.branch.fontStyle:=Plain:K14:1
-				This:C1470.branch.setHelpTip(Replace string:C233(Get localized string:C991("IsTheCurrentBranch"); "{branch}"; $branch))
-				
-			Else 
-				
-				This:C1470.branch.foregroundColor:="red"
-				This:C1470.branch.fontStyle:=Bold:K14:2
-				This:C1470.branch.setHelpTip(Replace string:C233(\
-					Replace string:C233(Replace string:C233(\
-					Get localized string:C991("warningBranch"); "{branch}"; $branch)\
-					; "{project}"; This:C1470.PACKAGE.name)\
-					; "{version}"; This:C1470.version))
-				
-			End if 
-			
-			Form:C1466.branch:=This:C1470.currentBranch
-			
-			This:C1470.branch.setTitle(This:C1470.currentBranch)
-			This:C1470.branch.bestSize(Align center:K42:3; 50; 140)
-			
-		End if 
-		
-		Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
-		Form:C1466.pushNumber:=$git.branchPushNumber($branch)
-		
-		$changes:=$git.status()
-		
-		If ($git.status()>0)
-			
-			This:C1470.localChanges.setLinkedPopupMenu()\
-				.setTitle(String:C10($git.status()))\
-				.bestSize(Align left:K42:2)
-			
-		Else 
-			
-			This:C1470.localChanges.setNoPopupMenu()\
-				.setTitle("0")\
-				.bestSize(Align left:K42:2)
-			
-		End if 
-		
-		This:C1470.gitItems.show()
-		This:C1470.initRepository.hide()
-		
-		This:C1470.form.refresh(60*This:C1470.timer)
-		
-	Else 
+	If ($git=Null:C1517)
 		
 		This:C1470.gitItems.hide()
 		This:C1470.initRepository.show()
 		
+		return 
+		
 	End if 
+	
+	$branch:=Form:C1466.branch || $git.currentBranch
+	
+	If ($branch#This:C1470.currentBranch)
+		
+		This:C1470.currentBranch:=$branch
+		
+		If (This:C1470.alpha)
+			
+			$success:=(This:C1470.currentBranch="main")\
+				 || (This:C1470.currentBranch="master")\
+				 || (This:C1470.currentBranch=(This:C1470.major+This:C1470.minor+"@"))\
+				 || (Split string:C1554(This:C1470.currentBranch; "/").length>1)
+			
+		Else 
+			
+			If (This:C1470.release)
+				
+				$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
+					 || (This:C1470.currentBranch=(This:C1470.major+"RX"))
+				
+			Else 
+				
+				$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
+					 || (This:C1470.currentBranch=(This:C1470.major+".X"))
+				
+			End if 
+		End if 
+		
+		If ($success)
+			
+			This:C1470.branch.foregroundColor:=Foreground color:K23:1
+			This:C1470.branch.fontStyle:=Plain:K14:1
+			This:C1470.branch.setHelpTip(Replace string:C233(Get localized string:C991("IsTheCurrentBranch"); "{branch}"; $branch))
+			
+		Else 
+			
+			This:C1470.branch.foregroundColor:="red"
+			This:C1470.branch.fontStyle:=Bold:K14:2
+			This:C1470.branch.setHelpTip(Replace string:C233(\
+				Replace string:C233(Replace string:C233(\
+				Get localized string:C991("warningBranch"); "{branch}"; $branch)\
+				; "{project}"; This:C1470.PACKAGE.name)\
+				; "{version}"; This:C1470.version))
+			
+		End if 
+		
+		Form:C1466.branch:=This:C1470.currentBranch
+		
+		This:C1470.branch.setTitle(This:C1470.currentBranch)
+		This:C1470.branch.bestSize(Align center:K42:3; 50; 140)
+		
+	End if 
+	
+	Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
+	Form:C1466.pushNumber:=$git.branchPushNumber($branch)
+	
+	$changes:=$git.status()
+	
+	If ($git.status()>0)
+		
+		This:C1470.localChanges.setLinkedPopupMenu()\
+			.setTitle(String:C10($git.status()))\
+			.bestSize(Align left:K42:2)
+		
+	Else 
+		
+		This:C1470.localChanges.setNoPopupMenu()\
+			.setTitle("0")\
+			.bestSize(Align left:K42:2)
+		
+	End if 
+	
+	This:C1470.gitItems.show()
+	This:C1470.initRepository.hide()
+	
+	This:C1470.form.refresh(60*This:C1470.timer)
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doChangesMenu()
@@ -473,6 +473,7 @@ Function _doBranchMenu()
 		End for each 
 		
 		//TODO:Change branch
+		
 		If ($menu.popup().selected)
 			
 			Form:C1466.branch:=$menu.choice
@@ -492,63 +493,130 @@ Function _doMoreMenu()
 	$menu:=This:C1470.menu.new()\
 		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
 		.line()\
+		.append(":xliff:saveSnapshot"; "snapshot").icon("/RESOURCES/Images/Menus/stash.png")\
+		.line()\
 		.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($git.execute("config --get remote.origin.url"))\
 		.line()\
-		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")\
-		.line()\
+		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
+	
+	$menu.line()\
 		.append("Settings"; "settings")
 	
-	If (File:C1566("/usr/local/bin/fork").exists)
+	$menu.line()
+	
+	If (Is macOS:C1572)
 		
-		$menu.append("Open with Fork"; "fork").icon("/RESOURCES/Images/Menus/fork.png")
+		If (File:C1566("/usr/local/bin/fork").exists)
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			
+		End if 
 		
+		If (File:C1566("/usr/local/bin/github").exists)
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			
+		End if 
+		
+	Else 
+		
+		// TODO:On Windows
+		
+		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			
+		End if 
+		
+		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/bin/github").exists)
+			
+			
+			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			
+		End if 
 	End if 
 	
-	
-	If ($menu.popup(This:C1470.more).selected)
-		
-		Case of 
+	Case of 
+			
+			//———————————————————————————————————————
+		: (Not:C34($menu.popup(This:C1470.more).selected))
+			
+			// It's your choice
+			
+			//———————————————————————————————————————
+		: ($menu.choice="fork")
+			
+			If (Is macOS:C1572)
 				
-				//———————————————————————————————————————
-			: ($menu.choice="fork")
-				
-				var $cmd; $error; $in; $out : Text
-				$cmd:="/usr/local/bin/fork open"
 				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
-				LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
 				
-				//———————————————————————————————————————
-			: ($menu.choice="tool")
+			Else 
 				
-				GIT OPEN
+				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").platformPath+" "+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
 				
-				//———————————————————————————————————————
-			: ($menu.choice="terminal")\
-				 | ($menu.choice="show")
+			End if 
+			
+			//———————————————————————————————————————
+		: ($menu.choice="githubDesktop")
+			
+			If (Is macOS:C1572)
 				
-				$git.open($menu.choice)
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).path+"\"")
 				
-				//———————————————————————————————————————
-			: ($menu.choice="github")
+			Else 
 				
-				OPEN URL:C673(Replace string:C233($git.result; "\n"; ""))
+				LAUNCH EXTERNAL PROCESS:C811("github \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath+"\"")
 				
-				//———————————————————————————————————————
-			: ($menu.choice="refresh")
+			End if 
+			
+			//———————————————————————————————————————
+		: ($menu.choice="tool")
+			
+			4DPop Git
+			
+			//———————————————————————————————————————
+		: ($menu.choice="terminal")\
+			 | ($menu.choice="show")
+			
+			$git.open($menu.choice)
+			
+			//———————————————————————————————————————
+		: ($menu.choice="github")
+			
+			OPEN URL:C673(Replace string:C233($git.result; "\n"; ""))
+			
+			//———————————————————————————————————————
+		: ($menu.choice="refresh")
+			
+			This:C1470.form.refresh()
+			
+			//———————————————————————————————————————
+		: ($menu.choice="snapshot")
+			
+			var $t : Text
+			$t:=Request:C163(Get localized string:C991("name(optional)"); ""; Get localized string:C991("saveSnapshot"))
+			
+			If (OK=0)
 				
-				This:C1470.form.refresh()
+				return 
 				
-				//———————————————————————————————————————
-			: ($menu.choice="settings")
-				
-				GIT SETTINGS
-				
-				//______________________________________________________
-		End case 
-	End if 
+			End if 
+			
+			$git.execute("stash -u"+(Length:C16($t)>0 ? "-m "+$t : ""))
+			
+			$git.execute("stash apply refs/stash")
+			
+			//———————————————————————————————————————
+		: ($menu.choice="settings")
+			
+			GIT SETTINGS
+			
+			//______________________________________________________
+	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doTagMenu($tag : Text)

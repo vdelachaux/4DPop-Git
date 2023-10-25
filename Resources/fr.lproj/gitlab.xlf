@@ -144,6 +144,10 @@ Do you want to download the installer?</source>
 
 Voulez-vous télécharger l'installateur ?</target>
         </trans-unit>
+        <trans-unit id="JooE3WNXydNpOb1u6CueRw" resname="name(optional)">
+          <source>Name (optional)</source>
+          <target>Nom (facultatif)</target>
+        </trans-unit>
       </group>
       <group resname="pattern">
         <trans-unit id="RxY9OfmekBpp22bMfG8PUQ" resname="addPatternToGitignore">
@@ -254,9 +258,13 @@ avec 4D "{version}"</target>
           <source>Refresh</source>
           <target>Actualiser</target>
         </trans-unit>
-        <trans-unit id="1RqbUAsfb2UASwgY39iNqw" resname="String 1">
-          <source/>
-          <target/>
+        <trans-unit id="1RqbUAsfb2UASwgY39iNqw" resname="saveSnapshot">
+          <source>Save Snapshot</source>
+          <target>Enregistrer l'instantané</target>
+        </trans-unit>
+        <trans-unit id="MRlvf5HFK2R9n75HQrSNug" resname="openWith">
+          <source>Open with {app}</source>
+          <target>Ouvrir avec {app}</target>
         </trans-unit>
       </group>
       <group resname="File">
@@ -286,6 +294,8 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
+
 
 
 
