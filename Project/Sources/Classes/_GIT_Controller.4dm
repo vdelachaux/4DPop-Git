@@ -1548,10 +1548,10 @@ Function CreateGithubRepository($token : Text)
 	//// Try creating the repository
 	//$GithubAPI.method:="POST"
 	//$GithubAPI.body:={\
-																accept: "application/vnd.github+json"; \
-																name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-																private: True\
-																}
+																				accept: "application/vnd.github+json"; \
+																				name: $GithubAPI.CommpliantRepositoryName(Form.project); \
+																				private: True\
+																				}
 	
 	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
 	//$request.wait()
@@ -1639,7 +1639,7 @@ Function updateCommitList()
 	
 	$notPushed:=$git.notPushedNumber
 	
-	$git.execute("log --abbrev-commit --format=%s|%an|%h|%aI|%H|%p|%P|%ae")
+	$git.execute("log -g --abbrev-commit --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	
 /*
 0 = message
@@ -1651,6 +1651,13 @@ Function updateCommitList()
 6 = parent sh
 7 = author mail
 */
+	
+	var $branch; $main : Text
+	$main:=""
+	$branch:=""
+	
+	ARRAY LONGINT:C221($pos; 0x0000)
+	ARRAY LONGINT:C221($len; 0x0000)
 	
 	// One commit per line
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
@@ -1667,6 +1674,26 @@ Function updateCommitList()
 				
 			End if 
 			
+			If (Length:C16($c[9])>0)
+				
+				If (Match regex:C1019("(?m-si)origin/(?!HEAD)([^,$]*)"; $c[9]; 1; $pos; $len))
+					
+					$branch:=Substring:C12($c[9]; $pos{1}; $len{1})
+					
+					If ($branch="master") | ($branch="main")
+						
+						$main:=$branch
+						
+					End if 
+					
+				End if 
+				
+			Else 
+				
+				$branch:=$main
+				
+			End if 
+			
 			Form:C1466.commits.push({\
 				title: $c[0]; \
 				author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
@@ -1674,8 +1701,10 @@ Function updateCommitList()
 				fingerprint: {short: $c[2]; long: $c[4]}; \
 				parent: {short: $c[5]; long: $c[6]}; \
 				notPushed: $i<=$notPushed; \
-				origin: $i=($notPushed+1)\
+				origin: $i=($notPushed+1); branch: $branch\
 				})
+			
+			//; branch: $branch
 			
 		End if 
 	End for each 
@@ -1882,6 +1911,19 @@ Function getAvatar($mail : Text) : Picture
 	End if 
 	
 	return Form:C1466[$t]
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function metaCommits($item : Object) : Object
+	
+	If ($item.branch=This:C1470.Git.workingBranch.name)
+		
+		return {cell: {commitTitle: {fontWeight: "bold"}}}
+		
+	Else 
+		
+		return {cell: {commitTitle: {fontStyle: "italic"}}}
+		
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function meta($item : Object) : Object
