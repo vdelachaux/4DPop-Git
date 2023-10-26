@@ -664,13 +664,14 @@
 					"class": "flat",
 					"alternateFill": "automatic",
 					"resizingMode": "rightToLeft",
+					"metaSource": "formGetInstance.metaCommits(This:C1470)",
 					"columns": [
 						{
 							"header": {
 								"text": "Header1",
 								"name": "Header5"
 							},
-							"name": "Column5",
+							"name": "commitTitle",
 							"footer": {
 								"name": "Footer5"
 							},
@@ -684,7 +685,7 @@
 								"name": "Header13",
 								"text": "Header13"
 							},
-							"name": "Column13",
+							"name": "avatar",
 							"dataSource": "This:C1470.author.avatar",
 							"resizable": false,
 							"enterable": false,
@@ -700,7 +701,7 @@
 								"name": "Header6",
 								"text": "Header6"
 							},
-							"name": "Column6",
+							"name": "author",
 							"dataSource": "This:C1470.author.name",
 							"footer": {
 								"name": "Footer6"
@@ -715,7 +716,7 @@
 								"name": "Header7",
 								"text": "Header7"
 							},
-							"name": "Column7",
+							"name": "fingerprint",
 							"dataSource": "This:C1470.fingerprint.short",
 							"footer": {
 								"name": "Footer7"
@@ -1021,5 +1022,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 366
+	"geometryStamp": 373
 }
