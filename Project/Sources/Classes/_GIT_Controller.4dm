@@ -625,7 +625,7 @@ Function onActivate()
 	End if 
 	
 	$notPushed:=$git.branchPushNumber()
-	This:C1470.history.title:=Get localized string:C991("allCommits")+($notPushed=0 ? "" : String:C10($notPushed)+"↑")
+	This:C1470.history.title:=Get localized string:C991("allCommits")+($notPushed=0 ? "" : " "+String:C10($notPushed)+"↑")
 	
 	// Mark:Branch list
 	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
@@ -1680,6 +1680,9 @@ Function updateCommitList()
 						$branch:=$git.workingBranch.name
 						$main:=$branch
 						
+						
+						
+						
 						//______________________________________________________
 					: ($tag="tag: @")  // Tag
 						
@@ -1748,6 +1751,57 @@ Function updateCommitList()
 	Form:C1466.commits:=Form:C1466.commits.orderBy("sort desc")
 	
 	This:C1470.form.update()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getLabelTag($what : Text; $text : Text) : Picture
+	
+	var $image : Picture
+	var $svg : cs:C1710.svg
+	$svg:=cs:C1710.svg.new()
+	
+	Case of 
+			
+			//______________________________________________________
+		: ($what="branch")
+			
+			$svg.rect(10*Length:C16($text); 20).radius(5).stroke("red").fill("pink").position(0.5; 0.5)
+			$svg.text($text).position(10; 15).fontStyle(Bold:K14:2)
+			return $svg.picture()
+			
+			//______________________________________________________
+		: ($what="current branch")
+			
+			$text:="✔️ "+$text
+			$svg.rect(10*Length:C16($text); 20).radius(5).stroke("red").fill("pink").position(0.5; 0.5)
+			$svg.text($text).position(10; 15).fontStyle(Bold:K14:2)
+			return $svg.picture()
+			
+			//______________________________________________________
+		: ($what="origin synchronized")
+			
+			$svg.square(20).radius(5).stroke("green").fill("white").position(0.5; 0.5)
+			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $image)
+			$svg.image($image).position(2.5; 2.5)
+			return $svg.picture()
+			
+			//______________________________________________________
+		: ($what="origin")
+			
+			$text:="origin/ "+$text
+			$svg.rect(9*Length:C16($text); 20).radius(5).stroke("green").fill("palegreen").position(0.5; 0.5)
+			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $image)
+			$svg.image($image).position(2.5; 2.5)
+			$svg.line(21; 0; 21; 20).stroke("green")
+			$svg.text($text).position(25; 15)
+			return $svg.picture()
+			
+			//______________________________________________________
+		Else 
+			
+			$svg.close()
+			
+			//______________________________________________________
+	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleMenus($what : Text; $current : Object)
