@@ -922,7 +922,7 @@ Function setPageNames($names : Collection)
 	/// Displays a given page
 Function goToPage($page; $parent : Boolean)
 	
-	ASSERT:C1129((Value type:C1509($page)=Is text:K8:3) || (Value type:C1509($page)=Is real:K8:4) || (Value type:C1509($page)=Is integer:K8:5); "page parameter must be a text or a number")
+	ASSERT:C1129((Value type:C1509($page)=Is text:K8:3) || (Value type:C1509($page)=Is real:K8:4) || (Value type:C1509($page)=Is integer:K8:5) || (Value type:C1509($page)=Is longint:K8:6); "page parameter must be a text or a number")
 	
 	If (Value type:C1509($page)=Is text:K8:3)
 		

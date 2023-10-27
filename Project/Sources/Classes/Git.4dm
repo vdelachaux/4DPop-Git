@@ -752,11 +752,6 @@ Function branchPushNumber($branch : Text) : Integer
 	
 	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get notPushedNumber() : Integer
-	
-	return This:C1470.branchPushNumber()
-	
 	//MARK:-diff
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diff($pathname : Text; $option : Text)

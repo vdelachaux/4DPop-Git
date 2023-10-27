@@ -101,8 +101,8 @@ All uncommitted changes will be lost.</target>
         
         
         <trans-unit id="PpfP4oF59uHwzvf1ucvTCw" resname="allCommits">
-          <source>All commits</source>
-          <target>All commits</target>
+          <source>History</source>
+          <target>History</target>
         </trans-unit>
         <trans-unit id="THAQ+mal4QRJV+0bEylrPA" resname="commitSubject">
           <source>Commit Subject</source>
