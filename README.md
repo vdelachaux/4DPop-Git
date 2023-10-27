@@ -37,5 +37,3 @@ The master branch is under development with the main branch of 4D. Thus, some co
 <img src="./Documentation/fileMenu.png" width="518">
 
 <img src="./Documentation/openMenu.png" width="184">
-
-
