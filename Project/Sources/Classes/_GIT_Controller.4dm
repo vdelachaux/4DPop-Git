@@ -92,10 +92,13 @@ Function init()
 	This:C1470.pull:=This:C1470.form.button.new("pull").addToGroup(This:C1470.toolbarLeft)
 	This:C1470.push:=This:C1470.form.button.new("push").addToGroup(This:C1470.toolbarLeft)
 	
+	This:C1470.changes:=This:C1470.form.button.new("changes")
+	This:C1470.history:=This:C1470.form.button.new("history")
+	This:C1470.tab:=This:C1470.form.static.new("tab")
+	
 	This:C1470.open:=This:C1470.form.button.new("open")
 	
 	// Mark:Page 0️⃣ Left pannel
-	This:C1470.view:=This:C1470.form.listbox.new("menu")
 	This:C1470.selector:=This:C1470.form.hList.new("selector")
 	
 	// Mark:Page 1️⃣ Changes
@@ -176,6 +179,13 @@ Function handleEvents($e : cs:C1710.evt)
 				
 				CLEAR LIST:C377(Form:C1466.selector; *)
 				
+				// Restore tab position
+				var $o : Object
+				$o:=This:C1470.tab.coordinates
+				$o.left:=0
+				$o.right:=109
+				This:C1470.tab.setCoordinates($o)
+				
 				//______________________________________________________
 		End case 
 		
@@ -190,6 +200,16 @@ Function handleEvents($e : cs:C1710.evt)
 				//: ($e.doubleClick)
 				
 				//This._selectorManager($e)
+				
+				//==============================================
+			: (This:C1470.changes.catch($e; On Clicked:K2:4))
+				
+				This:C1470.goToPage(This:C1470.pages.changes)
+				
+				//==============================================
+			: (This:C1470.history.catch($e; On Clicked:K2:4))
+				
+				This:C1470.goToPage(This:C1470.pages.commits)
 				
 				//==============================================
 			: (This:C1470.fetch.catch($e; On Clicked:K2:4))
@@ -325,9 +345,11 @@ Function handleEvents($e : cs:C1710.evt)
 Function onLoad()
 	
 	This:C1470.toolbarLeft.distributeLeftToRight({\
-		start: 10; \
 		minWidth: 50; \
 		spacing: 10})
+	
+	This:C1470.changes.show()
+	This:C1470.history.show()
 	
 	// Tricks
 	This:C1470.unstaged.setVerticalScrollbar(2)
@@ -354,12 +376,6 @@ Function onLoad()
 	Form:C1466.commitDetail:=[]
 	
 	Form:C1466.icons:={}
-	
-	// Mark:Page menu definition
-	Form:C1466.menu:=[\
-		{label: Get localized string:C991("changes")}; \
-		{label: Get localized string:C991("allCommits")}\
-		]
 	
 	// Mark:Selector definition
 	Form:C1466.selector:=New list:C375
@@ -392,7 +408,8 @@ Function onLoad()
 			
 	End case 
 	
-	This:C1470.form.goToPage("changes")
+	This:C1470.goToPage(This:C1470.pages.changes)
+	
 	This:C1470.form.refresh()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -405,12 +422,6 @@ Function update()
 	var $git : cs:C1710.Git
 	
 	$git:=This:C1470.Git
-	
-	If (This:C1470.view.item=Null:C1517)
-		
-		This:C1470.view.selectFirstRow()
-		
-	End if 
 	
 	Case of 
 			
@@ -602,21 +613,19 @@ Function onActivate()
 	// Mark:Update menu label
 	If ($git.status()>0)
 		
-		Form:C1466.menu[0].label:="Changes ("+String:C10($git.changes.length)+")"
+		This:C1470.changes.title:=Get localized string:C991("changes")+" ("+String:C10($git.changes.length)+")"
 		
 	Else 
 		
-		Form:C1466.menu[0].label:="Changes"
+		This:C1470.changes.title:=Get localized string:C991("changes")
 		
 		Form:C1466.unstaged.clear()
 		Form:C1466.staged.clear()
 		
 	End if 
 	
-	$notPushed:=$git.notPushedNumber
-	Form:C1466.menu[1].comment:=$notPushed=0 ? "" : String:C10($notPushed)+"↑"
-	
-	Form:C1466.menu:=Form:C1466.menu  // Redraw
+	$notPushed:=$git.branchPushNumber()
+	This:C1470.history.title:=Get localized string:C991("allCommits")+($notPushed=0 ? "" : String:C10($notPushed)+"↑")
 	
 	// Mark:Branch list
 	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
@@ -706,6 +715,18 @@ Function onActivate()
 	
 	This:C1470.form.refresh()
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function goToPage($page : Integer)
+	
+	var $o : Object
+	
+	$o:=This:C1470.tab.coordinates
+	$o.left:=109*($page-1)
+	$o.right:=109*$page
+	This:C1470.tab.setCoordinates($o)
+	
+	This:C1470.form.goToPage($page)
+	
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _selectorManager($e : cs:C1710.evt)
@@ -762,7 +783,7 @@ Function _selectorManager($e : cs:C1710.evt)
 				
 			Else 
 				
-				This:C1470.form.goToPage(This:C1470.pages.commits)
+				This:C1470.goToPage(This:C1470.pages.commits)
 				
 			End if 
 			
@@ -1484,7 +1505,7 @@ Function Switch($branch : Object)
 	This:C1470.Git.branch("use"; $branch.name)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function CreateGithubRepository($token : Text)
+Function CreateGithubRepository()
 	
 	var $remote : Text
 	var $private : Boolean
@@ -1533,51 +1554,6 @@ Function CreateGithubRepository($token : Text)
 		End if 
 	End if 
 	
-	//var $file : 4D.File
-	//var $request : 4D.HTTPRequest
-	//var $git : cs.Git
-	//var $GithubAPI : cs.GithubAPI
-	//$GithubAPI:=cs.GithubAPI.new().authToken($token)
-	//// Check token validity
-	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/octocat"; $GithubAPI)
-	//$request.wait()
-	//If ($request.response.status#200)
-	//ALERT($request.response.body.message)
-	//return 
-	//End if 
-	//// Try creating the repository
-	//$GithubAPI.method:="POST"
-	//$GithubAPI.body:={\
-																				accept: "application/vnd.github+json"; \
-																				name: $GithubAPI.CommpliantRepositoryName(Form.project); \
-																				private: True\
-																				}
-	
-	//$request:=4D.HTTPRequest.new($GithubAPI.URL+"/user/repos"; $GithubAPI)
-	//$request.wait()
-	//If ($request.response.status#201)
-	//ALERT($request.response.body.errors.extract("message").join("\n"))
-	//return 
-	//End if 
-	//$git:=This.Git
-	//// Create readme
-	//$file:=File("/PACKAGE/README.md"; *)
-	//If (Not($file.exists))
-	//File("/PACKAGE/README.md"; *).setText("# Welcome to "+Form.project)
-	//End if 
-	//$git.add("README.md")
-	////$git.commit("first commit")
-	//// Add the origin to to the repository
-	//If ($git.execute("remote add origin "+$request.response.body.clone_url))
-	//// Create the main branch
-	//If ($git.execute("branch -M main"))
-	//// Push
-	//If ($git.execute("push -u origin main"))
-	////
-	//End if 
-	//End if 
-	//End if 
-	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function loadIcons()
@@ -1586,15 +1562,6 @@ Function loadIcons()
 	var $icon : Picture
 	
 	Form:C1466.dark:=This:C1470.form.darkScheme
-	
-	READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/changes.png")).platformPath; $icon)
-	CREATE THUMBNAIL:C679($icon; $icon; 20; 20)
-	Form:C1466.menu[0].icon:=$icon
-	READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/commits.png")).platformPath; $icon)
-	CREATE THUMBNAIL:C679($icon; $icon; 20; 20)
-	Form:C1466.menu[1].icon:=$icon
-	
-	Form:C1466.menu:=Form:C1466.menu  // Force redraw
 	
 	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
 		
@@ -1628,18 +1595,25 @@ Function loadIcons()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateCommitList()
 	
-	var $line : Text
+	var $branch; $line; $main; $parent; $style; $t : Text
+	var $tag : Text
 	var $i; $notPushed : Integer
-	var $c : Collection
+	var $c; $labels; $metas : Collection
 	var $git : cs:C1710.Git
 	
 	$git:=This:C1470.Git
 	
 	Form:C1466.commits:=[]
 	
-	$notPushed:=$git.notPushedNumber
+	//$git.execute("log origin...HEAD --oneline")
+	
+	$notPushed:=$git.branchPushNumber()
+	
+	//$git.execute("log --graph --oneline --decorate")
+	//SET TEXT TO PASTEBOARD($git.result)
 	
 	$git.execute("log -g --abbrev-commit --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
+	//SET TEXT TO PASTEBOARD($git.result)
 	
 /*
 0 = message
@@ -1650,66 +1624,128 @@ Function updateCommitList()
 5 = parent short sha
 6 = parent sh
 7 = author mail
+8 = shortened reflog
+9 = ref names
 */
-	
-	var $branch; $main : Text
-	$main:=""
-	$branch:=""
-	
-	ARRAY LONGINT:C221($pos; 0x0000)
-	ARRAY LONGINT:C221($len; 0x0000)
 	
 	// One commit per line
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
 		
 		$c:=Split string:C1554($line; "|")
 		
-		If ($c.length>=8)
+		If ($c.length<8) || ($parent=$c[5])
 			
-			$i+=1
-			
-			If ($i<=$notPushed)
-				
-				$c[0]:="↑ "+$c[0]
-				
-			End if 
-			
-			If (Length:C16($c[9])>0)
-				
-				If (Match regex:C1019("(?m-si)origin/(?!HEAD)([^,$]*)"; $c[9]; 1; $pos; $len))
-					
-					$branch:=Substring:C12($c[9]; $pos{1}; $len{1})
-					
-					If ($branch="master") | ($branch="main")
-						
-						$main:=$branch
-						
-					End if 
-					
-				End if 
-				
-			Else 
-				
-				$branch:=$main
-				
-			End if 
-			
-			Form:C1466.commits.push({\
-				title: $c[0]; \
-				author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
-				stamp: String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?); \
-				fingerprint: {short: $c[2]; long: $c[4]}; \
-				parent: {short: $c[5]; long: $c[6]}; \
-				notPushed: $i<=$notPushed; \
-				origin: $i=($notPushed+1); branch: $branch\
-				})
-			
-			//; branch: $branch
+			continue
 			
 		End if 
+		
+		$i+=1
+		
+		$parent:=$c[5]
+		
+		If ($i<=$notPushed)
+			
+			$c[0]:="↑ "+$c[0]
+			
+		End if 
+		
+		$labels:=[]
+		CLEAR VARIABLE:C89($style)
+		
+		$metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+		
+		If ($metas.length>0)
+			
+			For each ($tag; $metas)
+				
+				Case of 
+						
+						//______________________________________________________
+					: ($tag="HEAD -> @")  // HEAD current branch
+						
+						$style:="bold"
+						
+						If ($metas.includes("origin/HEAD"))
+							
+							// Synchronized
+							$labels.push(Replace string:C233($tag; "HEAD -> "; "")+" ┊")
+							
+						Else 
+							
+							// Not synchronized
+							$labels.push("🚧"+Replace string:C233($tag; "HEAD ->"; "")+" ┊")
+							
+						End if 
+						
+						$branch:=$git.workingBranch.name
+						$main:=$branch
+						
+						//______________________________________________________
+					: ($tag="tag: @")  // Tag
+						
+						$labels.push(Replace string:C233($tag; "tag:"; "🏷️")+" ┊")
+						
+						//______________________________________________________
+					: ($tag="origin/HEAD")  // Checked out branch
+						
+						$labels.push("🏁")
+						
+						//______________________________________________________
+					: ($tag="origin/@")  // Origin branch
+						
+						$branch:=Replace string:C233($tag; "origin/"; "")
+						
+						//______________________________________________________
+					Else   // Branch
+						
+						$labels.insert(0; "🏁 "+$tag+" ┊")
+						$branch:=$tag
+						
+						//______________________________________________________
+				End case 
+			End for each 
+			
+		Else 
+			
+			$branch:=$main
+			
+		End if 
+		
+		
+		$labels.push($c[0])
+		$t:=$labels.join(" ")
+		
+		Case of 
+				
+				//______________________________________________________
+			: ($style="bold")
+				
+				ST SET ATTRIBUTES:C1093($t; ST Start text:K78:15; ST End text:K78:16; \
+					Attribute bold style:K65:1; 1)
+				
+				//______________________________________________________
+			Else 
+				
+				// A "Case of" statement should never omit "Else"
+				
+				//______________________________________________________
+		End case 
+		
+		Form:C1466.commits.push({\
+			title: $t; \
+			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
+			stamp: String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?); \
+			fingerprint: {short: $c[2]; long: $c[4]}; \
+			parent: {short: $c[5]; long: $c[6]}; \
+			notPushed: $i<=$notPushed; \
+			origin: $i=($notPushed+1); \
+			branch: $branch; \
+			sort: (Date:C102($c[3])-!1970-01-01!)+Num:C11($c[3])\
+			})
+		
 	End for each 
 	
-	Form:C1466.commits:=Form:C1466.commits
+	Form:C1466.commits:=Form:C1466.commits.orderBy("sort desc")
 	
 	This:C1470.form.update()
 	
@@ -1917,11 +1953,11 @@ Function metaCommits($item : Object) : Object
 	
 	If ($item.branch=This:C1470.Git.workingBranch.name)
 		
-		return {cell: {commitTitle: {fontWeight: "bold"}}}
+		return {}
 		
 	Else 
 		
-		return {cell: {commitTitle: {fontStyle: "italic"}}}
+		return {cell: {commitTitle: {fontStyle: "italic"; stroke: "grey"}}}
 		
 	End if 
 	

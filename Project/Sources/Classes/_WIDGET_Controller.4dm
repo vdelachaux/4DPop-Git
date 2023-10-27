@@ -606,8 +606,7 @@ Function _doMoreMenu()
 				
 			End if 
 			
-			$git.execute("stash -u"+(Length:C16($t)>0 ? "-m "+$t : ""))
-			
+			$git.execute("stash -u"+(Length:C16($t)>0 ? " -m "+$t : ""))
 			$git.execute("stash apply refs/stash")
 			
 			//———————————————————————————————————————

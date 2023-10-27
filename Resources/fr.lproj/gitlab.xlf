@@ -101,7 +101,7 @@ Toutes les modifications non validées seront perdues.</target>
         
         
         <trans-unit id="PpfP4oF59uHwzvf1ucvTCw" resname="allCommits">
-          <source>All commits</source>
+          <source>History</source>
           <target>Historique</target>
         </trans-unit>
         <trans-unit id="THAQ+mal4QRJV+0bEylrPA" resname="commitSubject">

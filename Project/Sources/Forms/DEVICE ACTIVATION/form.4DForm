@@ -13,7 +13,6 @@
 		"onTimer"
 	],
 	"windowTitle": "window title",
-	"destination": "detailScreen",
 	"pages": [
 		{
 			"objects": {}
@@ -50,5 +49,6 @@
 		}
 	},
 	"rightMargin": 0,
-	"bottomMargin": 0
+	"bottomMargin": 0,
+	"destination": "detailScreen"
 }
