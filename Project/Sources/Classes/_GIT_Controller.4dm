@@ -344,6 +344,8 @@ Function handleEvents($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
 	
+	This:C1470.darkMode:=FORM Get color scheme:C1761="dark"
+	
 	This:C1470.toolbarLeft.distributeLeftToRight({\
 		minWidth: 50; \
 		spacing: 10})
@@ -606,6 +608,11 @@ Function onActivate()
 		
 		This:C1470.loadIcons()
 		
+		If (This:C1470.form.page=This:C1470.pages.commits)
+			
+			This:C1470.updateCommitList()
+			
+		End if 
 	End if 
 	
 	$git:=This:C1470.Git
@@ -1595,25 +1602,24 @@ Function loadIcons()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateCommitList()
 	
-	var $branch; $line; $main; $parent; $style; $t : Text
-	var $tag : Text
+	var $branch; $line; $main; $style; $tag : Text
+	var $empty; $label; $separator : Picture
 	var $i; $notPushed : Integer
-	var $c; $labels; $metas : Collection
+	var $item
+	var $commit : Object
+	var $c; $commits; $metas; $tags : Collection
 	var $git : cs:C1710.Git
 	
+	$commit:={}
+	$commits:=[]
+	
+	CREATE THUMBNAIL:C679($separator; $separator; 5)
+	CREATE THUMBNAIL:C679($empty; $empty; 5)
+	
 	$git:=This:C1470.Git
-	
-	Form:C1466.commits:=[]
-	
-	//$git.execute("log origin...HEAD --oneline")
-	
 	$notPushed:=$git.branchPushNumber()
 	
-	//$git.execute("log --graph --oneline --decorate")
-	//SET TEXT TO PASTEBOARD($git.result)
-	
-	$git.execute("log -g --abbrev-commit --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
-	//SET TEXT TO PASTEBOARD($git.result)
+	$git.execute("log --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	
 /*
 0 = message
@@ -1631,17 +1637,11 @@ Function updateCommitList()
 	// One commit per line
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
 		
+		//$commit:={}
+		
 		$c:=Split string:C1554($line; "|")
 		
-		If ($c.length<8) || ($parent=$c[5])
-			
-			continue
-			
-		End if 
-		
 		$i+=1
-		
-		$parent:=$c[5]
 		
 		If ($i<=$notPushed)
 			
@@ -1649,8 +1649,9 @@ Function updateCommitList()
 			
 		End if 
 		
-		$labels:=[]
 		CLEAR VARIABLE:C89($style)
+		
+		$tags:=[Null:C1517; Null:C1517; Null:C1517]
 		
 		$metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 		
@@ -1663,46 +1664,67 @@ Function updateCommitList()
 						//______________________________________________________
 					: ($tag="HEAD -> @")  // HEAD current branch
 						
+						$commit._HEAD:=True:C214
+						
 						$style:="bold"
 						
 						If ($metas.includes("origin/HEAD"))
 							
 							// Synchronized
-							$labels.push(Replace string:C233($tag; "HEAD -> "; "")+" ┊")
+							$tags[0]:=This:C1470.getLabelTag("origin synchronized")
 							
 						Else 
 							
 							// Not synchronized
-							$labels.push("🚧"+Replace string:C233($tag; "HEAD ->"; "")+" ┊")
+							$tags[0]:=This:C1470.getLabelTag("origin")
 							
 						End if 
+						
+						$tags[1]:=This:C1470.getLabelTag("current branch"; Replace string:C233($tag; "HEAD ->"; ""))
 						
 						$branch:=$git.workingBranch.name
 						$main:=$branch
 						
-						
-						
-						
 						//______________________________________________________
 					: ($tag="tag: @")  // Tag
 						
-						$labels.push(Replace string:C233($tag; "tag:"; "🏷️")+" ┊")
+						$commit._tag:=Replace string:C233($tag; "tag: "; "")
+						$tags[2]:=This:C1470.getLabelTag("tag"; Replace string:C233($tag; "tag: "; ""))
 						
 						//______________________________________________________
 					: ($tag="origin/HEAD")  // Checked out branch
 						
-						$labels.push("🏁")
+						$commit._current:=True:C214
+						
+						If ($metas.includes("HEAD -> @"))
+							
+							continue
+							
+						End if 
+						
+						$tags[0]:=This:C1470.getLabelTag("origin synchronized")
 						
 						//______________________________________________________
 					: ($tag="origin/@")  // Origin branch
 						
-						$branch:=Replace string:C233($tag; "origin/"; "")
+						$commit._origin:=Replace string:C233($tag; "origin/"; "")
+						
+						If ($metas.includes("HEAD -> @"))
+							
+							continue
+							
+						End if 
+						
+						$tags[0]:=This:C1470.getLabelTag("origin synchronized")
 						
 						//______________________________________________________
 					Else   // Branch
 						
-						$labels.insert(0; "🏁 "+$tag+" ┊")
 						$branch:=$tag
+						
+						$commit._branch:=$branch
+						
+						$tags[1]:=This:C1470.getLabelTag("branch"; $branch)
 						
 						//______________________________________________________
 				End case 
@@ -1714,28 +1736,34 @@ Function updateCommitList()
 			
 		End if 
 		
+		// Mark:Create line
+		$label:=$separator
 		
-		$labels.push($c[0])
-		$t:=$labels.join(" ")
+		For each ($item; $tags)
+			
+			If ($item=Null:C1517)
+				
+				continue
+				
+			End if 
+			
+			$label:=$label+$item+$separator
+			
+		End for each 
 		
-		Case of 
-				
-				//______________________________________________________
-			: ($style="bold")
-				
-				ST SET ATTRIBUTES:C1093($t; ST Start text:K78:15; ST End text:K78:16; \
-					Attribute bold style:K65:1; 1)
-				
-				//______________________________________________________
-			Else 
-				
-				// A "Case of" statement should never omit "Else"
-				
-				//______________________________________________________
-		End case 
+		$label:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
 		
-		Form:C1466.commits.push({\
-			title: $t; \
+		//$commit.label:=$label
+		//$commit.author:={name: $c[1]; mail: $c[7]; avatar: This.getAvatar($c[7])}
+		//$commit.stamp:=String(Date($c[3]))+" at "+String(Time($c[3])+?00:00:00?)
+		//$commit.fingerprint:={short: $c[2]; long: $c[4]}
+		//$commit.notPushed:=$i<=$notPushed
+		//$commit.origin:=$i=($notPushed+1)
+		//$commit.branch:=$branch
+		//$commit.sort:=(Date($c[3])-!1970-01-01!)+Num($c[3])
+		
+		$commit:={\
+			label: $label; \
 			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
 			stamp: String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?); \
 			fingerprint: {short: $c[2]; long: $c[4]}; \
@@ -1744,64 +1772,87 @@ Function updateCommitList()
 			origin: $i=($notPushed+1); \
 			branch: $branch; \
 			sort: (Date:C102($c[3])-!1970-01-01!)+Num:C11($c[3])\
-			})
+			}
+		
+		$commits.push($commit)
 		
 	End for each 
 	
-	Form:C1466.commits:=Form:C1466.commits.orderBy("sort desc")
+	Form:C1466.commits:=$commits.orderBy("sort desc")
 	
 	This:C1470.form.update()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function getLabelTag($what : Text; $text : Text) : Picture
+Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
-	var $image : Picture
+	var $icon : Picture
 	var $svg : cs:C1710.svg
 	$svg:=cs:C1710.svg.new()
 	
 	Case of 
 			
 			//______________________________________________________
+		: ($what="title")
+			
+			$svg.text($text).position(2; 15)\
+				.fontStyle($style.bold ? Bold:K14:2 : Plain:K14:1)\
+				.color($style.main ? (Form:C1466.dark ? "white" : "black") : (Form:C1466.dark ? "silver" : "darkgray"))
+			
+			return $svg.picture()
+			
+			//______________________________________________________
 		: ($what="branch")
 			
-			$svg.rect(10*Length:C16($text); 20).radius(5).stroke("red").fill("pink").position(0.5; 0.5)
-			$svg.text($text).position(10; 15).fontStyle(Bold:K14:2)
+			$svg.rect($svg.getTextWidth($text)*1.2; 20).radius(4).stroke("red").fill("pink").position(0.5; 0.5).opacity(0.5)
+			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2)
+			
 			return $svg.picture()
 			
 			//______________________________________________________
 		: ($what="current branch")
 			
 			$text:="✔️ "+$text
-			$svg.rect(10*Length:C16($text); 20).radius(5).stroke("red").fill("pink").position(0.5; 0.5)
-			$svg.text($text).position(10; 15).fontStyle(Bold:K14:2)
+			$svg.rect($svg.getTextWidth($text)+10; 20).radius(4).stroke("red").fill("pink").position(0.5; 0.5).opacity(0.5)
+			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2)
+			
 			return $svg.picture()
 			
 			//______________________________________________________
 		: ($what="origin synchronized")
 			
-			$svg.square(20).radius(5).stroke("green").fill("white").position(0.5; 0.5)
-			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $image)
-			$svg.image($image).position(2.5; 2.5)
+			$svg.square(20).radius(4).stroke("green").fill("white").position(0.5; 0.5).opacity(0.5)
+			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $icon)
+			$svg.image($icon).position(2.5; 2.5)
+			
+			return $svg.picture()
+			
+			//______________________________________________________
+		: ($what="tag")
+			
+			$svg.rect($svg.getTextWidth($text)+28; 20).radius(4).stroke("blue").fill("mediumpurple").position(0.5; 0.5).opacity(0.5)
+			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/tag.png").platformPath; $icon)
+			$svg.image($icon).position(2.5; 2.5)
+			$svg.line(21; 0; 21; 20).stroke("blue")
+			$svg.text($text).position(25; 15)
+			
 			return $svg.picture()
 			
 			//______________________________________________________
 		: ($what="origin")
 			
 			$text:="origin/ "+$text
-			$svg.rect(9*Length:C16($text); 20).radius(5).stroke("green").fill("palegreen").position(0.5; 0.5)
-			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $image)
-			$svg.image($image).position(2.5; 2.5)
+			$svg.rect($svg.getTextWidth($text)*1.1; 20).radius(4).stroke("green").fill("palegreen").position(0.5; 0.5).opacity(0.5)
+			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $icon)
+			$svg.image($icon).position(2.5; 2.5)
 			$svg.line(21; 0; 21; 20).stroke("green")
 			$svg.text($text).position(25; 15)
+			
 			return $svg.picture()
 			
 			//______________________________________________________
-		Else 
-			
-			$svg.close()
-			
-			//______________________________________________________
 	End case 
+	
+	$svg.close()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleMenus($what : Text; $current : Object)
@@ -2005,15 +2056,13 @@ Function getAvatar($mail : Text) : Picture
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function metaCommits($item : Object) : Object
 	
-	If ($item.branch=This:C1470.Git.workingBranch.name)
-		
-		return {}
-		
-	Else 
-		
-		return {cell: {commitTitle: {fontStyle: "italic"; stroke: "grey"}}}
-		
-	End if 
+	return {}
+	
+	//If ($item.branch=This.Git.workingBranch.name)
+	//return {}
+	//Else 
+	//return {cell: {commitTitle: {fontStyle: "italic"; stroke: "grey"}}}
+	//End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function meta($item : Object) : Object

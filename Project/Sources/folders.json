@@ -22,7 +22,9 @@
 			"http",
 			"menu",
 			"menuBar",
-			"motor"
+			"motor",
+			"svg",
+			"xml"
 		]
 	},
 	"⚙️ MACROS": {},
@@ -38,6 +40,7 @@
 			"COMPILER_UI",
 			"dropableWidgetMethod",
 			"form_spreadToSubforms",
+			"formCallBack",
 			"formGetInstance",
 			"formMenuHandle",
 			"formMethod",
@@ -46,6 +49,7 @@
 		"classes": [
 			"buttonDelegate",
 			"comboBoxDelegate",
+			"constraintsDelegate",
 			"dropDownDelegate",
 			"formDelegate",
 			"groupDelegate",

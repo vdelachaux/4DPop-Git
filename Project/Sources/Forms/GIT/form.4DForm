@@ -606,18 +606,17 @@
 					"columns": [
 						{
 							"header": {
-								"text": "Header1",
-								"name": "Header5"
+								"name": "Header1",
+								"text": "Header1"
 							},
-							"name": "commitTitle",
+							"name": "Column1",
+							"dataSource": "This:C1470.label",
+							"dataSourceTypeHint": "picture",
+							"resizable": true,
 							"footer": {
-								"name": "Footer5"
+								"name": "Footer1"
 							},
-							"dataSource": "This:C1470.title",
-							"width": 550,
-							"enterable": false,
-							"minWidth": 400,
-							"styledText": true
+							"width": 550
 						},
 						{
 							"header": {
@@ -796,7 +795,7 @@
 					"type": "input",
 					"left": 333,
 					"top": 581,
-					"width": 285,
+					"width": 349,
 					"height": 17,
 					"dataSource": "formGetInstance.commits.item.fingerprint.long",
 					"fontWeight": "normal",
@@ -962,5 +961,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 852
+	"geometryStamp": 855
 }
