@@ -1641,17 +1641,19 @@ Function updateCommitList()
 		
 		$c:=Split string:C1554($line; "|")
 		
-		$i+=1
-		
-		If ($i<=$notPushed)
-			
-			$c[0]:="↑ "+$c[0]
-			
-		End if 
+		//ASSERT($c[0]#"wip on labelTags")
 		
 		CLEAR VARIABLE:C89($style)
 		
 		$tags:=[Null:C1517; Null:C1517; Null:C1517]
+		
+		$i+=1
+		
+		If ($i<=$notPushed)
+			//$c[0]:="↑ "+$c[0]
+			$tags[0]:=This:C1470.getLabelTag("title"; "•")
+		End if 
+		
 		
 		$metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 		
@@ -1675,8 +1677,7 @@ Function updateCommitList()
 							
 						Else 
 							
-							// Not synchronized
-							$tags[0]:=This:C1470.getLabelTag("origin")
+							//$tags[0]:=This.getLabelTag("title"; "•")
 							
 						End if 
 						
@@ -1696,7 +1697,7 @@ Function updateCommitList()
 						
 						$commit._current:=True:C214
 						
-						If ($metas.includes("HEAD -> @"))
+						If ($metas.includes("HEAD -> @")) | ($tags[0]#Null:C1517)
 							
 							continue
 							
@@ -1715,7 +1716,8 @@ Function updateCommitList()
 							
 						End if 
 						
-						$tags[0]:=This:C1470.getLabelTag("origin synchronized")
+/*$tags[0]:=This.getLabelTag("origin synchronized")*/
+						$tags[0]:=This:C1470.getLabelTag("origin"; Replace string:C233($tag; "origin/"; ""))
 						
 						//______________________________________________________
 					Else   // Branch
@@ -1840,8 +1842,8 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			//______________________________________________________
 		: ($what="origin")
 			
-			$text:="origin/ "+$text
-			$svg.rect($svg.getTextWidth($text)*1.1; 20).radius(4).stroke("green").fill("palegreen").position(0.5; 0.5).opacity(0.5)
+			$text:="origin/"+$text
+			$svg.rect($svg.getTextWidth($text)+28; 20).radius(4).stroke("green").fill("palegreen").position(0.5; 0.5).opacity(0.5)
 			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $icon)
 			$svg.image($icon).position(2.5; 2.5)
 			$svg.line(21; 0; 21; 20).stroke("green")
