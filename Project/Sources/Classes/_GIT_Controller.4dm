@@ -1624,7 +1624,7 @@ Function updateCommitList()
 	CREATE THUMBNAIL:C679($empty; $empty; 5)
 	
 	var $graphMain : Picture
-	$graphMain:=This:C1470.getLabelTag("graph")
+	$graphMain:=This:C1470.getLabelTag("graph"; "orange")
 	
 	$git:=This:C1470.Git
 	
@@ -1648,7 +1648,6 @@ Function updateCommitList()
 8 = shortened reflog
 9 = ref names
 */
-	
 	
 	// One commit per line
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
@@ -1744,7 +1743,6 @@ Function updateCommitList()
 		End if 
 		
 		// Mark:Create label
-		//$label:=$separator
 		$label:=$graphMain+$separator
 		
 		For each ($item; $tags)
@@ -1782,6 +1780,15 @@ Function updateCommitList()
 	
 	Form:C1466.commits:=$commits.orderBy("sort desc")
 	
+	// Restore selection, if any
+	If (This:C1470.commits.item#Null:C1517)
+		
+		var $indx : Integer
+		$indx:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)[0]
+		This:C1470.commits.select($indx+1)
+		
+	End if 
+	
 	This:C1470.form.update()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1796,7 +1803,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="graph")
 			
-			$svg.width(10).height(30).color("orange").stroke(2)
+			$svg.width(10).height(30).color($text).stroke(2)
 			$svg.line(5; 0; 5; 24)
 			$svg.circle(3; 5; 10)
 			
