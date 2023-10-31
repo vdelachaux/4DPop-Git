@@ -235,10 +235,10 @@ Function update()
 	
 	$changes:=$git.status()
 	
-	If ($git.status()>0)
+	If ($changes>0)
 		
 		This:C1470.localChanges.setLinkedPopupMenu()\
-			.setTitle(String:C10($git.status()))\
+			.setTitle(String:C10($changes))\
 			.bestSize(Align left:K42:2)
 		
 	Else 
