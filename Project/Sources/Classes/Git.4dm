@@ -310,16 +310,13 @@ Function status($short : Boolean) : Integer
 	
 	If (This:C1470.execute($cmd))
 		
-		If (Position:C15("\n"; String:C10(This:C1470.result))>0)
+		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
-			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
-				
-				This:C1470.changes.push({\
-					status: $t[[1]]+$t[[2]]; \
-					path: Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")})
-				
-			End for each 
-		End if 
+			This:C1470.changes.push({\
+				status: $t[[1]]+$t[[2]]; \
+				path: Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")})
+			
+		End for each 
 	End if 
 	
 	return This:C1470.changes.length
