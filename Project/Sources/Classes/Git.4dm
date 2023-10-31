@@ -742,7 +742,8 @@ Function branchPushNumber($branch : Text) : Integer
 	
 	If (Length:C16($branch)>0)
 		
-		This:C1470.execute("rev-list origin/"+$branch+"..HEAD --single-worktree")
+		// This.execute("rev-list origin/"+$branch+"..HEAD --first-parent --single-worktree")
+		This:C1470.execute("rev-list origin/"+$branch+".."+$branch+" --single-worktree")
 		
 	Else 
 		

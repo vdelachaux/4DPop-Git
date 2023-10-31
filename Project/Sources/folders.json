@@ -63,6 +63,7 @@
 			"stepperDelegate",
 			"subformDelegate",
 			"thermometerDelegate",
+			"webAreaDelegate",
 			"widgetDelegate",
 			"windowDelegate"
 		]

@@ -148,6 +148,10 @@ Voulez-vous télécharger l'installateur ?</target>
           <source>Name (optional)</source>
           <target>Nom (facultatif)</target>
         </trans-unit>
+        <trans-unit id="TnqtftaBecYGx68P3zexgQ" resname="local">
+          <source>Local</source>
+          <target>Local</target>
+        </trans-unit>
       </group>
       <group resname="pattern">
         <trans-unit id="RxY9OfmekBpp22bMfG8PUQ" resname="addPatternToGitignore">
@@ -292,8 +296,20 @@ avec 4D "{version}"</target>
     • Ves : {dest}</target>
         </trans-unit>
       </group>
+      <group resname="Common">
+        <trans-unit id="_QV+y3JxwqeVyIptkO6CTw" resname="today">
+          <source>Today</source>
+          <target>Aujourd'hui</target>
+        </trans-unit>
+        <trans-unit id="cv5Ce93eSnhanKPcvz7pOA" resname="yesterday">
+          <source>Yesterday</source>
+          <target>Hier</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
+
 
 
 

@@ -94,7 +94,6 @@ Function init()
 	
 	This:C1470.changes:=This:C1470.form.button.new("changes")
 	This:C1470.history:=This:C1470.form.button.new("history")
-	This:C1470.tab:=This:C1470.form.static.new("tab")
 	
 	This:C1470.open:=This:C1470.form.button.new("open")
 	
@@ -178,13 +177,6 @@ Function handleEvents($e : cs:C1710.evt)
 			: ($e.unload)
 				
 				CLEAR LIST:C377(Form:C1466.selector; *)
-				
-				// Restore tab position
-				var $o : Object
-				$o:=This:C1470.tab.coordinates
-				$o.left:=0
-				$o.right:=109
-				This:C1470.tab.setCoordinates($o)
 				
 				//______________________________________________________
 		End case 
@@ -308,7 +300,7 @@ Function handleEvents($e : cs:C1710.evt)
 					This:C1470.description.clear()
 					This:C1470.amend.clear()
 					
-					This:C1470.onActivate()
+					This:C1470.form.refresh()
 					
 				End if 
 				
@@ -599,7 +591,7 @@ Function update()
 Function onActivate()
 	
 	var $t : Text
-	var $notPushed; $ref : Integer
+	var $notPulled; $notPushed; $ref : Integer
 	var $o : Object
 	var $git : cs:C1710.Git
 	var $list; $sublist : cs:C1710.Hlist
@@ -620,19 +612,16 @@ Function onActivate()
 	// Mark:Update menu label
 	If ($git.status()>0)
 		
-		This:C1470.changes.title:=Get localized string:C991("changes")+" ("+String:C10($git.changes.length)+")"
+		This:C1470.changes.title:=Get localized string:C991("local")+" ("+String:C10($git.changes.length)+")"
 		
 	Else 
 		
-		This:C1470.changes.title:=Get localized string:C991("changes")
+		This:C1470.changes.title:=Get localized string:C991("local")
 		
 		Form:C1466.unstaged.clear()
 		Form:C1466.staged.clear()
 		
 	End if 
-	
-	$notPushed:=$git.branchPushNumber()
-	This:C1470.history.title:=Get localized string:C991("allCommits")+($notPushed=0 ? "" : " "+String:C10($notPushed)+"↑")
 	
 	// Mark:Branch list
 	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
@@ -648,6 +637,10 @@ Function onActivate()
 			
 			$o.type:="branch"
 			
+			// TODO: hieararchical branches
+			// Var $c : Collection
+			// $c:=Split string($o.name; "/")
+			
 			$sublist.Append($o.name)\
 				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
 			
@@ -656,11 +649,36 @@ Function onActivate()
 				$sublist.SetIcon({icon: Form:C1466.icons.master})\
 					.SetItemStyle(Bold:K14:2)
 				
+				$notPushed:=$git.branchPushNumber()
+				$notPulled:=$git.branchFetchNumber()
+				
 			Else 
 				
 				$sublist.SetIcon({icon: Form:C1466.icons.branch})
 				
+				$notPushed:=$git.branchPushNumber($o.name)
+				$notPulled:=$git.branchFetchNumber($o.name)
+				
 			End if 
+			
+			Case of 
+					//______________________________________________________
+				: ($notPulled>0) & ($notPushed>0)
+					
+					$sublist.SetAdditionalText(String:C10($notPushed)+"↑↓"+String:C10($notPulled)+" ")
+					
+					//______________________________________________________
+				: ($notPushed>0)
+					
+					$sublist.SetAdditionalText(String:C10($notPushed)+"↑ ")
+					
+					//______________________________________________________
+				: ($notPulled>0)
+					
+					$sublist.SetAdditionalText("↓"+String:C10($notPulled)+" ")
+					
+					//______________________________________________________
+			End case 
 		End for each 
 	End if 
 	
@@ -721,18 +739,6 @@ Function onActivate()
 	$list.selectedReference:=$ref
 	
 	This:C1470.form.refresh()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function goToPage($page : Integer)
-	
-	var $o : Object
-	
-	$o:=This:C1470.tab.coordinates
-	$o.left:=109*($page-1)
-	$o.right:=109*$page
-	This:C1470.tab.setCoordinates($o)
-	
-	This:C1470.form.goToPage($page)
 	
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1412,6 +1418,13 @@ Function GetStyledDiffText($item : Object) : Text
 	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function goToPage($page : Integer)
+	
+	This:C1470.changes.value:=Num:C11($page=1)
+	This:C1470.history.value:=Num:C11($page=2)
+	This:C1470.form.goToPage($page)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Stage($items : Collection)
 	
 	var $o : Object
@@ -1590,19 +1603,19 @@ Function loadIcons()
 	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath; $icon)
 	Form:C1466.logo:=$icon
 	
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/added.png").platformPath; $icon)
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/added.svg").platformPath; $icon)
 	Form:C1466.iconAdded:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/deleted.png").platformPath; $icon)
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/deleted.svg").platformPath; $icon)
 	Form:C1466.iconDeleted:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/modified.png").platformPath; $icon)
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/modified.svg").platformPath; $icon)
 	Form:C1466.iconModified:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/moved.png").platformPath; $icon)
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/moved.svg").platformPath; $icon)
 	Form:C1466.iconMoved:=$icon
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateCommitList()
 	
-	var $branch; $line; $main; $style; $tag : Text
+	var $branch; $line; $main; $meta; $style : Text
 	var $empty; $label; $separator : Picture
 	var $i; $notPushed : Integer
 	var $item
@@ -1616,8 +1629,16 @@ Function updateCommitList()
 	CREATE THUMBNAIL:C679($separator; $separator; 5)
 	CREATE THUMBNAIL:C679($empty; $empty; 5)
 	
+	var $graphMain : Picture
+	$graphMain:=This:C1470.getLabelTag("graph")
+	
 	$git:=This:C1470.Git
+	
 	$notPushed:=$git.branchPushNumber()
+	
+	var $date; $today; $yesterday : Date
+	$today:=Current date:C33
+	$yesterday:=$today-1
 	
 	$git.execute("log --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	
@@ -1634,14 +1655,11 @@ Function updateCommitList()
 9 = ref names
 */
 	
+	
 	// One commit per line
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
 		
-		//$commit:={}
-		
 		$c:=Split string:C1554($line; "|")
-		
-		//ASSERT($c[0]#"wip on labelTags")
 		
 		CLEAR VARIABLE:C89($style)
 		
@@ -1650,85 +1668,78 @@ Function updateCommitList()
 		$i+=1
 		
 		If ($i<=$notPushed)
-			//$c[0]:="↑ "+$c[0]
-			$tags[0]:=This:C1470.getLabelTag("title"; "•")
+			
+			$tags[0]:=This:C1470.getLabelTag("toPush")
+			
 		End if 
-		
 		
 		$metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 		
 		If ($metas.length>0)
 			
-			For each ($tag; $metas)
+			For each ($meta; $metas)
 				
 				Case of 
 						
-						//______________________________________________________
-					: ($tag="HEAD -> @")  // HEAD current branch
-						
-						$commit._HEAD:=True:C214
+						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+					: ($meta="HEAD -> @")  // HEAD current branch
 						
 						$style:="bold"
 						
 						If ($metas.includes("origin/HEAD"))
 							
-							// Synchronized
-							$tags[0]:=This:C1470.getLabelTag("origin synchronized")
-							
-						Else 
-							
-							//$tags[0]:=This.getLabelTag("title"; "•")
+							$tags[0]:=This:C1470.getLabelTag("origin")
 							
 						End if 
 						
-						$tags[1]:=This:C1470.getLabelTag("current branch"; Replace string:C233($tag; "HEAD ->"; ""))
+						$tags[1]:=This:C1470.getLabelTag("current branch"; Replace string:C233($meta; "HEAD ->"; ""))
 						
 						$branch:=$git.workingBranch.name
 						$main:=$branch
 						
-						//______________________________________________________
-					: ($tag="tag: @")  // Tag
+						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+					: ($meta="tag: @")  // Tag
 						
-						$commit._tag:=Replace string:C233($tag; "tag: "; "")
-						$tags[2]:=This:C1470.getLabelTag("tag"; Replace string:C233($tag; "tag: "; ""))
+						$tags[2]:=This:C1470.getLabelTag("tag"; Replace string:C233($meta; "tag: "; ""))
 						
-						//______________________________________________________
-					: ($tag="origin/HEAD")  // Checked out branch
+						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+					: ($meta="origin/HEAD")  // Checked out branch
 						
-						$commit._current:=True:C214
-						
-						If ($metas.includes("HEAD -> @")) | ($tags[0]#Null:C1517)
+						If ($tags[0]#Null:C1517)\
+							 | ($metas.includes("HEAD -> @"))
 							
 							continue
 							
 						End if 
 						
-						$tags[0]:=This:C1470.getLabelTag("origin synchronized")
+						$tags[0]:=This:C1470.getLabelTag("origin")
 						
-						//______________________________________________________
-					: ($tag="origin/@")  // Origin branch
+						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+					: ($meta="origin/@")  // Origin branch
 						
-						$commit._origin:=Replace string:C233($tag; "origin/"; "")
-						
-						If ($metas.includes("HEAD -> @"))
+						If ($tags[0]#Null:C1517)
 							
 							continue
 							
 						End if 
 						
-/*$tags[0]:=This.getLabelTag("origin synchronized")*/
-						$tags[0]:=This:C1470.getLabelTag("origin"; Replace string:C233($tag; "origin/"; ""))
+						If ($metas.includes(Replace string:C233($meta; "origin/"; "")))
+							
+							$tags[0]:=This:C1470.getLabelTag("origin")
+							
+						Else 
+							
+							$tags[0]:=This:C1470.getLabelTag("origin"; Replace string:C233($meta; "origin/"; ""))
+							
+						End if 
 						
-						//______________________________________________________
+						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					Else   // Branch
 						
-						$branch:=$tag
-						
-						$commit._branch:=$branch
-						
+						$branch:=$meta
 						$tags[1]:=This:C1470.getLabelTag("branch"; $branch)
 						
-						//______________________________________________________
+						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 				End case 
 			End for each 
 			
@@ -1738,8 +1749,9 @@ Function updateCommitList()
 			
 		End if 
 		
-		// Mark:Create line
-		$label:=$separator
+		// Mark:Create label
+		//$label:=$separator
+		$label:=$graphMain+$separator
 		
 		For each ($item; $tags)
 			
@@ -1749,25 +1761,18 @@ Function updateCommitList()
 				
 			End if 
 			
-			$label:=$label+$item+$separator
+			$label+=$item+$separator
 			
 		End for each 
 		
-		$label:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
+		$label+=This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
 		
-		//$commit.label:=$label
-		//$commit.author:={name: $c[1]; mail: $c[7]; avatar: This.getAvatar($c[7])}
-		//$commit.stamp:=String(Date($c[3]))+" at "+String(Time($c[3])+?00:00:00?)
-		//$commit.fingerprint:={short: $c[2]; long: $c[4]}
-		//$commit.notPushed:=$i<=$notPushed
-		//$commit.origin:=$i=($notPushed+1)
-		//$commit.branch:=$branch
-		//$commit.sort:=(Date($c[3])-!1970-01-01!)+Num($c[3])
+		$date:=Date:C102($c[3])
 		
 		$commit:={\
 			label: $label; \
 			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
-			stamp: String:C10(Date:C102($c[3]))+" at "+String:C10(Time:C179($c[3])+?00:00:00?); \
+			stamp: ($date=$today ? Get localized string:C991("today") : $date=$yesterday ? Get localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
 			fingerprint: {short: $c[2]; long: $c[4]}; \
 			parent: {short: $c[5]; long: $c[6]}; \
 			notPushed: $i<=$notPushed; \
@@ -1775,6 +1780,7 @@ Function updateCommitList()
 			branch: $branch; \
 			sort: (Date:C102($c[3])-!1970-01-01!)+Num:C11($c[3])\
 			}
+		//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		
 		$commits.push($commit)
 		
@@ -1793,7 +1799,16 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
 	Case of 
 			
-			//______________________________________________________
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+		: ($what="graph")
+			
+			$svg.width(10).height(30).color("orange").stroke(2)
+			$svg.line(5; 0; 5; 24)
+			$svg.circle(3; 5; 10)
+			
+			return $svg.picture()
+			
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="title")
 			
 			$svg.text($text).position(2; 15)\
@@ -1802,56 +1817,81 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			return $svg.picture()
 			
-			//______________________________________________________
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="branch")
 			
-			$svg.rect($svg.getTextWidth($text)*1.2; 20).radius(4).stroke("red").fill("pink").position(0.5; 0.5).opacity(0.5)
+			$svg.rect($svg.getTextWidth($text)*1.2; 20)\
+				.radius(4).position(0.5; 0.5)\
+				.stroke("red").fill("lightpink").opacity(0.3)
+			
 			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2)
 			
 			return $svg.picture()
 			
-			//______________________________________________________
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="current branch")
 			
-			$text:="✔️ "+$text
-			$svg.rect($svg.getTextWidth($text)+10; 20).radius(4).stroke("red").fill("pink").position(0.5; 0.5).opacity(0.5)
+			$text:="🚧 "+$text  //✔️
+			
+			$svg.rect($svg.getTextWidth($text)+10; 20)\
+				.radius(4).position(0.5; 0.5)\
+				.stroke("red").fill("lightpink").opacity(0.3)
+			
 			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2)
 			
 			return $svg.picture()
 			
-			//______________________________________________________
-		: ($what="origin synchronized")
-			
-			$svg.square(20).radius(4).stroke("green").fill("white").position(0.5; 0.5).opacity(0.5)
-			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $icon)
-			$svg.image($icon).position(2.5; 2.5)
-			
-			return $svg.picture()
-			
-			//______________________________________________________
-		: ($what="tag")
-			
-			$svg.rect($svg.getTextWidth($text)+28; 20).radius(4).stroke("blue").fill("mediumpurple").position(0.5; 0.5).opacity(0.5)
-			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/tag.png").platformPath; $icon)
-			$svg.image($icon).position(2.5; 2.5)
-			$svg.line(21; 0; 21; 20).stroke("blue")
-			$svg.text($text).position(25; 15)
-			
-			return $svg.picture()
-			
-			//______________________________________________________
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="origin")
 			
-			$text:="origin/"+$text
-			$svg.rect($svg.getTextWidth($text)+28; 20).radius(4).stroke("green").fill("palegreen").position(0.5; 0.5).opacity(0.5)
-			READ PICTURE FILE:C678(Folder:C1567(fk resources folder:K87:11).file("Images/Menus/gitHub.png").platformPath; $icon)
-			$svg.image($icon).position(2.5; 2.5)
-			$svg.line(21; 0; 21; 20).stroke("green")
+			If (Length:C16($text)>0)
+				
+				$text:="origin/"+$text
+				
+				$svg.rect($svg.getTextWidth($text)+28; 20)\
+					.radius(4).position(0.5; 0.5)\
+					.stroke("limegreen").fill("palegreen").opacity(0.3)
+				
+				$svg.line(21; 0; 21; 20).stroke("limegreen").opacity(0.3)
+				
+				$svg.text($text).position(25; 15)
+				
+			Else 
+				
+				$svg.rect(21; 20)\
+					.radius(4).position(0.5; 0.5)\
+					.stroke("limegreen").fill("white").opacity(0.5)
+				
+			End if 
+			
+			$svg.image(Form:C1466.icons.github).position(0.6; 0.6)
+			
+			return $svg.picture()
+			
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+		: ($what="tag")
+			
+			$svg.rect($svg.getTextWidth($text)+28; 20)\
+				.radius(4).position(0.5; 0.5)\
+				.stroke("blue").fill("lavender").opacity(0.5)
+			
+			$svg.image(Form:C1466.icons.tag).position(1; 1)
+			
+			$svg.line(21; 0; 21; 20).stroke("blue").opacity(0.5)
+			
 			$svg.text($text).position(25; 15)
 			
 			return $svg.picture()
 			
-			//______________________________________________________
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+		: ($what="toPush")
+			
+			$svg.circle(3).position(10; 10)\
+				.color("orangered")
+			
+			return $svg.picture()
+			
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 	End case 
 	
 	$svg.close()

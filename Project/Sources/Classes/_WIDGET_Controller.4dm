@@ -275,10 +275,10 @@ Function _doChangesMenu()
 	
 	For each ($o; $git.changes.orderBy("path"))
 		
-		$icon:=$o.status="@M@" ? "#Images/Main/modified.png"\
-			 : $o.status="@D@" ? "#Images/Main/deleted.png"\
-			 : $o.status="??" ? "#Images/Main/added.png"\
-			 : $o.status="@R@" ? "#Images/Main/moved.png"\
+		$icon:=$o.status="@M@" ? "#Images/Main/modified.svg"\
+			 : $o.status="@D@" ? "#Images/Main/deleted.svg"\
+			 : $o.status="??" ? "#Images/Main/added.svg"\
+			 : $o.status="@R@" ? "#Images/Main/moved.svg"\
 			 : ""
 		
 		$c:=Split string:C1554($o.path; "/")
