@@ -207,31 +207,24 @@ Function handleEvents($e : cs:C1710.evt)
 			: (This:C1470.fetch.catch($e; On Clicked:K2:4))
 				
 				$git.fetch()
-				
-				If ($git.fetch())\
-					 & (This:C1470.form.page=This:C1470.pages.commits)
-					
-					This:C1470.updateCommitList()
-					
-				End if 
+				This:C1470.onActivate()
 				
 				//==============================================
 			: (This:C1470.pull.catch($e; On Clicked:K2:4))
 				
 				$git.pull()
+				This:C1470.onActivate()
 				
 				RELOAD PROJECT:C1739
-				
-				If (This:C1470.form.page=This:C1470.pages.commits)
-					
-					This:C1470.updateCommitList()
-					
-				End if 
 				
 				//==============================================
 			: (This:C1470.push.catch($e; On Clicked:K2:4))
 				
-				If (Not:C34($git.push()))
+				If ($git.push())
+					
+					This:C1470.onActivate()
+					
+				Else 
 					
 					ALERT:C41($git.error)
 					
@@ -300,9 +293,9 @@ Function handleEvents($e : cs:C1710.evt)
 					This:C1470.description.clear()
 					This:C1470.amend.clear()
 					
-					This:C1470.form.refresh()
-					
 				End if 
+				
+				This:C1470.onActivate()
 				
 				//==============================================
 			: (This:C1470.commits.catch($e; On Selection Change:K2:29))
@@ -600,11 +593,12 @@ Function onActivate()
 		
 		This:C1470.loadIcons()
 		
-		If (This:C1470.form.page=This:C1470.pages.commits)
-			
-			This:C1470.updateCommitList()
-			
-		End if 
+	End if 
+	
+	If (This:C1470.form.page=This:C1470.pages.commits)
+		
+		This:C1470.updateCommitList()
+		
 	End if 
 	
 	$git:=This:C1470.Git
