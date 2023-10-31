@@ -355,6 +355,13 @@ Function SetItemStyle($style : Integer; $ref : Integer)
 	SET LIST ITEM PROPERTIES:C386($root; $ref; $enterable; $style)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function SetAdditionalText($text : Text; $ref : Integer) : cs:C1710.Hlist
+	
+	SET LIST ITEM PARAMETER:C986(This:C1470[""].ref; $ref; Additional text:K28:7; $text)
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function SetParameter($param : Object; $ref : Integer) : cs:C1710.Hlist
 	
 	ASSERT:C1129($param.key#Null:C1517)
