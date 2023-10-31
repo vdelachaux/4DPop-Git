@@ -19,7 +19,7 @@ jobs:
       uses: 4d/build4d-action@main
       with:
         product-line: vcs
-        version: main
+        version: 2030
         build: official
         token: ${{ secrets.DLTK }}
                 
