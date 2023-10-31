@@ -296,8 +296,19 @@ avec 4D "{version}"</target>
     • Ves : {dest}</target>
         </trans-unit>
       </group>
+      <group resname="Common">
+        <trans-unit id="_QV+y3JxwqeVyIptkO6CTw" resname="today">
+          <source>Today</source>
+          <target>Aujourd'hui</target>
+        </trans-unit>
+        <trans-unit id="cv5Ce93eSnhanKPcvz7pOA" resname="yesterday">
+          <source>Yesterday</source>
+          <target>Hier</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
 
 
 
