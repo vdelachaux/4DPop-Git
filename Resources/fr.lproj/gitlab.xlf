@@ -148,6 +148,10 @@ Voulez-vous télécharger l'installateur ?</target>
           <source>Name (optional)</source>
           <target>Nom (facultatif)</target>
         </trans-unit>
+        <trans-unit id="TnqtftaBecYGx68P3zexgQ" resname="local">
+          <source>Local</source>
+          <target>Local</target>
+        </trans-unit>
       </group>
       <group resname="pattern">
         <trans-unit id="RxY9OfmekBpp22bMfG8PUQ" resname="addPatternToGitignore">
@@ -294,6 +298,7 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
 
 
 
