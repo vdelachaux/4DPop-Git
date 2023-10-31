@@ -29,7 +29,7 @@
 					"type": "rectangle",
 					"top": 0,
 					"left": 0,
-					"width": 1120,
+					"width": 1125,
 					"height": 910,
 					"sizingX": "grow",
 					"sizingY": "grow",
@@ -41,64 +41,50 @@
 				"fetch": {
 					"type": "button",
 					"text": ":xliff:fetch",
-					"top": 3,
-					"left": 239,
-					"width": 36,
-					"height": 58,
+					"top": 0,
+					"left": 220,
+					"width": 60,
+					"height": 60,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/Main/fetch.png",
+					"icon": "/RESOURCES/Images/Main/fetch.svg",
 					"textPlacement": "bottom",
-					"borderStyle": "none",
 					"iconFrames": 1,
-					"class": "mini",
-					"imageHugsTitle": false
+					"class": "mini"
 				},
 				"pull": {
 					"type": "button",
 					"text": ":xliff:pull",
-					"top": 3,
-					"left": 300,
-					"width": 36,
-					"height": 58,
+					"top": 0,
+					"left": 281,
+					"width": 60,
+					"height": 60,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/main/Pull.png",
+					"icon": "/RESOURCES/Images/Main/pull.svg",
 					"textPlacement": "bottom",
-					"borderStyle": "none",
 					"iconFrames": 1,
-					"class": "mini",
-					"imageHugsTitle": false
+					"class": "mini"
 				},
 				"push": {
 					"type": "button",
 					"text": ":xliff:push",
-					"top": 3,
-					"left": 361,
-					"width": 36,
-					"height": 58,
+					"top": 0,
+					"left": 342,
+					"width": 60,
+					"height": 60,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/main/Push.png",
+					"icon": "/RESOURCES/Images/Main/push.svg",
 					"textPlacement": "bottom",
-					"borderStyle": "none",
 					"iconFrames": 1,
-					"class": "mini",
-					"imageHugsTitle": false
-				},
-				"tab": {
-					"type": "rectangle",
-					"top": 0,
-					"left": 0,
-					"width": 109,
-					"height": 60,
-					"fill": "#BADBDD"
+					"class": "mini"
 				},
 				"gitVersion": {
 					"type": "input",
@@ -122,19 +108,19 @@
 				},
 				"open": {
 					"type": "button",
-					"top": 3,
-					"left": 1051,
-					"width": 50,
-					"height": 58,
+					"top": 0,
+					"left": 1050,
+					"width": 60,
+					"height": 60,
 					"events": [
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/Main/more.png",
+					"icon": "/RESOURCES/Images/Main/openIn.svg",
 					"sizingX": "move",
 					"text": ":xliff:open",
-					"iconFrames": 1,
-					"class": "mini"
+					"class": "mini",
+					"iconFrames": 1
 				},
 				"gitLogo": {
 					"type": "picture",
@@ -183,37 +169,35 @@
 				},
 				"changes": {
 					"type": "radio",
-					"text": ":xliff:changes",
-					"top": 8,
-					"left": 18,
-					"width": 75,
-					"height": 51,
+					"text": ":xliff:local",
+					"top": 2,
+					"left": 2,
+					"width": 107,
+					"height": 56,
 					"events": [
 						"onClick"
 					],
 					"style": "custom",
 					"radioGroup": "pages",
-					"imageHugsTitle": false,
 					"focusable": true,
-					"iconFrames": 1,
-					"icon": "/RESOURCES/Images/Main/changes.png"
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/toolbar/open.png",
+					"customBackgroundPicture": "/RESOURCES/Images/radio-back.svg"
 				},
 				"history": {
 					"type": "radio",
 					"text": ":xliff:allCommits",
-					"top": 8,
-					"left": 123,
-					"width": 80,
-					"height": 49,
+					"top": 2,
+					"left": 110,
+					"width": 107,
+					"height": 56,
 					"events": [
 						"onClick"
 					],
 					"style": "custom",
 					"radioGroup": "pages",
-					"imageHugsTitle": false,
 					"focusable": true,
-					"iconFrames": 1,
-					"icon": "/RESOURCES/Images/Main/commits.png"
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/toolbox/lists.png",
+					"customBackgroundPicture": "/RESOURCES/Images/radio-back.svg"
 				},
 				"vSeparator_1": {
 					"type": "line",
@@ -609,7 +593,7 @@
 								"name": "Header1",
 								"text": "Header1"
 							},
-							"name": "Column1",
+							"name": "label",
 							"dataSource": "This:C1470.label",
 							"dataSourceTypeHint": "picture",
 							"resizable": true,
@@ -961,5 +945,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 855
+	"geometryStamp": 979
 }
