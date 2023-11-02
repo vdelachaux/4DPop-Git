@@ -287,13 +287,13 @@ Function handleEvents($e : cs:C1710.evt)
 				
 				$git.commit(This:C1470.subject.getValue(); Form:C1466.amend)
 				
-				If ($git.success)
-					
-					This:C1470.subject.clear()
-					This:C1470.description.clear()
-					This:C1470.amend.clear()
-					
-				End if 
+				//If ($git.success)
+				
+				This:C1470.subject.clear()
+				This:C1470.description.clear()
+				This:C1470.amend.clear()
+				
+				//End if 
 				
 				This:C1470.onActivate()
 				
@@ -794,6 +794,8 @@ Function _selectorManager($e : cs:C1710.evt)
 				
 			End if 
 			
+			This:C1470._commitsManager()
+			
 			//----------------------------------------
 	End case 
 	
@@ -1094,6 +1096,7 @@ Function _commitsManager()
 	If ($commit=Null:C1517)
 		
 		This:C1470.detail.hide()
+		
 		return 
 		
 	End if 
@@ -1245,7 +1248,7 @@ Function DoDiff($item : Object)
 					//______________________________________________________
 				: ($item.modified)
 					
-					This:C1470.Git.execute("diff HEAD^ -- "+$item.path)
+					This:C1470.Git.execute("diff HEAD -- "+$item.path)
 					
 					//______________________________________________________
 				: ($item.name="staged")
