@@ -287,13 +287,9 @@ Function handleEvents($e : cs:C1710.evt)
 				
 				$git.commit(This:C1470.subject.getValue(); Form:C1466.amend)
 				
-				//If ($git.success)
-				
 				This:C1470.subject.clear()
 				This:C1470.description.clear()
 				This:C1470.amend.clear()
-				
-				//End if 
 				
 				This:C1470.onActivate()
 				
@@ -369,7 +365,7 @@ Function onLoad()
 	APPEND TO LIST:C376(Form:C1466.selector; "Branches"; -21; New list:C375; True:C214)
 	APPEND TO LIST:C376(Form:C1466.selector; "Remotes"; -22; New list:C375; True:C214)
 	APPEND TO LIST:C376(Form:C1466.selector; "Tags"; -23; New list:C375; True:C214)
-	APPEND TO LIST:C376(Form:C1466.selector; "Staches"; -24; New list:C375; True:C214)
+	APPEND TO LIST:C376(Form:C1466.selector; "stashes"; -24; New list:C375; True:C214)
 	SET LIST PROPERTIES:C387(Form:C1466.selector; 0; 0; 25)
 	
 	Form:C1466.amend:=False:C215
@@ -544,7 +540,8 @@ Function update()
 					//______________________________________________________
 				Else 
 					
-					$git.diff($detail.path; $commit.parent.short+" "+$commit.fingerprint.short)
+					$c:=Split string:C1554($commit.parent.short; " ")
+					$git.diff($detail.path; $c.length>1 ? $c[1] : $c[0]+" "+$commit.fingerprint.short)
 					
 					//______________________________________________________
 			End case 
@@ -712,7 +709,7 @@ Function onActivate()
 		End for each 
 	End if 
 	
-	// Mark:staches list
+	// Mark:stashes list
 	$git.stash()
 	
 	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-24).sublist).Empty()
@@ -1103,7 +1100,9 @@ Function _commitsManager()
 	
 	This:C1470.detail.show()
 	
-	If (This:C1470.Git.diffList($commit.parent.short; $commit.fingerprint.short))
+	$c:=Split string:C1554($commit.parent.short; " ")
+	
+	If (This:C1470.Git.diffList($c.length>1 ? $c[1] : $c[0]; $commit.fingerprint.short))
 		
 		For each ($t; Split string:C1554(This:C1470.Git.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2))
 			
@@ -1626,8 +1625,17 @@ Function updateCommitList()
 	CREATE THUMBNAIL:C679($separator; $separator; 5)
 	CREATE THUMBNAIL:C679($empty; $empty; 5)
 	
+	
+	var $o : Object
+	$o:={\
+		colors: ["orange"; "green"; "blue"; "red"]; \
+		stashes: []; \
+		nodes: []; \
+		level: 0\
+		}
+	
 	var $graphMain : Picture
-	$graphMain:=This:C1470.getLabelTag("graph"; "orange")
+	$graphMain:=This:C1470.getLabelTag("graph"; $o.colors[0])
 	
 	$git:=This:C1470.Git
 	
@@ -1637,7 +1645,8 @@ Function updateCommitList()
 	$today:=Current date:C33
 	$yesterday:=$today-1
 	
-	$git.execute("log --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
+	//$git.execute("log --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
+	$git.execute("log --all --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	
 /*
 0 = message
@@ -1652,10 +1661,25 @@ Function updateCommitList()
 9 = ref names
 */
 	
+	ARRAY LONGINT:C221($pos; 0)
+	ARRAY LONGINT:C221($len; 0)
+	
+	
 	// One commit per line
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
 		
 		$c:=Split string:C1554($line; "|")
+		
+		//ASSERT($c[0]#"wip Windows")
+		
+		If (Match regex:C1019("index\\son\\s"; $line; 1; *))
+			
+			var $node : Boolean
+			$node:=True:C214
+			$o.level-=1
+			continue
+			
+		End if 
 		
 		CLEAR VARIABLE:C89($style)
 		
@@ -1711,6 +1735,27 @@ Function updateCommitList()
 						$tags[0]:=This:C1470.getLabelTag("origin")
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+					: ($meta="refs/stash")\
+						 && (Match regex:C1019("(?mi-s)On\\s([^:]*):\\s(.*)"; $c[0]; 1; $pos; $len; *))
+						
+						var $stash : Object
+						$stash:={\
+							on: Substring:C12($c[0]; $pos{1}; $len{1}); \
+							index: Split string:C1554($c[5]; " ")[1]; \
+							ref: "stash@{"+String:C10($o.stashes.length)+"}"\
+							}
+						
+						$tags[0]:=This:C1470.getLabelTag("stash"; $stash.ref)
+						
+						$o.stashes.push($stash)
+						
+						$c[0]:=Substring:C12($c[0]; $pos{2}; $len{2})
+						
+						$branch:=$stash.ref
+						
+						$o.level+=1
+						
+						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="origin/@")  // Origin branch
 						
 						If ($tags[0]#Null:C1517)
@@ -1729,6 +1774,8 @@ Function updateCommitList()
 							
 						End if 
 						
+						
+						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					Else   // Branch
 						
@@ -1746,7 +1793,34 @@ Function updateCommitList()
 		End if 
 		
 		// Mark:Create label
-		$label:=$graphMain+$separator
+		var $offset; $x : Integer
+		$offset:=20
+		
+		If ($o.level=0)
+			
+			$label:=$graphMain+$separator
+			
+		Else 
+			
+			var $svg : cs:C1710.svg
+			$svg:=cs:C1710.svg.new()
+			
+			$svg.width($offset*($o.level+1)).height(30)
+			
+			For ($i; 0; $o.level; 1)
+				
+				$x:=5+($offset*$i)
+				$svg.line($x; 0; $x; 24).color($o.colors[$i]).stroke(2)
+				
+			End for 
+			
+			$svg.circle(3; $x; 10).color($o.colors[$i-1])
+			
+			$label:=$svg.picture()+$separator
+			
+		End if 
+		
+		$node:=False:C215
 		
 		For each ($item; $tags)
 			
@@ -1775,7 +1849,6 @@ Function updateCommitList()
 			branch: $branch; \
 			sort: (Date:C102($c[3])-!1970-01-01!)+Num:C11($c[3])\
 			}
-		//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		
 		$commits.push($commit)
 		
@@ -1882,6 +1955,21 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			$svg.image(Form:C1466.icons.tag).position(1; 1)
 			
 			$svg.line(21; 0; 21; 20).stroke("blue").opacity(0.5)
+			
+			$svg.text($text).position(25; 15)
+			
+			return $svg.picture()
+			
+			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+		: ($what="stash")
+			
+			$svg.rect($svg.getTextWidth($text)+28; 20)\
+				.radius(4).position(0.5; 0.5)\
+				.stroke("grey").fill("lightgray").opacity(0.5)
+			
+			$svg.image(Form:C1466.icons.stash).position(1; 1)
+			
+			$svg.line(21; 0; 21; 20).stroke("grey").opacity(0.5)
 			
 			$svg.text($text).position(25; 15)
 			
