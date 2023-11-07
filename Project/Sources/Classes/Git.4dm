@@ -29,41 +29,36 @@ Class constructor($folder : 4D:C1709.Folder)
 	
 	This:C1470.HEAD:=""
 	
-	If ($folder#Null:C1517)\
-		 && ($folder.exists)
+	// Current workspace
+	$folder:=$folder || Folder:C1567("/PACKAGE"; *)
+	$folder:=Folder:C1567($folder.platformPath; fk platform path:K87:2)  // Unsandboxed
+	This:C1470.cwd:=$folder
+	
+	// Search for .git folder
+	While ($folder#Null:C1517)\
+		 && (Not:C34($folder.folder(".git").exists))
 		
-		This:C1470.cwd:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
+		$folder:=$folder.parent
 		
-	Else 
-		
-		$folder:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)
-		
-		While ($folder#Null:C1517)\
-			 && Not:C34($folder.folder(".git").exists)
-			
-			$folder:=$folder.parent
-			
-		End while 
-		
-		If ($folder#Null:C1517) && ($folder.exists)
-			
-			This:C1470.cwd:=Folder:C1567($folder.platformPath; fk platform path:K87:2)
-			
-		Else 
-			
-			This:C1470.cwd:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2)
-			
-		End if 
-	End if 
+		Case of 
+				
+				//_________________________________
+			: ($folder=Null:C1517)
+				
+				break
+				
+				//_________________________________
+			: ($folder.folder(".git").exists)
+				
+				This:C1470.cwd:=$folder
+				
+				break
+				
+				//_________________________________
+		End case 
+	End while 
 	
 	This:C1470.root:=This:C1470.cwd.folder(".git")
-	
-	While (This:C1470.root#Null:C1517)\
-		 && Not:C34(This:C1470.root.exists)
-		
-		This:C1470.root:=This:C1470.root.parent.folder(".git")
-		
-	End while 
 	
 	This:C1470.gitignore:=This:C1470.cwd.file(".gitignore")
 	This:C1470.gitattributes:=This:C1470.cwd.file(".gitattributes")
@@ -206,7 +201,11 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getConfig($what : Text) : Text
 	
-	This:C1470.execute("config --global --get "+$what)
+/* 
+When reading, the values are read from the system, global
+and repository local configuration files by default
+*/
+	This:C1470.execute("config --get "+$what)
 	
 	If (This:C1470.success)
 		
@@ -222,9 +221,14 @@ Function get version() : Text
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get currentBranch() : Text
 	
-	If (Length:C16(This:C1470.HEAD)>0)
+	If (Length:C16(String:C10(This:C1470.HEAD))>0)
 		
 		return Split string:C1554(Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/"); "\r")[0]
+		
+	Else 
+		
+		This:C1470.execute("config --get --default master init.defaultBranch")
+		return String:C10(This:C1470.result)
 		
 	End if 
 	
@@ -232,53 +236,57 @@ Function get currentBranch() : Text
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function init()
 	
-	var $len; $pos : Integer
+	//If (This.execute("config --get --default master init.defaultBranch")#"development")
+	//This.execute("config --local init.defaultBranch development")
+	//End if 
 	
-	If (This:C1470.execute("init"))
+	// Creates an empty Git repository
+	This:C1470.execute("init")
+	
+	// Create default gitignore
+	If (Not:C34(This:C1470.gitignore.exists))
 		
-		If (Not:C34(This:C1470.gitignore.exists))
-			
-			// Create default gitignore
-			This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
-			
-		End if 
+		This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
 		
-		If (Not:C34(This:C1470.gitattributes.exists))
-			
-			// Create default gitignore
-			This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
-			
-		End if 
+	End if 
+	
+	// Create default gitattributes
+	If (Not:C34(This:C1470.gitattributes.exists))
 		
-		// Ignore file permission
-		This:C1470.execute("config core.filemode false")
+		This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
 		
-		If (This:C1470.execute("config --get user.name"))
-			
-			This:C1470.user.name:=This:C1470.result
-			
-		End if 
+	End if 
+	
+	// Ignore file permission
+	This:C1470.execute("config core.filemode false")
+	
+	If (This:C1470.execute("config --get user.name"))
 		
-		If (This:C1470.execute("config --get user.email"))
-			
-			This:C1470.user.email:=This:C1470.result
-			
-		End if 
+		This:C1470.user.name:=This:C1470.result
 		
-		If (This:C1470.execute("version"))
+	End if 
+	
+	If (This:C1470.execute("config --get user.email"))
+		
+		This:C1470.user.email:=This:C1470.result
+		
+	End if 
+	
+	If (This:C1470.execute("version"))
+		
+		This:C1470._version:=This:C1470.result
+		
+		var $len; $pos : Integer
+		
+		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
 			
+			This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
+			
+		Else 
+			
+			// Store full result
 			This:C1470._version:=This:C1470.result
 			
-			If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
-				
-				This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
-				
-			Else 
-				
-				// Store full result
-				This:C1470._version:=This:C1470.result
-				
-			End if 
 		End if 
 	End if 
 	
@@ -290,7 +298,12 @@ Function installLFS() : Boolean
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get lfs() : Boolean
 	
-	return This:C1470.root.folder("lfs").exists
+	If (This:C1470.root#Null:C1517)\
+		 && (This:C1470.root.exists)
+		
+		return This:C1470.root.folder("lfs").exists
+		
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
@@ -507,15 +520,23 @@ Function pull() : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function push($origin : Text; $branch : Text) : Boolean
 	
-	If (Count parameters:C259>=2)
+	If (Length:C16(This:C1470.HEAD)=0)
 		
-		return This:C1470.execute("push "+$origin+" "+$branch+" -q")
+		TRACE:C157
+		// No remote
 		
 	Else 
 		
-		// FIXME:What if "master" is not the main branch?
-		return This:C1470.execute("push origin master -q")
-		
+		If (Count parameters:C259>=2)
+			
+			return This:C1470.execute("push "+$origin+" "+$branch+" -q")
+			
+		Else 
+			
+			// FIXME:What if "master" is not the main branch?
+			return This:C1470.execute("push origin master -q")
+			
+		End if 
 	End if 
 	
 	//MARK:-branch
@@ -694,59 +715,65 @@ Function branchFetchNumber($branch : Text) : Integer
 	
 	var $local; $remote; $t : Text
 	var $i : Integer
+	var $file : 4D:C1709.File
 	
 	If (Length:C16($branch)>0)
 		
-		$local:=Substring:C12(This:C1470.root.folder("refs/heads").file($branch).getText(); 1; 7)
+		$file:=This:C1470.root.folder("refs/heads").file($branch)
 		
-		var $file : 4D:C1709.File
-		$file:=This:C1470.root.folder("refs/remotes/origin").file($branch)
-		
-		If ($file.exists)
+		If (Not:C34($file.exists))
 			
-			$remote:=Substring:C12($file.getText(); 1; 7)
-			
-			This:C1470.execute("log "+$local+".."+$remote)
-			
-			For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
-				
-				$i+=Num:C11($t="commit @")
-				
-			End for each 
-			
-		Else 
-			
-			// Not on the server
+			return 
 			
 		End if 
+		
+		$local:=Substring:C12($file.getText(); 1; 7)
+		
+		$file:=This:C1470.root.folder("refs/remotes/origin").file($branch)
+		
+		If (Not:C34($file.exists))
+			
+			return 
+			
+		End if 
+		
+		$remote:=Substring:C12($file.getText(); 1; 7)
+		
+		This:C1470.execute("log "+$local+".."+$remote)
+		
+		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
+			
+			$i+=Num:C11(Position:C15("commit "; $t)=1)
+			
+		End for each 
 		
 		return $i
 		
-	Else 
+	End if 
+	
+	// FIXME:To test
+	This:C1470.execute("log origin..")
+	
+	If (Match regex:C1019("(?m-si)^[[:xdigit:]]{5,}"; This:C1470.result; 1; *))
 		
-		// FIXME:To test
-		This:C1470.execute("log origin..")
+		return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length-1
 		
-		If (Match regex:C1019("(?m-si)^[[:xdigit:]]{5,}"; This:C1470.result; 1; *))
-			
-			return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length-1
-			
-		End if 
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchPushNumber($branch : Text) : Integer
 	
-	If (Length:C16($branch)>0)
-		
-		// This.execute("rev-list origin/"+$branch+"..HEAD --first-parent --single-worktree")
-		This:C1470.execute("rev-list origin/"+$branch+".."+$branch+" --single-worktree")
-		
-	Else 
-		
-		This:C1470.execute("rev-list origin..HEAD --single-worktree")
-		
-	End if 
+	var $c : Collection
+	
+	$c:=["rev-list"]
+	
+	$c.push(Length:C16($branch)>0\
+		 ? "origin/"+$branch+".."+$branch\
+		 : "origin..HEAD")
+	
+	$c.push("--single-worktree")
+	
+	This:C1470.execute($c.join(" "))
 	
 	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
@@ -754,15 +781,19 @@ Function branchPushNumber($branch : Text) : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diff($pathname : Text; $option : Text)
 	
+	var $c : Collection
+	
+	$c:=["diff -w"]
+	
 	If (Count parameters:C259>=2)
 		
-		This:C1470.execute("diff -w "+String:C10($option)+" -- "+This:C1470._quoted($pathname))
-		
-	Else 
-		
-		This:C1470.execute("diff -w -- "+This:C1470._quoted($pathname))
+		$c.push($option)
 		
 	End if 
+	
+	$c.push("-- "+This:C1470._quoted($pathname))
+	
+	This:C1470.execute($c.join(" "))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diffList($parent : Text; $current : Text) : Boolean
@@ -953,12 +984,12 @@ Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
 			//———————————————————————————————————————————
 		: (Position:C15(")"; $path)>0)  // Trash
 			
-			return File:C1566($root.path+$path)
+			return File:C1566($root.path+$path; *)
 			
 			//———————————————————————————————————————————
 		: ($path="Documentation/@")  // Documentation
 			
-			return File:C1566($root.path+$path)
+			return File:C1566($root.path+$path; *)
 			
 			//———————————————————————————————————————————
 		: ($path="@/Methods/@")  // Project methods
@@ -1022,12 +1053,12 @@ Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
 			$path:=Replace string:C233($path; "/DATA/"; "/DATA/")
 			$path:=Replace string:C233($path; "/LOGS/"; "/LOGS/")
 			
-			return ($path="@/" ? Folder:C1567($path) : File:C1566($path))
+			return ($path="@/" ? Folder:C1567($path; *) : File:C1566($path; *))
 			
 			//———————————————————————————————————————————
 		Else 
 			
-			return File:C1566($root.path+$path)
+			return File:C1566($root.path+$path; *)
 			
 			//———————————————————————————————————————————
 	End case 
