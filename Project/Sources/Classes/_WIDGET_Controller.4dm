@@ -72,14 +72,14 @@ Function init()
 	$folder:=Folder:C1567(This:C1470.PACKAGE.platformPath; fk platform path:K87:2)  // Unsndboxed
 	
 	While ($folder#Null:C1517)\
-		 & Not:C34($folder.folder(".git").exists)
+		 && Not:C34($folder.folder(".git").exists)
 		
 		$folder:=$folder.parent
 		
 	End while 
 	
 	If ($folder#Null:C1517)\
-		 & ($folder.exists)
+		 && ($folder.exists)
 		
 		This:C1470.git:=cs:C1710.Git.new($folder)
 		
@@ -123,7 +123,7 @@ Function handleEvents($e : cs:C1710.evt)
 				//==============================================
 			: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
 				
-				This:C1470.git:=cs:C1710.Git.new()
+				This:C1470.git:=cs:C1710.Git.new(Folder:C1567("/PACKAGE"; *))
 				This:C1470.form.refresh()
 				
 				//==============================================
@@ -223,12 +223,12 @@ Function update()
 			
 		End if 
 		
-		Form:C1466.branch:=This:C1470.currentBranch
-		
 		This:C1470.branch.setTitle(This:C1470.currentBranch)
 		This:C1470.branch.bestSize(Align center:K42:3; 50; 140)
 		
 	End if 
+	
+	Form:C1466.branch:=This:C1470.currentBranch
 	
 	Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
 	Form:C1466.pushNumber:=$git.branchPushNumber($branch)

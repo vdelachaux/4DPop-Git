@@ -2083,7 +2083,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="show")
 			
-			SHOW ON DISK:C922(File:C1566("/PACKAGE/"+$current.path).platformPath)
+			SHOW ON DISK:C922(File:C1566("/PACKAGE/"+$current.path; *).platformPath)
 			
 			//______________________________________________________
 		: ($what="stage")
