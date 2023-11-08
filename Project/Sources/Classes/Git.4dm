@@ -520,10 +520,9 @@ Function pull() : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function push($origin : Text; $branch : Text) : Boolean
 	
-	If (Length:C16(This:C1470.HEAD)=0)
+	If (This:C1470.remotes.length=0)
 		
-		TRACE:C157
-		// No remote
+		TRACE:C157  // No remote
 		
 	Else 
 		
@@ -1009,7 +1008,7 @@ Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
 					//……………………………………………………………………………………………
 				: ($path="@.4DForm")  // Form definition
 					
-					return $path
+					return $root.file($path)
 					
 					//……………………………………………………………………………………………
 				: ($path="@.4dm")  // Method
