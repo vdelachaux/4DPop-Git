@@ -258,6 +258,28 @@ Function get selectedReferences() : Collection
 	
 	return $c
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function saveSelection()
+	
+	This:C1470[""].selection:={\
+		cur: This:C1470.selectedReference; \
+		refs: This:C1470.selectedReferences\
+		}
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function restoreSelection()
+	
+	ARRAY LONGINT:C221($references; 0x0000)
+	
+	If (This:C1470[""].selection.refs#Null:C1517)\
+		 && (This:C1470[""].selection.refs.length>0)
+		
+		COLLECTION TO ARRAY:C1562(This:C1470[""].selection.refs; $references)
+		
+	End if 
+	
+	SELECT LIST ITEMS BY REFERENCE:C630(This:C1470[""].ref; Num:C11(This:C1470[""].selection.cur); $references)
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get selectedPosition() : Integer
 	

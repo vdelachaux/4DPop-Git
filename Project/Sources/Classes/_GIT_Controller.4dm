@@ -220,15 +220,47 @@ Function handleEvents($e : cs:C1710.evt)
 				//==============================================
 			: (This:C1470.push.catch($e; On Clicked:K2:4))
 				
-				If ($git.push())
+				If ($git.remotes.length=0)
 					
-					This:C1470.onActivate()
+					var $gh : cs:C1710.gh
+					$gh:=cs:C1710.gh.new()
+					
+					If (Not:C34($gh.available))
+						
+						ALERT:C41($gh.lastError+"\n\nInstallation instructions can be found at:\n\nhttps://github.com/cli/cli#installation")
+						return 
+						
+					End if 
+					
+					$gh.logIn()
+					
+					// Create remote
+					var $remote : Text
+					$remote:=$gh.createRepo($git.cwd.name)
+					
+					// Add the remote
+					$git.execute("remote add -m -t origin "+$remote)
+					
+					$git.remotes.push({\
+						name: "master"; \
+						url: $remote\
+						})
+					
+					$git.push("origin"; "refs/heads/master")
 					
 				Else 
+					
+					$git.push()
+					
+				End if 
+				
+				If (Not:C34($git.success))
 					
 					ALERT:C41($git.error)
 					
 				End if 
+				
+				This:C1470.onActivate()
 				
 				//==============================================
 			: (This:C1470.open.catch($e; On Clicked:K2:4))
@@ -580,11 +612,8 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onActivate()
 	
-	var $t : Text
-	var $notPulled; $notPushed; $ref : Integer
-	var $o : Object
 	var $git : cs:C1710.Git
-	var $list; $sublist : cs:C1710.Hlist
+	var $list : cs:C1710.Hlist
 	
 	If (Form:C1466.dark#This:C1470.form.darkScheme)
 		
@@ -614,9 +643,103 @@ Function onActivate()
 		
 	End if 
 	
-	// Mark:Branch list
 	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
-	$ref:=$list.selectedReference
+	$list.saveSelection()
+	
+	This:C1470.branchList($list)
+	This:C1470.remoteList($list)
+	This:C1470.tagList($list)
+	This:C1470.stachList($list)
+	
+	$list.restoreSelection()
+	
+	This:C1470.form.refresh()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function stachList($list : cs:C1710.Hlist)
+	
+	var $o : Object
+	var $git : cs:C1710.Git
+	var $sublist : cs:C1710.Hlist
+	
+	$git:=This:C1470.Git
+	
+	$git.stash()
+	
+	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-24).sublist).Empty()
+	
+	If ($git.stashes.length>0)
+		
+		For each ($o; $git.stashes)
+			
+			$o.type:="stash"
+			
+			$sublist.Append($o.name)\
+				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
+				.SetIcon({icon: Form:C1466.icons.stash})
+			
+		End for each 
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function tagList($list : cs:C1710.Hlist)
+	
+	var $t : Text
+	var $git : cs:C1710.Git
+	var $sublist : cs:C1710.Hlist
+	
+	$git:=This:C1470.Git
+	
+	$git.updateTags()
+	
+	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-23).sublist).Empty()
+	
+	If ($git.tags.length>0)
+		
+		For each ($t; $git.tags)
+			
+			$sublist.Append($t)\
+				.SetParameter({key: "tag"; value: $t})\
+				.SetIcon({icon: Form:C1466.icons.tag})
+			
+		End for each 
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function remoteList($list : cs:C1710.Hlist)
+	
+	var $o : Object
+	var $git : cs:C1710.Git
+	var $sublist : cs:C1710.Hlist
+	
+	$git:=This:C1470.Git
+	
+	$git.updateRemotes()
+	
+	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-22).sublist).Empty()
+	
+	If ($git.remotes.length>0)
+		
+		For each ($o; $git.remotes)
+			
+			$o.type:="remote"
+			
+			$sublist.Append($o.name)\
+				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
+				.SetIcon({icon: Form:C1466.icons[(Position:C15("github.com"; $o.url)>0 ? "github" : "gitlab")]})
+			
+		End for each 
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function branchList($list : cs:C1710.Hlist)
+	
+	var $notPulled; $notPushed : Integer
+	var $o : Object
+	var $git : cs:C1710.Git
+	var $sublist : cs:C1710.Hlist
+	
+	$git:=This:C1470.Git
 	
 	$git.branch()
 	
@@ -640,17 +763,14 @@ Function onActivate()
 				$sublist.SetIcon({icon: Form:C1466.icons.master})\
 					.SetItemStyle(Bold:K14:2)
 				
-				$notPushed:=$git.branchPushNumber()
-				$notPulled:=$git.branchFetchNumber()
-				
 			Else 
 				
 				$sublist.SetIcon({icon: Form:C1466.icons.branch})
 				
-				$notPushed:=$git.branchPushNumber($o.name)
-				$notPulled:=$git.branchFetchNumber($o.name)
-				
 			End if 
+			
+			$notPushed:=$git.branchPushNumber($o.name)
+			$notPulled:=$git.branchFetchNumber($o.name)
 			
 			Case of 
 					//______________________________________________________
@@ -672,64 +792,6 @@ Function onActivate()
 			End case 
 		End for each 
 	End if 
-	
-	// Mark:Remote list
-	$git.updateRemotes()
-	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-22).sublist).Empty()
-	
-	If ($git.remotes.length>0)
-		
-		For each ($o; $git.remotes)
-			
-			$o.type:="remote"
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-				.SetIcon({icon: Form:C1466.icons[(Position:C15("github.com"; $o.url)>0 ? "github" : "gitlab")]})
-			
-		End for each 
-	End if 
-	
-	// Mark:tag list
-	$git.updateTags()
-	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-23).sublist).Empty()
-	
-	If ($git.tags.length>0)
-		
-		For each ($t; $git.tags)
-			
-			$o.type:="tag"
-			
-			$sublist.Append($t)\
-				.SetParameter({key: "tag"; value: $t})\
-				.SetIcon({icon: Form:C1466.icons.tag})
-			
-		End for each 
-	End if 
-	
-	// Mark:stashes list
-	$git.stash()
-	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-24).sublist).Empty()
-	
-	If ($git.stashes.length>0)
-		
-		For each ($o; $git.stashes)
-			
-			$o.type:="stash"
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-				.SetIcon({icon: Form:C1466.icons.stash})
-			
-		End for each 
-	End if 
-	
-	$list.selectedReference:=$ref
-	
-	This:C1470.form.refresh()
 	
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1102,7 +1164,7 @@ Function _commitsManager()
 	
 	$c:=Split string:C1554($commit.parent.short; " ")
 	
-	If (This:C1470.Git.diffList($c.length>1 ? $c[1] : $c[0]; $commit.fingerprint.short))
+	If (This:C1470.Git.diffList($c.length=0 ? "" : $c.length>1 ? $c[1] : $c[0]; $commit.fingerprint.short))
 		
 		For each ($t; Split string:C1554(This:C1470.Git.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2))
 			
@@ -1535,7 +1597,7 @@ Function CreateGithubRepository()
 	If ($gh.authorized)
 		
 		$private:=True:C214
-		$remote:=$gh.CreateRepo(Form:C1466.project; $private)
+		$remote:=$gh.createRepo(Form:C1466.project; $private)
 		
 		If (Length:C16($remote)>0)
 			
@@ -1639,7 +1701,8 @@ Function updateCommitList()
 	
 	$git:=This:C1470.Git
 	
-	$notPushed:=$git.branchPushNumber()
+	// $notPushed:=$git.branchPushNumber()
+	$notPushed:=$git.branchPushNumber($git.currentBranch)
 	
 	var $date; $today; $yesterday : Date
 	$today:=Current date:C33

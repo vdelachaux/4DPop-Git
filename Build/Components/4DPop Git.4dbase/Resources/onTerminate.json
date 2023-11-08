@@ -1,5 +1,5 @@
 {
-	"commandLine": "/usr/local/Cellar/gh/2.33.0/bin/gh auth login -h github.com -p HTTPS -s repo",
+	"commandLine": "/Users/vincentdelachaux/GITHUB/4DPop/4DPop-Family/4DPop-Git/Resources/Bin/gh repo delete on-board --yes",
 	"response": "",
-	"responseError": "\n! First copy your one-time code: F757-6638\nOpen this URL to continue in your web browser: https://github.com/login/device\nfailed to authenticate via web browser: The authorization request was denied. (access_denied)\n"
+	"responseError": "HTTP 404: Not Found (https://api.github.com/repos/vdelachaux/on-board)\n"
 }

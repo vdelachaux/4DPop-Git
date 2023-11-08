@@ -1,3 +1,8 @@
+/* Github API */
+
+property dataType; data; dataError : Text
+property success; available; authorized : Boolean
+property timeout : Integer
 property errors; history : Collection
 property status : Object
 
@@ -8,20 +13,19 @@ Class constructor
 	This:C1470.dataError:=""
 	
 	This:C1470.timeout:=60
-	This:C1470.currentDirectory:=Folder:C1567(Folder:C1567(fk database folder:K87:14; *).platformPath; fk platform path:K87:2).path
 	
-	This:C1470.success:=False:C215
+	This:C1470.success:=True:C214
 	This:C1470.available:=False:C215
 	This:C1470.authorized:=False:C215
 	
 	This:C1470.errors:=[]
 	This:C1470.history:=[]
 	
-	This:C1470.FindExe()
+	This:C1470.available:=This:C1470.getExe()
 	
 	If (This:C1470.available)
 		
-		This:C1470.authorized:=This:C1470.CheckToken()
+		This:C1470.authorized:=This:C1470.checkToken()
 		
 	Else 
 		
@@ -32,39 +36,42 @@ Class constructor
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get lastError() : Text
 	
-	If (This:C1470.errors.length>0)
-		
-		return This:C1470.errors[0]
-		
-	End if 
+	return This:C1470.errors.length>0 ? This:C1470.errors[0] : ""
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function FindExe()
+Function getExe() : Boolean
 	
 	var $cmd; $error; $in; $out : Text
 	
-	If (Is macOS:C1572)
+	If (Is macOS:C1572) & False:C215
 		
 		$cmd:="find /usr -type f -name gh"
 		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
 		This:C1470.success:=Bool:C1537(OK)
 		
+		If (This:C1470.success)
+			
+			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
+			
+			return File:C1566(This:C1470.exe).exists
+			
+		End if 
+		
 	Else 
 		
-		//FIXME:To test on Windows
+		// FIXME:On Windows
+		This:C1470.success:=True:C214
 		
 	End if 
 	
-	If (This:C1470.success)
-		
-		This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
-		This:C1470.available:=File:C1566(This:C1470.exe).exists
-		
-	End if 
+	// Use embedded binary
+	This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
 	
-	//MARK:- [auth]
+	return File:C1566(This:C1470.exe).exists
+	
+	// MARK:- [auth]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function GetStatus() : Object
+Function getStatus() : Object
 	
 	var $cmd; $error; $in; $out : Text
 	var $c : Collection
@@ -101,7 +108,7 @@ Function GetStatus() : Object
 	This:C1470.errors.push("Failed to get the user status.")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Login()
+Function logIn()
 	
 	var $worker : 4D:C1709.SystemWorker
 	
@@ -111,13 +118,13 @@ Function Login()
 		
 		If (This:C1470.success)
 			
-			This:C1470.CheckToken()
+			This:C1470.checkToken()
 			
 		End if 
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Logout()
+Function logout()
 	
 	var $worker : 4D:C1709.SystemWorker
 	
@@ -131,7 +138,7 @@ Function Logout()
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function CheckToken() : Boolean
+Function checkToken() : Boolean
 	
 	var $cmd; $error; $in; $out : Text
 	
@@ -145,7 +152,7 @@ Function CheckToken() : Boolean
 		
 		If (This:C1470.success)
 			
-			This:C1470.status:=This:C1470.GetStatus()
+			This:C1470.status:=This:C1470.getStatus()
 			
 		End if 
 		
@@ -155,12 +162,12 @@ Function CheckToken() : Boolean
 	
 	//MARK:- [repo]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function CreateRepo($name : Text; $private : Boolean; $options : Object) : Text
+Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	
 	var $cmd : Text
 	var $worker : 4D:C1709.SystemWorker
 	
-	This:C1470.Login()
+	This:C1470.logIn()
 	
 	If (This:C1470.authorized)
 		
@@ -177,14 +184,14 @@ Function CreateRepo($name : Text; $private : Boolean; $options : Object) : Text
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function DeleteRepo($name : Text) : Boolean
+Function deleteRepo($name : Text) : Boolean
 	
 	var $cmd : Text
 	var $worker : 4D:C1709.SystemWorker
 	
-	This:C1470.Login()
+	This:C1470.logIn()
 	
-	This:C1470.status:=This:C1470.status || This:C1470.GetStatus()
+	This:C1470.status:=This:C1470.status || This:C1470.getStatus()
 	
 	If (This:C1470.status.scope.includes("delete_repo"))
 		
@@ -203,8 +210,8 @@ Function DeleteRepo($name : Text) : Boolean
 		
 		If (This:C1470.success)
 			
-			This:C1470.GetStatus()
-			return This:C1470.DeleteRepo($name)
+			This:C1470.getStatus()
+			return This:C1470.deleteRepo($name)
 			
 		End if 
 	End if 
@@ -276,7 +283,7 @@ Function onTerminate($worker : 4D:C1709.SystemWorker)
 			
 			If (This:C1470.success)
 				
-				This:C1470.remote:=$worker.response
+				This:C1470.remote:=Split string:C1554($worker.response; "\n"; sk ignore empty strings:K86:1).join("\n")
 				
 			End if 
 			
@@ -308,7 +315,29 @@ Function onTerminate($worker : 4D:C1709.SystemWorker)
 		
 	End if 
 	
-	//MARK:- [private]
+	//MARK:-
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _unsanboxed($target : Object) : Object
+	
+	Case of 
+			//______________________________________________________
+		: (OB Instance of:C1731($target; 4D:C1709.File))
+			
+			return File:C1566($target.platformPath; fk platform path:K87:2)
+			
+			//______________________________________________________
+		: (OB Instance of:C1731($target; 4D:C1709.Folder))
+			
+			return Folder:C1567($target.platformPath; fk platform path:K87:2)
+			
+			//______________________________________________________
+		Else 
+			
+			This:C1470.errors.push("Bad parameter")
+			
+			//______________________________________________________
+	End case 
+	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _record($name : Text; $worker : 4D:C1709.SystemWorker)
 	
