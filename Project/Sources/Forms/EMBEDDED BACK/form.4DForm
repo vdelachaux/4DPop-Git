@@ -1,0 +1,70 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"rightMargin": 0,
+	"bottomMargin": 0,
+	"events": [
+		"onLoad",
+		"onPageChange",
+		"onValidate",
+		"onClick",
+		"onDoubleClick",
+		"onOutsideCall",
+		"onBeginDragOver",
+		"onDragOver",
+		"onDrop",
+		"onAfterKeystroke",
+		"onMenuSelect",
+		"onPluginArea",
+		"onAfterEdit",
+		"onTimer",
+		"onBoundVariableChange"
+	],
+	"windowTitle": "window title",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {
+				"background": {
+					"type": "picture",
+					"top": 0,
+					"left": 0,
+					"width": 540,
+					"height": 310,
+					"picture": "Images/back.png",
+					"pictureFormat": "tiled",
+					"sizingX": "grow",
+					"sizingY": "grow"
+				}
+			}
+		},
+		{
+			"objects": {
+				"backButton": {
+					"type": "button",
+					"text": "Button",
+					"top": 0,
+					"left": 0,
+					"width": 540,
+					"height": 310,
+					"events": [
+						"onClick"
+					],
+					"display": false,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"method": "ObjectMethods/backButton.4dm"
+				}
+			}
+		}
+	],
+	"geometryStamp": 13
+}

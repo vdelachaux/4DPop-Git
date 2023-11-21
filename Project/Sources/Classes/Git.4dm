@@ -513,9 +513,28 @@ Function fetchCurrent() : Boolean
 	return This:C1470.execute("fetch --prune --tags origin")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function pull() : Boolean
+Function pull($rebase : Boolean; $stash : Boolean) : Boolean
 	
-	return This:C1470.execute("pull --rebase --autostash origin -q")
+	var $c : Collection
+	
+	$c:=["pull"]
+	
+	If ($rebase)
+		
+		$c.push("--rebase")
+		
+	End if 
+	
+	If ($stash)
+		
+		$c.push("--autostash")
+		
+	End if 
+	
+	$c.push("origin -q")
+	
+	//return This.execute("pull --rebase --autostash origin -q")
+	This:C1470.execute($c.join(" "))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function push($origin : Text; $branch : Text) : Boolean

@@ -36,6 +36,10 @@ _commitDetail; \
 STAGED_STATUS; \
 UNSTAGED_STATUS : Collection
 
+property alertDialog; \
+pullDialog; \
+pushDialog : cs:C1710.onBoard
+
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
@@ -189,11 +193,6 @@ Function handleEvents($e : cs:C1710.evt)
 		Case of 
 				
 				//==============================================
-				//: ($e.doubleClick)
-				
-				//This._selectorManager($e)
-				
-				//==============================================
 			: (This:C1470.changes.catch($e; On Clicked:K2:4))
 				
 				This:C1470.goToPage(This:C1470.pages.changes)
@@ -212,55 +211,22 @@ Function handleEvents($e : cs:C1710.evt)
 				//==============================================
 			: (This:C1470.pull.catch($e; On Clicked:K2:4))
 				
-				$git.pull()
-				This:C1470.onActivate()
+				If (Not:C34(Bool:C1537(This:C1470.autostash)))
+					
+					$git.execute("config rebase.autoStash")
+					
+				End if 
 				
-				RELOAD PROJECT:C1739
+				$git.execute("config pull.rebase")
+				This:C1470.pullDialog.show({\
+					rebase: $git.result="true"; \
+					stash: Form:C1466.stash\
+					})
 				
 				//==============================================
 			: (This:C1470.push.catch($e; On Clicked:K2:4))
 				
-				If ($git.remotes.length=0)
-					
-					var $gh : cs:C1710.gh
-					$gh:=cs:C1710.gh.new()
-					
-					If (Not:C34($gh.available))
-						
-						ALERT:C41($gh.lastError+"\n\nInstallation instructions can be found at:\n\nhttps://github.com/cli/cli#installation")
-						return 
-						
-					End if 
-					
-					$gh.logIn()
-					
-					// Create remote
-					var $remote : Text
-					$remote:=$gh.createRepo($git.cwd.name)
-					
-					// Add the remote
-					$git.execute("remote add -m -t origin "+$remote)
-					
-					$git.remotes.push({\
-						name: "master"; \
-						url: $remote\
-						})
-					
-					$git.push("origin"; "refs/heads/master")
-					
-				Else 
-					
-					$git.push()
-					
-				End if 
-				
-				If (Not:C34($git.success))
-					
-					ALERT:C41($git.error)
-					
-				End if 
-				
-				This:C1470.onActivate()
+				This:C1470.pushDialog.show()
 				
 				//==============================================
 			: (This:C1470.open.catch($e; On Clicked:K2:4))
@@ -422,6 +388,15 @@ Function onLoad()
 			CANCEL:C270
 			
 	End case 
+	
+	This:C1470.alertDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "ALERT")
+	This:C1470.alertDialog.me:=This:C1470.alertDialog
+	
+	This:C1470.pullDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PULL")
+	This:C1470.pullDialog.me:=This:C1470.pullDialog
+	
+	This:C1470.pushDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PUSH")
+	This:C1470.pushDialog.me:=This:C1470.pushDialog
 	
 	This:C1470.goToPage(This:C1470.pages.changes)
 	

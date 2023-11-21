@@ -206,6 +206,16 @@
 					"width": 0,
 					"height": 910,
 					"sizingY": "grow"
+				},
+				"embeddedDialogs": {
+					"type": "subform",
+					"left": 271,
+					"top": 870,
+					"width": 32,
+					"height": 30,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"method": "ObjectMethods/embeddedDialogs.4dm"
 				}
 			}
 		},
@@ -945,5 +955,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 983
+	"geometryStamp": 993
 }

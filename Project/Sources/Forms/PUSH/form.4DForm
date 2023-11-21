@@ -1,0 +1,127 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"rightMargin": 0,
+	"bottomMargin": 0,
+	"events": [
+		"onLoad",
+		"onResize"
+	],
+	"windowTitle": "window title",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"main": {
+					"type": "rectangle",
+					"top": 56,
+					"left": 52,
+					"width": 436,
+					"height": 182,
+					"borderRadius": 10,
+					"fill": "automatic",
+					"stroke": "automatic"
+				},
+				"title": {
+					"type": "text",
+					"top": 70,
+					"left": 108,
+					"width": 365,
+					"height": 16,
+					"fontTheme": "main",
+					"text": "Push"
+				},
+				"ok": {
+					"type": "button",
+					"text": "Push",
+					"top": 198,
+					"left": 389,
+					"width": 78,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"method": "ObjectMethods/ok.4dm",
+					"shortcutAccel": false,
+					"shortcutControl": false,
+					"shortcutShift": false,
+					"shortcutAlt": false,
+					"shortcutKey": "[Return]",
+					"defaultButton": true,
+					"action": ""
+				},
+				"additional": {
+					"type": "text",
+					"text": "Push your local changes to remote repository",
+					"top": 94,
+					"left": 108,
+					"width": 365,
+					"height": 26,
+					"fontTheme": "additional"
+				},
+				"Static Picture1": {
+					"type": "picture",
+					"top": 70,
+					"left": 68,
+					"width": 32,
+					"height": 32,
+					"picture": "/RESOURCES/Images/git.png",
+					"pictureFormat": "scaled"
+				},
+				"cancel": {
+					"type": "button",
+					"text": "Cancel",
+					"top": 198,
+					"left": 291,
+					"width": 78,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"method": "ObjectMethods/cancel.4dm",
+					"shortcutAccel": false,
+					"shortcutControl": false,
+					"shortcutShift": false,
+					"shortcutAlt": false,
+					"shortcutKey": "[Return]",
+					"action": ""
+				},
+				"force": {
+					"type": "checkbox",
+					"text": "Force push",
+					"top": 135,
+					"left": 159,
+					"width": 234,
+					"height": 24,
+					"events": [
+						"onClick"
+					],
+					"fontWeight": "normal",
+					"dataSource": "Form:C1466.force",
+					"dataSourceTypeHint": "boolean"
+				}
+			}
+		}
+	],
+	"geometryStamp": 140,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"method": "method.4dm",
+	"inheritedForm": "EMBEDDED BACK"
+}
