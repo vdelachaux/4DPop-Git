@@ -1,0 +1,78 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"rightMargin": 0,
+	"bottomMargin": 0,
+	"events": [
+		"onLoad",
+		"onResize",
+		"onBoundVariableChange"
+	],
+	"windowTitle": "window title",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"main": {
+					"type": "rectangle",
+					"top": 56,
+					"left": 52,
+					"width": 436,
+					"height": 88,
+					"borderRadius": 10,
+					"fill": "automatic",
+					"stroke": "automatic"
+				},
+				"additional": {
+					"type": "text",
+					"text": "Form.additional",
+					"top": 105,
+					"left": 80,
+					"width": 380,
+					"height": 26,
+					"fontTheme": "additional"
+				},
+				"progress": {
+					"type": "progress",
+					"left": 80,
+					"top": 85,
+					"width": 380,
+					"height": 16,
+					"max": 100,
+					"min": 0,
+					"graduationStep": 1
+				},
+				"title": {
+					"type": "text",
+					"text": "Form.title",
+					"top": 70,
+					"left": 80,
+					"width": 380,
+					"height": 16,
+					"fontTheme": "main"
+				}
+			}
+		}
+	],
+	"geometryStamp": 174,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"method": "method.4dm",
+	"inheritedForm": "EMBEDDED BACK"
+}

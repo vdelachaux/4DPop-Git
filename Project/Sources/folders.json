@@ -23,6 +23,7 @@
 			"menu",
 			"menuBar",
 			"motor",
+			"onBoard",
 			"svg",
 			"xml"
 		]
@@ -81,7 +82,11 @@
 		],
 		"forms": [
 			"_TEMPLATE",
-			"DEVICE ACTIVATION"
+			"ALERT",
+			"DEVICE ACTIVATION",
+			"EMBEDDED BACK",
+			"PULL",
+			"PUSH"
 		],
 		"classes": [
 			"_gravatarRequest"
