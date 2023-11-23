@@ -3,11 +3,28 @@ property instances : Collection
 
 Class constructor($widget : Text; $form : Text)
 	
+	ARRAY TEXT:C222($names; 0x0000)
+	FORM GET NAMES:C1167($names; $form)
+	ASSERT:C1129(Size of array:C274($names)=1; "Form not found: "+$form)
+	
+	ARRAY LONGINT:C221($pages; 0x0000)
+	ARRAY POINTER:C280($pointers; 0x0000)
+	FORM GET OBJECTS:C898($names; $pointers; $pages; Form all pages:K67:7)
+	
+	var $indx : Integer
+	$indx:=Find in array:C230($names; $widget)
+	
+	If (Asserted:C1132($indx>0; "Widget not found: "+$widget))
+		
+		ASSERT:C1129($pages{$indx}=0; "WARNING: The widget is not on page 0")
+		
+	End if 
+	
 	This:C1470.form:=$form  // The form to use as a sub-form
 	
 	This:C1470.instances:=[{\
 		name: $widget; \
-		data: {}\
+		data: {ACCEPTED: False:C215; CANCELLED: False:C215}\
 		}]
 	
 	// Make sure the widget is invisible
@@ -31,6 +48,23 @@ Function get name() : Text
 		return This:C1470.instances[0].name+"_"+String:C10(FORM Get current page:C276)
 		
 	End if 
+	
+	// === === === === === === === === === === === === === === === === === ===
+Function get instance() : Object
+	
+	var $form; $name : Text
+	var $ptr : Pointer
+	var $data : Object
+	
+	$name:=OBJECT Get name:C1087(Object current:K67:2)
+	
+	// Get the name of the current displayed sub-form
+	OBJECT GET SUBFORM:C1139(*; $name; $ptr; $form)
+	
+	// Get the data associated with the subform (Form)
+	$data:=OBJECT Get value:C1743($name)
+	
+	return {name: $name; form: $form; data: $data}
 	
 	// === === === === === === === === === === === === === === === === === ===
 	// Displays widget
@@ -61,9 +95,16 @@ Function show($data : Object)
 	// Reset
 	For each ($key; $instance.data)
 		
-		If ($key="parent")\
-			 | ($key="me")
+		If ($key="me")
 			
+			continue
+			
+		End if 
+		
+		If ($key="ACCEPTED")\
+			 | ($key="CANCELLED")
+			
+			$instance.data[$key]:=False:C215
 			continue
 			
 		End if 
@@ -100,21 +141,18 @@ Function show($data : Object)
 	// === === === === === === === === === === === === === === === === === ===
 Function close()
 	
-	Form:C1466.close:=True:C214
 	CALL SUBFORM CONTAINER:C1086(-1)
 	
 	// === === === === === === === === === === === === === === === === === ===
 Function accept()
 	
-	Form:C1466.ok:=True:C214
-	Form:C1466.close:=True:C214
+	Form:C1466.ACCEPTED:=True:C214
 	CALL SUBFORM CONTAINER:C1086(-1)
 	
 	// === === === === === === === === === === === === === === === === === ===
 Function cancel()
 	
-	Form:C1466.cancel:=True:C214
-	Form:C1466.close:=True:C214
+	Form:C1466.CANCELLED:=True:C214
 	CALL SUBFORM CONTAINER:C1086(-1)
 	
 	// === === === === === === === === === === === === === === === === === ===
@@ -206,7 +244,6 @@ Function _setProgress($value : Integer; $message : Text)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === ===
-	
 	// Generic asignment management when loading the sub-form
 Function onLoad()
 	

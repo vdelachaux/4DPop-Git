@@ -71,6 +71,7 @@
 	},
 	"📦 MAIN": {
 		"groups": [
+			"Embedded",
 			"GIT",
 			"PATTERN",
 			"SETTINGS"
@@ -82,11 +83,7 @@
 		],
 		"forms": [
 			"_TEMPLATE",
-			"ALERT",
-			"DEVICE ACTIVATION",
-			"EMBEDDED BACK",
-			"PULL",
-			"PUSH"
+			"DEVICE ACTIVATION"
 		],
 		"classes": [
 			"_gravatarRequest"
@@ -109,6 +106,14 @@
 		],
 		"classes": [
 			"database"
+		]
+	},
+	"Embedded": {
+		"forms": [
+			"ALERT",
+			"EMBEDDED BACK",
+			"PULL",
+			"PUSH"
 		]
 	},
 	"env": {
