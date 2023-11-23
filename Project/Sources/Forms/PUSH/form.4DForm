@@ -58,7 +58,6 @@
 					"shortcutShift": false,
 					"shortcutAlt": false,
 					"shortcutKey": "[Return]",
-					"defaultButton": true,
 					"action": ""
 				},
 				"additional": {
@@ -100,8 +99,8 @@
 				"force": {
 					"type": "checkbox",
 					"text": "Force push",
-					"top": 135,
-					"left": 159,
+					"top": 149,
+					"left": 161,
 					"width": 234,
 					"height": 24,
 					"events": [
@@ -110,11 +109,31 @@
 					"fontWeight": "normal",
 					"dataSource": "Form:C1466.force",
 					"dataSourceTypeHint": "boolean"
+				},
+				"force1": {
+					"type": "checkbox",
+					"text": "Push all tags",
+					"top": 121,
+					"left": 161,
+					"width": 234,
+					"height": 24,
+					"events": [
+						"onClick"
+					],
+					"fontWeight": "normal",
+					"dataSource": "Form:C1466.tags",
+					"dataSourceTypeHint": "boolean"
 				}
-			}
+			},
+			"entryOrder": [
+				"force1",
+				"force",
+				"cancel",
+				"ok"
+			]
 		}
 	],
-	"geometryStamp": 140,
+	"geometryStamp": 146,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

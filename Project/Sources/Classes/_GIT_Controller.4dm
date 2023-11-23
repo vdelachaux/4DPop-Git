@@ -226,7 +226,12 @@ Function handleEvents($e : cs:C1710.evt)
 				//==============================================
 			: (This:C1470.push.catch($e; On Clicked:K2:4))
 				
-				This:C1470.pushDialog.show()
+				$git.execute("config push.followTags")
+				
+				This:C1470.pushDialog.show({\
+					tags: $git.result#"false"; \
+					force: False:C215\
+					})
 				
 				//==============================================
 			: (This:C1470.open.catch($e; On Clicked:K2:4))

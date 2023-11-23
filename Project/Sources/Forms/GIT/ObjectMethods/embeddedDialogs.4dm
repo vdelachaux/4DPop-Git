@@ -3,45 +3,25 @@ $e:=FORM Event:C1606
 
 If ($e.code<0)
 	
-	var $name : Text
-	$name:=OBJECT Get name:C1087(Object current:K67:2)
-	
-	// Get data associated with the subform
-	var $form : Text
-	var $ptr : Pointer  // The name of the current displayed sub-form
-	OBJECT GET SUBFORM:C1139(*; $name; $ptr; $form)
-	
-	// Get data associated with the subform
-	var $data : Object
-	$data:=OBJECT Get value:C1743($name)
-	
-/*
-	
-Doing things, if need be
-	
-Possibly call "return" to avoid executing the "Standard actions" code that follows.
-	
-*/
-	
 	var $me : Object
-	$me:=formGetInstance
+	$me:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
+	
+	// MARK:-Specific actions
+	var $form : Object
+	$form:=formGetInstance
 	
 	var $git : cs:C1710.Git
-	$git:=$me.Git
+	$git:=$form.Git
 	
-	// MARK:Specific actions
 	Case of 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($data.cancel))
+		: ($me.CANCELLED)
 			
-			OBJECT SET VISIBLE:C603(*; $name; False:C215)
-			return 
+			// <NOTHING MORE TO DO>
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($data.push))
-			
-			OBJECT SET VISIBLE:C603(*; $name; False:C215)
+		: (Bool:C1537($me.push))
 			
 			If ($git.remotes.length=0)
 				
@@ -50,11 +30,11 @@ Possibly call "return" to avoid executing the "Standard actions" code that follo
 				
 				If (Not:C34($gh.available))
 					
-					$me.alertDialog.show({\
+					$form.alertDialog.show({\
 						title: $gh.lastError; \
 						additional: "Installation instructions can be found at:\n\nhttps://github.com/cli/cli#installation"})
 					
-					return 
+					return   // 📌 Avoid executing code that follows
 					
 				End if 
 				
@@ -76,63 +56,51 @@ Possibly call "return" to avoid executing the "Standard actions" code that follo
 				
 			Else 
 				
-				$git.push()
-				
+				If ($me.force)
+					
+					$git.forcePush()
+					
+				Else 
+					
+					$git.push()
+					
+				End if 
 			End if 
 			
 			If ($git.success)
 				
-				$me.onActivate()
+				$form.onActivate()
 				
 			Else 
 				
-				$me.alertDialog.show({\
+				$form.alertDialog.show({\
 					title: "Error"; \
 					additional: $git.error})
 				
+				return   // 📌 Avoid executing code that follows
+				
 			End if 
 			
-			return 
-			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($data.pull))
+		: (Bool:C1537($me.pull))
 			
-			OBJECT SET VISIBLE:C603(*; $name; False:C215)
+			Form:C1466.stash:=Bool:C1537($me.stash)
 			
-			Form:C1466.stash:=Bool:C1537($data.stash)
-			
-			$git.pull(Bool:C1537($data.rebase); Form:C1466.stash)
-			$me.onActivate()
+			$git.pull(Bool:C1537($me.rebase); Form:C1466.stash)
+			$form.onActivate()
 			
 			RELOAD PROJECT:C1739
-			return 
-			
-			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		Else 
-			
-			// A "Case of" statement should never omit "Else"
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 	End case 
 	
-	// MARK:Standard actions
-	Case of 
-			
-			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($data.close))
-			
-			OBJECT SET VISIBLE:C603(*; $name; False:C215)
-			
-			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		Else 
-			
-			// A "Case of" statement should never omit "Else"
-			
-			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-	End case 
+	// MARK:-Standard actions
+	$me.me.hide()
 	
-Else 
-	
-	// Standard form events
+	return 
 	
 End if 
+
+// MARK:-Standard (positive) form events
+
+//

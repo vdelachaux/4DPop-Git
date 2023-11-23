@@ -539,23 +539,51 @@ Function pull($rebase : Boolean; $stash : Boolean) : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function push($origin : Text; $branch : Text) : Boolean
 	
-	If (This:C1470.remotes.length=0)
+	var $c : Collection
+	
+	$c:=["push"]
+	
+	If (Count parameters:C259>=2)
 		
-		TRACE:C157  // No remote
+		$c.push($origin)
+		$c.push($branch)
 		
 	Else 
 		
-		If (Count parameters:C259>=2)
-			
-			return This:C1470.execute("push "+$origin+" "+$branch+" -q")
-			
-		Else 
-			
-			// FIXME:What if "master" is not the main branch?
-			return This:C1470.execute("push origin master -q")
-			
-		End if 
+		// FIXME:What if "master" is not the main branch?
+		$c.push("origin master")
+		
 	End if 
+	
+	$c.push("--tags")
+	$c.push("--quiet")
+	
+	return This:C1470.execute($c.join(" "))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function forcePush($origin : Text; $branch : Text) : Boolean
+	
+	var $c : Collection
+	
+	$c:=["push"]
+	
+	If (Count parameters:C259>=2)
+		
+		$c.push($origin)
+		$c.push($branch)
+		
+	Else 
+		
+		// FIXME:What if "master" is not the main branch?
+		$c.push("origin master")
+		
+	End if 
+	
+	$c.push("--force-with-lease")
+	$c.push("--tags")
+	$c.push("--quiet")
+	
+	return This:C1470.execute($c.join(" "))
 	
 	//MARK:-branch
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===

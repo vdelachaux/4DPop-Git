@@ -36,8 +36,8 @@
 				"title": {
 					"type": "text",
 					"top": 70,
-					"left": 108,
-					"width": 365,
+					"left": 138,
+					"width": 335,
 					"height": 16,
 					"fontTheme": "main",
 					"text": "Form.title"
@@ -65,8 +65,8 @@
 					"type": "text",
 					"text": "Form.additional",
 					"top": 94,
-					"left": 108,
-					"width": 359,
+					"left": 138,
+					"width": 329,
 					"height": 91,
 					"fontTheme": "additional"
 				},
@@ -74,15 +74,15 @@
 					"type": "picture",
 					"top": 70,
 					"left": 68,
-					"width": 32,
-					"height": 32,
-					"picture": "/RESOURCES/Images/git.png",
+					"width": 64,
+					"height": 64,
+					"picture": "/.PRODUCT_RESOURCES/Images/alert.png",
 					"pictureFormat": "scaled"
 				}
 			}
 		}
 	],
-	"geometryStamp": 143,
+	"geometryStamp": 150,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
