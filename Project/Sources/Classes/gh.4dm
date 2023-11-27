@@ -47,27 +47,26 @@ Function getExe() : Boolean
 		
 		$cmd:="find /usr -type f -name gh"
 		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
-		This:C1470.success:=Bool:C1537(OK)
 		
-		If (This:C1470.success)
+		If (Bool:C1537(OK))
 			
 			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
 			
-			return File:C1566(This:C1470.exe).exists
+		Else 
+			
+			// Use embedded binary
+			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
 			
 		End if 
 		
 	Else 
 		
-		// FIXME:On Windows
-		This:C1470.success:=True:C214
+		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh.exe")).path
 		
 	End if 
 	
-	// Use embedded binary
-	This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
-	
-	return File:C1566(This:C1470.exe).exists
+	This:C1470.success:=File:C1566(This:C1470.exe).exists
+	return This:C1470.success
 	
 	// MARK:- [auth]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
