@@ -15,7 +15,6 @@
 		"onLoad",
 		"onResize"
 	],
-	"windowTitle": "window title",
 	"destination": "detailScreen",
 	"pages": [
 		{

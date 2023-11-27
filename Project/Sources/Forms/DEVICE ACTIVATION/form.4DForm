@@ -12,7 +12,6 @@
 	"events": [
 		"onTimer"
 	],
-	"windowTitle": "window title",
 	"pages": [
 		{
 			"objects": {}
