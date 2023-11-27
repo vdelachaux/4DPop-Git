@@ -43,21 +43,25 @@ Function getExe() : Boolean
 	
 	var $cmd; $error; $in; $out : Text
 	
-	If (Is macOS:C1572) & False:C215
+/*
+If (Is macOS) & False
+$cmd:="find /usr -type f -name gh"
+LAUNCH EXTERNAL PROCESS($cmd; $in; $out; $error)
+This.success:=Bool(OK)
+If (This.success)
+This.exe:=Split string($out; "\n"; sk ignore empty strings).first()
+Else 
+This.exe:=This._unsanboxed(File("/RESOURCES/Bin/gh")).path
+End if 
+End if 
+This.success:=File(This.exe).exists
+return This.success
+*/
+	
+	// Use embedded binary
+	If (Is macOS:C1572)
 		
-		$cmd:="find /usr -type f -name gh"
-		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
-		
-		If (Bool:C1537(OK))
-			
-			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
-			
-		Else 
-			
-			// Use embedded binary
-			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
-			
-		End if 
+		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
 		
 	Else 
 		
@@ -65,8 +69,7 @@ Function getExe() : Boolean
 		
 	End if 
 	
-	This:C1470.success:=File:C1566(This:C1470.exe).exists
-	return This:C1470.success
+	return True:C214
 	
 	// MARK:- [auth]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
