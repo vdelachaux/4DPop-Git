@@ -110,19 +110,22 @@ Function getStatus() : Object
 	This:C1470.errors.push("Failed to get the user status.")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function logIn()
+Function logIn() : Boolean
 	
 	var $worker : 4D:C1709.SystemWorker
 	
-	If (Not:C34(This:C1470.authorized))
+	If (This:C1470.authorized)
 		
-		$worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth login -h github.com -p HTTPS -s repo"; This:C1470).wait()
+		return True:C214
 		
-		If (This:C1470.success)
-			
-			This:C1470.checkToken()
-			
-		End if 
+	End if 
+	
+	$worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth login -h github.com -p HTTPS -s repo"; This:C1470).wait()
+	
+	If (This:C1470.success)
+		
+		return This:C1470.checkToken()
+		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
