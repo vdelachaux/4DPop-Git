@@ -195,7 +195,9 @@ formatted as follows:
 */
 	
 	$c:=Split string:C1554(This:C1470._version; "")
-	$major:=$c[0]+$c[1]  // LTS version
+	//FIXME:Turn around compilator error
+	//$major:=$c[0]+$c[1]  // LTS version
+	$major:=String:C10($c[0]+$c[1])  // LTS version
 	$release:=$c[2]  // Release number
 	$revision:=$c[3]  // Revision number
 	

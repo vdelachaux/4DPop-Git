@@ -1,4 +1,8 @@
-/* Github API */
+/* Github CLI 
+
+GitHub CLI, or gh, is a command-line interface to GitHub for use in your terminal or your scripts.
+
+*/
 
 property dataType; data; dataError : Text
 property success; available; authorized : Boolean
@@ -29,7 +33,7 @@ Class constructor
 		
 	Else 
 		
-		This:C1470.errors.push("Gh is not installed.")
+		This:C1470.errors.push("The GitHub command line interface is not available")
 		
 	End if 
 	
@@ -39,32 +43,31 @@ Function get lastError() : Text
 	return This:C1470.errors.length>0 ? This:C1470.errors[0] : ""
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Locates the exe to use
 Function getExe() : Boolean
 	
 	var $cmd; $error; $in; $out : Text
 	
-/*
-If (Is macOS) & False
-$cmd:="find /usr -type f -name gh"
-LAUNCH EXTERNAL PROCESS($cmd; $in; $out; $error)
-This.success:=Bool(OK)
-If (This.success)
-This.exe:=Split string($out; "\n"; sk ignore empty strings).first()
-Else 
-This.exe:=This._unsanboxed(File("/RESOURCES/Bin/gh")).path
-End if 
-End if 
-This.success:=File(This.exe).exists
-return This.success
-*/
-	
-	// Use embedded binary
 	If (Is macOS:C1572)
 		
-		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
+		$cmd:="find /usr -type f -name gh"
+		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
+		This:C1470.success:=Bool:C1537(OK)
+		
+		If (This:C1470.success)
+			
+			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
+			
+		Else 
+			
+			// Use embedded binary
+			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
+			
+		End if 
 		
 	Else 
 		
+		// Use embedded binary
 		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh.exe")).path
 		
 	End if 
@@ -73,6 +76,7 @@ return This.success
 	
 	// MARK:- [auth]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Verifies and returns information about the authentication state.
 Function getStatus() : Object
 	
 	var $cmd; $error; $in; $out : Text
@@ -110,6 +114,7 @@ Function getStatus() : Object
 	This:C1470.errors.push("Failed to get the user status.")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Authenticate with a GitHub host.
 Function logIn() : Boolean
 	
 	var $worker : 4D:C1709.SystemWorker
@@ -129,6 +134,7 @@ Function logIn() : Boolean
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Remove authentication for a GitHub host.
 Function logout()
 	
 	var $worker : 4D:C1709.SystemWorker
@@ -143,6 +149,7 @@ Function logout()
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Checks whether the gh authentication token is configured and valid
 Function checkToken() : Boolean
 	
 	var $cmd; $error; $in; $out : Text
@@ -167,6 +174,7 @@ Function checkToken() : Boolean
 	
 	//MARK:- [repo]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Create a new GitHub repository.
 Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	
 	var $cmd : Text
@@ -189,6 +197,7 @@ Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Delete a GitHub repository.
 Function deleteRepo($name : Text) : Boolean
 	
 	var $cmd : Text
