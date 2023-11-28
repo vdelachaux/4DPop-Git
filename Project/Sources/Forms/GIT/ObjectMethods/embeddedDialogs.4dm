@@ -38,7 +38,11 @@ If ($e.code<0)
 					
 				End if 
 				
-				$gh.logIn()
+				If (Not:C34($gh.logIn()))
+					
+					return 
+					
+				End if 
 				
 				// Create remote
 				var $remote : Text
