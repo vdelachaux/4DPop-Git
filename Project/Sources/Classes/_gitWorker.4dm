@@ -1,17 +1,18 @@
-Class constructor
+Class extends _CLI
+
+Class constructor($embedded : Boolean)
 	
-	This:C1470.dataType:="text"
-	This:C1470.data:=""
-	This:C1470.dataError:=""
+	Super:C1705("git"; $embedded)
 	
-	This:C1470.cwd:=This:C1470._unsanboxed(Folder:C1567(fk database folder:K87:14))
+	This:C1470.currentDirectory:=This:C1470._unsanboxed(Folder:C1567(fk database folder:K87:14))
 	
-	This:C1470.hideWindow:=True:C214
-	
+	//MARK:- [System worker callbacks]
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onResponse($worker : 4D:C1709.SystemWorker)
 	
 	//…
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onData($worker : 4D:C1709.SystemWorker; $info : Object)
 	
 	This:C1470.data+=$info.data
@@ -37,28 +38,7 @@ Function onTerminate($worker : 4D:C1709.SystemWorker)
 	End if 
 	
 	
-	//MARK:- [private]
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _unsanboxed($target : Object) : Object
 	
-	Case of 
-			//______________________________________________________
-		: (OB Instance of:C1731($target; 4D:C1709.File))
-			
-			return File:C1566($target.platformPath; fk platform path:K87:2)
-			
-			//______________________________________________________
-		: (OB Instance of:C1731($target; 4D:C1709.Folder))
-			
-			return Folder:C1567($target.platformPath; fk platform path:K87:2)
-			
-			//______________________________________________________
-		Else 
-			
-			This:C1470.errors.push("Bad parameter")
-			
-			//______________________________________________________
-	End case 
 	
 	
 	//// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -68,11 +48,11 @@ Function _unsanboxed($target : Object) : Object
 	
 	////┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 	//: ($params.type="data")\
-				 && ($worker.dataType="text")
+								 && ($worker.dataType="text")
 	
 	////┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 	//: ($params.type="data")\
-				 && ($worker.dataType="blob")
+								 && ($worker.dataType="blob")
 	
 	////┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 	//: ($params.type="error")
