@@ -14,7 +14,7 @@
 [![language][code-shield]][code-url]
 [![language-top][code-top]][code-url]
 ![code-size][code-size]
-[![license][license-shield]][license-url]
+[![license][license-shield]][license-url]<br>
 [![release][release-shield]][release-url]
 [![build][build-shield]][license-url]
 ![notarized][notarized]
