@@ -70,6 +70,7 @@ Function getExe($name : Text; $embedded : Boolean) : Boolean
 	
 	If ($file.exists && Is macOS:C1572)
 		
+		// Ensure that the file is executable
 		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; $file.parent.platformPath)
 		LAUNCH EXTERNAL PROCESS:C811("chmod +x "+$name)
 		
