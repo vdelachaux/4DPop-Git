@@ -16,9 +16,7 @@ Function onResponse($request : 4D:C1709.HTTPRequest; $event : Object)
 	
 	If (This:C1470.target#Null:C1517)
 		
-		//%W-550.2
-		This:C1470.target($p)
-		//%W+550.2
+		This:C1470.target.call(Null:C1517; $p)
 		
 	Else 
 		

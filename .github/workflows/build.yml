@@ -10,12 +10,9 @@ on:
 
 jobs:
   build:
-    name: "Build on ${{ matrix.os }}"
     strategy:
       fail-fast: false
-      matrix:
-        os: [ macos-latest, windows-latest ]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -24,6 +21,12 @@ jobs:
       with:
         repository: vdelachaux/4DPop
         path: Build/Components/4DPop.4dbase
+        outputDirectory: Components/4DPop.4dbase
+    - name: Check out NetKit
+      uses: actions/checkout@v4
+      with:
+        repository: 4d/4D-NetKit
+        path: Components/4D NetKit.4dbase
     - name: Build
       uses: 4d/build4d-action@main
       with:
