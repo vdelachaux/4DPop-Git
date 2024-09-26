@@ -31,7 +31,7 @@ No need to read the <a href="https://git-scm.com/docs/git">**git**</a> command d
 Git comes with [Xcode](https://developer.apple.com/xcode/), so there's nothing more to do if this is installed. Otherwise, you can install the latest version of Git from [this page](https://git-scm.com/download/mac).
 
 ### Windows
-If you have not already done so, Git must be installed from [this page] (https://git-scm.com/download/win).
+If you have not already done so, Git must be installed from [this page](https://git-scm.com/download/win).
 
 
 ## Note
