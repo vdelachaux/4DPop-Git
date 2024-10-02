@@ -273,59 +273,59 @@ Function AuthorizeApp() : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getAppToken() : Object
 	
-	//var $param; $token : Object
-	//var $ws : 4D.WebServer
-	//var $oAuth2 : cs.NetKit.OAuth2Provider
+	var $param; $token : Object
+	var $ws : 4D:C1709.WebServer
+	var $oAuth2 : cs:C1710.NetKit.OAuth2Provider
 	
-	//$token:=Storage.OAuth2
+	$token:=Storage:C1525.OAuth2
 	
-	//If (This._IsValidAppToken($token))
+	If (This:C1470._IsValidAppToken($token))
+		
+		return $token
+		
+	End if 
 	
-	//return $token
+	// Start web server if any
+	$ws:=WEB Server:C1674
 	
-	//End if 
+	If (Not:C34($ws.isRunning))
+		
+		$ws.start({\
+			rootFolder: Folder:C1567(fk database folder:K87:14).folder("www"); \
+			HTTTPort: 8858\
+			})
+		
+	End if 
 	
-	//// Start web server if any
-	//$ws:=WEB Server
-	
-	//If (Not($ws.isRunning))
-	
-	//$ws.start({\
-		rootFolder: Folder(fk database folder).folder("www"); \
-		HTTTPort: 8858\
-		})
-	
-	//End if 
-	
-	//$param:={\
+	$param:={\
 		token: $token; \
 		permission: "signedIn"; \
-		clientId: This.clientId; \
-		clientSecret: This.clientSecret; \
+		clientId: This:C1470.clientId; \
+		clientSecret: This:C1470.clientSecret; \
 		redirectURI: "http://127.0.0.1:50993/authorize/"; \
 		scope: "repo, user"; \
 		authenticateURI: "https://github.com/login/oauth/authorize"; \
 		tokenURI: "https://github.com/login/oauth/access_token"; \
 		timeout: 60; \
-		authenticationPage: Folder($ws.rootFolder).file("authentication.htm"); \
-		authenticationErrorPage: Folder($ws.rootFolder).file("error.htm")\
+		authenticationPage: Folder:C1567($ws.rootFolder).file("authentication.htm"); \
+		authenticationErrorPage: Folder:C1567($ws.rootFolder).file("error.htm")\
 		}
 	
-	//$oAuth2:=cs.NetKit.OAuth2Provider.new($param)
+	$oAuth2:=cs:C1710.NetKit.OAuth2Provider.new($param)
 	
-	//$token:=$oAuth2.getToken()
-	//This.success:=$token#Null
+	$token:=$oAuth2.getToken()
+	This:C1470.success:=$token#Null:C1517
 	
-	//If (This.success)
+	If (This:C1470.success)
+		
+		Use (Storage:C1525)
+			
+			Storage:C1525.OAuth2:=OB Copy:C1225($token; ck shared:K85:29)
+			
+		End use 
+	End if 
 	
-	//Use (Storage)
-	
-	//Storage.OAuth2:=OB Copy($token; ck shared)
-	
-	//End use 
-	//End if 
-	
-	//return $token
+	return $token
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _IsValidAppToken($token : Object) : Boolean
