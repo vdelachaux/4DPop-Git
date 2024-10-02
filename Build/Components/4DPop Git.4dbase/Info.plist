@@ -8,13 +8,13 @@
     <key>CFBundleShortVersionString</key>
     <string>20R7</string>
     <key>CFBundleLongVersionString</key>
-    <string>20R7 (184)</string>
+    <string>20R7 (185)</string>
     <key>CFBundleGetInfoString</key>
     <string>20R7</string>
     <key>CFBundleDisplayName</key>
     <string>4DPop Git</string>
     <key>CFBundleVersion</key>
-    <string>185</string>
+    <string>186</string>
     <key>NSHumanReadableCopyright</key>
     <string>©vdl 2020-2024</string>
   </dict>
