@@ -77,7 +77,6 @@
 			"SETTINGS"
 		],
 		"methods": [
-			"COMPILER_component",
 			"GIT SETTINGS",
 			"GIT UPDATE"
 		],
@@ -95,8 +94,7 @@
 		],
 		"methods": [
 			"_4DPopGit",
-			"4DPop Git",
-			"COMPILER_4DPop"
+			"4DPop Git"
 		]
 	},
 	"database": {

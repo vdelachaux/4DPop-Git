@@ -27,9 +27,6 @@ Class constructor($url : Text; $method : Text; $headers : Object; $body)
 	This:C1470.headers:=$headers || {}  // Empty object if not provided
 	This:C1470.body:=$body  // Note that "body" is a variant!
 	
-	// MARK:Delegates 📦
-	This:C1470.HTTPRequest:=4D:C1709.HTTPRequest
-	
 	This:C1470.dev:=(Structure file:C489=Structure file:C489(*))
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==

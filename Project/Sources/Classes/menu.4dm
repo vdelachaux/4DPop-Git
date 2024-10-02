@@ -8,7 +8,6 @@ Class constructor($def)
 	
 	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
 	
-	This:C1470.ref:=Null:C1517
 	This:C1470.autoRelease:=True:C214
 	This:C1470.released:=False:C215
 	This:C1470.localize:=True:C214
@@ -168,7 +167,7 @@ Function append($item; $param; $mark; $afterItem : Integer) : cs:C1710.menu
 					//______________________________________________________
 				Else 
 					
-					$t:=Get localized string:C991($item)
+					$t:=Localized string:C991($item)
 					
 					//______________________________________________________
 			End case 

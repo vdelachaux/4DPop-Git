@@ -6,10 +6,6 @@
 // ----------------------------------------------------
 #DECLARE($run : Boolean)
 
-If (False:C215)
-	C_BOOLEAN:C305(GIT SETTINGS; $1)
-End if 
-
 var $winRef : Integer
 
 If (Count parameters:C259=0)
