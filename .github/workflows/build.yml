@@ -14,8 +14,8 @@ jobs:
       fail-fast: false
     runs-on: macos-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+   - name: Checkout
+     uses: actions/checkout@v4
 #     - name: Check out 4DPop
 #       uses: actions/checkout@v4
 #       with:
