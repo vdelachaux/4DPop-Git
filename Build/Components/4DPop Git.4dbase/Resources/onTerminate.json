@@ -1,5 +1,5 @@
 {
-	"commandLine": "/Users/vincentdelachaux/GITHUB/4DPop/4DPop-Family/4DPop-Git/Resources/Bin/gh repo delete on-board --yes",
+	"commandLine": "/usr/local/Cellar/gh/2.33.0/bin/gh repo create test-repo --public",
 	"response": "",
-	"responseError": "HTTP 404: Not Found (https://api.github.com/repos/vdelachaux/on-board)\n"
+	"responseError": "GraphQL: Name already exists on this account (createRepository)\n"
 }

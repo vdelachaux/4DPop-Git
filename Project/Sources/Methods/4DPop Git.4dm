@@ -1,14 +1,10 @@
-//%attributes = {"shared":true,"preemptive":"incapable"}
+//%attributes = {"preemptive":"incapable"}
 // ----------------------------------------------------
 // Project method: GIT OPEN
 // ID[52DD5F426D1647FF837AF213147FFC6B]
 // Created 4-3-2020 by Vincent de Lachaux
 // ----------------------------------------------------
 #DECLARE($run : Boolean)
-
-If (False:C215)
-	C_BOOLEAN:C305(4DPop Git; $1)
-End if 
 
 var $winRef : Integer
 var $folder : 4D:C1709.Folder
@@ -40,11 +36,11 @@ If (OK=0)
 	
 	If (OK=0)
 		
-		CONFIRM:C162(Get localized string:C991("thisDatabaseIsNotUnderGitControl"); Get localized string:C991("initializeTheGitRepository"))
+		CONFIRM:C162(Localized string:C991("thisDatabaseIsNotUnderGitControl"); Localized string:C991("initializeTheGitRepository"))
 		
 	Else 
 		
-		CONFIRM:C162(Get localized string:C991("thisDatabaseIsUnderGitSourceControlButNotAtThisLevel"))
+		CONFIRM:C162(Localized string:C991("thisDatabaseIsUnderGitSourceControlButNotAtThisLevel"))
 		
 	End if 
 End if 

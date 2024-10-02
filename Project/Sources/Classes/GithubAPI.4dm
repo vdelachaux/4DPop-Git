@@ -340,7 +340,7 @@ Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
 	var $response : Object
 	var $request : 4D:C1709.HTTPRequest
 	
-	$request:=This:C1470.HTTPRequest.new($url; This:C1470)
+	$request:=4D:C1709.HTTPRequest.new($url; This:C1470)
 	
 	If ($wait)
 		

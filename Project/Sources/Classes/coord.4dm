@@ -3,8 +3,6 @@ property left; top; right; bottom : Integer
 
 Class constructor($left; $top : Integer; $right : Integer; $bottom : Integer)
 	
-	This:C1470.name:=Null:C1517
-	
 	Case of 
 			
 			//______________________________________________________

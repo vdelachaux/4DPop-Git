@@ -36,7 +36,7 @@ File("~repo/README.md").setText("# "+$name)
 git add README.md
 git commit -m "first commit"
 
-// Add the origin to to teh repository
+// Add the origin to to the repository
 git remote add origin + $remoteURL
 
 // Create the main branch
