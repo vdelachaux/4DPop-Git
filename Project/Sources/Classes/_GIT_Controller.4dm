@@ -97,7 +97,7 @@ Function init()
 	
 	var $menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
 	
-	This:C1470.menuBar:=cs:C1710.menuBar.new([\
+	cs:C1710.menuBar.new([\
 		":xliff:CommonMenuFile"; $menuFile; \
 		":xliff:CommonMenuEdit"; $menuEdit]).set()
 	
