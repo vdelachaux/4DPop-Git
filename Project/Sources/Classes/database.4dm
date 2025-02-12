@@ -1,110 +1,139 @@
-//USE: databaseNonThreadSafe
-//USE: noERROR
+property type; name; version : Text
+property isCompiled; isInterpreted; isDebug; isProject; isBinary; isRemote; isLocal; isServer; isMatrix; isComponent; isDataless; internal : Boolean
+property dataReadOnly; isModifiable : Boolean
+property databaseFolder; dataFolder : 4D:C1709.Folder
+property preferencesFolder; settingsFolder; resourcesFolder; userPreferencesFolder : 4D:C1709.Folder
+property structureFile; dataFile; plistFile; buildAppSettingsFile : 4D:C1709.File
+property components; plugins : Collection
+property parameters : Variant
+property project : Object
+property compatibilityVersion : Integer
+
+property motor : cs:C1710.motor
 
 Class extends _classCore
 
 Class constructor($full : Boolean)
 	
-	var $pathname : Text
-	var $o : Object
-	var $file : 4D:C1709.File
-	var $signal : 4D:C1709.Signal
-	
 	Super:C1705()
+	
+	// MARK:-Delegates 📦
+	This:C1470.motor:=cs:C1710.motor.me
+	
+	This:C1470.type:=\
+		This:C1470.motor.isLocal ? "Local" : \
+		This:C1470.motor.isServer ? "Server" : \
+		This:C1470.motor.isRemote ? "Remote" : "???"
 	
 	This:C1470.isCompiled:=Is compiled mode:C492(*)
 	This:C1470.isInterpreted:=Not:C34(This:C1470.isCompiled)
 	
 	This:C1470.isDebug:=This:C1470.isInterpreted\
-		 | (Position:C15("debug"; Application version:C493(*))>0)\
-		 | Folder:C1567(fk user preferences folder:K87:10).file("_vdl").exists
+		 || This:C1470.motor.isDebug\
+		 || Folder:C1567(fk user preferences folder:K87:10).file("_vdl").exists
 	
-	This:C1470.type:=Choose:C955(Application type:C494; "Local"; "Volume desktop"; "Unkwon (2)"; "Desktop"; "Remote"; "Server")
-	This:C1470.isRemote:=(This:C1470.type="Remote")
-	This:C1470.isLocal:=Not:C34(This:C1470.isRemote)
+	This:C1470.isRemote:=This:C1470.motor.isRemote
+	This:C1470.isLocal:=This:C1470.motor.isLocal
+	This:C1470.isServer:=This:C1470.motor.isServer
 	
+	var $pathname : Text
 	$pathname:=Structure file:C489(*)
 	
-	This:C1470.isMatrix:=(Structure file:C489=$pathname)
-	This:C1470.isComponent:=Not:C34(This:C1470.isMatrix)
+	This:C1470.internal:=Length:C16($pathname)=0  // Only true for internal 4D components if no database is open
+	
+	If (Not:C34(This:C1470.internal))
+		
+		This:C1470.databaseFolder:=Try(Folder:C1567(Folder:C1567("/PACKAGE/"; *).platformPath; fk platform path:K87:2))
+		
+	End if 
 	
 	If (This:C1470.isRemote)
 		
 		This:C1470.name:=$pathname
 		This:C1470.isDataless:=False:C215
 		
-		This:C1470.databaseFolder:=Folder:C1567(fk remote database folder:K87:9).folder("4D/Components")
+		This:C1470.isMatrix:=False:C215
+		This:C1470.isComponent:=False:C215
+		
+		This:C1470.isModifiable:=(This:C1470.databaseFolder#Null:C1517) && Not:C34(This:C1470.databaseFolder.file(This:C1470.name+".4DZ").exists)
 		
 	Else 
 		
-		This:C1470.structureFile:=File:C1566($pathname; fk platform path:K87:2)
+		This:C1470.isMatrix:=(Structure file:C489=$pathname)
+		This:C1470.isComponent:=Not:C34(This:C1470.isMatrix)
 		
-		$pathname:=Data file:C490
-		This:C1470.isDataless:=(Length:C16($pathname)=0)
-		
-		If (Not:C34(This:C1470.isDataless))
+		If (Not:C34(This:C1470.internal))
 			
-			This:C1470.dataFile:=File:C1566($pathname; fk platform path:K87:2)
-			This:C1470.dataFolder:=This:C1470.dataFile.parent
-			This:C1470.dataReadOnly:=Is data file locked:C716
+			This:C1470.structureFile:=File:C1566($pathname; fk platform path:K87:2)
+			This:C1470.name:=This:C1470.structureFile.name
+			This:C1470.isModifiable:=Not:C34(This:C1470.structureFile.extension=".4DZ")
 			
-		End if 
-		
-		This:C1470.name:=This:C1470.structureFile.name
-		
-		// Unsanboxing
-		This:C1470.databaseFolder:=Folder:C1567(Folder:C1567("/PACKAGE/"; *).platformPath; fk platform path:K87:2)
-		
-		This:C1470.plistFile:=This:C1470.databaseFolder.file("Info.plist")
-		
-		If (This:C1470.plistFile.exists)
+			$pathname:=Data file:C490
+			This:C1470.isDataless:=(Length:C16($pathname)=0)
 			
-			$o:=This:C1470.plistFile.getAppInfo()
-			
-			If ($o.CFBundleShortVersionString#Null:C1517)
+			If (Not:C34(This:C1470.isDataless))
 				
-				This:C1470.version:=String:C10($o.CFBundleShortVersionString)
+				This:C1470.dataFile:=File:C1566($pathname; fk platform path:K87:2)
+				This:C1470.dataFolder:=This:C1470.dataFile.parent
+				This:C1470.dataReadOnly:=Is data file locked:C716
 				
-				If ($o.CFBundleVersion#Null:C1517)
+			End if 
+			
+			If (This:C1470.databaseFolder#Null:C1517)
+				
+				This:C1470.plistFile:=This:C1470.databaseFolder.file("Info.plist")
+				
+				If (This:C1470.plistFile.exists)
 					
-					This:C1470.version:=This:C1470.version+" ("+String:C10($o.CFBundleVersion)+")"
+					var $o : Object
+					$o:=This:C1470.plistFile.getAppInfo()
+					
+					If ($o.CFBundleShortVersionString#Null:C1517)
+						
+						This:C1470.version:=String:C10($o.CFBundleShortVersionString)
+						
+						If ($o.CFBundleVersion#Null:C1517)
+							
+							This:C1470.version:=This:C1470.version+" ("+String:C10($o.CFBundleVersion)+")"
+							
+						End if 
+					End if 
+				End if 
+				
+				This:C1470.preferencesFolder:=This:C1470.databaseFolder.folder("Preferences")
+				This:C1470.settingsFolder:=This:C1470.databaseFolder.folder("Settings")
+				This:C1470.resourcesFolder:=This:C1470.databaseFolder.folder("Resources")
+				
+			End if 
+			
+			var $file : 4D:C1709.File
+			$file:=This:C1470.settingsFolder.file("buildApp.4DSettings")
+			
+			If (Not:C34($file.exists))
+				
+				$file:=This:C1470.preferencesFolder.file("BuildApp.xml")
+				
+				If ($file.exists)
+					
+					$file.copyTo(This:C1470.settingsFolder; "buildApp.4DSettings")
 					
 				End if 
 			End if 
-		End if 
-		
-		This:C1470.preferencesFolder:=This:C1470.databaseFolder.folder("Preferences")
-		This:C1470.settingsFolder:=This:C1470.databaseFolder.folder("Settings")
-		This:C1470.resourcesFolder:=This:C1470.databaseFolder.folder("Resources")
-		
-		$file:=This:C1470.settingsFolder.file("buildApp.4DSettings")
-		
-		If (Not:C34($file.exists))
 			
-			$file:=This:C1470.preferencesFolder.file("BuildApp.xml")
-			
-			If ($file.exists)
+			If (Not:C34($file.exists))\
+				 && (File:C1566("/RESOURCES/BuildApp.xml").exists)
 				
-				$file.copyTo(This:C1470.settingsFolder; "buildApp.4DSettings")
-				
-			End if 
-		End if 
-		
-		If (Not:C34($file.exists))
-			
-			// Create a default file
-			If (File:C1566("/RESOURCES/BuildApp.xml").exists)
-				
+				// Create a default file
 				$file.setText(Replace string:C233(File:C1566("/RESOURCES/BuildApp.xml").getText(); "{BuildApplicationName}"; This:C1470.name))
 				
 			End if 
+			
+			This:C1470.buildAppSettingsFile:=$file
+			
+			This:C1470.userPreferencesFolder:=Folder:C1567(fk user preferences folder:K87:10).folder(This:C1470.name)
+			
 		End if 
-		
-		This:C1470.buildAppSettingsFile:=$file
-		
 	End if 
-	
-	This:C1470.userPreferencesFolder:=Folder:C1567(fk user preferences folder:K87:10).folder(This:C1470.name || "projet")
 	
 	If (Not:C34(Is macOS:C1572) && Not:C34(Is Windows:C1573))
 		
@@ -115,68 +144,89 @@ Class constructor($full : Boolean)
 		
 	Else 
 		
-		This:C1470.isProject:=This:C1470.structureFile.extension=".4DProject"
+		This:C1470.isProject:=Bool:C1537(Get database parameter:C643(Is host database a project:K37:99))
 		This:C1470.isBinary:=Not:C34(This:C1470.isProject)
-	End if 
-	
-	$full:=Count parameters:C259>=1 ? $full : False:C215
-	
-	//%W-550.2
-	If ($full)
-		
-		// Non-thread-safe commands are delegated to the application process
-		$signal:=New signal:C1641("database")
-		CALL WORKER:C1389("$nonThreadSafe"; "databaseNonThreadSafe"; $signal)
-		$signal.wait()
-		
-		KILL WORKER:C1390("$nonThreadSafe")
-		
-		This:C1470.components:=$signal.components.copy()
-		This:C1470.plugins:=$signal.plugins.copy()
-		
-		Case of 
-				
-				//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-			: (Value type:C1509($signal.parameters)=Is collection:K8:32)
-				
-				This:C1470.parameters:=$signal.parameters.copy()
-				
-				//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-			: (Value type:C1509($signal.parameters)=Is object:K8:27)
-				
-				This:C1470.parameters:=OB Copy:C1225($signal.parameters)
-				
-				//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-			Else 
-				
-				This:C1470.parameters:=$signal.parameters
-				
-				//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-		End case 
-		
-	Else 
-		
-		This:C1470.components:=New collection:C1472
-		This:C1470.plugins:=New collection:C1472
 		
 	End if 
-	//%W+550.2
 	
-	// Make a _singleton
-	This:C1470.Singletonize(This:C1470)
+	If (This:C1470.isProject)
+		
+		This:C1470.project:=getProject  // Executed on the server
+		This:C1470.compatibilityVersion:=This:C1470.project=Null:C1517 ? -1 : This:C1470.project.compatibilityVersion
+		
+	End if 
+	
+	ARRAY TEXT:C222($textArray; 0x0000)
+	COMPONENT LIST:C1001($textArray)
+	
+	This:C1470.components:=[]
+	ARRAY TO COLLECTION:C1563(This:C1470.components; $textArray)
+	
+	ARRAY INTEGER:C220($intArray; 0x0000)
+	PLUGIN LIST:C847($intArray; $textArray)
+	
+	This:C1470.plugins:=[]
+	ARRAY TO COLLECTION:C1563(This:C1470.plugins; $textArray)
+	
+	var $custom : Text
+	var $int : Integer:=Get database parameter:C643(User param value:K37:94; $custom)
+	
+	If (Length:C16($custom)>0)
+		
+		// Decode special entities
+		$custom:=Replace string:C233($custom; "&amp;"; "&")
+		$custom:=Replace string:C233($custom; "&lt;"; "<")
+		$custom:=Replace string:C233($custom; "&gt;"; ">")
+		$custom:=Replace string:C233($custom; "&apos;"; "'")
+		$custom:=Replace string:C233($custom; "&quot;"; "\"")
+		
+		This:C1470.parameters:=This:C1470.isJson($custom) ? JSON Parse:C1218($custom) : $custom
+		
+	End if 
+	
+	If (Not:C34(This:C1470.internal))
+		
+		// Make a _singleton
+		This:C1470.Singletonize(This:C1470)
+		
+	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get mode() : Text
 	
 	return Bool:C1537(This:C1470.isCompiled) ? "compiled" : "interpreted"
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get compiled() : Boolean
+	
+	return This:C1470.isCompiled
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get interpreted() : Boolean
+	
+	return This:C1470.isInterpreted
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get local() : Boolean
+	
+	return This:C1470.isLocal
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get remote() : Boolean
+	
+	return This:C1470.isRemote
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get server() : Boolean
+	
+	return This:C1470.isServer
+	
 	//MARK:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// ⚠️ Only test tables that are available via REST.
-Function isDataEmpty() : Boolean
+Function isDataEmpty($legacy : Boolean) : Boolean
 	
 	var $table : Text
-	var $empty : Boolean
+	var $i : Integer
 	
 	If (This:C1470.isDataless)
 		
@@ -184,70 +234,81 @@ Function isDataEmpty() : Boolean
 		
 	End if 
 	
-	$empty:=True:C214
-	
-	For each ($table; ds:C1482) Until (Not:C34($empty))
+	If ($legacy)
 		
-		$empty:=ds:C1482[$table].all().length=0
+		For ($i; 1; Last table number:C254; 1)
+			
+			If (Is table number valid:C999($i))\
+				 && (Records in table:C83(Table:C252($i)->)>0)
+				
+				return 
+				
+			End if 
+		End for 
 		
-	End for each 
+	Else 
+		
+		// ⚠️ Only test tables that are available via REST
+		For each ($table; ds:C1482)
+			
+			If (ds:C1482[$table].getCount()>0)
+				
+				return 
+				
+			End if 
+		End for each 
+	End if 
 	
-	return $empty
+	return True:C214
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isMethodAvailable($name : Text) : Boolean
 	
-	var $signal : 4D:C1709.Signal
+	ARRAY TEXT:C222($methods; 0x0000)
+	METHOD GET NAMES:C1166($methods)
 	
-	$signal:=New signal:C1641("database")
-	
-	//%W-550.2
-	Use ($signal)
-		
-		$signal.action:="methodAvailable"
-		$signal.name:=$name
-		
-	End use 
-	
-	CALL WORKER:C1389("$nonThreadSafe"; "databaseNonThreadSafe"; $signal)
-	$signal.wait()
-	
-	return $signal.available
-	//%W+550.2
+	return Find in array:C230($methods; $name)>0
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isComponentAvailable($name : Text) : Boolean
 	
-	return This:C1470.components.includes($name)
+	return This:C1470.components.indexOf($name)#-1
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function isPluginAvailable($name : Text) : Boolean
 	
-	return This:C1470.plugins.includes($name)
+	return This:C1470.plugins.indexOf($name)#-1
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Check if the database folder is writable
 Function isWritable() : Boolean
 	
-	var $writable : Boolean
-	var $methodCalledOnError : Text
+	var $success : Boolean
 	var $file : 4D:C1709.File
 	
-	$methodCalledOnError:=Method called on error:C704
-	ON ERR CALL:C155(Formula:C1597(noError).source)
-	$file:=This:C1470.databaseFolder.file("._")
-	$writable:=$file.create()
-	$file.delete()
-	ON ERR CALL:C155($methodCalledOnError)
+	If (This:C1470.databaseFolder=Null:C1517)
+		
+		return 
+		
+	End if 
 	
-	return $writable
+	$file:=This:C1470.databaseFolder.file("._")
+	
+	Try
+		
+		$success:=$file.create()
+		$file.delete()
+		
+	End try
+	
+	return $success
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function deleteGeometry()
 	
 	var $folder : 4D:C1709.Folder
 	
-	$folder:=This:C1470.userPreferencesFolder.folder("4D Window Bounds v"+Delete string:C232(Application version:C493; 3; 2))
+	$folder:=This:C1470.userPreferencesFolder.folder("4D Window Bounds v"+Delete string:C232(This:C1470.motor._version; 3; 2))
 	
 	If ($folder.exists)
 		
@@ -255,7 +316,8 @@ Function deleteGeometry()
 			 ? $folder.folders().query("fullName = :1"; "[projectForm]").pop()\
 			 : $folder.folders().query("fullName = :1"; File:C1566(Structure file:C489; fk platform path:K87:2).name).pop()
 		
-		If ($folder#Null:C1517) && ($folder.exists)
+		If ($folder#Null:C1517)\
+			 && ($folder.exists)
 			
 			$folder.delete(fk recursive:K87:7)
 			
@@ -288,7 +350,8 @@ Function clearCompiledCode()
 	
 	If (This:C1470.isProject\
 		 && This:C1470.isInterpreted\
-		 && Not:C34(This:C1470.isRemote))
+		 && This:C1470.isModifiable\
+		 && (This:C1470.databaseFolder#Null:C1517))
 		
 		$folder:=This:C1470.structureFile.parent.parent.folder("Libraries")
 		
@@ -321,29 +384,16 @@ Function clearCompiledCode()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function methods($filter : Text) : Collection
 	
-	var $signal : 4D:C1709.Signal
+	ARRAY TEXT:C222($methods; 0x0000)
+	METHOD GET NAMES:C1166($methods; $filter)
 	
-	// Non-thread-safe commands are delegated to the application process
-	$signal:=New signal:C1641("database")
+	var $c : Collection:=[]
+	ARRAY TO COLLECTION:C1563($c; $methods)
 	
-	//%W-550.2
-	Use ($signal)
-		
-		$signal.action:="methods"
-		$signal.filter:=$filter
-		
-	End use 
-	
-	CALL WORKER:C1389("$nonThreadSafe"; "databaseNonThreadSafe"; $signal)
-	$signal.wait()
-	
-	return $signal.methods.copy()
-	//%W+550.2
+	return $c
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function setUserParam($userParam)
-	
-	var $signal : 4D:C1709.Signal
 	
 	Case of 
 			
@@ -371,50 +421,101 @@ Function setUserParam($userParam)
 			//__________________________
 	End case 
 	
-	// Non-thread-safe commands are delegated to the application process
-	$signal:=New signal:C1641("database")
+	SET DATABASE PARAMETER:C642(User param value:K37:94; $userParam)
 	
-	Use ($signal)
-		
-		//%W-550.2
-		$signal.userParam:=$userParam
-		//%W+550.2
-		
-	End use 
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Start debug log recording
+	// After deleting existing log files, if any
+Function startDebugLog($delete : Boolean)
 	
-	CALL WORKER:C1389("$nonThreadSafe"; "databaseNonThreadSafe"; $signal)
-	$signal.wait()
+	If ($delete)
+		
+		This:C1470.deleteDebugLogs()
+		
+	End if 
+	
+	This:C1470.debugLog(True:C214)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Stop debug log recording
+Function stopDebugLog
+	
+	This:C1470.debugLog(False:C215)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Start/Stop debug log recording
+Function debugLog($tart : Boolean)
+	
+	SET DATABASE PARAMETER:C642(Debug log recording:K37:34; Num:C11($tart))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Deletes existing log files, if any
+Function deleteDebugLogs()
+	
+	var $file : 4D:C1709.File
+	
+	For each ($file; Folder:C1567(fk logs folder:K87:17; *).files().query("name = :1 & extension = '.txt'"; This:C1470.type="server" ? "4DBebugLogServer_@" : "4DDebugLog_@"))
+		
+		$file.delete()
+		
+	End for each 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function startDiagnosticLog
+	
+	This:C1470.diagnosticLog(True:C214)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function stopDiagnosticLog
+	
+	This:C1470.diagnosticLog(False:C215)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function diagnosticLog($enable : Boolean)
+	
+	SET DATABASE PARAMETER:C642(Diagnostic log recording:K37:69; Num:C11($enable))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function restart($options; $message : Text)
 	
-	var $signal : 4D:C1709.Signal
-	
-	// Non-thread-safe commands are delegated to the application process
-	$signal:=New signal:C1641("database")
-	
-	//%W-550.2
-	Use ($signal)
+	If (This:C1470.databaseFolder=Null:C1517)
 		
-		$signal.action:="restart"
-		$signal.this:=OB Copy:C1225(This:C1470; ck shared:K85:29; $signal)
+		This:C1470._pushError("No database")
+		return 
+		
+	End if 
+	
+	If (This:C1470.isServer)
 		
 		If ($options#Null:C1517)
 			
-			$signal.options:=$options
+			If ($message#Null:C1517)
+				
+				RESTART 4D:C1292(Num:C11($options); $message)
+				
+			Else 
+				
+				RESTART 4D:C1292(Num:C11($options))
+				
+			End if 
+			
+		Else 
+			
+			RESTART 4D:C1292
 			
 		End if 
 		
-		If (Length:C16($message)>0)
+	Else 
+		
+		If ($options#Null:C1517)
 			
-			$signal.options:=$message
+			SET DATABASE PARAMETER:C642(User param value:K37:94; $options)
 			
 		End if 
-	End use 
-	//%W+550.2
-	
-	CALL WORKER:C1389("$nonThreadSafe"; "databaseNonThreadSafe"; $signal)
-	$signal.wait()
+		
+		OPEN DATABASE:C1321(This:C1470.structureFile.platformPath)
+		
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function restartCompiled($userParam) : Object
@@ -429,27 +530,79 @@ Function restartInterpreted($userParam) : Object
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _restart($compiled : Boolean; $userParam) : Object
 	
-	var $signal : 4D:C1709.Signal
+	var $root; $xml : Text
+	var $file : 4D:C1709.File
 	
-	// Non-thread-safe commands are delegated to the application process
-	$signal:=New signal:C1641("database")
-	
-	//%W-550.2
-	Use ($signal)
+	If (This:C1470.databaseFolder=Null:C1517)
 		
-		$signal.action:="_restart"
-		$signal.this:=OB Copy:C1225(This:C1470; ck shared:K85:29; $signal)
-		$signal.compiled:=$compiled
+		This:C1470._pushError("No database")
+		return 
+		
+	End if 
+	
+	Try
+		
+		$root:=DOM Create XML Ref:C861("database_shortcut")
+		
+		XML SET OPTIONS:C1090($root; XML indentation:K45:34; XML with indentation:K45:35)
+		
+		DOM SET XML ATTRIBUTE:C866($root; \
+			"structure_opening_mode"; 1+Num:C11(Bool:C1537($compiled)); \
+			"structure_file"; "file:///"+This:C1470.structureFile.path; \
+			"data_file"; "file:///"+This:C1470.dataFile.path)
 		
 		If ($userParam#Null:C1517)
 			
-			$signal.userParam:=$userParam
-			
+			If (Value type:C1509($userParam)=Is object:K8:27)\
+				 | (Value type:C1509($userParam)=Is collection:K8:32)
+				
+				DOM SET XML ATTRIBUTE:C866($root; \
+					"user_param"; JSON Stringify:C1217($userParam))
+				
+			Else 
+				
+				DOM SET XML ATTRIBUTE:C866($root; \
+					"user_param"; String:C10($userParam))
+				
+			End if 
 		End if 
-	End use 
+		
+		DOM EXPORT TO VAR:C863($root; $xml)
+		DOM CLOSE XML:C722($root)
+		
+		$file:=This:C1470.databaseFolder.file("restart.4DLink")
+		$file.setText($xml)
+		
+		OPEN DATABASE:C1321(String:C10($file.platformPath))
+		
+	Catch
+		
+		This:C1470._pushError(Last errors:C1799.length>0 ? Last errors:C1799[0].message : "Failed to restart the database")
+		
+	End try
 	
-	CALL WORKER:C1389("$nonThreadSafe"; "databaseNonThreadSafe"; $signal)
-	$signal.wait()
+	//MARK:-⚠️ NOT THREAD SAFE
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setUpdateFolder($folder; $silent : Boolean)
 	
-	return $signal.result
-	//%W+550.2
+	Case of 
+			//______________________________________________________
+		: (Value type:C1509($folder)=Is object:K8:27)\
+			 && (OB Instance of:C1731($folder; 4D:C1709.Folder))
+			
+			SET UPDATE FOLDER:C1291(String:C10($folder.platformPath); $silent)
+			
+			//______________________________________________________
+		: (Value type:C1509($folder)=Is text:K8:3)
+			
+			SET UPDATE FOLDER:C1291($folder; $silent)
+			
+			//______________________________________________________
+		Else 
+			
+			ASSERT:C1129(False:C215; "folder must be a folder platform pathname or a 4D.Folder!")
+			
+			//______________________________________________________
+	End case 
+	
+	

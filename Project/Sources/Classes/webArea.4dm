@@ -1,6 +1,9 @@
-property errors; filterdURLs : Collection
+Class extends widget
 
-Class extends widgetDelegate
+property errors; filterdURLs : Collection
+property success : Boolean
+
+property _url : Text
 
 Class constructor($name : Text; $data)
 	
@@ -132,16 +135,20 @@ Function set content($content : Text)
 	WA SET PAGE CONTENT:C1037(*; This:C1470.name; $content; "/")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Set the web area content
 Function setContent($content : Text; $base : Text)
 	
-	If (Count parameters:C259<2)
-		
-		$base:="/"
-		
-	End if 
+	//⚠️ As WA SET PAGE CONTENT, on Windows, don't accepts relative references,
+	// the page to display must be processed and saved into a temp file then displayed with WA OPEN URL.
 	
+	var $file : 4D:C1709.File:=Folder:C1567(Temporary folder:C486; fk platform path:K87:2).file("index.html")
+	$file.setText($content)
+	This:C1470.load($file)
+	
+	return 
+	
+	$base:=$base || "/"
 	WA SET PAGE CONTENT:C1037(*; This:C1470.name; $content; $base)
-	
 	This:C1470.success:=True:C214
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -190,10 +197,11 @@ Function load($file : 4D:C1709.File)
 	PROCESS 4D TAGS:C816($t; $t)
 	
 	// Cleanup
-	$t:=Replace string:C233($t; "\r\n"; "")
-	$t:=Replace string:C233($t; "\r"; "")
-	$t:=Replace string:C233($t; "\n"; "")
-	$t:=Replace string:C233($t; "\t"; "")
+	$t:=Replace string:C233($t; "\r\n"; "\r")
+	$t:=Replace string:C233($t; "\r"; "\n")
+	//$t:=Replace string($t; "\r"; "")
+	//$t:=Replace string($t; "\n"; "")
+	//$t:=Replace string($t; "\t"; "")
 	
 	// Temporary allow "file:// "
 	ARRAY TEXT:C222($filters; 0x0000)
@@ -250,6 +258,11 @@ Function evaluateJS($code : Text; $type : Integer) : Variant
 		End if 
 		
 	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function executeJS($code : Text)
+	
+	WA EXECUTE JAVASCRIPT FUNCTION:C1043(*; This:C1470.name; $code)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get canBackwards() : Boolean

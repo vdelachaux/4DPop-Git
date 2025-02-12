@@ -1,16 +1,63 @@
-Class extends scrollableDelegate
+Class extends scrollable
 
-Class constructor($name : Text; $events : Object; $super : Object)
+// MARK: Default values ⚙️
+property isSubform : Boolean:=True:C214
+
+// MARK: Delegates 📦
+property form : cs:C1710.form
+
+// MARK: Other 💾
+property privateEvents; parent : Object
+
+// MARK: Constants 🔐
+property __SUPER__ : Object
+
+Class constructor($name : Text; $events : Object; $super : Object; $form : Object)
 	
 	Super:C1705($name)
 	
+	Case of 
+			
+			//______________________________________________________
+		: ($events#Null:C1517)\
+			 && ($events.$4d#Null:C1517)
+			
+			$form:=OB Copy:C1225($events)
+			$events:=Null:C1517
+			
+			//______________________________________________________
+		: ($super#Null:C1517)\
+			 && ($super.$4d#Null:C1517)
+			
+			$form:=OB Copy:C1225($super)
+			$super:=Null:C1517
+			
+			//______________________________________________________
+	End case 
+	
 	This:C1470.__SUPER__:=$super
+	
 	This:C1470.setPrivateEvents($events)
 	
 	This:C1470.parent:=This:C1470._getParent($name)
 	
 	// MARK:Delegates 📦
-	This:C1470.form:=cs:C1710.formDelegate.new(This:C1470)
+	This:C1470.form:=cs:C1710.form.new(This:C1470)
+	
+	If ($form#Null:C1517)
+		
+		This:C1470.form.me($form)
+		
+	Else 
+		
+		var $detailForm:=String:C10(This:C1470.detailForm)
+		
+		If (Length:C16($detailForm)>0)
+			
+			This:C1470.form.me(Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+$detailForm+"/form.4DForm").getText())))
+			
+		End if 
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Sets the events codes triggered in the container method
@@ -18,6 +65,20 @@ Class constructor($name : Text; $events : Object; $super : Object)
 Function setPrivateEvents($events : Object)
 	
 	This:C1470.privateEvents:=$events || {}
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+	// ⚠️ Overloading the parent
+	///Defines the user data attached to the widget
+Function set data($data)
+	
+	This:C1470._data:=$data
+	
+	// Force an update to take account of changes 
+	This:C1470.refresh()
+	
+Function execute($formula : 4D:C1709.Function)
+	
+	This:C1470._execute($formula)
 	
 	// MARK:-[Timer]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -76,20 +137,40 @@ Function getParentDimensions() : cs:C1710.dim
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Returns  the names of the forms associated with the subform.
-Function getSubforms()
+Function getSubforms() : Object
 	
 	var $detail; $list : Text
 	var $ptr : Pointer
 	
 	OBJECT GET SUBFORM:C1139(*; This:C1470.name; $ptr; $detail; $list)
 	
-	This:C1470.forms:={\
+	return {\
 		detail: $detail; \
 		list: $list}
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get detailForm() : Text
+	
+	var $detail; $list : Text
+	var $ptr : Pointer
+	
+	OBJECT GET SUBFORM:C1139(*; This:C1470.name; $ptr; $detail; $list)
+	
+	return $detail
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get listForm() : Text
+	
+	var $detail; $list : Text
+	var $ptr : Pointer
+	
+	OBJECT GET SUBFORM:C1139(*; This:C1470.name; $ptr; $detail; $list)
+	
+	return $list
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Sets  the names of the forms associated with the subform.
-Function setSubform($detail : Text; $list : Text; $table : Pointer) : cs:C1710.subformDelegate
+Function setSubform($detail : Text; $list : Text; $table : Pointer) : cs:C1710.subform
 	
 	Case of 
 			
@@ -166,7 +247,7 @@ Function _getParent($name : Text) : Object
 	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
 	
 	return {\
-		name: Current form name:C1298; \
+		name: This:C1470.form.name; \
 		dimensions: {\
 		width: $width; \
 		height: $height}; \
@@ -183,3 +264,4 @@ Function _getWidget($widget : Text) : Text
 	
 	// Deal with the name of the form object or the name of an instance
 	return This:C1470.form[$widget].name || $widget
+	

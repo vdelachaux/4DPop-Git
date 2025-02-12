@@ -1,10 +1,13 @@
-//USE: envScreens
-
-Class extends _classCore
-
-property homeFolder; desktopFolder; documentsFolder; systemFolder; applicationsFolder : 4D:C1709.Folder
+property machineName; userName; fileURI : Text
+property applicationsFolder; cacheFolder; desktopFolder; documentsFolder; homeFolder; systemFolder : 4D:C1709.Folder
 property mainScreen; systemInfos : Object
 property screens : Collection
+property mainScreenID; menuBarHeight; toolBarHeight : Integer
+
+property currencySymbol; decimalSeparator; thousandSeparator; dateSeparator : Text
+property dateLongPattern; dateMediumPattern; dateShortPattern : Text
+property timeSeparator; timeAMLabel; timePMLabel; timeLongPattern; timeMediumPattern; timeShortPattern : Text
+property dateDayPosition; dateMonthPosition; dateYearPosition : Integer
 
 
 Class constructor($full : Boolean)
@@ -13,19 +16,44 @@ Class constructor($full : Boolean)
 	
 	This:C1470.machineName:=Current machine:C483
 	This:C1470.userName:=Current system user:C484
-	This:C1470.systemInfos:=Get system info:C1571
+	This:C1470.systemInfos:=System info:C1571
 	
-	This:C1470.homeFolder:=Folder:C1567(fk home folder:K87:24)
+	This:C1470.applicationsFolder:=Folder:C1567(fk applications folder:K87:20)
+	
+	var $userPref : 4D:C1709.Folder:=Folder:C1567(fk user preferences folder:K87:10)
+	
+	Case of 
+			
+			// ________________________________________________________________________________
+		: (Is Windows:C1573)
+			
+			This:C1470.cacheFolder:=$userPref.folder("../../Local").folder($userPref.name)
+			
+			// ________________________________________________________________________________
+		: (Is macOS:C1572)
+			
+			This:C1470.cacheFolder:=$userPref.folder("../../Caches").folder($userPref.name)
+			
+			// ________________________________________________________________________________
+		Else 
+			
+			This:C1470.cacheFolder:=Folder:C1567(fk home folder:K87:24).folder(".cache").folder($userPref.name)
+			
+			// ________________________________________________________________________________
+	End case 
+	
 	This:C1470.desktopFolder:=Folder:C1567(fk desktop folder:K87:19)
 	This:C1470.documentsFolder:=Folder:C1567(fk documents folder:K87:21)
+	This:C1470.homeFolder:=Folder:C1567(fk home folder:K87:24)
 	This:C1470.systemFolder:=Folder:C1567(fk system folder:K87:13)
-	This:C1470.applicationsFolder:=Folder:C1567(fk applications folder:K87:20)
 	
 	This:C1470.screens:=Null:C1517
 	This:C1470.mainScreenID:=0
 	This:C1470.mainScreen:=Null:C1517
 	This:C1470.menuBarHeight:=0
 	This:C1470.toolBarHeight:=0
+	
+	This:C1470.fileURI:="file:"+("/"*(2+Num:C11(Is Windows:C1573)))
 	
 	$full:=Count parameters:C259>=1 ? $full : False:C215
 	
@@ -36,9 +64,6 @@ Class constructor($full : Boolean)
 	End if 
 	
 	This:C1470.updateEnvironmentValues(True:C214)
-	
-	// Make a _singleton
-	This:C1470.Singletonize(This:C1470)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get macos() : Boolean
@@ -75,7 +100,7 @@ Function updateEnvironmentValues($system : Boolean)
 		If ($system)  // To update the  volumes
 			
 			// ⚠️ time-consuming
-			This:C1470.systemInfos:=OB Copy:C1225(Get system info:C1571; ck shared:K85:29; This:C1470)
+			This:C1470.systemInfos:=OB Copy:C1225(System info:C1571; ck shared:K85:29; This:C1470)
 			
 		End if 
 		
@@ -136,7 +161,7 @@ Function getScreenInfos()
 	
 	// Non-thread-safe screen commands are delegated to the application process
 	$signal:=New signal:C1641("env")
-	CALL WORKER:C1389("$nonThreadSafe"; "envScreens"; $signal)
+	CALL WORKER:C1389("$nonThreadSafe"; "envNonThreadSafe"; $signal)
 	$signal.wait()
 	
 	KILL WORKER:C1390("$nonThreadSafe")
@@ -152,6 +177,28 @@ Function getScreenInfos()
 		//%W+550.2
 		
 	End use 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Returns the horizontal & vertical offsets for each window type
+shared Function windowOffsets($type : Integer; $isWindows : Boolean) : Object
+	
+	var $signal : 4D:C1709.Signal
+	
+	// Non-thread-safe screen commands are delegated to the application process
+	$signal:=New signal:C1641("env")
+	
+	Use ($signal)
+		
+		$signal.action:="windowOffsets"
+		
+	End use 
+	
+	CALL WORKER:C1389("$nonThreadSafe"; "envNonThreadSafe"; $signal)
+	$signal.wait()
+	
+	KILL WORKER:C1390("$nonThreadSafe")
+	
+	return {h: Num:C11($signal.hOffset); v: Num:C11($signal.vOffset)}
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function library($path : Text; $create : Boolean) : Object
@@ -192,6 +239,40 @@ Function applicationSupport($path : Text; $create : Boolean) : Object
 	$folder:=This:C1470.homeFolder.folder("Library/Application Support/")
 	
 	return Count parameters:C259>=1 ? This:C1470._postProcessing($folder; $path; $create) : $folder
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// From url syntax, returns either a 4D.File or a 4D.Folder, if exists
+Function decodePathURL($url : Text) : Object
+	
+	If (Position:C15("file:"; $url)#1)
+		
+		return 
+		
+	End if 
+	
+	$url:=Replace string:C233($url; This:C1470.fileURI; "")
+	
+	If (Length:C16($url)=0)  // Root
+		
+		return Is Windows:C1573\
+			 ? Folder:C1567("c:/"; fk posix path:K87:1)\
+			 : Folder:C1567("/"; fk posix path:K87:1)
+		
+	End if 
+	
+	If (Bool:C1537(Try(Folder:C1567($url).exists)))  // Folder
+		
+		return Folder:C1567($url)
+		
+	End if 
+	
+	// File
+	If ($url[[Length:C16($url)]]#"/")\
+		 && (Bool:C1537(Try(File:C1566($url).exists)))
+		
+		return File:C1566($url)
+		
+	End if 
 	
 	//MARK:-
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***

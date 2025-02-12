@@ -1,20 +1,14 @@
-property _menus : Collection
+property _menus:=[]  // A collection of menu items that allows to extract one based on the value of its parameter
 
 Class extends menu
 
 Class constructor($menus : Collection)
 	
-	var $parameter : Text
-	var $i; $itemIndex; $j; $menuIndex : Integer
-	
 	Super:C1705()
-	
-	// A collection of menu items that allows to extract one based on the value of its parameter
-	This:C1470._menus:=[]
 	
 	This:C1470.populate($menus)
 	
-	// MARK:-[Definition]
+	// MARK:-[DEFINITION]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Create a menu bar from a collection of menus
 Function populate($menus : Collection) : cs:C1710.menuBar
@@ -85,6 +79,59 @@ Function set() : cs:C1710.menuBar
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Set the item 
+Function setAbout($label : Text; $method : Text)
+	
+	SET ABOUT:C316($label; $method)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Resets the About 4D menu
+Function resetsAbout()
+	
+	var $language : Text
+	$language:=Get database localization:C1009(Default localization:K5:21; *)
+	
+	Case of 
+			
+			//______________________________________________________
+		: ($language="cs@")
+			
+			SET ABOUT:C316("Co je 4D..."; "")
+			
+			//______________________________________________________
+		: ($language="de@")
+			
+			SET ABOUT:C316("Über 4D..."; "")
+			
+			//______________________________________________________
+		: ($language="es@")
+			
+			SET ABOUT:C316("Acerca de 4D..."; "")
+			
+			//______________________________________________________
+		: ($language="fr@")
+			
+			SET ABOUT:C316("A propos de 4D..."; "")
+			
+			//______________________________________________________
+		: ($language="ja@")
+			
+			SET ABOUT:C316("4Dについて..."; "")
+			
+			//______________________________________________________
+		: ($language="pt@")
+			
+			SET ABOUT:C316("Sobre 4D..."; "")
+			
+			//______________________________________________________
+		Else 
+			
+			SET ABOUT:C316("About 4D..."; "")
+			
+			//______________________________________________________
+	End case 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Set the Help menu of the application mode
 Function setHelpMenu($items : Collection)
 	
@@ -135,13 +182,11 @@ Function update($index : Integer; $menu : cs:C1710.menu) : cs:C1710.menuBar
 	
 	return This:C1470
 	
-	// MARK:-[Properties]
+	// MARK:-[PROPERTIES]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function enableItem($item : Text; $enabled : Boolean)
 	
-	var $o : Object
-	
-	$o:=This:C1470._menus.query("ref = :1"; $item).pop()
+	var $o : Object:=This:C1470._menus.query("ref = :1"; $item).first()
 	
 	If (Asserted:C1132($o#Null:C1517; "Item \""+$item+"\" not found"))
 		
@@ -161,9 +206,7 @@ Function enableItem($item : Text; $enabled : Boolean)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function disableItem($item : Text)
 	
-	var $o : Object
-	
-	$o:=This:C1470._menus.query("ref = :1"; $item).pop()
+	var $o : Object:=This:C1470._menus.query("ref = :1"; $item).first()
 	
 	If (Asserted:C1132($o#Null:C1517; "Item \""+$item+"\" not found"))
 		
@@ -171,14 +214,23 @@ Function disableItem($item : Text)
 		
 	End if 
 	
-	// MARK:-[Informations]
+	// MARK:-[HANDLING]
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function hide()
+	
+	HIDE MENU BAR:C432
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function show()
+	
+	SHOW MENU BAR:C431
+	
+	// MARK:-[INFORMATIONS]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function menuSelected() : Object
 	
-	var $menuSelected : Integer
 	var $menuRef : Text
-	
-	$menuSelected:=Menu selected:C152($menuRef)
+	var $menuSelected:=Menu selected:C152($menuRef)
 	
 	return {\
 		ref: $menuRef; \
@@ -189,14 +241,32 @@ Function menuSelected() : Object
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getMenuItemParameter($type : Integer) : Variant
 	
-	var $o : Object
-	$o:=This:C1470.menuSelected()
+	var $o:=This:C1470.menuSelected()
 	
 	return $type=Is longint:K8:6\
-		 ? Num:C11(This:C1470._menus.query("menu = :1 & item = :2"; $o.menu; $o.item).pop().ref)\
-		 : This:C1470._menus.query("menu = :1 & item = :2"; $o.menu; $o.item).pop().ref
+		 ? Num:C11(This:C1470._menus.query("menu = :1 & item = :2"; $o.menu; $o.item).first().ref)\
+		 : This:C1470._menus.query("menu = :1 & item = :2"; $o.menu; $o.item).first().ref
 	
-	// MARK:-[Tools]
+	// MARK:-[TOOLS]
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Load & set a toolbox menu bar
+Function setMenuBar($menu; $retain : Boolean)
+	
+	var $type:=Value type:C1509($menu)
+	
+	If (Asserted:C1132(($type=Is text:K8:3) || ($type=Is integer:K8:5) || ($type=Is real:K8:4); "The “menu” parameter must be text or numeric"))
+		
+		If ($retain)
+			
+			SET MENU BAR:C67($menu; *)
+			
+		Else 
+			
+			SET MENU BAR:C67($menu)
+			
+		End if 
+	End if 
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Create a default minimal menu bar
 Function defaultMinimalMenuBar() : cs:C1710.menuBar

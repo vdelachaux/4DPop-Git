@@ -1,4 +1,6 @@
-Class extends dropDownDelegate
+Class extends dropDown
+
+property _ordered; automaticExpand : Boolean
 
 Class constructor($name : Text; $data : Object)
 	
@@ -85,16 +87,19 @@ Function set filter($filter)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Display the selection list (to use in the On getting focus event)
-Function expand()
+Function expand() : cs:C1710.comboBox
 	
 	var $o : Object
 	
-	If (Bool:C1537(This:C1470.data.automaticExpand))
+	If (This:C1470.automaticExpand)
 		
+		// Get the current widget window coordinates
 		$o:=This:C1470.windowCoordinates
 		POST CLICK:C466($o.right-10; $o.top+10; Current process:C322)
 		
 	End if 
+	
+	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Display the selection list (to use in the On Data change event)

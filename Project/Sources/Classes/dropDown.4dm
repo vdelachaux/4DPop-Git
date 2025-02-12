@@ -1,4 +1,4 @@
-Class extends widgetDelegate
+Class extends widget
 
 property data : Object
 
@@ -8,11 +8,10 @@ Class constructor($name : Text; $data : Object)
 	
 	This:C1470.data:=$data || {}
 	
-	If (This:C1470.data#Null:C1517) && (This:C1470.data.currentValue#Null:C1517)
+	If (This:C1470.data#Null:C1517)\
+		 && (This:C1470.data.currentValue#Null:C1517)
 		
-		This:C1470.data.placeholder:=This:C1470.data.placeholder#Null:C1517\
-			 ? This:C1470.data.placeholder\
-			 : This:C1470.data.currentValue
+		This:C1470.data.placeholder:=This:C1470.data.placeholder || This:C1470.data.currentValue
 		
 	End if 
 	
@@ -58,10 +57,8 @@ Function set placeholder($placeholder : Text)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Reset
-Function clear() : cs:C1710.dropDownDelegate
+Function clear()
 	
 	This:C1470.data.index:=-1
 	This:C1470.data.currentValue:=String:C10(This:C1470.data.placeholder)
-	
-	return This:C1470
 	

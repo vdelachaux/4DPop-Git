@@ -1,47 +1,55 @@
-property form : cs:C1710.formDelegate
-property icon; more; branch; localChanges; initRepository; todo; fixme : cs:C1710.buttonDelegate
-property fetch; push : cs:C1710.inputDelegate
-property gitItems : cs:C1710.groupDelegate
+property isSubform:=True:C214
+property toBeInitialized:=False:C215
+property currentBranch:=""
+
+property release; lts; alpha : Boolean
+property major; minor; version : Text
+
+// Mark:Constants
+property PACKAGE:=Folder:C1567("/PACKAGE"; *)
+property SOURCES:=Folder:C1567("/SOURCES/"; *)
+property timer:=20  // Timer value for refresh
+
+// MARK:Delegates 📦
+property form : cs:C1710.form
 property git : cs:C1710.Git
+
+property icon; \
+more; \
+branch; \
+localChanges; \
+initRepository; \
+todo; \
+fixme : cs:C1710.button
+
+property fetch; \
+push : cs:C1710.input
+
+property swap : cs:C1710.static
+
+property gitItems : cs:C1710.group
 
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.isSubform:=True:C214
-	This:C1470.toBeInitialized:=False:C215
-	
-	// MARK:-Delegates 📦
-	This:C1470.form:=cs:C1710.formDelegate.new(This:C1470)
-	This:C1470.menu:=cs:C1710.menu
-	
-	// MARK:-
-	This:C1470.currentBranch:=""
-	
-	This:C1470.timer:=20  // Timer value for refresh
-	
-	This:C1470.PACKAGE:=Folder:C1567("/PACKAGE"; *)
-	This:C1470.SOURCES:=Folder:C1567("/SOURCES/"; *)
-	
+	This:C1470.form:=cs:C1710.form.new(This:C1470)
 	This:C1470.form.init()
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function init()
 	
-	var $c : Collection
-	var $folder : 4D:C1709.Folder
-	
-	This:C1470.icon:=This:C1470.form.button.new("icon")
-	This:C1470.todo:=This:C1470.form.button.new("todo")
-	This:C1470.fixme:=This:C1470.form.button.new("fixme")
+	This:C1470.icon:=This:C1470.form.Button("icon")
+	This:C1470.todo:=This:C1470.form.Button("todo")
+	This:C1470.fixme:=This:C1470.form.Button("fixme")
 	
 	This:C1470.gitItems:=This:C1470.form.group.new()
-	This:C1470.more:=This:C1470.form.button.new("more").addToGroup(This:C1470.gitItems)
-	This:C1470.branch:=This:C1470.form.button.new("branch").addToGroup(This:C1470.gitItems)
-	This:C1470.localChanges:=This:C1470.form.button.new("localChanges").addToGroup(This:C1470.gitItems)
-	This:C1470.fetch:=This:C1470.form.input.new("fetch").addToGroup(This:C1470.gitItems)
-	This:C1470.swap:=This:C1470.form.static.new("swap").addToGroup(This:C1470.gitItems)
-	This:C1470.push:=This:C1470.form.input.new("push").addToGroup(This:C1470.gitItems)
-	This:C1470.initRepository:=This:C1470.form.button.new("initRepository").addToGroup(This:C1470.gitItems)
+	This:C1470.more:=This:C1470.form.Button("more").addToGroup(This:C1470.gitItems)
+	This:C1470.branch:=This:C1470.form.Button("branch").addToGroup(This:C1470.gitItems)
+	This:C1470.localChanges:=This:C1470.form.Button("localChanges").addToGroup(This:C1470.gitItems)
+	This:C1470.fetch:=This:C1470.form.Input("fetch").addToGroup(This:C1470.gitItems)
+	This:C1470.swap:=This:C1470.form.Static("swap").addToGroup(This:C1470.gitItems)
+	This:C1470.push:=This:C1470.form.Input("push").addToGroup(This:C1470.gitItems)
+	This:C1470.initRepository:=This:C1470.form.Button("initRepository").addToGroup(This:C1470.gitItems)
 	
 	This:C1470.fetch.setHelpTip("numberOfCommitsToBePulled")
 	This:C1470.push.setHelpTip("numberOfCommitsToBePushed")
@@ -49,10 +57,7 @@ Function init()
 	
 	This:C1470.initRepository.setHelpTip("clickToInitializeAsAGitRepository")
 	
-	Form:C1466.fetchNumber:=0
-	Form:C1466.pushNumber:=0
-	
-	$c:=Split string:C1554(Application version:C493; "")
+	var $c:=Split string:C1554(Application version:C493; "")
 	
 	This:C1470.release:=$c[2]#"0"
 	This:C1470.lts:=Not:C34(This:C1470.release)
@@ -69,7 +74,7 @@ Function init()
 		
 	End if 
 	
-	$folder:=Folder:C1567(This:C1470.PACKAGE.platformPath; fk platform path:K87:2)  // Unsndboxed
+	var $folder:=Folder:C1567(This:C1470.PACKAGE.platformPath; fk platform path:K87:2)  // Unsndboxed
 	
 	While ($folder#Null:C1517)\
 		 && Not:C34($folder.folder(".git").exists)
@@ -88,6 +93,9 @@ Function init()
 		This:C1470.git:=Null:C1517
 		
 	End if 
+	
+	Form:C1466.fetchNumber:=0
+	Form:C1466.pushNumber:=0
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.evt)
@@ -160,13 +168,7 @@ Function onLoad()
 	// Update UI
 Function update()
 	
-	var $branch : Text
-	var $changes : Integer
-	var $success : Boolean
-	var $c : Collection
-	var $git : cs:C1710.Git
-	
-	$git:=This:C1470.git
+	var $git : cs:C1710.Git:=This:C1470.git
 	
 	If ($git=Null:C1517)
 		
@@ -177,7 +179,7 @@ Function update()
 		
 	End if 
 	
-	$branch:=Form:C1466.branch || $git.currentBranch
+	var $branch : Text:=Form:C1466.branch || $git.currentBranch
 	
 	If ($branch#This:C1470.currentBranch)
 		
@@ -185,7 +187,7 @@ Function update()
 		
 		If (This:C1470.alpha)
 			
-			$success:=(This:C1470.currentBranch="main")\
+			var $success : Boolean:=(This:C1470.currentBranch="main")\
 				 || (This:C1470.currentBranch="master")\
 				 || (This:C1470.currentBranch=(This:C1470.major+This:C1470.minor+"@"))\
 				 || (Split string:C1554(This:C1470.currentBranch; "/").length>1)
@@ -209,7 +211,7 @@ Function update()
 			
 			This:C1470.branch.foregroundColor:=Foreground color:K23:1
 			This:C1470.branch.fontStyle:=Plain:K14:1
-			This:C1470.branch.setHelpTip(Replace string:C233(Get localized string:C991("IsTheCurrentBranch"); "{branch}"; $branch))
+			This:C1470.branch.setHelpTip(Replace string:C233(Localized string:C991("IsTheCurrentBranch"); "{branch}"; $branch))
 			
 		Else 
 			
@@ -217,7 +219,7 @@ Function update()
 			This:C1470.branch.fontStyle:=Bold:K14:2
 			This:C1470.branch.setHelpTip(Replace string:C233(\
 				Replace string:C233(Replace string:C233(\
-				Get localized string:C991("warningBranch"); "{branch}"; $branch)\
+				Localized string:C991("warningBranch"); "{branch}"; $branch)\
 				; "{project}"; This:C1470.PACKAGE.name)\
 				; "{version}"; This:C1470.version))
 			
@@ -233,7 +235,7 @@ Function update()
 	Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
 	Form:C1466.pushNumber:=$git.branchPushNumber($branch)
 	
-	$changes:=$git.status()
+	var $changes : Integer:=$git.status()
 	
 	If ($changes>0)
 		
@@ -257,14 +259,8 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doChangesMenu()
 	
-	var $tgt
-	var $icon : Text
-	var $o : Object
-	var $c : Collection
-	var $git : cs:C1710.Git
 	var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
-	
-	$git:=This:C1470.git
+	var $git : cs:C1710.Git:=This:C1470.git
 	
 	If ($git.status()=0)
 		
@@ -273,28 +269,29 @@ Function _doChangesMenu()
 		
 	End if 
 	
+	var $o : Object
 	For each ($o; $git.changes.orderBy("path"))
 		
-		$icon:=$o.status="@M@" ? "#Images/Main/modified.svg"\
+		var $icon : Text:=$o.status="@M@" ? "#Images/Main/modified.svg"\
 			 : $o.status="@D@" ? "#Images/Main/deleted.svg"\
 			 : $o.status="??" ? "#Images/Main/added.svg"\
 			 : $o.status="@R@" ? "#Images/Main/moved.svg"\
 			 : ""
 		
-		$c:=Split string:C1554($o.path; "/")
+		var $c:=Split string:C1554($o.path; "/")
 		
 		Case of 
 				
 				//______________________________________________________
 			: ($c.indexOf("Classes")=2)
 				
-				$classes:=$classes || This:C1470.menu.new()
+				$classes:=$classes || cs:C1710.menu.new()
 				$classes.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			: ($c.indexOf("Forms")=2)
 				
-				$forms:=$forms || This:C1470.menu.new()
+				$forms:=$forms || cs:C1710.menu.new()
 				
 				Case of 
 						
@@ -319,20 +316,20 @@ Function _doChangesMenu()
 				//______________________________________________________
 			: ($c.indexOf("Methods")=2)
 				
-				$methods:=$methods || This:C1470.menu.new()
+				$methods:=$methods || cs:C1710.menu.new()
 				$methods.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			Else 
 				
-				$others:=$others || This:C1470.menu.new()
+				$others:=$others || cs:C1710.menu.new()
 				$others.append($c.join("/"); $o.path).icon($icon)
 				
 				//______________________________________________________
 		End case 
 	End for each 
 	
-	$menu:=This:C1470.menu.new()
+	$menu:=cs:C1710.menu.new()
 	
 	If ($classes#Null:C1517)
 		
@@ -396,7 +393,7 @@ Function _doChangesMenu()
 		
 	End if 
 	
-	$tgt:=This:C1470.git.getPath($menu.choice; Folder:C1567(fk database folder:K87:14; *))
+	var $tgt:=This:C1470.git.getPath($menu.choice; Folder:C1567(fk database folder:K87:14; *))
 	
 	Case of 
 			
@@ -444,7 +441,7 @@ Function _doChangesMenu()
 				
 			Else 
 				
-				ALERT:C41(Replace string:C233(Get localized string:C991("fileDeleted"); "{path}"; $tgt.path))
+				ALERT:C41(Replace string:C233(Localized string:C991("fileDeleted"); "{path}"; $tgt.path))
 				
 			End if 
 			
@@ -454,17 +451,15 @@ Function _doChangesMenu()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doBranchMenu()
 	
-	var $o : Object
-	var $git : cs:C1710.Git
-	var $menu : cs:C1710.menu
-	
-	$git:=This:C1470.git
+	var $git : cs:C1710.Git:=This:C1470.git
 	
 	$git.branch()
 	
 	If ($git.branches.length>0)
 		
-		$menu:=This:C1470.menu.new()
+		var $menu:=cs:C1710.menu.new()
+		
+		var $o : Object
 		
 		For each ($o; $git.branches)
 			
@@ -472,7 +467,7 @@ Function _doBranchMenu()
 			
 		End for each 
 		
-		//TODO:Change branch
+		// TODO: Change branch
 		
 		If ($menu.popup().selected)
 			
@@ -485,12 +480,9 @@ Function _doBranchMenu()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doMoreMenu()
 	
-	var $git : cs:C1710.Git
-	var $menu : cs:C1710.menu
+	var $git : cs:C1710.Git:=This:C1470.git
 	
-	$git:=This:C1470.git
-	
-	$menu:=This:C1470.menu.new()\
+	var $menu:=cs:C1710.menu.new()\
 		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
 		.line()\
 		.append(":xliff:saveSnapshot"; "snapshot").icon("/RESOURCES/Images/Menus/stash.png")\
@@ -511,13 +503,13 @@ Function _doMoreMenu()
 		
 		If (File:C1566("/usr/local/bin/fork").exists)
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
 			
 		End if 
 		
 		If (File:C1566("/usr/local/bin/github").exists)
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
 			
 		End if 
 		
@@ -527,14 +519,14 @@ Function _doMoreMenu()
 		
 		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
 			
 		End if 
 		
 		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/bin/github").exists)
 			
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
 			
 		End if 
 	End if 
@@ -598,7 +590,7 @@ Function _doMoreMenu()
 		: ($menu.choice="snapshot")
 			
 			var $t : Text
-			$t:=Request:C163(Get localized string:C991("name(optional)"); ""; Get localized string:C991("saveSnapshot"))
+			$t:=Request:C163(Localized string:C991("name(optional)"); ""; Localized string:C991("saveSnapshot"))
 			
 			If (OK=0)
 				
@@ -620,22 +612,20 @@ Function _doMoreMenu()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doTagMenu($tag : Text)
 	
-	var $todo : Collection
-	var $file : 4D:C1709.File
-	var $menu : cs:C1710.menu
+	var $todo:=[]
 	
-	$todo:=New collection:C1472
+	var $file : 4D:C1709.File
 	
 	For each ($file; This:C1470.SOURCES.files(fk recursive:K87:7).query("extension = .4dm").orderBy("path"))
 		
-		If (Match regex:C1019("(?mi-s)//\\s*"+$tag+":"; $file.getText(); 1))
+		If (Match regex:C1019("(?mi-s) // \\s*"+$tag+":"; $file.getText(); 1))
 			
 			$todo.push($file)
 			
 		End if 
 	End for each 
 	
-	$menu:=This:C1470.menu.new("no-localization")
+	var $menu:=cs:C1710.menu.new("no-localization")
 	
 	For each ($file; $todo)
 		
@@ -643,17 +633,17 @@ Function _doTagMenu($tag : Text)
 		
 		Case of 
 				
-				//______________________________________________________
+				// ______________________________________________________
 			: (Position:C15("/SOURCES/Classes"; $file.path)=1)
 				
 				$menu.icon("|Images/ObjectIcons/Icon_628.png")
 				
-				//______________________________________________________
+				// ______________________________________________________
 			: (Position:C15("/SOURCES/Methods"; $file.path)=1)
 				
 				$menu.icon("|Images/ObjectIcons/Icon_602.png")
 				
-				//______________________________________________________
+				// ______________________________________________________
 			: (Position:C15("/SOURCES/Forms"; $file.path)=1)
 				
 				If ($file.path="@method.4dm")
@@ -666,17 +656,17 @@ Function _doTagMenu($tag : Text)
 					
 				End if 
 				
-				//______________________________________________________
+				// ______________________________________________________
 			: (Position:C15("/SOURCES/DatabaseMethods"; $file.path)=1)
 				
 				$menu.icon("|Images/ObjectIcons/Icon_622.png")
 				
-				//______________________________________________________
+				// ______________________________________________________
 			: (Position:C15("/SOURCES/Triggers"; $file.path)=1)
 				
 				$menu.icon("|Images/ObjectIcons/Icon_600.png")
 				
-				//______________________________________________________
+				// ______________________________________________________
 		End case 
 	End for each 
 	

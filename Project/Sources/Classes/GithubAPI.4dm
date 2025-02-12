@@ -1,62 +1,99 @@
-
 Class extends http
 
-property validToken : Boolean
+property validToken:=False:C215
+property hasToken:=False:C215
+property URL:="https://api.github.com"
+property clientId:="0b65d7deae9a2a88bcf4"
+
 property repo : Object
+
+property _token : Text
+property latest : 4D:C1709.HTTPRequest
+
+property clientSecret : Text
 
 Class constructor($method : Text; $headers : Object; $body)
 	
+	// Super(This.URL; $method; $headers; $body)
 	Super:C1705("https://api.github.com"; $method; $headers; $body)
 	
-	This:C1470.validToken:=False:C215
-	
-	This:C1470.URL:="https://api.github.com"
-	
 	This:C1470.headers["User-Agent"]:="4DPop-git"
+	This:C1470.headers["Accept"]:="application/vnd.github+json"
 	This:C1470.headers["X-GitHub-Api-Version"]:="2022-11-28"
 	
-	This:C1470.clientId:="0b65d7deae9a2a88bcf4"
+	This:C1470.hasToken:=Length:C16(This:C1470.token)>0
+	
 	This:C1470.clientSecret:=This:C1470._secret()
 	
-	This:C1470.success:=False:C215
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get token() : Text
+	
+	If (This:C1470[""].token#Null:C1517)\
+		 && (Length:C16(This:C1470[""].token)>0)
+		
+		return This:C1470[""].token
+		
+	End if 
+	
+	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
+	
+	If ($file.exists)
+		
+		This:C1470[""].token:=String:C10(JSON Parse:C1218($file.getText()).token)
+		
+	End if 
+	
+	return This:C1470[""].token
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set token($token : Text)
+	
+	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
+	var $o : Object:=$file.exists ? JSON Parse:C1218($file.getText()) : {}
+	$o.token:=$token
+	$file.setText(JSON Stringify:C1217($o; *))
+	
+	This:C1470._token:=$token
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateRepos($name : Text; $public : Boolean; $description : Text)
 	
-	var $method : Text
-	var $response : Object
+	//var $headers:=OB Copy(This.headers)
+	//If (This.hasToken)
+	//$headers["Authorization"]:="Bearer "+String(This.token)
+	//End if 
 	
-	If (Not:C34(This:C1470.validToken))
-		
-		This:C1470._getToken()
-		
-	End if 
+	//If (Not(This.validToken))
 	
-	$method:=This:C1470.method  // Save default method
+	//This._getToken()
+	
+	//End if 
+	
+	This:C1470.getAppToken()
+	
+	var $method:=This:C1470.method  // Save default method
 	This:C1470.method:="POST"
 	
 	This:C1470.body:={\
-		accept: "application/vnd.github+json"; \
 		name: This:C1470._compliantRepositoryName($name); \
 		description: $description; \
 		private: Not:C34($public)\
 		}
 	
-	$response:=This:C1470.Request(This:C1470.URL+"/user/repos"; True:C214; 201)
+	var $response : Object:=This:C1470.Request(This:C1470.URL+"/user/repos"; True:C214; 201)
 	
 	This:C1470.method:=$method  // Restore default method
 	
 	If (This:C1470.success)
 		
-		If (This:C1470.dev)
+		If (This:C1470.DEV)
 			
 			SET TEXT TO PASTEBOARD:C523(JSON Stringify:C1217($response.body; *))
 			
 		End if 
 		
 		// Create readme
-		var $file : 4D:C1709.File
-		$file:=Folder:C1567(fk database folder:K87:14; *).file("README.md")
+		var $file:=Folder:C1567(fk database folder:K87:14; *).file("README.md")
 		
 		If (Not:C34($file.exists))
 			
@@ -67,7 +104,7 @@ Function CreateRepos($name : Text; $public : Boolean; $description : Text)
 			
 		End if 
 		
-		// Add the origin to to teh repository
+		// Add the origin to to the repository
 		//$ git remote add origin+$response.body.git_url
 		
 		// Create the main branch
@@ -262,7 +299,6 @@ Function AuthorizeApp() : Boolean
 	//POST https://github.com/login/device/code
 	
 	This:C1470.method:="POST"
-	
 	This:C1470._prepareRequest()
 	
 	This:C1470.body.clientId:=This:C1470.clientId
@@ -273,31 +309,25 @@ Function AuthorizeApp() : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getAppToken() : Object
 	
-	var $param; $token : Object
-	var $ws : 4D:C1709.WebServer
-	var $oAuth2 : cs:C1710.NetKit.OAuth2Provider
+	var $token : Object:=Storage:C1525.OAuth2
+	This:C1470.success:=This:C1470._IsValidAppToken($token)
 	
-	$token:=Storage:C1525.OAuth2
-	
-	If (This:C1470._IsValidAppToken($token))
+	If (This:C1470.success)
 		
 		return $token
 		
 	End if 
 	
-	// Start web server if any
-	$ws:=WEB Server:C1674
+	// Start the web server if necessary
+	var $webServer:=WEB Server:C1674(Web server database:K73:30)
 	
-	If (Not:C34($ws.isRunning))
+	If (Not:C34($webServer.isRunning))
 		
-		$ws.start({\
-			rootFolder: Folder:C1567(fk database folder:K87:14).folder("www"); \
-			HTTTPort: 8858\
-			})
+		$webServer.start()
 		
 	End if 
 	
-	$param:={\
+	var $credential:={\
 		token: $token; \
 		permission: "signedIn"; \
 		clientId: This:C1470.clientId; \
@@ -307,13 +337,14 @@ Function getAppToken() : Object
 		authenticateURI: "https://github.com/login/oauth/authorize"; \
 		tokenURI: "https://github.com/login/oauth/access_token"; \
 		timeout: 60; \
-		authenticationPage: Folder:C1567($ws.rootFolder).file("authentication.htm"); \
-		authenticationErrorPage: Folder:C1567($ws.rootFolder).file("error.htm")\
+		authenticationPage: Folder:C1567($webServer.rootFolder).file("authenticate/authentication.htm"); \
+		authenticationErrorPage: Folder:C1567($webServer.rootFolder).file("error.htm")\
 		}
 	
-	$oAuth2:=cs:C1710.NetKit.OAuth2Provider.new($param)
+	//var $oAuth2:=cs.NetKit.OAuth2Provider.new($credential)
+	//$token:=$oAuth2.getToken()
+	$token:=cs:C1710.NetKit.OAuth2Provider.new($credential).getToken()
 	
-	$token:=$oAuth2.getToken()
 	This:C1470.success:=$token#Null:C1517
 	
 	If (This:C1470.success)
@@ -323,15 +354,16 @@ Function getAppToken() : Object
 			Storage:C1525.OAuth2:=OB Copy:C1225($token; ck shared:K85:29)
 			
 		End use 
+		
+		return $token
+		
 	End if 
-	
-	return $token
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _IsValidAppToken($token : Object) : Boolean
 	
 	return (Date:C102($token.tokenExpiration)>=Current date:C33)\
-		 && ((Time:C179($token.tokenExpiration)+60)>=Current time:C178)
+		 && ((Time:C179($token.tokenExpiration)+60)>=(Current time:C178+0))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
@@ -383,7 +415,7 @@ Function Request($url : Text; $wait : Boolean; $status : Integer) : Object
 			
 			This:C1470._pushError($error)
 			
-			If (This:C1470.dev)
+			If (This:C1470.DEV)
 				
 				ALERT:C41($error)
 				
@@ -464,11 +496,10 @@ Function _prepareRequest($o : Object)
 Function _secret() : Text
 	
 	var $x; $y : Blob
-	var $c : Collection
 	
 	$x:=Folder:C1567(fk resources folder:K87:11).file("vdl").getContent()
 	
-	$c:=[]
+	var $c:=[]
 	$c.push("-----BEGIN *-----")
 	$c.push("MEgCQQC6OwTFqEKzVHgZOWViy1cFZWzeP1AnMtyNmujoc99tEolO3cM4/lDLIgQq")
 	$c.push("deYt6UuWAbc+OCsCb9/VyzUO4zV/AgMBAAE=")
@@ -483,10 +514,9 @@ Function _secret() : Text
 Function _compliantRepositoryName($name : Text) : Text
 	
 	var $len; $pos : Integer
-	var $c : Collection
 	
 	$name:=Lowercase:C14($name)
-	$c:=[]
+	var $c:=[]
 	
 	While (Match regex:C1019("(?mi-s)([^[:alnum:]]+)"; $name; 1; $pos; $len))
 		
@@ -498,5 +528,4 @@ Function _compliantRepositoryName($name : Text) : Text
 	$c.push($name)
 	
 	return $c.join("-")
-	
 	

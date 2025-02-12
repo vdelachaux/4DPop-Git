@@ -1,48 +1,210 @@
 property rules : Collection
 
+property scrollBarWidth; marginV; marginH; labelMargin; offset : Integer
+property _matrix : Boolean
+
 Class constructor($metrics : Object)
 	
 	This:C1470.rules:=[]
 	
-	If (OB Instance of:C1731($metrics; 4D:C1709.File))
-		
-		This:C1470.load($metrics)
-		
-	Else 
-		
-		This:C1470.setMetrics($metrics)
-		
-	End if 
-	
-	This:C1470._matrix:=Not:C34(Is compiled mode:C492)  // True if Dev mode
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === ===
-Function load($file : 4D:C1709.File)
-	
-	var $metrics; $o : Object
-	
-	$o:=JSON Parse:C1218($metrics.getText().rules)
-	This:C1470.rules:=$o.rules || []
-	
-	This:C1470.setMetrics($o)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setMetrics($metrics : Object)
-	
-	// TODO: Adjusting default values for Windows
 	This:C1470.scrollBarWidth:=$metrics.scrollBarWidth || Is macOS:C1572 ? 15 : 15
 	This:C1470.marginV:=$metrics.marginV || Is macOS:C1572 ? 2 : 2
 	This:C1470.marginH:=$metrics.marginH || Is macOS:C1572 ? 20 : 20
-	This:C1470.labelMargin:=$metrics.labelMargin || Is macOS:C1572 ? 10 : 10
-	This:C1470.offset:=$metrics.offset || Is macOS:C1572 ? 2 : 2
 	
-	// === === === === === === === === === === === === === === === === === === === === === === === ===
-Function add($rule : Object) : cs:C1710.constraintsDelegate
+	This:C1470.labelMargin:=Is macOS:C1572 ? 10 : 10
+	This:C1470.offset:=2
+	
+	This:C1470._matrix:=Not:C34(Is compiled mode:C492)  // True if Dev mode
+	
+	// MARK:-[KEYWORDS]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get centerHorizontally() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="horizontal-alignment"
+	$rule.alignment:="center"
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function horizontallyCentered() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="horizontal-alignment"
+	$rule.alignment:="center"
+	
+	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get alignLeft() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="horizontal-alignment"
+	$rule.alignment:="left"
+	
+	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get alignRight() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="horizontal-alignment"
+	$rule.alignment:="right"
+	
+	return This:C1470
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set mininimumWidth($value : Integer)
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="minimum-width"
+	$rule.value:=$value
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set maximumWidth($value : Integer)
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="maximum-width"
+	$rule.value:=$value
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function tile($value : Real) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="tile"
+	$rule.value:=$value
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function marginLeft($value : Integer) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="margin"
+	$rule.alignment:="left"
+	$rule.margin:=$value
+	
+	return This:C1470
+	
+	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
+Function horizontalLeftOffset($value : Integer) : cs:C1710.constraints
+	
+	return This:C1470.marginLeft($value)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function marginRight($value : Integer) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="margin"
+	$rule.alignment:="right"
+	$rule.margin:=$value
+	
+	return This:C1470
+	
+	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
+Function horizontalRightOffset($value : Integer) : cs:C1710.constraints
+	
+	return This:C1470.marginRight($value)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function autoHorizontalOffset() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="margin"
+	$rule.alignment:="auto"
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function anchorLeft($value : Integer) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="anchor"
+	$rule.alignment:="left"
+	$rule.margin:=$value
+	
+	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get anchoredOnTheLeft() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="anchor"
+	$rule.alignment:="left"
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function anchorRight($value : Integer) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="anchor"
+	$rule.alignment:="right"
+	$rule.margin:=$value
+	
+	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get anchoredOnTheRight() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="anchor"
+	$rule.alignment:="right"
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function anchorCenter() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="anchor"
+	$rule.alignment:="center"
+	
+	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get anchoredInTheCenter() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="anchor"
+	$rule.alignment:="center"
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function fitWidth($value : Integer) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="fit-width"
+	$rule.margin:=$value
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function fullWidth() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.type:="fit-width"
+	$rule.margin:=0
+	
+	return This:C1470
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get inline() : cs:C1710.constraints
+	
+	This:C1470._latest().type:="inline"
+	
+	return This:C1470
+	
+	// MARK:-New rule creation (Alias)
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function new($rule) : cs:C1710.constraints
 	
 	var $name : Text
 	var $o : Object
 	
-	If ($rule.set#Null:C1517)
+	If (Value type:C1509($rule)=Is object:K8:27)\
+		 && ($rule.set#Null:C1517)  // Multi targets
 		
 		$name:=This:C1470._getName($rule.target)
 		
@@ -62,11 +224,62 @@ Function add($rule : Object) : cs:C1710.constraintsDelegate
 		
 	Else 
 		
-		$rule.target:=This:C1470._getName($rule.target)
+		Case of 
+				
+				//______________________________________________________
+			: (Value type:C1509($rule)=Is text:K8:3)  // Widget name
+				
+				$rule:={\
+					target: $rule; \
+					targetIsAGroup: False:C215\
+					}
+				
+				//______________________________________________________
+			: (Value type:C1509($rule)=Is object:K8:27)  // Group or Widget
+				
+				If (OB Instance of:C1731($rule; cs:C1710.group))
+					
+					$rule:={\
+						target: $rule; \
+						targetIsAGroup: True:C214\
+						}
+					
+				Else 
+					
+					$o:=OB Copy:C1225($rule)
+					
+					$rule:={\
+						target: $o.name; \
+						targetIsAGroup: False:C215\
+						}
+					
+					var $key : Text
+					For each ($key; $o)
+						
+						$rule[$key]:=$o[$key]
+						
+					End for each 
+					
+				End if 
+				
+				//______________________________________________________
+			: (Value type:C1509($rule.target)=Is object:K8:27)\
+				 && (OB Instance of:C1731($rule.target; cs:C1710.group))  // Group
+				
+				$rule.targetIsAGroup:=True:C214
+				
+				//______________________________________________________
+			Else 
+				
+				$rule.targetIsAGroup:=False:C215
+				$rule.target:=This:C1470._getName($rule.target)
+				
+				//______________________________________________________
+		End case 
 		
 		If ($rule.reference#Null:C1517)
 			
-			$rule.reference:=This:C1470._getName($rule.reference)
+			$rule.reference:=This:C1470._target($rule.reference)
 			
 		End if 
 		
@@ -76,6 +289,77 @@ Function add($rule : Object) : cs:C1710.constraintsDelegate
 	
 	return This:C1470
 	
+	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
+Function add($rule) : cs:C1710.constraints
+	
+	return This:C1470.new($rule)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function oneShot($rule) : cs:C1710.constraints
+	
+	This:C1470.new($rule)
+	This:C1470._latest().toDelete:=True:C214
+	return This:C1470
+	
+	// MARK:-Set the reference
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function of($target) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.reference:=This:C1470._target($target)
+	
+	return This:C1470
+	
+	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
+Function with($target) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.reference:=This:C1470._target($target)
+	
+	return This:C1470
+	
+	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
+Function on($target) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	
+	If ($rule.type="tile")
+		
+		$rule.parent:=This:C1470._target($target)
+		
+	Else 
+		
+		$rule.reference:=This:C1470._target($target)
+		
+	End if 
+	
+	return This:C1470
+	
+	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
+Function in($target) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.reference:=This:C1470._target($target)
+	
+	return This:C1470
+	
+	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
+Function ref($target) : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.reference:=This:C1470._target($target)
+	
+	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === ===
+Function onViewport() : cs:C1710.constraints
+	
+	var $rule : Object:=This:C1470._latest()
+	$rule.reference:=Null:C1517
+	
+	return This:C1470
+	
+	// MARK:-Processing
 	// === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Dealing with constraints
 Function apply()
@@ -101,23 +385,20 @@ Function apply()
 	
 	For each ($rule; This:C1470.rules)
 		
-		If ($rule.formula#Null:C1517)
+		If ($rule.formula#Null:C1517)\
+			 && (OB Instance of:C1731($rule.formula; 4D:C1709.Function))
 			
-			If (OB Instance of:C1731($rule.formula; 4D:C1709.Function))
-				
-				$rule.formula()
-				
-			Else 
-				
-				Formula from string:C1601(String:C10($rule.formula)).call(Null:C1517)
-				
-			End if 
-			
+			$rule.formula.call(Null:C1517)
 			continue
 			
 		End if 
 		
 		Case of 
+				
+				//______________________________________________________
+			: ($rule.targetIsAGroup)
+				
+				$targets:=[""]
 				
 				//______________________________________________________
 			: (Value type:C1509($rule.target)=Is object:K8:27)\
@@ -153,17 +434,25 @@ Function apply()
 		
 		For each ($name; $targets)
 			
-			$type:=OBJECT Get type:C1300(*; $name)
-			
-			If ($type=Object type unknown:K79:1)
+			If ($rule.targetIsAGroup)
 				
-				ASSERT:C1129(This:C1470._matrix; "Unknown object name:"+$name)
-				continue
+				// Retrieve the stored coordinates, or calculate them for the first call, from the bounding box...
+				$cur:=cs:C1710.coord.new($rule.target.boundingBox || $rule.target.enclosingRect())
+				
+			Else 
+				
+				$type:=OBJECT Get type:C1300(*; $name)
+				
+				If ($type=Object type unknown:K79:1)
+					
+					ASSERT:C1129(This:C1470._matrix; "Unknown object name:"+$name)
+					continue
+					
+				End if 
+				
+				$cur:=cs:C1710.coord.new($name)
 				
 			End if 
-			
-			// Current object
-			$cur:=cs:C1710.coord.new($name)
 			
 			// Reference object
 			If ($rule.reference#Null:C1517)
@@ -373,6 +662,35 @@ Function apply()
 					// MARK:horizontal-alignment
 					$alignment:=String:C10($rule.alignment)
 					
+					If ($rule.targetIsAGroup)
+						
+						Case of 
+								
+								//……………………………………………………………………………………………
+							: ($alignment="center")  // Center objects vertically
+								
+								// Getting the middle
+								var $middle : Integer
+								$middle:=$cur.width\2
+								
+								// Move the group
+								$rule.target.moveHorizontally($ref.left+($ref.width\2)-($cur.left+$middle))
+								
+								//……………………………………………………………………………………………
+							Else 
+								
+								ASSERT:C1129(False:C215; "TODO: manage "+$alignment+" for a group")
+								
+								//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+						End case 
+						
+						// Keep new coordinates of the bounding box
+						$rule.target.boundingBox:=$rule.target.enclosingRect()
+						
+						continue
+						
+					End if 
+					
 					Case of 
 							
 							//……………………………………………………………………………………………
@@ -464,15 +782,17 @@ Function apply()
 				: ($rule.type="tile")  // Set width as percent of the reference
 					
 					// MARK:tile
-					If ($rule.left#Null:C1517)
+					// Calculate proportional width
+					$width:=Int:C8(($ref.width)*Num:C11($rule.value))
+					
+					If ($rule.parent#Null:C1517)
 						
-						// Place the left edge
-						$cur.left:=$ref.width*($rule.left<1 ? $rule.left : $rule.left/100)
+						// Left is the parent right
+						$ref:=cs:C1710.coord.new($rule.parent)
+						$cur.left:=$ref.right+Num:C11(OBJECT Get type:C1300(*; $name+".border")#Object type unknown:K79:1)
 						
 					End if 
 					
-					// Calculate proportional width
-					$width:=$ref.width*($rule.value<1 ? $rule.value : $rule.value/100)
 					$cur.right:=$cur.left+$width
 					$cur.apply()
 					
@@ -534,6 +854,7 @@ Function apply()
 	// Delete one-shot rules
 	This:C1470.rules:=This:C1470.rules.filter(Formula:C1597($1.result:=Bool:C1537($1.value.toDelete)=False:C215))
 	
+	// MARK:-
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _adjustLabel($name : Text; $rule : Object; $cur : cs:C1710.coord)
 	
@@ -552,17 +873,26 @@ Function _adjustLabel($name : Text; $rule : Object; $cur : cs:C1710.coord)
 			$label:=cs:C1710.coord.new($name+".label")
 			
 			//______________________________________________________
-		Else 
-			
-			return 
-			
-			//______________________________________________________
 	End case 
 	
-	$width:=$label.width
-	$label.right:=$cur.left-This:C1470.labelMargin
-	$label.left:=$label.right-$width
-	$label.apply()
+	If ($label#Null:C1517)
+		
+		$width:=$label.width
+		$label.right:=$cur.left-This:C1470.labelMargin
+		$label.left:=$label.right-$width
+		$label.apply()
+		
+	End if 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _latest() : Object
+	
+	return This:C1470.rules.length>0 ? This:C1470.rules[This:C1470.rules.length-1] : Null:C1517
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _target($target) : Variant
+	
+	return This:C1470._getName($target)
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _getName($target) : Text
@@ -577,3 +907,4 @@ Function _getName($target) : Text
 		return String:C10($target)
 		
 	End if 
+	

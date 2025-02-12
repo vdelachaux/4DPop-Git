@@ -1,4 +1,4 @@
-Class extends widgetDelegate
+Class extends widget
 
 /**
 The selector class is intended to manage Dropdown, Combo Box and Tab Control widgets
@@ -102,7 +102,7 @@ Function set current($current)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Selects an element by its position or by its value (or that of the linked data).
-Function select($element) : cs:C1710.selectorDelegate
+Function select($element)
 	
 	var $index : Integer
 	
@@ -140,5 +140,3 @@ Function select($element) : cs:C1710.selectorDelegate
 			
 			//______________________________________________________
 	End case 
-	
-	return This:C1470

@@ -1,3 +1,13 @@
+
+property root : Variant
+property file : Variant
+property xml : Variant
+
+property success : Boolean
+property autoClose : Boolean
+property errors : Collection
+
+
 Class constructor($variable)
 	
 	This:C1470.root:=Null:C1517
@@ -1521,7 +1531,7 @@ Function _close($keepOpened : Boolean)
 Function _pushError($description : Text)
 	
 	This:C1470.success:=False:C215
-	This:C1470.errors.push(Get call chain:C1662[1].name+" - "+$description)
+	This:C1470.errors.push(Call chain:C1662[1].name+" - "+$description)
 	
 	//———————————————————————————————————————————————————————————
 Function _reset

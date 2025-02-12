@@ -1,35 +1,30 @@
-property form : cs:C1710.formDelegate
-property pattern : cs:C1710.inputDelegate
-property preview : cs:C1710.listboxDelegate
-property _footer : cs:C1710.groupDelegate
-property done; cancel; help : cs:C1710.buttonDelegate
+property isSubform:=False:C215
+property toBeInitialized:=False:C215
+
+// MARK:Delegates 📦
+property form : cs:C1710.form
+property pattern : cs:C1710.input
+property preview : cs:C1710.listbox
+property _footer : cs:C1710.group
+property done; cancel; help : cs:C1710.button
 
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
-	
-	This:C1470.isSubform:=False:C215
-	This:C1470.toBeInitialized:=False:C215
-	
-	// MARK:-Delegates 📦
-	This:C1470.form:=cs:C1710.formDelegate.new(This:C1470)
-	//This.menu:=cs.menu
-	
-	// MARK:-
+	This:C1470.form:=cs:C1710.form.new(This:C1470)
 	This:C1470.form.init()
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function init()
 	
-	This:C1470.pattern:=This:C1470.form.input.new("pattern")
-	This:C1470.preview:=This:C1470.form.listbox.new("preview")
+	This:C1470.pattern:=This:C1470.form.Input("pattern")
+	This:C1470.preview:=This:C1470.form.Listbox("preview")
 	
-	This:C1470.help:=This:C1470.form.button.new("help")
+	This:C1470.help:=This:C1470.form.Button("help")
 	
 	This:C1470._footer:=This:C1470.form.group.new()
-	This:C1470.done:=This:C1470.form.button.new("done").addToGroup(This:C1470._footer)
-	This:C1470.cancel:=This:C1470.form.button.new("cancel").addToGroup(This:C1470._footer)
+	This:C1470.done:=This:C1470.form.Button("done").addToGroup(This:C1470._footer)
+	This:C1470.cancel:=This:C1470.form.Button("cancel").addToGroup(This:C1470._footer)
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.evt)
@@ -40,34 +35,34 @@ Function handleEvents($e : cs:C1710.evt)
 		
 		Case of 
 				
-				//______________________________________________________
+				// ______________________________________________________
 			: ($e.load)
 				
 				This:C1470.form.onLoad()
 				
-				//______________________________________________________
+				// ______________________________________________________
 			: ($e.timer)
 				
 				This:C1470.form.update()
 				
-				//______________________________________________________
+				// ______________________________________________________
 		End case 
 		
 	Else   // <== WIDGETS METHOD
 		
 		Case of 
 				
-				//==============================================
+				// ==============================================
 			: (This:C1470.pattern.catch($e))
 				
 				This:C1470.form.update()
 				
-				//==============================================
+				// ==============================================
 			: (This:C1470.help.catch($e))
 				
-				OPEN URL:C673("https://git-scm.com/docs/gitignore")
+				OPEN URL:C673("https: // Git-scm.com/docs/gitignore")
 				
-				//==============================================
+				// ==============================================
 		End case 
 	End if 
 	
@@ -81,10 +76,7 @@ Function onLoad()
 	// Update UI
 Function update()
 	
-	var $pattern : Text
-	var $file : 4D:C1709.File
-	
-	$pattern:=This:C1470.pattern.getValue()
+	var $pattern : Text:=This:C1470.pattern.getValue()
 	
 	//#TO_DO: see if we can use git check-ignore
 	
@@ -98,7 +90,7 @@ Function update()
 	// then the pattern is relative to the directory level of the particular .gitignore
 	// file itself. Otherwise the pattern may also match at any level below the
 	// .gitignore level.
-	If (Choose:C955(Position:C15("/"; $pattern)=1; True:C214; Split string:C1554($pattern; "/"; sk ignore empty strings:K86:1).length>1))
+	If (Position:C15("/"; $pattern)=1 ? True:C214 : Split string:C1554($pattern; "/"; sk ignore empty strings:K86:1).length>1)
 		
 		$pattern:="^"+$pattern
 		
@@ -136,6 +128,7 @@ Function update()
 	
 	Form:C1466._preview:=[]
 	
+	var $file : 4D:C1709.File
 	For each ($file; Form:C1466.files)
 		
 		If ($pattern[[1]]="!")

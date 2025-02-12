@@ -1,3 +1,8 @@
+property ref
+
+property __CLASS__ : Object
+property __SUPER__ : Object
+
 Class constructor($param)
 	
 	Super:C1705()
@@ -245,8 +250,18 @@ Function set title($title : Text)
 	
 	var $t : Text
 	
-	$t:=Get localized string:C991($title)
-	SET WINDOW TITLE:C213($t ? $t : $title; This:C1470.ref)
+	//%W-533.1
+	If (Length:C16($title)>0)\
+		 && (Length:C16($title)<=255)\
+		 && ($title[[1]]#Char:C90(1))
+		
+		$t:=Formula from string:C1601("Get localized string:C991($1)"; sk execute in host database:K88:5).call(Null:C1517; $title)
+		$title:=Length:C16($t)>0 ? $t : $title  // Revert if no localization
+		
+	End if 
+	//%W+533.1
+	
+	SET WINDOW TITLE:C213($title; This:C1470.ref)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get coordinates() : Object
@@ -331,6 +346,21 @@ Function erase()
 	ERASE WINDOW:C160(This:C1470.ref)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function drag()
+	
+	DRAG WINDOW:C452
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function reduce()
+	
+	REDUCE RESTORE WINDOW:C1829(This:C1470.ref)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function restore()
+	
+	REDUCE RESTORE WINDOW:C1829(This:C1470.ref)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function maximize()
 	
 	MAXIMIZE WINDOW:C453(This:C1470.ref)
@@ -365,6 +395,12 @@ to be redrawn without any effect apparent for the user.
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function bringToFront()
+	
+	If (This:C1470.isFrontmost())
+		
+		return 
+		
+	End if 
 	
 	var $bottom; $left; $right; $top : Integer
 	
