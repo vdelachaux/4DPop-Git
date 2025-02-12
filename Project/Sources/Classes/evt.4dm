@@ -1,30 +1,21 @@
-Class constructor($e : cs:C1710.evt)
-	
-	// MARK:Common properties
-	This:C1470.objectName:=Null:C1517
-	This:C1470.code:=Null:C1517
-	This:C1470.description:=Null:C1517
-	
-	// MARK:List boxes additional properties
-	This:C1470.area:=Null:C1517
-	This:C1470.areaName:=Null:C1517
-	This:C1470.columnName:=Null:C1517
-	This:C1470.footerName:=Null:C1517
-	This:C1470.headerName:=Null:C1517
-	
-	This:C1470.column:=Null:C1517
-	
-	This:C1470.row:=Null:C1517
-	This:C1470.isRowSelected:=Null:C1517
-	
-	This:C1470.horizontalScroll:=Null:C1517
-	This:C1470.verticalScroll:=Null:C1517
-	
-	This:C1470.newPosition:=Null:C1517
-	This:C1470.oldPosition:=Null:C1517
-	
-	This:C1470.newSize:=Null:C1517
-	This:C1470.oldSize:=Null:C1517
+// MARK:Common properties
+property objectName : Text
+property code : Integer
+property description : Text
+
+// MARK:Internal
+property _descriptions : Collection
+
+// MARK:List boxes additional properties
+property area; areaName; columnName; footerName; headerName : Text
+property column; row : Integer
+property isRowSelected : Boolean
+property horizontalScroll; verticalScroll : Integer
+property newPosition; oldPosition : Integer
+
+property newSize; oldSize : Integer
+
+Class constructor($e : Object)
 	
 	$e:=$e || FORM Event:C1606
 	
@@ -38,6 +29,76 @@ Class constructor($e : cs:C1710.evt)
 			
 		End for each 
 	End if 
+	
+	This:C1470._descriptions:=[\
+		""; \
+		"on Load"; \
+		"on Mouse Up"; \
+		"on Validate"; \
+		"on Click"; \
+		"on Header"; \
+		"on Printing Break"; \
+		"on Printing Footer"; \
+		"on Display Detail"; \
+		"on VP Ready"; \
+		"on Outside Call"; \
+		"on Activate"; \
+		"on Deactivate"; \
+		"on Double Click"; \
+		"on Losing Focus"; \
+		"on Getting Focus"; \
+		"on Drop"; \
+		"on Before Keystroke"; \
+		"on Menu Select"; \
+		"on Plugin Area"; \
+		"on Data Change"; \
+		"on Drag Over"; \
+		"on Close Box"; \
+		"on Printing Detail"; \
+		"on Unload"; \
+		"on Open Detail"; \
+		"on Close Detail"; \
+		"on Timer"; \
+		"on After Keystroke"; \
+		"on Resize"; \
+		"on After Sort"; \
+		"on Selection Change"; \
+		"on Column Move"; \
+		"on Column Resize"; \
+		"on Row Move"; \
+		"on Mouse Enter"; \
+		"on Mouse Leave"; \
+		"on Mouse Move"; \
+		"on Alternate Click"; \
+		"on Long Click"; \
+		"on Load Record"; \
+		"on Before DataEntry"; \
+		"on Header Click"; \
+		"on Expand"; \
+		"on Collapse"; \
+		"on After Edit"; \
+		"on Begin Drag Over"; \
+		"on Begin URL Loading"; \
+		"on URL Resource Loading"; \
+		"on End URL Loading"; \
+		"on URL Loading Error"; \
+		"on URL Filtering"; \
+		"on Open External Link"; \
+		"on Window Opening Denied"; \
+		"on Bound Variable Change"; \
+		""; \
+		"on Page Change"; \
+		"on Footer Click"; \
+		"on Delete Action"; \
+		"on Scroll"; \
+		"on Row Resize"; \
+		"on VP Range Changed"\
+		]
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get _eventName() : Text
+	
+	return Try(This:C1470._descriptions[This:C1470.code])
 	
 	// MARK:-Form
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==

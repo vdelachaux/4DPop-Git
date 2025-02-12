@@ -1,11 +1,12 @@
+property method:="GET"
+property body:=""
+
+property headers : Object
 property target : 4D:C1709.Function
 
 Class constructor($headers : Object; $target : 4D:C1709.Function)
 	
-	This:C1470.method:="GET"
 	This:C1470.headers:=$headers
-	This:C1470.body:=""
-	
 	This:C1470.target:=$target
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===

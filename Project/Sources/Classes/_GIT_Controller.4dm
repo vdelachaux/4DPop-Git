@@ -1,7 +1,36 @@
-property form : cs:C1710.formDelegate
 
-property fetch; \
-pull; \
+property _unstaged; _staged; _commits; _commitDetail : Collection
+
+property isSubform:=False:C215
+property toBeInitialized:=False:C215
+
+// Mark:Constants
+// FIXME:Manage all cases 🐞
+property UNSTAGED_STATUS:=["??"; " M"; " D"; " R"; " C"]  //; "MD"; "AM"; "AD"]
+property STAGED_STATUS:=["A "; "D "; "M "; "R "; "C "]
+
+property MOVED_FILE:=Localized string:C991("fileMoved")
+property NEW_FILE:=Localized string:C991("newFile")
+property MODIFIED_FILE:=Localized string:C991("modifiedFile")
+property DELETED_FILE:=Localized string:C991("fileRemoved")
+property BINARY_FILE:=Localized string:C991("binaryFile")
+
+property pages:={changes: 1; commits: 2}
+
+// MARK:Delegates 📦
+property form : cs:C1710.form
+
+property toolbarLeft; \
+commitment; \
+detail : cs:C1710.group
+
+property alertDialog; \
+pullDialog; \
+pushDialog : cs:C1710.onBoard
+
+property changes; \
+history; \
+fetch; pull; \
 push; \
 open; \
 stage; \
@@ -9,60 +38,44 @@ stageAll; \
 unstage; \
 diffTool; \
 commit; \
-amend : cs:C1710.buttonDelegate
+amend : cs:C1710.button
 
 property menu; \
 unstaged; \
 staged; \
 commits; \
-detailCommit : cs:C1710.listboxDelegate
+detailCommit : cs:C1710.listbox
 
 property diff; \
 subject; \
-description : cs:C1710.inputDelegate
+description; \
+parent; \
+detailDiff : cs:C1710.input
 
-property selector : cs:C1710.hListDelegate
+property authorLabel; \
+authorName; \
+authorMail; \
+stamp; \
+shaLabe; \
+sha; \
+shaLabel; \
+parentLabel; \
+titleTop; \
+title; \
+titleBottom; \
+detailSplitter; \
+detailSeparator : cs:C1710.static
 
-property toolbarLeft; \
-commitment; \
-detail : cs:C1710.groupDelegate
+property authorAvatar : cs:C1710.picture
 
-property Git : cs:C1710.Git
+property selector : cs:C1710.hierachicalList
 
-property _unstaged; \
-_staged; \
-_commits; \
-_commitDetail; \
-STAGED_STATUS; \
-UNSTAGED_STATUS : Collection
-
-property alertDialog; \
-pullDialog; \
-pushDialog : cs:C1710.onBoard
+property Git:=cs:C1710.Git.new()
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.isSubform:=False:C215
-	This:C1470.toBeInitialized:=False:C215
-	
-	This:C1470.pages:={changes: 1; commits: 2}
-	
-	// MARK:-Delegates 📦
-	This:C1470.form:=cs:C1710.formDelegate.new(This:C1470)
-	This:C1470.Git:=cs:C1710.Git.new()
-	
-	// Mark:Constants
-	// FIXME:Manage all cases 🐞
-	This:C1470.UNSTAGED_STATUS:=["??"; " M"; " D"; " R"; " C"]  //; "MD"; "AM"; "AD"]
-	This:C1470.STAGED_STATUS:=["A "; "D "; "M "; "R "; "C "]
-	
-	This:C1470.MOVED_FILE:=Get localized string:C991("fileMoved")
-	This:C1470.NEW_FILE:=Get localized string:C991("newFile")
-	This:C1470.MODIFIED_FILE:=Get localized string:C991("modifiedFile")
-	This:C1470.DELETED_FILE:=Get localized string:C991("fileRemoved")
-	This:C1470.BINARY_FILE:=Get localized string:C991("binaryFile")
-	
+	This:C1470.form:=cs:C1710.form.new(This:C1470)
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -73,18 +86,16 @@ Function init()
 	var $menuHandle : Text
 	$menuHandle:=Formula:C1597(formMenuHandle).source
 	
-	var $menuFile : cs:C1710.menu
-	$menuFile:=cs:C1710.menu.new().file()  // Get a standard file menu
+	var $menuFile:=cs:C1710.menu.new().file()  // Get a standard file menu
 	
 	// Insert custom
-	$menuFile.append(".Close"; "close"; 0).shortcut("W").method($menuHandle)
+	//$menuFile.append(".Close"; "close"; 0).shortcut("W").method($menuHandle)
 	$menuFile.line(1)
 	$menuFile.append("Diff"; "diff"; 2).shortcut("D").method($menuHandle)
 	$menuFile.line(3)
 	$menuFile.append("Settings"; "settings"; 4).method($menuHandle)
 	
-	var $menuEdit : cs:C1710.menu
-	$menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
+	var $menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
 	
 	This:C1470.menuBar:=cs:C1710.menuBar.new([\
 		":xliff:CommonMenuFile"; $menuFile; \
@@ -92,57 +103,57 @@ Function init()
 	
 	// Mark:Page 0️⃣ Toolbar
 	This:C1470.toolbarLeft:=This:C1470.form.group.new()
-	This:C1470.fetch:=This:C1470.form.button.new("fetch").addToGroup(This:C1470.toolbarLeft)
-	This:C1470.pull:=This:C1470.form.button.new("pull").addToGroup(This:C1470.toolbarLeft)
-	This:C1470.push:=This:C1470.form.button.new("push").addToGroup(This:C1470.toolbarLeft)
+	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.toolbarLeft)
+	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.toolbarLeft)
+	This:C1470.push:=This:C1470.form.Button("push").addToGroup(This:C1470.toolbarLeft)
 	
-	This:C1470.changes:=This:C1470.form.button.new("changes")
-	This:C1470.history:=This:C1470.form.button.new("history")
+	This:C1470.changes:=This:C1470.form.Button("changes")
+	This:C1470.history:=This:C1470.form.Button("history")
 	
-	This:C1470.open:=This:C1470.form.button.new("open")
+	This:C1470.open:=This:C1470.form.Button("open")
 	
 	// Mark:Page 0️⃣ Left pannel
-	This:C1470.selector:=This:C1470.form.hList.new("selector")
+	This:C1470.selector:=This:C1470.form.HList("selector")
 	
 	// Mark:Page 1️⃣ Changes
-	This:C1470.unstaged:=This:C1470.form.listbox.new("unstaged")
-	This:C1470.stage:=This:C1470.form.button.new("stage")
-	This:C1470.stageAll:=This:C1470.form.button.new("stageAll")
+	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
+	This:C1470.stage:=This:C1470.form.Button("stage")
+	This:C1470.stageAll:=This:C1470.form.Button("stageAll")
 	
-	This:C1470.staged:=This:C1470.form.listbox.new("staged")
-	This:C1470.unstage:=This:C1470.form.button.new("unstage")
+	This:C1470.staged:=This:C1470.form.Listbox("staged")
+	This:C1470.unstage:=This:C1470.form.Button("unstage")
 	
 	// Mark:Page 1️⃣ Diff pannel
-	This:C1470.diff:=This:C1470.form.input.new("diff")
+	This:C1470.diff:=This:C1470.form.Input("diff")
 	
 	// Mark:Page 1️⃣ Commit panel
 	This:C1470.commitment:=This:C1470.form.group.new()
-	This:C1470.subject:=This:C1470.form.input.new("subject").addToGroup(This:C1470.commitment)
-	This:C1470.description:=This:C1470.form.input.new("description").addToGroup(This:C1470.commitment)
-	This:C1470.amend:=This:C1470.form.button.new("amend").addToGroup(This:C1470.commitment)
-	This:C1470.commit:=This:C1470.form.button.new("commit").addToGroup(This:C1470.commitment)
+	This:C1470.subject:=This:C1470.form.Input("subject").addToGroup(This:C1470.commitment)
+	This:C1470.description:=This:C1470.form.Input("description").addToGroup(This:C1470.commitment)
+	This:C1470.amend:=This:C1470.form.Button("amend").addToGroup(This:C1470.commitment)
+	This:C1470.commit:=This:C1470.form.Button("commit").addToGroup(This:C1470.commitment)
 	
 	// Mark:Page 2️⃣ Commits
-	This:C1470.commits:=This:C1470.form.listbox.new("commits")
+	This:C1470.commits:=This:C1470.form.Listbox("commits")
 	
 	// Mark:Page 2️⃣ Commit
 	This:C1470.detail:=This:C1470.form.group.new()
-	This:C1470.detailCommit:=This:C1470.form.listbox.new("detail_list").addToGroup(This:C1470.detail)
-	This:C1470.authorLabel:=This:C1470.form.static.new("authorLabel").addToGroup(This:C1470.detail)
-	This:C1470.authorAvatar:=This:C1470.form.picture.new("authorAvatar").addToGroup(This:C1470.detail)
-	This:C1470.authorName:=This:C1470.form.static.new("authorName").addToGroup(This:C1470.detail)
-	This:C1470.authorMail:=This:C1470.form.static.new("authorMail").addToGroup(This:C1470.detail)
-	This:C1470.stamp:=This:C1470.form.static.new("stamp").addToGroup(This:C1470.detail)
-	This:C1470.shaLabel:=This:C1470.form.static.new("shaLabel").addToGroup(This:C1470.detail)
-	This:C1470.sha:=This:C1470.form.static.new("sha").addToGroup(This:C1470.detail)
-	This:C1470.parentLabel:=This:C1470.form.static.new("parentLabel").addToGroup(This:C1470.detail)
-	This:C1470.parent:=This:C1470.form.input.new("parent").addToGroup(This:C1470.detail)
-	This:C1470.titleTop:=This:C1470.form.static.new("titleTop").addToGroup(This:C1470.detail)
-	This:C1470.title:=This:C1470.form.static.new("title").addToGroup(This:C1470.detail)
-	This:C1470.titleBottom:=This:C1470.form.static.new("titleBottom").addToGroup(This:C1470.detail)
-	This:C1470.detailSplitter:=This:C1470.form.static.new("detailSplitter").addToGroup(This:C1470.detail)
-	This:C1470.detailSeparator:=This:C1470.form.static.new("detailSeparator").addToGroup(This:C1470.detail)
-	This:C1470.detailDiff:=This:C1470.form.input.new("detailDiff").addToGroup(This:C1470.detail)
+	This:C1470.detailCommit:=This:C1470.form.Listbox("detail_list").addToGroup(This:C1470.detail)
+	This:C1470.authorLabel:=This:C1470.form.Static("authorLabel").addToGroup(This:C1470.detail)
+	This:C1470.authorAvatar:=This:C1470.form.Picture("authorAvatar").addToGroup(This:C1470.detail)
+	This:C1470.authorName:=This:C1470.form.Static("authorName").addToGroup(This:C1470.detail)
+	This:C1470.authorMail:=This:C1470.form.Static("authorMail").addToGroup(This:C1470.detail)
+	This:C1470.stamp:=This:C1470.form.Static("stamp").addToGroup(This:C1470.detail)
+	This:C1470.shaLabel:=This:C1470.form.Static("shaLabel").addToGroup(This:C1470.detail)
+	This:C1470.sha:=This:C1470.form.Static("sha").addToGroup(This:C1470.detail)
+	This:C1470.parentLabel:=This:C1470.form.Static("parentLabel").addToGroup(This:C1470.detail)
+	This:C1470.parent:=This:C1470.form.Input("parent").addToGroup(This:C1470.detail)
+	This:C1470.titleTop:=This:C1470.form.Static("titleTop").addToGroup(This:C1470.detail)
+	This:C1470.title:=This:C1470.form.Static("title").addToGroup(This:C1470.detail)
+	This:C1470.titleBottom:=This:C1470.form.Static("titleBottom").addToGroup(This:C1470.detail)
+	This:C1470.detailSplitter:=This:C1470.form.Static("detailSplitter").addToGroup(This:C1470.detail)
+	This:C1470.detailSeparator:=This:C1470.form.Static("detailSeparator").addToGroup(This:C1470.detail)
+	This:C1470.detailDiff:=This:C1470.form.Input("detailDiff").addToGroup(This:C1470.detail)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.evt)
@@ -187,8 +198,7 @@ Function handleEvents($e : cs:C1710.evt)
 		
 	Else   // <== WIDGETS METHOD
 		
-		var $git : cs:C1710.Git
-		$git:=This:C1470.Git
+		var $git : cs:C1710.Git:=This:C1470.Git
 		
 		Case of 
 				
@@ -239,7 +249,8 @@ Function handleEvents($e : cs:C1710.evt)
 				This:C1470._openManager()
 				
 				//==============================================
-			: (This:C1470.selector.catch($e))
+				// : (This.selector.catch($e))
+			: ($e.objectName="selector")
 				
 				This:C1470._selectorManager($e)
 				
@@ -382,7 +393,7 @@ Function onLoad()
 			
 		: (This:C1470.Git.error="Git not installed")
 			
-			CONFIRM:C162(Get localized string:C991("gitNotInstalled"))
+			CONFIRM:C162(Localized string:C991("gitNotInstalled"))
 			
 			If (Bool:C1537(OK))
 				
@@ -593,7 +604,7 @@ Function update()
 Function onActivate()
 	
 	var $git : cs:C1710.Git
-	var $list : cs:C1710.Hlist
+	var $list : cs:C1710.hierachicalList
 	
 	If (Form:C1466.dark#This:C1470.form.darkScheme)
 		
@@ -612,18 +623,18 @@ Function onActivate()
 	// Mark:Update menu label
 	If ($git.status()>0)
 		
-		This:C1470.changes.title:=Get localized string:C991("local")+" ("+String:C10($git.changes.length)+")"
+		This:C1470.changes.title:=Localized string:C991("local")+" ("+String:C10($git.changes.length)+")"
 		
 	Else 
 		
-		This:C1470.changes.title:=Get localized string:C991("local")
+		This:C1470.changes.title:=Localized string:C991("local")
 		
 		Form:C1466.unstaged.clear()
 		Form:C1466.staged.clear()
 		
 	End if 
 	
-	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
+	$list:=cs:C1710.hierachicalList.new(This:C1470.selector.getValue())
 	$list.saveSelection()
 	
 	This:C1470.branchList($list)
@@ -636,17 +647,17 @@ Function onActivate()
 	This:C1470.form.refresh()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function stachList($list : cs:C1710.Hlist)
+Function stachList($list : cs:C1710.hierachicalList)
 	
 	var $o : Object
 	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
+	var $sublist : cs:C1710.hierachicalList
 	
 	$git:=This:C1470.Git
 	
 	$git.stash()
 	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-24).sublist).Empty()
+	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-24).sublist).Empty()
 	
 	If ($git.stashes.length>0)
 		
@@ -662,17 +673,17 @@ Function stachList($list : cs:C1710.Hlist)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function tagList($list : cs:C1710.Hlist)
+Function tagList($list : cs:C1710.hierachicalList)
 	
 	var $t : Text
 	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
+	var $sublist : cs:C1710.hierachicalList
 	
 	$git:=This:C1470.Git
 	
 	$git.updateTags()
 	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-23).sublist).Empty()
+	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-23).sublist).Empty()
 	
 	If ($git.tags.length>0)
 		
@@ -686,17 +697,17 @@ Function tagList($list : cs:C1710.Hlist)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function remoteList($list : cs:C1710.Hlist)
+Function remoteList($list : cs:C1710.hierachicalList)
 	
 	var $o : Object
 	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
+	var $sublist : cs:C1710.hierachicalList
 	
 	$git:=This:C1470.Git
 	
 	$git.updateRemotes()
 	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-22).sublist).Empty()
+	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-22).sublist).Empty()
 	
 	If ($git.remotes.length>0)
 		
@@ -712,18 +723,18 @@ Function remoteList($list : cs:C1710.Hlist)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function branchList($list : cs:C1710.Hlist)
+Function branchList($list : cs:C1710.hierachicalList)
 	
 	var $notPulled; $notPushed : Integer
 	var $o : Object
 	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
+	var $sublist : cs:C1710.hierachicalList
 	
 	$git:=This:C1470.Git
 	
 	$git.branch()
 	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-21).sublist).Empty()
+	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-21).sublist).Empty()
 	
 	If ($git.branches.length>0)
 		
@@ -779,8 +790,8 @@ Function _selectorManager($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
 	
-	var $list : cs:C1710.Hlist
-	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
+	var $list : cs:C1710.hierachicalList
+	$list:=cs:C1710.hierachicalList.new(This:C1470.selector.getValue())
 	
 	var $o : Object
 	$o:=$list.GetParameter({key: "data"; type: Is object:K8:27})
@@ -856,13 +867,13 @@ Function _openManager()
 		
 		If (File:C1566("/usr/local/bin/fork").exists)
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
 			
 		End if 
 		
 		If (File:C1566("/usr/local/bin/github").exists)
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
 			
 		End if 
 		
@@ -870,13 +881,13 @@ Function _openManager()
 		
 		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
 			
 		End if 
 		
 		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").exists)
 			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
 			
 		End if 
 	End if 
@@ -1083,8 +1094,8 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 				$menu.line()\
 					.append("ignore"; cs:C1710.menu.new()\
-					.append(Replace string:C233(Get localized string:C991("ignoreFile"); "{file}"; $file.fullName); "ignoreFile")\
-					.append(Replace string:C233(Get localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $file.extension); "ignoreExtension")\
+					.append(Replace string:C233(Localized string:C991("ignoreFile"); "{file}"; $file.fullName); "ignoreFile")\
+					.append(Replace string:C233(Localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $file.extension); "ignoreExtension")\
 					.line()\
 					.append("customPattern"; "ignoreCustom"))
 				
@@ -1505,7 +1516,7 @@ Function Discard($items : Collection)
 	var $o : Object
 	var $git : cs:C1710.Git
 	
-	CONFIRM:C162(Get localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); Get localized string:C991("discard"))
+	CONFIRM:C162(Localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); Localized string:C991("discard"))
 	
 	If (Bool:C1537(OK))
 		
@@ -1884,7 +1895,7 @@ Function updateCommitList()
 		$commit:={\
 			label: $label; \
 			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
-			stamp: ($date=$today ? Get localized string:C991("today") : $date=$yesterday ? Get localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
+			stamp: ($date=$today ? Localized string:C991("today") : $date=$yesterday ? Localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
 			fingerprint: {short: $c[2]; long: $c[4]}; \
 			parent: {short: $c[5]; long: $c[6]}; \
 			notPushed: $i<=$notPushed; \
@@ -2073,7 +2084,7 @@ Function handleMenus($what : Text; $current : Object)
 		: ($what="delete")
 			
 			$file:=File:C1566(Convert path POSIX to system:C1107($current.path); fk platform path:K87:2)
-			CONFIRM:C162(Replace string:C233(Get localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName))
+			CONFIRM:C162(Replace string:C233(Localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName))
 			
 			If (Bool:C1537(OK))
 				

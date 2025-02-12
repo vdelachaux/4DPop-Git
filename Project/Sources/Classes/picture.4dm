@@ -1,4 +1,7 @@
-Class extends scrollableDelegate
+Class extends scrollable
+
+property fileName : Text
+property size : Integer
 
 Class constructor($name : Text; $picture)
 	
@@ -111,7 +114,7 @@ Function getCoordinates()->$coordinates : Object
 	
 	$coordinates:=Super:C1706.getCoordinates()
 	
-	This:C1470._getScrollbars()
+	This:C1470.getScrollbars()
 	This:C1470.getScrollPosition()
 	This:C1470.getDimensions()
 	
@@ -130,7 +133,7 @@ Function getDimensions() : Object
 		height: $height}
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function read($file : 4D:C1709.File) : cs:C1710.pictureDelegate
+Function read($file : 4D:C1709.File) : cs:C1710.picture
 	
 	var $p : Picture
 	
@@ -156,7 +159,7 @@ Function read($file : 4D:C1709.File) : cs:C1710.pictureDelegate
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function thumbnail($width : Integer; $height : Integer; $mode : Integer) : cs:C1710.pictureDelegate
+Function thumbnail($width : Integer; $height : Integer; $mode : Integer) : cs:C1710.picture
 	
 	If (Count parameters:C259>=3)
 		
@@ -200,21 +203,21 @@ Function getThumbnail($width : Integer; $height : Integer; $mode : Integer) : Pi
 	return $p
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function horizontalConcatenation($file : 4D:C1709.File) : cs:C1710.pictureDelegate
+Function horizontalConcatenation($file : 4D:C1709.File) : cs:C1710.picture
 	
 	This:C1470.setValue(This:C1470.__combine($file; Horizontal concatenation:K61:8))
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function verticalConcatenation($file : 4D:C1709.File) : cs:C1710.pictureDelegate
+Function verticalConcatenation($file : 4D:C1709.File) : cs:C1710.picture
 	
 	This:C1470.setValue(This:C1470.__combine($file; Vertical concatenation:K61:9))
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function superImposition($file : 4D:C1709.File; $horOffset : Integer; $vertOffset : Integer) : cs:C1710.pictureDelegate
+Function superImposition($file : 4D:C1709.File; $horOffset : Integer; $vertOffset : Integer) : cs:C1710.picture
 	
 	This:C1470.setValue(This:C1470.__combine($file; Superimposition:K61:10; $horOffset; $vertOffset))
 	

@@ -1,7 +1,7 @@
-property scroll : Variant
-property scrollbars : Object
+Class extends widget
 
-Class extends widgetDelegate
+property scroll
+property scrollbars : Object
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor($name : Text)
@@ -15,7 +15,7 @@ Class constructor($name : Text)
 		Object type hierarchical list:K79:7; \
 		Object type text input:K79:4].includes(This:C1470.type))
 	
-	This:C1470._getScrollbars()
+	This:C1470.getScrollbars()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getScrollPosition() : Variant
@@ -41,7 +41,7 @@ Function getScrollPosition() : Variant
 	return This:C1470.scroll
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setScrollPosition($vertical; $horizontal) : cs:C1710.scrollableDelegate
+Function setScrollPosition($vertical; $horizontal) : cs:C1710.scrollable
 	
 	var $h; $v : Integer
 	
@@ -71,7 +71,7 @@ Function setScrollPosition($vertical; $horizontal) : cs:C1710.scrollableDelegate
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _getScrollbars()
+Function getScrollbars
 	
 	var $horizontal; $vertical : Integer
 	
@@ -82,27 +82,27 @@ Function _getScrollbars()
 		horizontal: $horizontal}
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setScrollbars($horizontal; $vertical) : cs:C1710.scrollableDelegate
+Function setScrollbars($horizontal; $vertical) : cs:C1710.scrollable
 	
 	OBJECT SET SCROLLBAR:C843(*; This:C1470.name; Num:C11($horizontal); Num:C11($vertical))
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setHorizontalScrollbar($display) : cs:C1710.scrollableDelegate
+Function setHorizontalScrollbar($display) : cs:C1710.scrollable
 	
-	This:C1470._getScrollbars()
+	This:C1470.getScrollbars()
 	
-	OBJECT SET SCROLLBAR:C843(*; This:C1470.name; Num:C11($display); Num:C11(This:C1470.scrollbar.vertical))
+	OBJECT SET SCROLLBAR:C843(*; This:C1470.name; Num:C11($display); Num:C11(This:C1470.scrollbars.vertical))
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setVerticalScrollbar($display) : cs:C1710.scrollableDelegate
+Function setVerticalScrollbar($display) : cs:C1710.scrollable
 	
-	This:C1470._getScrollbars()
+	This:C1470.getScrollbars()
 	
-	OBJECT SET SCROLLBAR:C843(*; This:C1470.name; Num:C11(This:C1470.scrollbar.horizontal); Num:C11($display))
+	OBJECT SET SCROLLBAR:C843(*; This:C1470.name; Num:C11(This:C1470.scrollbars.horizontal); Num:C11($display))
 	
 	return This:C1470
 	

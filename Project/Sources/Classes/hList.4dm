@@ -1,150 +1,96 @@
-property success : Boolean
+Class extends scrollable
 
-Class constructor($list)
+property ref; latest : Integer
+
+Class constructor($name : Text; $ref : Integer)
 	
-	This:C1470[""]:={uid: 0; ref: 0}
+	Super:C1705($name)
 	
-	This:C1470.SetList($list)
+	ASSERT:C1129(This:C1470.type=Object type hierarchical list:K79:7)
+	
+	This:C1470.ref:=$ref
+	This:C1470.latest:=0
+	
+	This:C1470.datasource:=OBJECT Get data source:C1265(*; This:C1470.name)
 	
 	// MARK:-[List]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Creates a new list in memory and returns its unique list reference number.
-Function Create() : Integer
+Function create() : Integer
 	
-	This:C1470.Clear()
+	This:C1470.clear()
+	This:C1470.ref:=New list:C375
 	
-	This:C1470[""].ref:=New list:C375
-	
-	This:C1470[""].uid:=0
-	This:C1470.success:=Is a list:C621(This:C1470[""].ref)
-	
-	return This:C1470[""].ref
+	return This:C1470.ref
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Populates the current list reference
-Function SetList($list) : cs:C1710.Hlist
-	
-	If (Is a list:C621(This:C1470[""].ref))
-		
-		CLEAR LIST:C377(This:C1470[""].ref; *)
-		
-	End if 
-	
-	Case of 
-			
-			//—————————————————————————————————
-		: (Value type:C1509($list)=Is real:K8:4)\
-			 | (Value type:C1509($list)=Is longint:K8:6)
-			
-			ASSERT:C1129(Is a list:C621($list))
-			
-			This:C1470[""].ref:=$list
-			
-			//—————————————————————————————————
-		: (Value type:C1509($list)=Is text:K8:3)
-			
-			// Load a list created in Development mode
-			ARRAY LONGINT:C221($nums; 0x0000)
-			ARRAY TEXT:C222($names; 0x0000)
-			LIST OF CHOICE LISTS:C957($nums; $names)
-			ASSERT:C1129(Find in array:C230($names; $list)#-1)
-			
-			This:C1470[""].ref:=Load list:C383($list)
-			
-			//—————————————————————————————————
-		Else 
-			
-			This:C1470[""].ref:=New list:C375
-			
-			//—————————————————————————————————
-	End case 
-	
-	This:C1470[""].uid:=0
-	This:C1470.success:=Is a list:C621(This:C1470[""].ref)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Returns a copy of the current list
-Function copy() : cs:C1710.Hlist
-	
-	If (Asserted:C1132(This:C1470.isList; "No list to duplicate"))
-		
-		return cs:C1710.Hlist.new(Copy list:C626(This:C1470[""].ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Clear($keepSubLists : Boolean) : cs:C1710.Hlist
-	
-	ASSERT:C1129(Is a list:C621(This:C1470[""].ref))
+	/// Deletes the current reference list
+Function clear($keepSubLists : Boolean)
 	
 	If (This:C1470.isList)
 		
 		If ($keepSubLists)
 			
-			CLEAR LIST:C377(This:C1470[""].ref)
+			CLEAR LIST:C377(This:C1470.ref)
 			
 		Else 
 			
-			CLEAR LIST:C377(This:C1470[""].ref; *)  // Default is list and sublists
+			CLEAR LIST:C377(This:C1470.ref; *)  // Default is list and sublists
 			
 		End if 
 	End if 
 	
-	This:C1470[""]:={uid: 0; ref: 0}
-	This:C1470.success:=False:C215
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns a copy of the current list
+Function copy() : cs:C1710.hList
 	
-	return This:C1470
+	If (Asserted:C1132(This:C1470.isList; "No list to duplicate"))
+		
+		return cs:C1710.hList.new(This:C1470.name; Copy list:C626(This:C1470.ref))
+		
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Empty() : cs:C1710.Hlist
+	/// Alias of copy()
+Function clone() : cs:C1710.hList
 	
-	var $t : Text
-	var $i; $ref; $root : Integer
-	
-	$root:=This:C1470[""].ref
-	
-	For ($i; Count list items:C380($root); 1; -1)
-		
-		GET LIST ITEM:C378($root; $i; $ref; $t)
-		DELETE FROM LIST:C624($root; $ref; *)
-		
-	End for 
-	
-	return This:C1470
+	return This:C1470.copy()
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// Is the current reference a valid list?
 Function get isList() : Boolean
 	
-	return Is a list:C621(This:C1470[""].ref)
+	return Is a list:C621(This:C1470.ref)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The total number of items present in the list
 Function get itemCount() : Integer
 	
-	return Count list items:C380(This:C1470[""].ref; *)
+	return Count list items:C380(*; This:C1470.name; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The number of items currently “visible”
 Function get visibleItemCount() : Integer
 	
-	return Count list items:C380(This:C1470[""].ref)
+	return Count list items:C380(*; This:C1470.name)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// The properties about the current list
+	/// The properties about the current list [⚠️ only work with datasource]
 Function get properties() : Object
 	
 	var $appearance; $doubleClick; $editable; $icon; $lineHeight; $multiSelection : Integer
 	
-	GET LIST PROPERTIES:C632(This:C1470[""].ref; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
-	
-	return {\
-		lineHeight: $lineHeight; \
-		expandCollapseOnDoubleClick: Not:C34(Bool:C1537($doubleClick)); \
-		multiSelections: Bool:C1537($multiSelection); \
-		editable: Bool:C1537($editable)}
+	If (Asserted:C1132(Not:C34(Is nil pointer:C315(This:C1470.datasource)); Current method name:C684+" works only with a datatsource :-(("))
+		
+		GET LIST PROPERTIES:C632((This:C1470.datasource)->; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
+		
+		return {\
+			lineHeight: $lineHeight; \
+			expandCollapseOnDoubleClick: Not:C34(Bool:C1537($doubleClick)); \
+			multiSelections: Bool:C1537($multiSelection); \
+			editable: Bool:C1537($editable)}
+		
+	End if 
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set properties($properties : Object)
@@ -152,331 +98,609 @@ Function set properties($properties : Object)
 	var $key : Text
 	var $appearance; $doubleClick; $editable; $icon; $lineHeight; $multiSelection : Integer
 	
-	GET LIST PROPERTIES:C632(This:C1470[""].ref; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
-	
-	For each ($key; $properties)
+	If (Asserted:C1132(Not:C34(Is nil pointer:C315(This:C1470.datasource)); Current method name:C684+" works only with a datatsource :-(("))
 		
-		Case of 
-				
-				//______________________________________________________
-			: ($key="lineHeight")
-				
-				$lineHeight:=Num:C11($properties[$key])
-				
-				//______________________________________________________
-			: ($key="expandCollapseOnDoubleClick")
-				
-				$doubleClick:=Num:C11(Not:C34(Bool:C1537($properties[$key])))
-				
-				//______________________________________________________
-			: ($key="multiSelections")
-				
-				$multiSelection:=Num:C11(Bool:C1537($properties[$key]))
-				
-				//______________________________________________________
-			: ($key="editable")
-				
-				$editable:=Num:C11(Bool:C1537($properties[$key]))
-				
-				//______________________________________________________
-		End case 
+		GET LIST PROPERTIES:C632((This:C1470.datasource)->; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
 		
-	End for each 
-	
-	SET LIST PROPERTIES:C387(This:C1470[""].ref; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean) : cs:C1710.Hlist
-	
-	var $label : Text
-	
-	If (Value type:C1509($item)=Is object:K8:27)
+		For each ($key; $properties)
+			
+			Case of 
+					
+					//______________________________________________________
+				: ($key="lineHeight")
+					
+					$lineHeight:=Num:C11($properties[$key])
+					
+					//______________________________________________________
+				: ($key="expandCollapseOnDoubleClick")
+					
+					$doubleClick:=Num:C11(Not:C34(Bool:C1537($properties[$key])))
+					
+					//______________________________________________________
+				: ($key="multiSelections")
+					
+					$multiSelection:=Num:C11(Bool:C1537($properties[$key]))
+					
+					//______________________________________________________
+				: ($key="editable")
+					
+					$editable:=Num:C11(Bool:C1537($properties[$key]))
+					
+					//______________________________________________________
+			End case 
+			
+		End for each 
 		
-		$label:=$item.label || ""
-		$ref:=$item.ref || $ref
-		
-	Else 
-		
-		$label:=String:C10($item)
+		SET LIST PROPERTIES:C387((This:C1470.datasource)->; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
 		
 	End if 
 	
-	If ($ref=0)
-		
-		// Set a unique reference
-		This:C1470[""].uid+=1
-		$ref:=This:C1470[""].uid
-		
-	End if 
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The selected item positions [⛔️ READ ONLY]
+Function get selected() : Collection
 	
-	If ($sublist=0)
-		
-		APPEND TO LIST:C376(This:C1470[""].ref; $label; $ref)
-		
-	Else 
-		
-		APPEND TO LIST:C376(This:C1470[""].ref; $label; $ref; $sublist; $expanded)
-		
-	End if 
+	var $c : Collection
 	
-	return This:C1470
+	ARRAY LONGINT:C221($selected; 0x0000)
+	$selected{0}:=Selected list items:C379(*; This:C1470.name; $selected)
+	
+	$c:=[]
+	ARRAY TO COLLECTION:C1563($c; $selected)
+	
+	return $c
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get lastRef() : Integer
-	
-	return This:C1470[""].uid
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get ref() : Integer
-	
-	return This:C1470.success ? This:C1470[""].ref : 0
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get selectedReference() : Integer
-	
-	return This:C1470.success ? Selected list items:C379(This:C1470[""].ref; *) : 0
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set selectedReference($ref : Integer)
-	
-	SELECT LIST ITEMS BY REFERENCE:C630(This:C1470[""].ref; $ref)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The selected item refrernces [⛔️ READ ONLY]
 Function get selectedReferences() : Collection
 	
 	var $c : Collection
 	
-	$c:=[]
+	ARRAY LONGINT:C221($selected; 0x0000)
+	$selected{0}:=Selected list items:C379(*; This:C1470.name; $selected; *)
 	
-	If (This:C1470.success)
-		
-		ARRAY LONGINT:C221($references; 0x0000)
-		$references{0}:=Selected list items:C379(This:C1470[""].ref; $references; *)
-		ARRAY TO COLLECTION:C1563($c; $references)
-		
-	End if 
+	$c:=[]
+	ARRAY TO COLLECTION:C1563($c; $selected)
 	
 	return $c
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function saveSelection()
+	/// Appends a new item to the current list
+Function append($itemText : Text; $ref : Integer; $sublist : Integer; $expanded : Boolean)
 	
-	This:C1470[""].selection:={\
-		cur: This:C1470.selectedReference; \
-		refs: This:C1470.selectedReferences\
-		}
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function restoreSelection()
-	
-	ARRAY LONGINT:C221($references; 0x0000)
-	
-	If (This:C1470[""].selection.refs#Null:C1517)\
-		 && (This:C1470[""].selection.refs.length>0)
-		
-		COLLECTION TO ARRAY:C1562(This:C1470[""].selection.refs; $references)
-		
-	End if 
-	
-	SELECT LIST ITEMS BY REFERENCE:C630(This:C1470[""].ref; Num:C11(This:C1470[""].selection.cur); $references)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get selectedPosition() : Integer
-	
-	return This:C1470.success ? Selected list items:C379(This:C1470[""].ref) : 0
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set selectedPosition($pos : Integer)
-	
-	SELECT LIST ITEMS BY POSITION:C381(This:C1470[""].ref; $pos)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get selectedPositions() : Collection
-	
-	var $c : Collection
-	
-	$c:=[]
-	
-	If (This:C1470.success)
-		
-		ARRAY LONGINT:C221($references; 0x0000)
-		$references{0}:=Selected list items:C379(This:C1470[""].ref; $references)
-		ARRAY TO COLLECTION:C1563($c; $references)
-		
-	End if 
-	
-	return $c
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function GetPosition($ref : Integer) : Integer
-	
-	$ref:=Count parameters:C259=0 ? This:C1470.lastRef : $ref
-	return List item position:C629(This:C1470[""].ref; $ref)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function GetReference($ref : Integer) : Integer
-	
-	$ref:=Count parameters:C259=0 ? This:C1470.lastRef : $ref
-	return List item position:C629(This:C1470[""].ref; $ref)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function GetItem($pos : Integer) : Object
-	
-	var $label : Text
-	var $expanded : Boolean
-	var $i; $ref; $root; $sublist : Integer
-	var $o : Object
-	
-	$root:=This:C1470[""].ref
-	
-	GET LIST ITEM:C378($root; $pos; $ref; $label; $sublist; $expanded)
-	
-	$o:={\
-		ref: $ref; \
-		label: $label; \
-		sublist: $sublist; \
-		expanded: $expanded; \
-		parameters: Null:C1517\
-		}
-	
-	ARRAY TEXT:C222($names; 0x0000)
-	ARRAY TEXT:C222($values; 0x0000)
-	GET LIST ITEM PARAMETER ARRAYS:C1195($root; $ref; $names; $values)
-	
-	If (Size of array:C274($names)>0)
-		
-		$o.parameters:=[]
-		
-		For ($i; 1; Size of array:C274($names); 1)
-			
-			// Todo:Automatic convertion
-			$o.parameters.push({\
-				name: $names{$i}; \
-				value: $values{$i}\
-				})
-			
-		End for 
-	End if 
-	
-	return $o
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function GetItemByReference($ref : Integer) : Object
-	
-	return This:C1470.GetItem(This:C1470.GetPosition($ref))
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetItemStyle($style : Integer; $ref : Integer)
-	
-	var $root : Integer
-	var $enterable : Boolean
-	
-	$root:=This:C1470[""].ref
-	
-	GET LIST ITEM PROPERTIES:C631($root; $ref; $enterable)
-	SET LIST ITEM PROPERTIES:C386($root; $ref; $enterable; $style)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetAdditionalText($text : Text; $ref : Integer) : cs:C1710.Hlist
-	
-	SET LIST ITEM PARAMETER:C986(This:C1470[""].ref; $ref; Additional text:K28:7; $text)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetParameter($param : Object; $ref : Integer) : cs:C1710.Hlist
-	
-	ASSERT:C1129($param.key#Null:C1517)
-	
-	If (Value type:C1509($param.value)#Is boolean:K8:9)\
-		 && (Value type:C1509($param.value)#Is real:K8:4)\
-		 && (Value type:C1509($param.value)#Is longint:K8:6)
-		
-		If (Value type:C1509($param.value)=Is object:K8:27)\
-			 | (Value type:C1509($param.value)=Is collection:K8:32)
-			
-			$param.value:=JSON Stringify:C1217($param.value)
-			
-		Else 
-			
-			$param.value:=String:C10($param.value)
-			
-		End if 
-	End if 
-	
-	SET LIST ITEM PARAMETER:C986(This:C1470[""].ref; $ref; $param.key; $param.value)
-	
-	return This:C1470
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function GetParameter($param : Object) : Variant
-	
-	var $real : Real
-	var $text : Text
-	var $boolean : Boolean
-	var $ptr : Pointer
-	var $o : Object
+	// ⚠️ APPEND TO LIST doesn't accept object name
 	
 	Case of 
 			
-			//—————————————————
-		: ($param.type=Is boolean:K8:9)
+			//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		: (Count parameters:C259=2) || ($sublist=0)
 			
-			$ptr:=->$boolean
+			INSERT IN LIST:C625(*; This:C1470.name; 0; $itemText; $ref)
 			
-			//—————————————————
-		: ($param.type=Is real:K8:4)
+			//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		: (Count parameters:C259=4)
 			
-			$ptr:=->$real
+			INSERT IN LIST:C625(*; This:C1470.name; 0; $itemText; $ref; $sublist; $expanded)
 			
-			//—————————————————
-		Else 
-			
-			$ptr:=->$text
-			
-			//—————————————————
+			//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 	End case 
 	
-	If ($param.ref=Null:C1517)  //selected item
+	This:C1470.latest:=$ref
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Inserts an item to the current list
+Function insert($itemText : Text; $ref : Integer; $sublist : Integer; $expanded : Boolean; $beforeItemRef : Integer)
+	
+	If ($beforeItemRef#0)
 		
-		GET LIST ITEM PARAMETER:C985(This:C1470[""].ref; *; $param.key; $ptr->)
+		If ($sublist=0)
+			
+			INSERT IN LIST:C625(*; This:C1470.name; $beforeItemRef; $itemText; $ref)
+			
+		Else 
+			
+			INSERT IN LIST:C625(*; This:C1470.name; $beforeItemRef; $itemText; $ref; $sublist; $expanded)
+			
+		End if 
 		
 	Else 
 		
-		GET LIST ITEM PARAMETER:C985(This:C1470[""].ref; Num:C11($param.ref); $param.key; $ptr->)
+		INSERT IN LIST:C625(*; This:C1470.name; *; $itemText; $ref; $sublist; $expanded)
+		
+	End if 
+	
+	This:C1470.latest:=$ref
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// True if at least one element could be folded.
+Function get collapsable() : Boolean
+	
+	var $itemText : Text
+	var $expanded : Boolean
+	var $i; $ref; $sublist : Integer
+	
+	For ($i; 1; Count list items:C380(*; This:C1470.name); 1)
+		
+		GET LIST ITEM:C378(*; This:C1470.name; $i; $ref; $itemText; $sublist; $expanded)
+		
+		If ($sublist>0) && ($expanded)
+			
+			return True:C214
+			
+		End if 
+	End for 
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// True if at least one element could be unfolded.
+Function get expandable() : Boolean
+	
+	var $itemText : Text
+	var $expanded : Boolean
+	var $i; $ref; $sublist : Integer
+	
+	For ($i; 1; Count list items:C380(*; This:C1470.name); 1)
+		
+		GET LIST ITEM:C378(*; This:C1470.name; $i; $ref; $itemText; $sublist; $expanded)
+		
+		If ($sublist>0)
+			
+			If (Not:C34($expanded))
+				
+				return True:C214
+				
+			Else 
+				
+				$i+=Count list items:C380($sublist)
+				
+			End if 
+		End if 
+	End for 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Collapse all items
+Function collapseAll($keep : Boolean)
+	
+	var $itemText : Text
+	var $expanded : Boolean
+	var $count; $current; $i; $ref; $subList : Integer
+	
+	$keep:=Count parameters:C259=0 ? This:C1470.itemSublist>0 : $keep
+	
+	// Keep the current item reference to restore if any
+	$current:=This:C1470.itemRef
+	
+	$count:=This:C1470.itemCount
+	
+	Repeat 
+		
+		$i+=1
+		$expanded:=False:C215
+		
+		GET LIST ITEM:C378(*; This:C1470.name; $i; $ref; $itemText; $subList; $expanded)
+		
+		If ($subList#0)\
+			 & ($expanded)
+			
+			SET LIST ITEM:C385(*; This:C1470.name; $ref; $itemText; $ref; $subList; False:C215)
+			$count-=Count list items:C380($subList; *)
+			
+		Else 
+			
+			$count-=1
+			
+		End if 
+	Until ($count<=0)
+	
+	If ($keep)
+		
+		// Restore the selected item
+		This:C1470.selectByReference($current)
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Expand all items
+Function expandAll()
+	
+	var $itemText : Text
+	var $expanded : Boolean
+	var $count; $i; $ref; $subList : Integer
+	
+	$count:=This:C1470.itemCount
+	
+	For ($i; 1; This:C1470.itemCount; 1)
+		
+		GET LIST ITEM:C378(*; This:C1470.name; $i; $ref; $itemText; $subList; $expanded)
+		
+		If ($subList#0) && (Not:C34($expanded))
+			
+			SET LIST ITEM:C385(*; This:C1470.name; $ref; $itemText; $ref; $subList; True:C214)
+			$i+=Count list items:C380($subList)
+			
+		End if 
+	End for 
+	
+	This:C1470.unselect()
+	
+	// MARK:-[Item]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The value of the current element
+Function get itemValue() : Text
+	
+	return This:C1470._getItem("value")
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set itemValue($value : Text)
+	
+	This:C1470._setItem("value"; $value)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The ref of the current element
+Function get itemRef() : Integer
+	
+	return This:C1470._getItem("ref")
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set itemRef($ref : Integer)
+	
+	This:C1470._setItem("ref"; $ref)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The sub-list of the current element
+Function get itemSublist() : Integer
+	
+	return This:C1470._getItem("sublist")
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set itemSublist($sublist : Integer)
+	
+	This:C1470._setItem("sublist"; $sublist)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getSublist($pos : Integer) : Integer
+	
+	return This:C1470._getItem("sublist"; $pos)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getSublistByRef($ref : Integer) : Integer
+	
+	return This:C1470._getItem("sublist"; This:C1470.getItemPositionByRef($ref))
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The expanded state of the sub-list of the current element
+Function get itemExpanded() : Boolean
+	
+	return This:C1470._getItem("expanded")
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set itemExpanded($expanded : Boolean)
+	
+	This:C1470._setItem("expanded"; $expanded)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	///The icon associated with the current element
+Function get itemIcon() : Picture
+	
+	return This:C1470._getItem("icon")
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set itemIcon($icon : Picture)
+	
+	This:C1470._setItem("icon"; $icon)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The current element position
+Function get itemPosition() : Integer
+	
+	return List item position:C629(*; This:C1470.name; This:C1470.itemRef)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// All the parameters names & values of the current item
+Function get parameters() : Collection
+	
+	var $dateSep; $decimalSep; $timeSep : Text
+	var $date : Date
+	var $bool : Boolean
+	var $time : Time
+	var $o : Object
+	var $c : Collection
+	
+	ARRAY TEXT:C222($names; 0x0000)
+	ARRAY TEXT:C222($values; 0x0000)
+	GET LIST ITEM PARAMETER ARRAYS:C1195(*; This:C1470.name; *; $names; $values)
+	
+	$c:=[]
+	ARRAY TO COLLECTION:C1563($c; $names; "name"; $values; "value")
+	
+	GET SYSTEM FORMAT:C994(Decimal separator:K60:1; $decimalSep)
+	GET SYSTEM FORMAT:C994(Date separator:K60:10; $dateSep)
+	GET SYSTEM FORMAT:C994(Time separator:K60:11; $timeSep)
+	
+	For each ($o; $c)
+		
+		Case of 
+				
+				//______________________________________________________
+			: ($o.value="0")\
+				 | ($o.value="1")  // ⚠️ Boolean are stored as 0 or 1
+				
+				GET LIST ITEM PARAMETER:C985(*; This:C1470.name; *; $o.name; $bool)
+				$o.value:=$bool
+				
+				//______________________________________________________
+			: (Match regex:C1019("(?m-si)^(?:\\+|-)?\\d+(?:\\.|"+$decimalSep+"\\d+)?$"; $o.value; 1))
+				
+				$o.value:=Num:C11($o.value)
+				
+				//______________________________________________________
+			: (Match regex:C1019("(?m-si)^\\d+"+$timeSep+"\\d+(?:"+$timeSep+"\\d+)?$"; $o.value; 1))
+				
+				GET LIST ITEM PARAMETER:C985(*; This:C1470.name; *; $o.name; $time)
+				$o.value:=$time
+				
+				//______________________________________________________
+			: (Match regex:C1019("(?m-si)^\\d+"+$dateSep+"\\d+(?:"+$dateSep+"\\d+)?$"; $o.value; 1))
+				
+				GET LIST ITEM PARAMETER:C985(*; This:C1470.name; *; $o.name; $date)
+				$o.value:=$date
+				
+				//______________________________________________________
+			: (Match regex:C1019("(?msi)^(?:\\{.*\\})|(?:\\[.*\\])$"; $o.value; 1))
+				
+				$o.value:=JSON Parse:C1218($o.value)
+				
+				//______________________________________________________
+		End case 
+	End for each 
+	
+	return $c
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The parent item reference [⛔️ READ ONLY]
+Function get parent() : Integer
+	
+	return List item parent:C633(*; This:C1470.name; *)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Expand one item
+Function collapse($itemPos : Integer)
+	
+	var $itemText : Text
+	var $isExpanded : Boolean
+	var $ref; $sublist : Integer
+	
+	GET LIST ITEM:C378(*; This:C1470.name; $itemPos; $ref; $itemText; $sublist; $isExpanded)
+	
+	If ($sublist#0)\
+		 && ($isExpanded)
+		
+		SET LIST ITEM:C385(*; This:C1470.name; $ref; $itemText; $ref; $sublist; False:C215)
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Expand one item
+Function expand($itemPos : Integer)
+	
+	var $itemText : Text
+	var $isExpanded : Boolean
+	var $ref; $sublist : Integer
+	
+	GET LIST ITEM:C378(*; This:C1470.name; $itemPos; $ref; $itemText; $sublist; $isExpanded)
+	
+	If ($sublist#0)\
+		 && (Not:C34($isExpanded))
+		
+		SET LIST ITEM:C385(*; This:C1470.name; $ref; $itemText; $ref; $sublist; True:C214)
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the itemRef position
+Function getItemPositionByRef($ref : Integer) : Integer
+	
+	return List item position:C629(*; This:C1470.name; $ref)
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	/// Returns information about the element specified by itemPos or the current element if omitted
+Function _getItem($request : Text; $itemPos : Integer) : Variant
+	
+	var $itemText : Text
+	var $icon : Picture
+	var $expanded : Boolean
+	var $ref; $sublist : Integer
+	
+	If ($request="icon")
+		
+		If ($itemPos=0)
+			
+			GET LIST ITEM ICON:C951(*; This:C1470.name; *; $icon)
+			
+		Else 
+			
+			GET LIST ITEM ICON:C951(*; This:C1470.name; $itemPos; $icon)
+			
+		End if 
+		
+		return $icon
+		
+	Else 
+		
+		If ($itemPos=0)
+			
+			GET LIST ITEM:C378(*; This:C1470.name; *; $ref; $itemText; $sublist; $expanded)
+			
+		Else 
+			
+			GET LIST ITEM:C378(*; This:C1470.name; $itemPos; $ref; $itemText; $sublist; $expanded)
+			
+		End if 
 		
 	End if 
 	
 	Case of 
 			
-			//—————————————————
-		: ($param.type=Is object:K8:27)
+			//______________________________________________________
+		: ($request="value")
 			
-			If (Match regex:C1019("(?i-ms)^\\{.*\\}$"; $text; 1))
-				
-				return JSON Parse:C1218($text)
-				
-			Else 
-				
-				return Null:C1517
-				
-			End if 
+			return $itemText
 			
-			//—————————————————
-		Else 
+			//______________________________________________________
+		: ($request="ref")
 			
-			return $ptr->
+			return $ref
 			
-			//—————————————————
+			//______________________________________________________
+		: ($request="sublist")
+			
+			return $sublist
+			
+			//______________________________________________________
+		: ($request="expanded")
+			
+			return $expanded
+			
+			//______________________________________________________
 	End case 
 	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetIcon($param : Object; $ref : Integer) : cs:C1710.Hlist
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	/// Sets information of the element itemPos or the current element if omitted
+Function _setItem($request : Text; $value; $itemPos : Integer)
 	
 	var $icon : Picture
-	$icon:=$param.icon
 	
-	SET LIST ITEM ICON:C950(This:C1470[""].ref; $ref; $icon)
+	If ($request="icon")
+		
+		If ($itemPos=0)
+			
+			SET LIST ITEM ICON:C950(*; This:C1470.name; *; $icon)
+			
+		Else 
+			
+			SET LIST ITEM ICON:C950(*; This:C1470.name; $itemPos; $icon)
+			
+		End if 
+		
+	Else 
+		
+		If ($itemPos=0)
+			
+			GET LIST ITEM:C378(*; This:C1470.name; *; $ref; $itemText; $sublist; $expanded)
+			
+		Else 
+			
+			GET LIST ITEM:C378(*; This:C1470.name; $itemPos; $ref; $itemText; $sublist; $expanded)
+			
+		End if 
+		
+		Case of 
+				
+				//______________________________________________________
+			: ($request="value")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $value; $ref; $sublist; $expanded)
+				
+				//______________________________________________________
+			: ($request="ref")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $value; $sublist; $expanded)
+				
+				//______________________________________________________
+			: ($request="sublist")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $ref; $value; $expanded)
+				
+				//______________________________________________________
+			: ($request="expanded")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $ref; $sublist; $value)
+				
+				//______________________________________________________
+		End case 
+	End if 
 	
-	return This:C1470
+	// MARK:-[Find]
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the position of the first item value
+Function findPosition($itemText : Text; $scope : Integer) : Integer
+	
+	return Find in list:C952(*; This:C1470.name; $itemText; $scope)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the reference of the first item value
+Function findReference($itemText : Text; $scope : Integer) : Integer
+	
+	return Find in list:C952(*; This:C1470.name; $itemText; $scope; *)
+	
+	// MARK:-[Selection]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// A collection of indexes of selected items
+Function get selectedItemIndexes() : Collection
+	
+	var $dummy : Integer
+	var $c : Collection
+	$c:=[]
+	
+	ARRAY LONGINT:C221($selected; 0)
+	$dummy:=Selected list items:C379(*; This:C1470.name; $selected)
+	
+	ARRAY TO COLLECTION:C1563($c; $selected)
+	
+	return $c
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// A collection of refernces of selected items
+Function get selectedItemReferences() : Collection
+	
+	var $dummy : Integer
+	var $c : Collection
+	$c:=[]
+	
+	ARRAY LONGINT:C221($selected; 0)
+	$dummy:=Selected list items:C379(*; This:C1470.name; $selected; *)
+	
+	ARRAY TO COLLECTION:C1563($c; $selected)
+	
+	return $c
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Selects the item whose item position is passed
+Function selectByPosition($itemPos : Integer)
+	
+	// TODO: Accept a collection of positions
+	
+	If ($itemPos>0)
+		
+		SELECT LIST ITEMS BY POSITION:C381(*; This:C1470.name; $itemPos)
+		OBJECT SET SCROLL POSITION:C906(*; This:C1470.name; $itemPos)
+		
+	Else 
+		
+		This:C1470.unselect()
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Selects the item whose item reference is passed
+Function selectByReference($ref : Integer)
+	
+	// TODO: Accept a collection of references
+	
+	// ⚠️ SELECT LIST ITEMS BY REFERENCE doesn't accept object name
+	This:C1470.selectByPosition(This:C1470.getItemPositionByRef($ref))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Deselect all items
+Function selectAll()
+	
+	var $focused : Text
+	$focused:=OBJECT Get name:C1087(Object with focus:K67:3)
+	GOTO OBJECT:C206(*; This:C1470.name)
+	INVOKE ACTION:C1439(ak select all:K76:57; ak current form:K76:70)
+	GOTO OBJECT:C206(*; $focused)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Deselect all items
+Function unselect()
+	
+	SELECT LIST ITEMS BY POSITION:C381(*; This:C1470.name; This:C1470.itemCount+1)
 	

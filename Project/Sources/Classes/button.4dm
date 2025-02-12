@@ -1,4 +1,4 @@
-Class extends widgetDelegate
+Class extends widget
 
 Class constructor($name : Text)
 	
@@ -37,23 +37,23 @@ Function set linkedPopupMenu($linked : Boolean)
 	This:C1470._setPopupMenu($linked ? "linked" : "none")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setLinkedPopupMenu() : cs:C1710.buttonDelegate
+Function setLinkedPopupMenu() : cs:C1710.button
 	
 	return This:C1470._setPopupMenu("linked")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setSeparatePopupMenu() : cs:C1710.buttonDelegate
+Function setSeparatePopupMenu() : cs:C1710.button
 	
 	return This:C1470._setPopupMenu("separate")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setNoPopupMenu() : cs:C1710.buttonDelegate
+Function setNoPopupMenu() : cs:C1710.button
 	
 	return This:C1470._setPopupMenu("none")
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 	/// Association of a pop-up menu with a 3D button
-Function _setPopupMenu($value : Variant) : cs:C1710.buttonDelegate
+Function _setPopupMenu($value : Variant) : cs:C1710.button
 	
 /**
 If no parameter is passed the pop menu is removed, if any.
@@ -121,7 +121,7 @@ Function set picture($proxy : Text)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Picture linked to a button
-Function setPicture($proxy : Text) : cs:C1710.buttonDelegate
+Function setPicture($proxy : Text) : cs:C1710.button
 	
 	If (Count parameters:C259=0)
 		
@@ -143,7 +143,7 @@ Function set backgroundPicture($proxy : Text)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Background picture linked to a button (Custom style)
-Function setBackgroundPicture($proxy : Text) : cs:C1710.buttonDelegate
+Function setBackgroundPicture($proxy : Text) : cs:C1710.button
 	
 	If (Count parameters:C259=0)
 		
@@ -157,42 +157,6 @@ Function setBackgroundPicture($proxy : Text) : cs:C1710.buttonDelegate
 	End if 
 	
 	return This:C1470
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _proxy($proxy : Text) : Text
-	
-	Case of 
-			
-			//______________________________________________________
-		: (Position:C15("path:"; $proxy)=1)\
-			 || (Position:C15("file:"; $proxy)=1)\
-			 || (Position:C15("var:"; $proxy)=1)\
-			 || (Position:C15("!"; $proxy)=1)
-			
-			return $proxy
-			
-			//______________________________________________________
-		: (Position:C15("#"; $proxy)=1)  // Shortcut for Resources folder
-			
-			return "path:/RESOURCES/"+Delete string:C232($proxy; 1; 1)
-			
-			//______________________________________________________
-		: ($proxy="|@")
-			
-			return "path:/.PRODUCT_RESOURCES/"+Delete string:C232($proxy; 1; 1)
-			
-			//______________________________________________________
-		: (Position:C15("/"; $proxy)=1)
-			
-			return "path:"+$proxy
-			
-			//______________________________________________________
-		Else 
-			
-			return "path:/RESOURCES/"+$proxy
-			
-			//______________________________________________________
-	End case 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get numStates() : Integer
@@ -209,7 +173,7 @@ Function set numStates($states : Integer)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Number of states present in picture used as icon for the 3D button, and which
 	// will be used by 4D to represent the standard button states (from 0 to 6)
-Function setNumStates($states : Integer) : cs:C1710.buttonDelegate
+Function setNumStates($states : Integer) : cs:C1710.button
 	
 	If (Count parameters:C259>=1)
 		
@@ -243,7 +207,24 @@ Function get styleName() : Text
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Button style
-Function setStyle($style : Integer) : cs:C1710.buttonDelegate
+Function setStyle($style : Integer) : cs:C1710.button
+	
+/**
+style = 0: None (default)
+style = 1: Background offset
+style = 2: Push button
+style = 3: Toolbar button
+style = 4: Custom
+style = 5: Circle
+style = 6: Small system square
+style = 7: Office XP
+style = 8: Bevel
+style = 9: Rounded bevel
+style = 10: Collapse/Expand
+style = 11: Help
+style = 12: OS X Textured
+style = 13: OS X Gradient
+**/
 	
 	This:C1470.setFormat(";;;;;;"+String:C10($style))
 	
@@ -263,7 +244,7 @@ Function get horizontalMargin() : Integer
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 	/// Sets the number of pixels delimiting the inside left and right margins of the button
 	/// (areas that the icon and the text must not encroach upon).
-Function set horizontalMargin($pixels : Integer) : cs:C1710.buttonDelegate
+Function set horizontalMargin($pixels : Integer) : cs:C1710.button
 	
 	If (This:C1470.is3DButton("horizontalMargin is only managed for 3D buttons"))
 		
@@ -283,7 +264,7 @@ Function is3DButton($message : Text) : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Tryes to underline the first capital letter or, 
 	/// if not found the first letter, corresponding to the associated key shortcut
-Function highlightShortcut() : cs:C1710.buttonDelegate
+Function highlightShortcut() : cs:C1710.button
 	
 	var $key; $t : Text
 	var $index; $lModifier : Integer

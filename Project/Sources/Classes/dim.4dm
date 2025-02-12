@@ -1,5 +1,7 @@
+property height : Integer:=0
+property width : Integer:=0
+
 Class constructor
 	
-	This:C1470.height:=0
-	This:C1470.width:=0
+	//
 	

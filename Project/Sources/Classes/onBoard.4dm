@@ -3,22 +3,19 @@ property instances : Collection
 
 Class constructor($widget : Text; $form : Text)
 	
-	ARRAY TEXT:C222($names; 0x0000)
-	FORM GET NAMES:C1167($names; $form)
-	ASSERT:C1129(Size of array:C274($names)=1; "Form not found: "+$form)
+	//FIXME:Fix for use from a component
 	
-	ARRAY LONGINT:C221($pages; 0x0000)
-	ARRAY POINTER:C280($pointers; 0x0000)
-	FORM GET OBJECTS:C898($names; $pointers; $pages; Form all pages:K67:7)
-	
-	var $indx : Integer
-	$indx:=Find in array:C230($names; $widget)
-	
-	If (Asserted:C1132($indx>0; "Widget not found: "+$widget))
-		
-		ASSERT:C1129($pages{$indx}=0; "WARNING: The widget is not on page 0")
-		
-	End if 
+	//ARRAY TEXT($names; 0x0000)
+	//FORM GET NAMES($names; $form)
+	//ASSERT(Size of array($names)=1; "Form not found: "+$form)
+	//ARRAY LONGINT($pages; 0x0000)
+	//ARRAY POINTER($pointers; 0x0000)
+	//FORM GET OBJECTS($names; $pointers; $pages; Form all pages)
+	//var $indx : Integer
+	//$indx:=Find in array($names; $widget)
+	//If (Asserted($indx>0; "Widget not found: "+$widget))
+	//ASSERT($pages{$indx}=0; "WARNING: The widget is not on page 0")
+	//End if 
 	
 	This:C1470.form:=$form  // The form to use as a sub-form
 	
@@ -36,7 +33,32 @@ Class constructor($widget : Text; $form : Text)
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set me($me : cs:C1710.onBoard)
 	
-	This:C1470.instances[0].data.me:=$me
+	If (This:C1470.instances#Null:C1517)\
+		 && (This:C1470.instances.length>0)
+		
+		This:C1470.instances[0].data.me:=$me
+		
+	End if 
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set parent($parent : Object)
+	
+	If (This:C1470.instances#Null:C1517)\
+		 && (This:C1470.instances.length>0)
+		
+		This:C1470.instances[0].parent:=$parent
+		
+	End if 
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function get parent() : Object
+	
+	If (This:C1470.instances#Null:C1517)\
+		 && (This:C1470.instances.length>0)
+		
+		return This:C1470.instances[0].parent
+		
+	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	// Returns the name of the widget on the current page
@@ -68,7 +90,7 @@ Function get instance() : Object
 	
 	// === === === === === === === === === === === === === === === === === ===
 	// Displays widget
-Function show($data : Object)
+Function show($data : Object) : Text
 	
 	var $widget : Text
 	$widget:=This:C1470.name
@@ -138,6 +160,18 @@ Function show($data : Object)
 	// Show
 	OBJECT SET VISIBLE:C603(*; $widget; True:C214)
 	
+	//& touch
+	GOTO OBJECT:C206(*; $widget)
+	
+	return $widget
+	
+	// === === === === === === === === === === === === === === === === === ===
+	// Hides widget
+Function hide($widget : Text)
+	
+	$widget:=$widget || This:C1470.name
+	OBJECT SET VISIBLE:C603(*; $widget; False:C215)
+	
 	// === === === === === === === === === === === === === === === === === ===
 Function close()
 	
@@ -154,13 +188,6 @@ Function cancel()
 	
 	Form:C1466.CANCELLED:=True:C214
 	CALL SUBFORM CONTAINER:C1086(-1)
-	
-	// === === === === === === === === === === === === === === === === === ===
-	// Hides widget
-Function hide($widget : Text)
-	
-	$widget:=$widget || This:C1470.name
-	OBJECT SET VISIBLE:C603(*; $widget; False:C215)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	// Returns the data of the widget on the current page
@@ -184,7 +211,7 @@ Function set data($data : Object)
 	
 	If (OBJECT Get type:C1300(*; $widget)#Object type unknown:K79:1)
 		
-		OBJECT SET VALUE:C1742(This:C1470.name; $data)
+		OBJECT SET VALUE:C1742($widget; $data)
 		
 	End if 
 	
@@ -269,7 +296,8 @@ Function onLoad()
 				//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 			Else 
 				
-				// A "Case of" statement should never omit "Else"
+				OBJECT SET VALUE:C1742($key; Form:C1466[$key])
+				
 				//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 		End case 
 	End for each 

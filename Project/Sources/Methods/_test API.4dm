@@ -1,6 +1,5 @@
 //%attributes = {}
 var $zen : Text
-var $gh : cs:C1710.GithubAPI
 
 /*
 
@@ -14,12 +13,14 @@ git push -u origin main
 
 */
 
-$gh:=cs:C1710.GithubAPI.new()
+var $gh:=cs:C1710.GithubAPI.new()
 var $token : Object:=$gh.getAppToken()
+
+$gh.getUser($gh.token)
 
 //$gh.AuthorizeApp()
 
-//$gh._getToken()
+$gh._getToken()
 
 //$zen:=$gh.zen()
 

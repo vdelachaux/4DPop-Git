@@ -1,33 +1,31 @@
-property success; local; debug : Boolean
-property command; error; HEAD; result; warning : Text
+property command : Text
 property BrancUnpulledCommit : Integer
-property user; workingBranch : Object
-property errors; warnings; branches; changes; history; remotes; stashes; tags : Collection
 property cwd; root : 4D:C1709.Folder
 property gitignore; gitattributes : 4D:C1709.File
 
 property _version : Text
 
+property success:=True:C214
+property local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
+property result:=""
+property error:=""
+property errors:=[]
+property warning:=""
+property warnings:=[]
+property user:={}
+property workingBranch:={}
+property branches:=[]
+property changes:=[]
+property history:=[]
+property remotes:=[]
+property stashes:=[]
+property tags:=[]
+property HEAD:=""
+property _token:=""
+
+property debug:=Structure file:C489=Structure file:C489(*)
+
 Class constructor($folder : 4D:C1709.Folder)
-	
-	This:C1470.success:=True:C214
-	
-	This:C1470.error:=""
-	This:C1470.errors:=[]
-	
-	This:C1470.warning:=""
-	This:C1470.warnings:=[]
-	
-	This:C1470.user:={}
-	This:C1470.workingBranch:={}
-	This:C1470.branches:=[]
-	This:C1470.changes:=[]
-	This:C1470.history:=[]
-	This:C1470.remotes:=[]
-	This:C1470.stashes:=[]
-	This:C1470.tags:=[]
-	
-	This:C1470.HEAD:=""
 	
 	// Current workspace
 	$folder:=$folder || Folder:C1567("/PACKAGE"; *)
@@ -63,10 +61,6 @@ Class constructor($folder : 4D:C1709.Folder)
 	This:C1470.gitignore:=This:C1470.cwd.file(".gitignore")
 	This:C1470.gitattributes:=This:C1470.cwd.file(".gitattributes")
 	
-	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
-	
-	var $exe : 4D:C1709.File
-	
 	Case of 
 			
 			//______________________________________________________
@@ -77,7 +71,7 @@ Class constructor($folder : 4D:C1709.Folder)
 			//______________________________________________________
 		: (Is Windows:C1573)
 			
-			$exe:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
+			var $exe : 4D:C1709.File:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
 			
 			If ($exe.exists)
 				
@@ -96,10 +90,6 @@ Class constructor($folder : 4D:C1709.Folder)
 			
 			//______________________________________________________
 	End case 
-	
-	This:C1470.result:=""
-	
-	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
 	
 	If (This:C1470.root#Null:C1517)\
 		 & (This:C1470.root.exists)
@@ -131,6 +121,35 @@ Class constructor($folder : 4D:C1709.Folder)
 	End if 
 	
 	This:C1470.BrancUnpulledCommit:=0
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get token() : Text
+	
+	If (Length:C16(This:C1470._token)>0)
+		
+		return This:C1470._token
+		
+	End if 
+	
+	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
+	
+	If ($file.exists)
+		
+		This:C1470._token:=String:C10(JSON Parse:C1218($file.getText()).token)
+		
+	End if 
+	
+	return This:C1470._token
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set token($token : Text)
+	
+	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
+	var $o : Object:=$file.exists ? JSON Parse:C1218($file.getText()) : {}
+	$o.token:=$token
+	$file.setText(JSON Stringify:C1217($o; *))
+	
+	This:C1470._token:=$token
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function execute($command : Text; $inputStream : Text) : Boolean

@@ -1,17 +1,12 @@
-var $e : Object
-$e:=FORM Event:C1606
+var $e:=FORM Event:C1606
 
 If ($e.code<0)
 	
-	var $me : Object
-	$me:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
+	var $me : Object:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
 	
 	// MARK:-Specific actions
-	var $form : Object
-	$form:=formGetInstance
-	
-	var $git : cs:C1710.Git
-	$git:=$form.Git
+	var $form : Object:=formGetInstance
+	var $git : cs:C1710.Git:=$form.Git
 	
 	Case of 
 			

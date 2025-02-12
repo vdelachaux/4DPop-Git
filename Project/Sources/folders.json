@@ -15,15 +15,14 @@
 		],
 		"classes": [
 			"_classCore",
-			"colour",
-			"coord",
-			"dim",
-			"evt",
+			"color",
+			"error",
+			"feature",
+			"hierachicalList",
 			"http",
-			"menu",
-			"menuBar",
 			"motor",
-			"onBoard",
+			"os",
+			"regex",
 			"svg",
 			"xml"
 		]
@@ -48,25 +47,34 @@
 			"subformWidgetMethod"
 		],
 		"classes": [
-			"buttonDelegate",
-			"comboBoxDelegate",
-			"constraintsDelegate",
-			"dropDownDelegate",
-			"formDelegate",
-			"groupDelegate",
-			"hListDelegate",
-			"inputDelegate",
-			"listboxDelegate",
-			"pictureDelegate",
-			"scrollableDelegate",
-			"selectorDelegate",
-			"staticDelegate",
-			"stepperDelegate",
-			"subformDelegate",
-			"thermometerDelegate",
-			"webAreaDelegate",
-			"widgetDelegate",
-			"windowDelegate"
+			"button",
+			"colour",
+			"comboBox",
+			"constraints",
+			"coord",
+			"dim",
+			"dropDown",
+			"evt",
+			"form",
+			"group",
+			"hList",
+			"input",
+			"listbox",
+			"menu",
+			"menuBar",
+			"onBoard",
+			"picture",
+			"scrollable",
+			"selector",
+			"static",
+			"stepper",
+			"subform",
+			"tabControl",
+			"thermometer",
+			"tips",
+			"webArea",
+			"widget",
+			"window"
 		]
 	},
 	"📦 MAIN": {
@@ -99,8 +107,7 @@
 	},
 	"database": {
 		"methods": [
-			"COMPILER_database",
-			"databaseNonThreadSafe"
+			"getProject"
 		],
 		"classes": [
 			"database"
