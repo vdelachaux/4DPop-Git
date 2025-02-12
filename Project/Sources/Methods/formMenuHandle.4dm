@@ -1,12 +1,12 @@
 //%attributes = {"invisible":true}
-var $manager : Text
-var $instance : 4D:C1709.Class
+#DECLARE($function : Text)
 
-$manager:="handleMenus"
-$instance:=formGetInstance
+$function:=$function || "handleMenus"
 
-If (Asserted:C1132(OB Instance of:C1731($instance[$manager]; 4D:C1709.Function); "The function \""+$manager+"\" is missing in the class\""+$instance.__CLASS__.name+"\""))
+var $instance:=formGetInstance
+
+If (Asserted:C1132(OB Instance of:C1731($instance[$function]; 4D:C1709.Function); "The function \""+$function+"\" is missing in the class\""+$instance.__CLASS__.name+"\""))
 	
-	$instance[$manager](Get selected menu item parameter:C1005)
+	$instance[$function](Get selected menu item parameter:C1005)
 	
 End if 
