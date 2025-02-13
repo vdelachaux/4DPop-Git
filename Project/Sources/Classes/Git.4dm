@@ -65,6 +65,7 @@ Class constructor($folder : 4D:C1709.Folder)
 	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	// Obtain user token (same as dependency manager token)
 Function get token() : Text
 	
 	If (Length:C16(This:C1470._token)>0)
@@ -84,6 +85,7 @@ Function get token() : Text
 	return This:C1470._token
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+	// Store the user token (same as dependency manager token)
 Function set token($token : Text)
 	
 	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
@@ -283,15 +285,15 @@ Function update()
 	This:C1470.HEAD:=Split string:C1554(This:C1470._normalizeLF(This:C1470.root.file("HEAD").getText()); "\n"; sk ignore empty strings:K86:1)[0]
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Updates the collection of changes and returns their number
 Function status($short : Boolean) : Integer
 	
-	var $cmd; $t : Text
-	
+	var $t : Text
 	$short:=Count parameters:C259>=1 ? $short : True:C214  // Default is True
 	
 	This:C1470.changes.clear()
 	
-	$cmd:="status"+($short ? " -s" : "")+" -uall --porcelain"
+	var $cmd:="status"+($short ? " -s" : "")+" -uall --porcelain"
 	
 	If (This:C1470.execute($cmd))
 		
@@ -558,7 +560,7 @@ Function forcePush($origin : Text; $branch : Text) : Boolean
 	
 	//MARK:-branch
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function branch($whatToDo : Text; $name : Text; $newName : Text)
+Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C1710.Git
 	
 	var $t : Text
 	
@@ -600,7 +602,7 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 			End if 
 			
 			//———————————————————————————————————
-		: ($whatToDo="master") | ($whatToDo="main")  // Return on the main branch
+		: ($whatToDo="master") || ($whatToDo="main")  // Return on the main branch
 			
 			If (This:C1470.execute("checkout master"))
 				
@@ -689,6 +691,8 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 			//———————————————————————————————————
 	End case 
 	
+	return This:C1470
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function checkout($what)
 	
@@ -728,13 +732,12 @@ Function checkout($what)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchFetchNumber($branch : Text) : Integer
 	
-	var $local; $remote; $t : Text
+	var $t : Text
 	var $i : Integer
-	var $file : 4D:C1709.File
 	
 	If (Length:C16($branch)>0)
 		
-		$file:=This:C1470.root.folder("refs/heads").file($branch)
+		var $file:=This:C1470.root.folder("refs/heads").file($branch)
 		
 		If (Not:C34($file.exists))
 			
@@ -742,7 +745,7 @@ Function branchFetchNumber($branch : Text) : Integer
 			
 		End if 
 		
-		$local:=Substring:C12($file.getText(); 1; 7)
+		var $local:=Substring:C12($file.getText(); 1; 7)
 		
 		$file:=This:C1470.root.folder("refs/remotes/origin").file($branch)
 		
@@ -752,7 +755,7 @@ Function branchFetchNumber($branch : Text) : Integer
 			
 		End if 
 		
-		$remote:=Substring:C12($file.getText(); 1; 7)
+		var $remote:=Substring:C12($file.getText(); 1; 7)
 		
 		This:C1470.execute("log "+$local+".."+$remote)
 		
@@ -778,9 +781,7 @@ Function branchFetchNumber($branch : Text) : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchPushNumber($branch : Text) : Integer
 	
-	var $c : Collection
-	
-	$c:=["rev-list"]
+	var $c:=["rev-list"]
 	
 	$c.push(Length:C16($branch)>0\
 		 ? "origin/"+$branch+".."+$branch\
@@ -803,9 +804,7 @@ Function diff($pathname : Text; $option : Text)
 		
 	End if 
 	
-	var $c : Collection
-	
-	$c:=["diff -w"]
+	var $c:=["diff -w"]
 	
 	If (Count parameters:C259>=2)
 		
@@ -821,7 +820,7 @@ Function diff($pathname : Text; $option : Text)
 Function diffList($parent : Text; $current : Text) : Boolean
 	
 	// Empty tree id
-	$parent:=Length:C16($parent)=0 ? "4b825dc642cb6eb9a060e54bf8d69288fbee4904" : $parent
+	$parent:=$parent || "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 	
 	return This:C1470.execute("diff --name-status "+$parent+" "+$current)
 	
@@ -834,10 +833,9 @@ Function diffTool($pathname : Text)
 	
 	//MARK:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateRemotes()
+Function updateRemotes() : cs:C1710.Git
 	
 	var $t : Text
-	var $c : Collection
 	
 	This:C1470.remotes.clear()
 	
@@ -845,7 +843,7 @@ Function updateRemotes()
 		
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
-			$c:=Split string:C1554($t; "\t"; sk ignore empty strings:K86:1)
+			var $c:=Split string:C1554($t; "\t"; sk ignore empty strings:K86:1)
 			
 			If (This:C1470.remotes.query("name=:1"; $c[0]).length=0)
 				
@@ -858,14 +856,16 @@ Function updateRemotes()
 		End for each 
 	End if 
 	
+	return This:C1470
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateTags()
+Function updateTags() : cs:C1710.Git
+	
+	var $t : Text
 	
 	This:C1470.tags.clear()
 	
 	If (This:C1470.execute("tag"))
-		
-		var $t : Text
 		
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
@@ -874,19 +874,56 @@ Function updateTags()
 		End for each 
 	End if 
 	
+	return This:C1470
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function open($whatToDo : Text)
+Function FETCH_HEAD($type : Text) : Collection
+	
+	var $file : 4D:C1709.File:=This:C1470.root.file("FETCH_HEAD")
+	
+	If (Not:C34($file.exists))
+		
+		return 
+		
+	End if 
+	
+	var $rgx:=cs:C1710.regex.new($file.getText(); "(?m-si)^([[:xdigit:]]*)\\s[^\\s]+\\s"+$type+"\\s'([^']+)")
+	
+	var $c:=[]
+	var $i:=-1
+	var $t:=""
+	
+	For each ($t; $rgx.extract("1 2"))
+		
+		$i+=1
+		
+		If ($i%2=0)
+			
+			var $o:={ref: $t}
+			continue
+			
+		End if 
+		
+		$o[$type]:=$t
+		$c.push($o)
+		
+	End for each 
+	
+	return $c
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function open($what : Text)
 	
 	var $errorStream; $outputStream; $inputStream : Text
 	
 	Case of 
 			
 			//——————————————————————
-		: ($whatToDo="terminal")  // Open terminal in the working directory
+		: ($what="terminal")  // Open terminal in the working directory
 			
 			If (Is macOS:C1572)
 				
-				LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.workspace.path+"'"; $inputStream; $outputStream; $errorStream)
+				LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+String:C10(This:C1470.workspace.path)+"'"; $inputStream; $outputStream; $errorStream)
 				
 			Else 
 				
@@ -895,7 +932,7 @@ Function open($whatToDo : Text)
 			End if 
 			
 			//——————————————————————
-		: ($whatToDo="show")  // Open on disk the current directory
+		: ($what="show")  // Open on disk the current directory
 			
 			If (Is macOS:C1572)
 				
@@ -929,12 +966,10 @@ Function open($whatToDo : Text)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function stash($name : Text)
+Function stash($name : Text) : cs:C1710.Git
 	
 	var $line : Text
-	
-	ARRAY LONGINT:C221($pos; 0)
-	ARRAY LONGINT:C221($len; 0)
+	var $i : Integer
 	
 	Case of 
 			
@@ -942,21 +977,21 @@ Function stash($name : Text)
 		: (Length:C16($name)=0)\
 			 | ($name="list")  // Update list
 			
-			This:C1470.stashes:=[]
+			This:C1470.stashes.clear()
 			
 			If (This:C1470.execute("stash list"))
 				
+				var $rgx:=cs:C1710.regex.new(""; "(?m-si)^([^:]*):\\s([^:]*):\\s([^$]*)$")
+				
 				For each ($line; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					
-					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)([^$]*)$"; $line; 1; $pos; $len))
+					var $c:=$rgx.setTarget($line).extract("1 2 3")
+					
+					For ($i; 0; $c.length-1; 3)
 						
-						// FIXME:regex
-						This:C1470.stashes.push({\
-							name: Substring:C12($line; $pos{1}; $len{1}); \
-							message: Substring:C12($line; $pos{3}; $len{3})\
-							})
+						This:C1470.stashes.push({name: $c[0]; branch: $c[1]; message: $c[2]})
 						
-					End if 
+					End for 
 				End for each 
 			End if 
 			
@@ -967,6 +1002,8 @@ Function stash($name : Text)
 			
 			//________________________________________
 	End case 
+	
+	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
