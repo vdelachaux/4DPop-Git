@@ -797,7 +797,7 @@ Function branchPushNumber($branch : Text) : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diff($pathname : Text; $option : Text)
 	
-	If (Not:C34(File:C1566($pathname).exists))
+	If (Not:C34(This:C1470.workspace.file($pathname).exists))
 		
 		This:C1470._pushError(Current method name:C684+"('"+$pathname+"'): File not found")
 		return 

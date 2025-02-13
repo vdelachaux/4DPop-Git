@@ -657,7 +657,7 @@ Function stachList()
 	
 	var $o : Object
 	
-	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-24))).Empty()
+	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-24))).Empty()
 	
 	var $git : cs:C1710.Git:=This:C1470.Git.stash()
 	
@@ -679,7 +679,7 @@ Function tagList()
 	
 	var $t : Text
 	
-	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-23))).Empty()
+	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-23))).Empty()
 	
 	var $git : cs:C1710.Git:=This:C1470.Git.updateTags()
 	
@@ -701,7 +701,7 @@ Function remoteList()
 	
 	var $o : Object
 	
-	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-22))).Empty()
+	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-22))).Empty()
 	
 	var $git : cs:C1710.Git:=This:C1470.Git.updateRemotes()
 	
@@ -724,7 +724,7 @@ Function branchList()
 	var $notPulled; $notPushed : Integer
 	var $o : Object
 	
-	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-21))).Empty()
+	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-21))).Empty()
 	
 	var $git : cs:C1710.Git:=This:C1470.Git.branch()
 	
@@ -783,7 +783,7 @@ Function _selectorManager($e : cs:C1710.evt)
 	
 	var $data : Object
 	
-	var $list:=cs:C1710.hierachicalList.new(This:C1470.selector.ref)
+	var $list:=cs:C1710.hierarchicalList.new(This:C1470.selector.ref)
 	$data:=$list.GetParameter({key: "data"; type: Is object:K8:27})
 	
 	Case of 

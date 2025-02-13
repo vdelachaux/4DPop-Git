@@ -22,7 +22,7 @@ Function Create() : Integer
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Populates the current list reference
-Function SetList($list) : cs:C1710.hierachicalList
+Function SetList($list) : cs:C1710.hierarchicalList
 	
 	If (Is a list:C621(This:C1470[""].ref))
 		
@@ -66,16 +66,16 @@ Function SetList($list) : cs:C1710.hierachicalList
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Returns a copy of the current list
-Function copy() : cs:C1710.hierachicalList
+Function copy() : cs:C1710.hierarchicalList
 	
 	If (Asserted:C1132(This:C1470.isList; "No list to duplicate"))
 		
-		return cs:C1710.hierachicalList.new(Copy list:C626(This:C1470[""].ref))
+		return cs:C1710.hierarchicalList.new(Copy list:C626(This:C1470[""].ref))
 		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Clear($keepSubLists : Boolean) : cs:C1710.hierachicalList
+Function Clear($keepSubLists : Boolean) : cs:C1710.hierarchicalList
 	
 	ASSERT:C1129(Is a list:C621(This:C1470[""].ref))
 	
@@ -98,7 +98,7 @@ Function Clear($keepSubLists : Boolean) : cs:C1710.hierachicalList
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Empty() : cs:C1710.hierachicalList
+Function Empty() : cs:C1710.hierarchicalList
 	
 	var $t : Text
 	var $i; $ref; $root : Integer
@@ -212,7 +212,7 @@ Function set properties($properties : Object)
 	SET LIST PROPERTIES:C387(This:C1470[""].ref; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean) : cs:C1710.hierachicalList
+Function Append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean) : cs:C1710.hierarchicalList
 	
 	If (Value type:C1509($item)=Is object:K8:27)
 		
@@ -423,14 +423,14 @@ Function SetItemStyle($style : Integer; $ref : Integer)
 	SET LIST ITEM PROPERTIES:C386($root; $ref; $enterable; $style)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetAdditionalText($text : Text; $ref : Integer) : cs:C1710.hierachicalList
+Function SetAdditionalText($text : Text; $ref : Integer) : cs:C1710.hierarchicalList
 	
 	SET LIST ITEM PARAMETER:C986(This:C1470[""].ref; $ref; Additional text:K28:7; $text)
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetParameter($param : Object; $ref : Integer) : cs:C1710.hierachicalList
+Function SetParameter($param : Object; $ref : Integer) : cs:C1710.hierarchicalList
 	
 	ASSERT:C1129($param.key#Null:C1517)
 	
@@ -519,7 +519,7 @@ Function GetParameter($param : Object) : Variant
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetIcon($param : Object; $ref : Integer) : cs:C1710.hierachicalList
+Function SetIcon($param : Object; $ref : Integer) : cs:C1710.hierarchicalList
 	
 	var $icon : Picture
 	$icon:=$param.icon
