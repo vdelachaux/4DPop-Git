@@ -692,11 +692,10 @@ Function selectByReference($ref : Integer)
 	/// Deselect all items
 Function selectAll()
 	
-	var $focused : Text
-	$focused:=OBJECT Get name:C1087(Object with focus:K67:3)
+	var $current:=OBJECT Get name:C1087(Object with focus:K67:3)
 	GOTO OBJECT:C206(*; This:C1470.name)
 	INVOKE ACTION:C1439(ak select all:K76:57; ak current form:K76:70)
-	GOTO OBJECT:C206(*; $focused)
+	GOTO OBJECT:C206(*; $current)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Deselect all items

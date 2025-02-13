@@ -1,4 +1,8 @@
 {
+	"(Embedded)": {},
+	"(GIT)": {},
+	"(PATTERN)": {},
+	"(SETTINGS)": {},
 	"# 🚧 DEV": {
 		"methods": [
 			"00_TEST"
@@ -78,22 +82,25 @@
 		]
 	},
 	"📦 MAIN": {
-		"groups": [
-			"Embedded",
-			"GIT",
-			"PATTERN",
-			"SETTINGS"
-		],
 		"methods": [
 			"GIT SETTINGS",
 			"GIT UPDATE"
 		],
 		"forms": [
 			"_TEMPLATE",
-			"DEVICE ACTIVATION"
+			"ALERT",
+			"DEVICE ACTIVATION",
+			"EMBEDDED BACK",
+			"GIT",
+			"PATTERN",
+			"PULL",
+			"PUSH",
+			"SETTINGS"
 		],
 		"classes": [
-			"_gravatarRequest"
+			"_GIT_Controller",
+			"_gravatarRequest",
+			"_PATTERN_Controller"
 		]
 	},
 	"4️⃣ 4DPop": {
@@ -113,14 +120,6 @@
 			"database"
 		]
 	},
-	"Embedded": {
-		"forms": [
-			"ALERT",
-			"EMBEDDED BACK",
-			"PULL",
-			"PUSH"
-		]
-	},
 	"env": {
 		"methods": [
 			"COMPILER_env",
@@ -128,27 +127,6 @@
 		],
 		"classes": [
 			"env"
-		]
-	},
-	"GIT": {
-		"forms": [
-			"GIT"
-		],
-		"classes": [
-			"_GIT_Controller"
-		]
-	},
-	"PATTERN": {
-		"forms": [
-			"PATTERN"
-		],
-		"classes": [
-			"_PATTERN_Controller"
-		]
-	},
-	"SETTINGS": {
-		"forms": [
-			"SETTINGS"
 		]
 	},
 	"WIDGET": {
@@ -159,5 +137,12 @@
 			"_WIDGET_Controller"
 		]
 	},
-	"trash": {}
+	"trash": {
+		"groups": [
+			"(Embedded)",
+			"(GIT)",
+			"(PATTERN)",
+			"(SETTINGS)"
+		]
+	}
 }

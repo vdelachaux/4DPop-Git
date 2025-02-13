@@ -144,7 +144,7 @@
 						"onSelectionChange"
 					],
 					"sizingY": "grow",
-					"dataSource": "Form:C1466.selector",
+					"dataSource": "formGetInstance.selector.ref",
 					"borderStyle": "none"
 				},
 				"Line8": {

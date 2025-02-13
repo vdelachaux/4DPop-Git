@@ -14,15 +14,15 @@ git push -u origin main
 */
 
 var $gh:=cs:C1710.GithubAPI.new()
-var $token : Object:=$gh.getAppToken()
+//var $token : Object:=$gh.getAppToken()
 
-$gh.getUser($gh.token)
+//$gh.getUser($gh.token)
 
-//$gh.AuthorizeApp()
+////$gh.AuthorizeApp()
 
-$gh._getToken()
+//$gh._getToken()
 
-//$zen:=$gh.zen()
+$zen:=$gh.zen()
 
 //// Try creating a repository
 //$gh.CreateRepos("TEST REPO")

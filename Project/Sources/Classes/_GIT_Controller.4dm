@@ -71,7 +71,7 @@ detailSeparator : cs:C1710.static
 
 property authorAvatar : cs:C1710.picture
 
-property selector : cs:C1710.hierachicalList
+property selector : cs:C1710.hList
 
 property Git:=cs:C1710.Git.new()
 
@@ -116,7 +116,14 @@ Function init()
 	This:C1470.open:=This:C1470.form.Button("open")
 	
 	// Mark:Page 0️⃣ Left pannel
-	This:C1470.selector:=This:C1470.form.HList("selector")
+	//This.selector:=This.form.HList("selector")
+	var $list:=New list:C375
+	APPEND TO LIST:C376($list; "Branches"; -21; New list:C375; True:C214)
+	APPEND TO LIST:C376($list; "Remotes"; -22; New list:C375; True:C214)
+	APPEND TO LIST:C376($list; "Tags"; -23; New list:C375; True:C214)
+	APPEND TO LIST:C376($list; "stashes"; -24; New list:C375; True:C214)
+	SET LIST PROPERTIES:C387($list; 0; 0; 25)
+	This:C1470.selector:=This:C1470.form.HList("selector"; $list)
 	
 	// Mark:Page 1️⃣ Changes
 	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
@@ -195,7 +202,7 @@ Function handleEvents($e : cs:C1710.evt)
 				//______________________________________________________
 			: ($e.unload)
 				
-				CLEAR LIST:C377(Form:C1466.selector; *)
+				This:C1470.selector.clear()
 				
 				//______________________________________________________
 		End case 
@@ -257,8 +264,7 @@ Function handleEvents($e : cs:C1710.evt)
 			This:C1470._openManager()
 			
 			//==============================================
-			// : (This.selector.catch($e))
-		: ($e.objectName="selector")
+		: (This:C1470.selector.catch($e))
 			
 			This:C1470._selectorManager($e)
 			
@@ -370,6 +376,7 @@ Function onLoad()
 	This:C1470.diff.font:="Courier"
 	This:C1470.diff.fontSize:=14
 	
+	// Form values
 	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
 	
 	Form:C1466.version:=This:C1470.Git.Version()
@@ -380,14 +387,6 @@ Function onLoad()
 	Form:C1466.commitDetail:=[]
 	
 	Form:C1466.icons:={}
-	
-	// Mark:Selector definition
-	Form:C1466.selector:=New list:C375
-	APPEND TO LIST:C376(Form:C1466.selector; "Branches"; -21; New list:C375; True:C214)
-	APPEND TO LIST:C376(Form:C1466.selector; "Remotes"; -22; New list:C375; True:C214)
-	APPEND TO LIST:C376(Form:C1466.selector; "Tags"; -23; New list:C375; True:C214)
-	APPEND TO LIST:C376(Form:C1466.selector; "stashes"; -24; New list:C375; True:C214)
-	SET LIST PROPERTIES:C387(Form:C1466.selector; 0; 0; 25)
 	
 	Form:C1466.amend:=False:C215
 	Form:C1466.commitSubject:=""
@@ -575,7 +574,7 @@ Function update()
 				Else 
 					
 					$c:=Split string:C1554($commit.parent.short; " ")
-					$git.diff($detail.path; $c.length>1 ? $c[1] : $c[0]+" "+$commit.fingerprint.short)
+					$git.diff(This:C1470.Git.workspace.file($detail.path).path; $c.length>1 ? $c[1] : $c[0]+" "+$commit.fingerprint.short)
 					
 					//______________________________________________________
 			End case 
@@ -616,7 +615,7 @@ Function onActivate()
 	
 	If (Form:C1466.dark#This:C1470.form.darkScheme)
 		
-		This:C1470.loadIcons()
+		This:C1470._loadIcons()
 		
 	End if 
 	
@@ -642,30 +641,25 @@ Function onActivate()
 		
 	End if 
 	
-	var $list:=cs:C1710.hierachicalList.new(This:C1470.selector.getValue())
-	$list.saveSelection()
+	//This.selector.saveSelection()
 	
-	This:C1470.branchList($list)
-	This:C1470.remoteList($list)
-	This:C1470.tagList($list)
-	This:C1470.stachList($list)
+	This:C1470.branchList()
+	This:C1470.remoteList()
+	This:C1470.tagList()
+	This:C1470.stachList()
 	
-	$list.restoreSelection()
+	//This.selector.restoreSelection()
 	
 	This:C1470.form.refresh()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function stachList($list : cs:C1710.hierachicalList)
+Function stachList()
 	
 	var $o : Object
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.hierachicalList
 	
-	$git:=This:C1470.Git
+	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-24))).Empty()
 	
-	$git.stash()
-	
-	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-24).sublist).Empty()
+	var $git : cs:C1710.Git:=This:C1470.Git.stash()
 	
 	If ($git.stashes.length>0)
 		
@@ -681,41 +675,35 @@ Function stachList($list : cs:C1710.hierachicalList)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function tagList($list : cs:C1710.hierachicalList)
+Function tagList()
 	
 	var $t : Text
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.hierachicalList
 	
-	$git:=This:C1470.Git
+	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-23))).Empty()
 	
-	$git.updateTags()
-	
-	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-23).sublist).Empty()
+	var $git : cs:C1710.Git:=This:C1470.Git.updateTags()
 	
 	If ($git.tags.length>0)
+		
+		var $c : Collection:=$git.FETCH_HEAD("tag")
 		
 		For each ($t; $git.tags)
 			
 			$sublist.Append($t)\
-				.SetParameter({key: "tag"; value: $t})\
+				.SetParameter({key: "data"; value: $c.query("tag = :1"; $t).first()})\
 				.SetIcon({icon: Form:C1466.icons.tag})
 			
 		End for each 
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function remoteList($list : cs:C1710.hierachicalList)
+Function remoteList()
 	
 	var $o : Object
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.hierachicalList
 	
-	$git:=This:C1470.Git
+	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-22))).Empty()
 	
-	$git.updateRemotes()
-	
-	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-22).sublist).Empty()
+	var $git : cs:C1710.Git:=This:C1470.Git.updateRemotes()
 	
 	If ($git.remotes.length>0)
 		
@@ -731,18 +719,14 @@ Function remoteList($list : cs:C1710.hierachicalList)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function branchList($list : cs:C1710.hierachicalList)
+Function branchList()
 	
 	var $notPulled; $notPushed : Integer
 	var $o : Object
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.hierachicalList
 	
-	$git:=This:C1470.Git
+	var $sublist:=cs:C1710.hierachicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-21))).Empty()
 	
-	$git.branch()
-	
-	$sublist:=cs:C1710.hierachicalList.new($list.GetItemByReference(-21).sublist).Empty()
+	var $git : cs:C1710.Git:=This:C1470.Git.branch()
 	
 	If ($git.branches.length>0)
 		
@@ -751,8 +735,7 @@ Function branchList($list : cs:C1710.hierachicalList)
 			$o.type:="branch"
 			
 			// TODO: hieararchical branches
-			// Var $c : Collection
-			// $c:=Split string($o.name; "/")
+			// Var $c :=Split string($o.name; "/")
 			
 			$sublist.Append($o.name)\
 				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
@@ -798,52 +781,56 @@ Function _selectorManager($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
 	
-	var $list : cs:C1710.hierachicalList
-	$list:=cs:C1710.hierachicalList.new(This:C1470.selector.getValue())
+	var $data : Object
 	
-	var $o : Object
-	$o:=$list.GetParameter({key: "data"; type: Is object:K8:27})
+	var $list:=cs:C1710.hierachicalList.new(This:C1470.selector.ref)
+	$data:=$list.GetParameter({key: "data"; type: Is object:K8:27})
 	
 	Case of 
 			
-			//______________________________________________________
-		: ($o=Null:C1517)
+			// ______________________________________________________
+		: ($data=Null:C1517)
 			
 			return 
 			
-			//______________________________________________________
+			// ______________________________________________________
 		: ($e.doubleClick)
 			
-			If ($o.ref#Null:C1517) && (Not:C34(Bool:C1537($o.current)))
+			If ($data.ref#Null:C1517)\
+				 && (Not:C34(Bool:C1537($data.current)))  // && it is a branch
 				
-				TRACE:C157  //This.Switch($o)
+				// TODO: Ckeckout branch
+				TRACE:C157  // This.Switch($o)
 				
 			End if 
 			
-			//______________________________________________________
+			// ______________________________________________________
 		: ($e.click)
 			
 			If (Contextual click:C713)
 				
-				// TODO:Contextual menu
+				// TODO: Contextual menu
 				
 			End if 
 			
-			//______________________________________________________
+			// ______________________________________________________
 		: ($e.selectionChange)
 			
 			If (This:C1470.form.page=This:C1470.pages.commits)
 				
 				This:C1470.commits.unselect()
 				
-				var $c : Collection
-				$c:=Form:C1466.commits.indices("fingerprint.short = :1"; String:C10($o.ref))
-				
-				If ($c.length>0) && ($c[0]#-1)
+				If ($data#Null:C1517)
 					
-					This:C1470.commits.reveal($c[0]+1)
-					This:C1470.commits.focus()
+					var $c : Collection:=Form:C1466.commits.indices("fingerprint.short = :1 OR fingerprint.long = :1"; String:C10($data.ref))
 					
+					If ($c.length>0)\
+						 && ($c[0]#-1)
+						
+						This:C1470.commits.reveal($c[0]+1)
+						This:C1470.commits.focus()
+						
+					End if 
 				End if 
 				
 			Else 
@@ -854,7 +841,7 @@ Function _selectorManager($e : cs:C1710.evt)
 			
 			This:C1470._commitsManager()
 			
-			//----------------------------------------
+			// ----------------------------------------
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1136,6 +1123,7 @@ Function _commitsManager()
 	This:C1470.detailCommit.unselect()
 	Form:C1466.commitDetail.clear()
 	This:C1470.selector.unselect()
+	
 	Form:C1466.diff:=""
 	
 	var $commit:=This:C1470.commits.item
@@ -1622,43 +1610,6 @@ Function CreateGithubRepository()
 	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function loadIcons()
-	
-	var $key : Text
-	var $icon : Picture
-	
-	Form:C1466.dark:=This:C1470.form.darkScheme
-	
-	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
-		
-		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".png")).platformPath; $icon)
-		CREATE THUMBNAIL:C679($icon; $icon; 20; 20)
-		Form:C1466.icons[Lowercase:C14($key)]:=$icon
-		
-	End for each 
-	
-	$icon:=Form:C1466.icons.branch
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -21; $icon)
-	$icon:=Form:C1466.icons.remote
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -22; $icon)
-	$icon:=Form:C1466.icons.tag
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -23; $icon)
-	$icon:=Form:C1466.icons.stash
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -24; $icon)
-	
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath; $icon)
-	Form:C1466.logo:=$icon
-	
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/added.svg").platformPath; $icon)
-	Form:C1466.iconAdded:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/deleted.svg").platformPath; $icon)
-	Form:C1466.iconDeleted:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/modified.svg").platformPath; $icon)
-	Form:C1466.iconModified:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/moved.svg").platformPath; $icon)
-	Form:C1466.iconMoved:=$icon
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateCommitList()
 	
 	var $branch; $line; $main; $meta; $style : Text
@@ -1922,8 +1873,7 @@ Function updateCommitList()
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
 	var $icon : Picture
-	var $svg : cs:C1710.svg
-	$svg:=cs:C1710.svg.new()
+	var $svg:=cs:C1710.svg.new()
 	
 	Case of 
 			
@@ -2221,14 +2171,11 @@ Function handleMenus($what : Text; $current : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getAvatar($mail : Text) : Picture
 	
-	var $t : Text
-	
-	$t:=Generate digest:C1147($mail; MD5 digest:K66:1)
+	var $t:=Generate digest:C1147($mail; MD5 digest:K66:1)
 	
 	If (Form:C1466[$t]=Null:C1517)
 		
-		var $callback : cs:C1710._gravatarRequest
-		$callback:=cs:C1710._gravatarRequest.new({user: $t})
+		var $callback:=cs:C1710._gravatarRequest.new({user: $t})
 		
 		var $request : 4D:C1709.HTTPRequest
 		$request:=4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$t; $callback)
@@ -2285,3 +2232,36 @@ Function meta($item : Object) : Object
 			
 			//______________________________________________________
 	End case 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _loadIcons()
+	
+	var $key : Text
+	var $icon : Picture
+	
+	Form:C1466.dark:=This:C1470.form.darkScheme
+	
+	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
+		
+		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".png")).platformPath; $icon)
+		CREATE THUMBNAIL:C679($icon; $icon; 22; 22)
+		Form:C1466.icons[Lowercase:C14($key)]:=$icon
+		
+	End for each 
+	
+	This:C1470.selector._setItem("icon"; Form:C1466.icons.branch; This:C1470.selector.getItemPositionByRef(-21))
+	This:C1470.selector._setItem("icon"; Form:C1466.icons.remote; This:C1470.selector.getItemPositionByRef(-22))
+	This:C1470.selector._setItem("icon"; Form:C1466.icons.tag; This:C1470.selector.getItemPositionByRef(-23))
+	This:C1470.selector._setItem("icon"; Form:C1466.icons.stash; This:C1470.selector.getItemPositionByRef(-24))
+	
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath; $icon)
+	Form:C1466.logo:=$icon
+	
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/added.svg").platformPath; $icon)
+	Form:C1466.iconAdded:=$icon
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/deleted.svg").platformPath; $icon)
+	Form:C1466.iconDeleted:=$icon
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/modified.svg").platformPath; $icon)
+	Form:C1466.iconModified:=$icon
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/moved.svg").platformPath; $icon)
+	Form:C1466.iconMoved:=$icon

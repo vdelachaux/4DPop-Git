@@ -214,11 +214,9 @@ Function set properties($properties : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean) : cs:C1710.hierachicalList
 	
-	var $label : Text
-	
 	If (Value type:C1509($item)=Is object:K8:27)
 		
-		$label:=$item.label || ""
+		var $label : Text:=$item.label || ""
 		$ref:=$item.ref || $ref
 		
 	Else 
@@ -257,6 +255,28 @@ Function get ref() : Integer
 	
 	return This:C1470.success ? This:C1470[""].ref : 0
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Deselect all items
+Function unselect()
+	
+	SELECT LIST ITEMS BY POSITION:C381(This:C1470.ref; This:C1470.itemCount+1)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Select all items
+Function selectAll()
+	
+	var $i : Integer
+	
+	ARRAY LONGINT:C221($_pos; This:C1470.visibleItemCount)
+	
+	For ($i; 1; Size of array:C274($_pos); 1)
+		
+		$_pos{$i}:=$i
+		
+	End for 
+	
+	SELECT LIST ITEMS BY POSITION:C381(This:C1470.ref; This:C1470.itemCount; $_pos)
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get selectedReference() : Integer
 	
@@ -270,9 +290,7 @@ Function set selectedReference($ref : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get selectedReferences() : Collection
 	
-	var $c : Collection
-	
-	$c:=[]
+	var $c:=[]
 	
 	If (This:C1470.success)
 		
