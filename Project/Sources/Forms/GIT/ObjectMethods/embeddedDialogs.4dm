@@ -40,7 +40,7 @@ If ($e.code<0)
 				
 				// Create remote
 				var $remote : Text
-				$remote:=$gh.createRepo($git.cwd.name)
+				$remote:=$gh.createRepo($git.workspace.name)
 				
 				// Add the remote
 				$git.execute("remote add -m -t origin "+$remote)

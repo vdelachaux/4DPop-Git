@@ -5,7 +5,7 @@ C_LONGINT:C283($lError; $lIAT)
 C_TIME:C306($time; $timeGMT)
 C_TEXT:C284($t; $tContents; $tPrivate; $tResponse; $tToken; $tURL)
 C_TEXT:C284($tVersion)
-C_OBJECT:C1216($file; $git; $o; $oJWT; $oPayload)
+C_OBJECT:C1216($o; $oJWT; $oPayload)
 C_COLLECTION:C1488($c)
 
 
@@ -14,8 +14,17 @@ Case of
 		//______________________________________________________
 	: (True:C214)
 		
-		$git:=cs:C1710.Git.new()
-		$tVersion:=$git.version("short")
+		var $git:=cs:C1710.Git.new()
+		
+		var $version:=$git.Version("short")
+		$version:=$git.Version()
+		
+		var $path:=Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).file("Project/Sources/Methods/GIT.4dm").path
+		$git.diff($path)
+		//ASSERT($git.error="Git.diff('/Users/vdl/GITHUB/4DPop/4DPop-Family/4DPop-Git/Project/Sources/Methods/GIT.4dm'): File not found")
+		
+		$path:=Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).file("Project/Sources/Methods/GIT SETTINGS.4dm").path
+		$git.diff($path)
 		
 		$git.status()
 		$git.branch()
@@ -26,8 +35,7 @@ Case of
 		$git.updateRemotes()
 		$git.updateTags()
 		
-		$file:=Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).file("Project/Sources/Methods/GIT.4dm")
-		$git.diff($file)
+		
 		
 		$git.diffTool("Project/Sources/Methods/GIT.4dm")
 		
