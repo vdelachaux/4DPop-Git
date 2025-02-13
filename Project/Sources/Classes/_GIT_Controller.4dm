@@ -1,8 +1,11 @@
-
 property _unstaged; _staged; _commits; _commitDetail : Collection
 
 property isSubform:=False:C215
 property toBeInitialized:=False:C215
+
+property autostash:=False:C215
+
+property darkMode : Boolean
 
 // Mark:Constants
 // FIXME:Manage all cases 🐞
@@ -160,7 +163,8 @@ Function handleEvents($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
 	
-	If ($e.form)  // <== FORM METHOD
+	// MARK: Form method
+	If ($e.form)
 		
 		Case of 
 				
@@ -196,145 +200,148 @@ Function handleEvents($e : cs:C1710.evt)
 				//______________________________________________________
 		End case 
 		
-	Else   // <== WIDGETS METHOD
+		return 
 		
-		var $git : cs:C1710.Git:=This:C1470.Git
-		
-		Case of 
+	End if 
+	
+	// MARK: Widgets method
+	var $git : cs:C1710.Git:=This:C1470.Git
+	
+	Case of 
+			
+			//==============================================
+		: (This:C1470.changes.catch($e; On Clicked:K2:4))
+			
+			This:C1470.goToPage(This:C1470.pages.changes)
+			
+			//==============================================
+		: (This:C1470.history.catch($e; On Clicked:K2:4))
+			
+			This:C1470.goToPage(This:C1470.pages.commits)
+			
+			//==============================================
+		: (This:C1470.fetch.catch($e; On Clicked:K2:4))
+			
+			$git.fetch()
+			This:C1470.onActivate()
+			
+			//==============================================
+		: (This:C1470.pull.catch($e; On Clicked:K2:4))
+			
+			If (Not:C34(Bool:C1537(This:C1470.autostash)))
 				
-				//==============================================
-			: (This:C1470.changes.catch($e; On Clicked:K2:4))
+				$git.execute("config rebase.autoStash")
+				This:C1470.autostash:=$git.success
 				
-				This:C1470.goToPage(This:C1470.pages.changes)
+			End if 
+			
+			$git.execute("config pull.rebase")
+			This:C1470.pullDialog.show({\
+				rebase: $git.success; \
+				stash: This:C1470.autostash\
+				})
+			
+			//==============================================
+		: (This:C1470.push.catch($e; On Clicked:K2:4))
+			
+			$git.execute("config push.followTags")
+			
+			This:C1470.pushDialog.show({\
+				tags: $git.result#"false"; \
+				force: False:C215\
+				})
+			
+			//==============================================
+		: (This:C1470.open.catch($e; On Clicked:K2:4))
+			
+			This:C1470._openManager()
+			
+			//==============================================
+			// : (This.selector.catch($e))
+		: ($e.objectName="selector")
+			
+			This:C1470._selectorManager($e)
+			
+			//==============================================
+		: (This:C1470.stage.catch($e; On Clicked:K2:4))
+			
+			This:C1470.Stage(This:C1470.unstaged.items)
+			
+			//==============================================
+		: (This:C1470.stageAll.catch($e; On Clicked:K2:4))
+			
+			This:C1470.StageAll()
+			
+			//==============================================
+		: (This:C1470.unstage.catch($e; On Clicked:K2:4))
+			
+			This:C1470.Unstage(This:C1470.staged.items)
+			
+			//==============================================
+		: (This:C1470.unstaged.catch($e)) | (This:C1470.staged.catch($e))
+			
+			This:C1470._stageUnstageManager($e)
+			
+			//==============================================
+		: (This:C1470.subject.catch($e; On After Edit:K2:43))
+			
+			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Get edited text:C655)))
+			
+			//==============================================
+		: (This:C1470.amend.catch($e; On Clicked:K2:4))
+			
+			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
+			
+			If (Form:C1466.amend)
 				
-				//==============================================
-			: (This:C1470.history.catch($e; On Clicked:K2:4))
+				$git.execute("log --abbrev-commit --format=%s")
+				This:C1470.subject.setValue(String:C10(Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).shift()))
+				This:C1470.description.hide()
 				
-				This:C1470.goToPage(This:C1470.pages.commits)
+			Else 
 				
-				//==============================================
-			: (This:C1470.fetch.catch($e; On Clicked:K2:4))
+				This:C1470.description.show()
 				
-				$git.fetch()
-				This:C1470.onActivate()
+			End if 
+			
+			//==============================================
+		: (This:C1470.commit.catch($e; On Clicked:K2:4))
+			
+			$git.commit(This:C1470.subject.getValue(); Form:C1466.amend)
+			
+			This:C1470.subject.clear()
+			This:C1470.description.clear()
+			This:C1470.amend.clear()
+			
+			This:C1470.onActivate()
+			
+			//==============================================
+		: (This:C1470.commits.catch($e; On Selection Change:K2:29))
+			
+			This:C1470._commitsManager()
+			
+			//==============================================
+		: (This:C1470.parent.catch($e; On Clicked:K2:4))
+			
+			var $c : Collection
+			$c:=Form:C1466.commits.indices("fingerprint.short = :1"; This:C1470.commits.item.parent.short)
+			
+			If ($c.length>0) && ($c[0]#-1)
 				
-				//==============================================
-			: (This:C1470.pull.catch($e; On Clicked:K2:4))
-				
-				If (Not:C34(Bool:C1537(This:C1470.autostash)))
-					
-					$git.execute("config rebase.autoStash")
-					
-				End if 
-				
-				$git.execute("config pull.rebase")
-				This:C1470.pullDialog.show({\
-					rebase: $git.result="true"; \
-					stash: Form:C1466.stash\
-					})
-				
-				//==============================================
-			: (This:C1470.push.catch($e; On Clicked:K2:4))
-				
-				$git.execute("config push.followTags")
-				
-				This:C1470.pushDialog.show({\
-					tags: $git.result#"false"; \
-					force: False:C215\
-					})
-				
-				//==============================================
-			: (This:C1470.open.catch($e; On Clicked:K2:4))
-				
-				This:C1470._openManager()
-				
-				//==============================================
-				// : (This.selector.catch($e))
-			: ($e.objectName="selector")
-				
-				This:C1470._selectorManager($e)
-				
-				//==============================================
-			: (This:C1470.stage.catch($e; On Clicked:K2:4))
-				
-				This:C1470.Stage(This:C1470.unstaged.items)
-				
-				//==============================================
-			: (This:C1470.stageAll.catch($e; On Clicked:K2:4))
-				
-				This:C1470.StageAll()
-				
-				//==============================================
-			: (This:C1470.unstage.catch($e; On Clicked:K2:4))
-				
-				This:C1470.Unstage(This:C1470.staged.items)
-				
-				//==============================================
-			: (This:C1470.unstaged.catch($e)) | (This:C1470.staged.catch($e))
-				
-				This:C1470._stageUnstageManager($e)
-				
-				//==============================================
-			: (This:C1470.subject.catch($e; On After Edit:K2:43))
-				
-				This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Get edited text:C655)))
-				
-				//==============================================
-			: (This:C1470.amend.catch($e; On Clicked:K2:4))
-				
-				This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
-				
-				If (Form:C1466.amend)
-					
-					$git.execute("log --abbrev-commit --format=%s")
-					This:C1470.subject.setValue(String:C10(Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).shift()))
-					This:C1470.description.hide()
-					
-				Else 
-					
-					This:C1470.description.show()
-					
-				End if 
-				
-				//==============================================
-			: (This:C1470.commit.catch($e; On Clicked:K2:4))
-				
-				$git.commit(This:C1470.subject.getValue(); Form:C1466.amend)
-				
-				This:C1470.subject.clear()
-				This:C1470.description.clear()
-				This:C1470.amend.clear()
-				
-				This:C1470.onActivate()
-				
-				//==============================================
-			: (This:C1470.commits.catch($e; On Selection Change:K2:29))
+				This:C1470.commits.reveal($c[0]+1)
+				This:C1470.commits.focus()
 				
 				This:C1470._commitsManager()
 				
-				//==============================================
-			: (This:C1470.parent.catch($e; On Clicked:K2:4))
-				
-				var $c : Collection
-				$c:=Form:C1466.commits.indices("fingerprint.short = :1"; This:C1470.commits.item.parent.short)
-				
-				If ($c.length>0) && ($c[0]#-1)
-					
-					This:C1470.commits.reveal($c[0]+1)
-					This:C1470.commits.focus()
-					
-					This:C1470._commitsManager()
-					
-				End if 
-				
-				//==============================================
-			: (This:C1470.detailCommit.catch($e; On Selection Change:K2:29))
-				
-				This:C1470.update()
-				
-				//==============================================
-		End case 
-	End if 
+			End if 
+			
+			//==============================================
+		: (This:C1470.detailCommit.catch($e; On Selection Change:K2:29))
+			
+			This:C1470.update()
+			
+			//==============================================
+	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()

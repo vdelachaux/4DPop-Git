@@ -5,7 +5,7 @@ If ($e.code<0)
 	var $me : Object:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
 	
 	// MARK:-Specific actions
-	var $form : Object:=formGetInstance
+	var $form:=formGetInstance
 	var $git : cs:C1710.Git:=$form.Git
 	
 	Case of 
@@ -20,8 +20,7 @@ If ($e.code<0)
 			
 			If ($git.remotes.length=0)
 				
-				var $gh : cs:C1710.gh
-				$gh:=cs:C1710.gh.new()
+				var $gh:=cs:C1710.gh.new()
 				
 				If (Not:C34($gh.available))
 					
@@ -85,7 +84,7 @@ If ($e.code<0)
 			
 			Form:C1466.stash:=Bool:C1537($me.stash)
 			
-			$git.pull(Bool:C1537($me.rebase); Form:C1466.stash)
+			$git.pull(Bool:C1537($me.rebase); Bool:C1537($me.stash))
 			$form.onActivate()
 			
 			RELOAD PROJECT:C1739
