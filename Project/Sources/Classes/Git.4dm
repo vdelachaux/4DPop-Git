@@ -1,6 +1,5 @@
 property command : Text
-property BrancUnpulledCommit : Integer
-property cwd; root : 4D:C1709.Folder
+property workspace; root : 4D:C1709.Folder
 property gitignore; gitattributes : 4D:C1709.File
 
 property _version : Text
@@ -22,74 +21,19 @@ property stashes:=[]
 property tags:=[]
 property HEAD:=""
 property _token:=""
+property BrancUnpulledCommit:=0
 
 property debug:=Structure file:C489=Structure file:C489(*)
 
 Class constructor($folder : 4D:C1709.Folder)
 	
 	// Current workspace
-	$folder:=$folder || Folder:C1567("/PACKAGE"; *)
-	$folder:=Folder:C1567($folder.platformPath; fk platform path:K87:2)  // Unsandboxed
-	This:C1470.cwd:=$folder
+	This:C1470.workspace:=This:C1470._workspace($folder)
+	This:C1470.root:=This:C1470.workspace.folder(".git")
+	This:C1470.gitignore:=This:C1470.workspace.file(".gitignore")
+	This:C1470.gitattributes:=This:C1470.workspace.file(".gitattributes")
 	
-	// Search for .git folder
-	While ($folder#Null:C1517)\
-		 && (Not:C34($folder.folder(".git").exists))
-		
-		$folder:=$folder.parent
-		
-		Case of 
-				
-				//_________________________________
-			: ($folder=Null:C1517)
-				
-				break
-				
-				//_________________________________
-			: ($folder.folder(".git").exists)
-				
-				This:C1470.cwd:=$folder
-				
-				break
-				
-				//_________________________________
-		End case 
-	End while 
-	
-	This:C1470.root:=This:C1470.cwd.folder(".git")
-	
-	This:C1470.gitignore:=This:C1470.cwd.file(".gitignore")
-	This:C1470.gitattributes:=This:C1470.cwd.file(".gitattributes")
-	
-	Case of 
-			
-			//______________________________________________________
-		: (Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215)
-			
-			This:C1470.command:="/usr/local/bin/git "
-			
-			//______________________________________________________
-		: (Is Windows:C1573)
-			
-			var $exe : 4D:C1709.File:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
-			
-			If ($exe.exists)
-				
-				This:C1470.command:=$exe.path+" "
-				
-			Else 
-				
-				This:C1470._pushError("Git not installed")
-				
-			End if 
-			
-			//______________________________________________________
-		Else 
-			
-			This:C1470.command:="git "
-			
-			//______________________________________________________
-	End case 
+	This:C1470.command:=This:C1470._command()
 	
 	If (This:C1470.root#Null:C1517)\
 		 & (This:C1470.root.exists)
@@ -108,7 +52,7 @@ Class constructor($folder : 4D:C1709.Folder)
 		
 		var $len; $pos : Integer
 		
-		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
+		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?(?:\\s\\([^)]*\\))"; This:C1470.result; 1; $pos; $len))
 			
 			This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
 			
@@ -119,8 +63,6 @@ Class constructor($folder : 4D:C1709.Folder)
 			
 		End if 
 	End if 
-	
-	This:C1470.BrancUnpulledCommit:=0
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get token() : Text
@@ -171,9 +113,9 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
 	
-	If (This:C1470.cwd#Null:C1517)
+	If (This:C1470.workspace#Null:C1517)
 		
-		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workspace.platformPath))
 		
 	End if 
 	
@@ -232,8 +174,19 @@ and repository local configuration files by default
 		
 	End if 
 	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get version() : Text
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function Version($type : Text) : Text
+	
+	var $len; $pos : Integer
+	
+	If ($type="short")
+		
+		If (Match regex:C1019("(?m-si)\\s\\d+(?:\\.\\d+){0,2}"; This:C1470.result; 1; $pos; $len))
+			
+			return Substring:C12(This:C1470.result; $pos+1; $len-1)
+			
+		End if 
+	End if 
 	
 	return This:C1470._version
 	
@@ -569,8 +522,7 @@ Function push($origin : Text; $branch : Text) : Boolean
 		
 	Else 
 		
-		// FIXME:What if "master" is not the main branch?
-		$c.push("origin master")
+		$c.push("origin "+This:C1470.currentBranch)
 		
 	End if 
 	
@@ -594,7 +546,7 @@ Function forcePush($origin : Text; $branch : Text) : Boolean
 	Else 
 		
 		// FIXME:What if "master" is not the main branch?
-		$c.push("origin master")
+		$c.push("origin "+This:C1470.currentBranch)
 		
 	End if 
 	
@@ -609,8 +561,6 @@ Function forcePush($origin : Text; $branch : Text) : Boolean
 Function branch($whatToDo : Text; $name : Text; $newName : Text)
 	
 	var $t : Text
-	var $o : Object
-	var $c : Collection
 	
 	Case of 
 			
@@ -624,11 +574,11 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 				
 				For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					
-					$c:=Split string:C1554($t; " "; sk ignore empty strings:K86:1)
+					var $c:=Split string:C1554($t; " "; sk ignore empty strings:K86:1)
 					
 					If ($c[0]="*")  // Current branch
 						
-						$o:={\
+						var $o:={\
 							name: $c[1]; \
 							ref: $c[2]; \
 							current: True:C214}
@@ -846,6 +796,13 @@ Function branchPushNumber($branch : Text) : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diff($pathname : Text; $option : Text)
 	
+	If (Not:C34(File:C1566($pathname).exists))
+		
+		This:C1470._pushError(Current method name:C684+"('"+$pathname+"'): File not found")
+		return 
+		
+	End if 
+	
 	var $c : Collection
 	
 	$c:=["diff -w"]
@@ -929,11 +886,11 @@ Function open($whatToDo : Text)
 			
 			If (Is macOS:C1572)
 				
-				LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.cwd.path+"'"; $inputStream; $outputStream; $errorStream)
+				LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.workspace.path+"'"; $inputStream; $outputStream; $errorStream)
 				
 			Else 
 				
-				LAUNCH EXTERNAL PROCESS:C811("wt -d \""+String:C10(This:C1470.cwd.path)+"\""; $inputStream; $outputStream; $errorStream)
+				LAUNCH EXTERNAL PROCESS:C811("wt -d \""+String:C10(This:C1470.workspace.path)+"\""; $inputStream; $outputStream; $errorStream)
 				
 			End if 
 			
@@ -942,12 +899,12 @@ Function open($whatToDo : Text)
 			
 			If (Is macOS:C1572)
 				
-				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
+				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workspace.platformPath))
 				LAUNCH EXTERNAL PROCESS:C811("open ."; $inputStream; $outputStream; $errorStream)
 				
 			Else 
 				
-				SHOW ON DISK:C922(This:C1470.cwd.platformPath; *)
+				SHOW ON DISK:C922(This:C1470.workspace.platformPath; *)
 				
 			End if 
 			
@@ -976,8 +933,8 @@ Function stash($name : Text)
 	
 	var $line : Text
 	
-	ARRAY LONGINT:C221($pos; 0x0000)
-	ARRAY LONGINT:C221($len; 0x0000)
+	ARRAY LONGINT:C221($pos; 0)
+	ARRAY LONGINT:C221($len; 0)
 	
 	Case of 
 			
@@ -1011,35 +968,8 @@ Function stash($name : Text)
 			//________________________________________
 	End case 
 	
-	//MARK:-[PRIVATE]
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _pushError($message : Text)
-	
-	This:C1470.success:=False:C215
-	This:C1470.error:=$message
-	This:C1470.errors.push($message)
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _pushWarning($message : Text)
-	
-	This:C1470.warning:=$message
-	This:C1470.warnings.push($message)
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _quoted($string : Text) : Text
-	
-	return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _normalizeLF($text : Text) : Text
-	
-	$text:=Replace string:C233($text; "\r\n"; "\n")
-	$text:=Replace string:C233($text; "\r"; "\n")
-	
-	return $text
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
 	
 	$root:=$root || Folder:C1567(fk database folder:K87:14; *)
 	$path:=Replace string:C233($path; "\""; "")
@@ -1128,5 +1058,94 @@ Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
 			//———————————————————————————————————————————
 	End case 
 	
+	//MARK:-[PRIVATE]
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	// Search for the .git folder in the package or in a parent directory 
+Function _workspace($folder : 4D:C1709.Folder) : 4D:C1709.Folder
 	
+	$folder:=$folder#Null:C1517 ? $folder : Folder:C1567("/PACKAGE"; *)
+	$folder:=Folder:C1567($folder.platformPath; fk platform path:K87:2)  // Unsandboxed
 	
+	While ($folder#Null:C1517)\
+		 && (Not:C34($folder.folder(".git").exists))
+		
+		$folder:=$folder.parent
+		
+		Case of 
+				
+				//_________________________________
+			: ($folder=Null:C1517)
+				
+				break
+				
+				//_________________________________
+			: ($folder.folder(".git").exists)
+				
+				break
+				
+				//_________________________________
+		End case 
+	End while 
+	
+	return $folder
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	// Search for git exe 
+Function _command() : Text
+	
+	Case of 
+			
+			//______________________________________________________
+		: (Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215)
+			
+			return "/usr/local/bin/git "
+			
+			//______________________________________________________
+		: (Is Windows:C1573)
+			
+			var $exe : 4D:C1709.File:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
+			
+			If ($exe.exists)
+				
+				return $exe.path+" "
+				
+			Else 
+				
+				// TODO: Provide a git exe in resources ?
+				This:C1470._pushError("Git not installed")
+				
+			End if 
+			
+			//______________________________________________________
+		Else 
+			
+			return "git "
+			
+			//______________________________________________________
+	End case 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _pushError($message : Text)
+	
+	This:C1470.success:=False:C215
+	This:C1470.error:=$message
+	This:C1470.errors.push($message)
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _pushWarning($message : Text)
+	
+	This:C1470.warning:=$message
+	This:C1470.warnings.push($message)
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _quoted($string : Text) : Text
+	
+	return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _normalizeLF($text : Text) : Text
+	
+	$text:=Replace string:C233($text; "\r\n"; "\n")
+	$text:=Replace string:C233($text; "\r"; "\n")
+	
+	return $text

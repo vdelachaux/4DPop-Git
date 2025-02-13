@@ -393,7 +393,7 @@ Function _doChangesMenu()
 		
 	End if 
 	
-	var $tgt:=This:C1470.git.getPath($menu.choice; Folder:C1567(fk database folder:K87:14; *))
+	var $tgt:=This:C1470.git.getTarget($menu.choice; Folder:C1567(fk database folder:K87:14; *))
 	
 	Case of 
 			

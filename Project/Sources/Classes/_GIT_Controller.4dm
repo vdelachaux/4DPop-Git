@@ -372,7 +372,7 @@ Function onLoad()
 	
 	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
 	
-	Form:C1466.version:=This:C1470.Git.version
+	Form:C1466.version:=This:C1470.Git.Version()
 	
 	Form:C1466.unstaged:=[]
 	Form:C1466.staged:=[]
@@ -394,10 +394,13 @@ Function onLoad()
 	Form:C1466.commitDescription:=""
 	
 	Case of 
+			
+			//________________________________________________________________________________
 		: (This:C1470.Git.success)
 			
-			//all is OK
+			// All is OK
 			
+			//________________________________________________________________________________
 		: (This:C1470.Git.error="Git not installed")
 			
 			CONFIRM:C162(Localized string:C991("gitNotInstalled"))
@@ -410,6 +413,7 @@ Function onLoad()
 			
 			CANCEL:C270
 			
+			//________________________________________________________________________________
 	End case 
 	
 	This:C1470.alertDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "ALERT")
@@ -610,9 +614,6 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onActivate()
 	
-	var $git : cs:C1710.Git
-	var $list : cs:C1710.hierachicalList
-	
 	If (Form:C1466.dark#This:C1470.form.darkScheme)
 		
 		This:C1470.loadIcons()
@@ -625,9 +626,9 @@ Function onActivate()
 		
 	End if 
 	
-	$git:=This:C1470.Git
+	var $git : cs:C1710.Git:=This:C1470.Git
 	
-	// Mark:Update menu label
+	// MARK: Update menu label
 	If ($git.status()>0)
 		
 		This:C1470.changes.title:=Localized string:C991("local")+" ("+String:C10($git.changes.length)+")"
@@ -641,7 +642,7 @@ Function onActivate()
 		
 	End if 
 	
-	$list:=cs:C1710.hierachicalList.new(This:C1470.selector.getValue())
+	var $list:=cs:C1710.hierachicalList.new(This:C1470.selector.getValue())
 	$list.saveSelection()
 	
 	This:C1470.branchList($list)
@@ -859,9 +860,7 @@ Function _selectorManager($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _openManager()
 	
-	var $menu : cs:C1710.menu
-	
-	$menu:=cs:C1710.menu.new()
+	var $menu:=cs:C1710.menu.new()
 	
 	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
@@ -924,7 +923,7 @@ Function _openManager()
 			//———————————————————————————————————————
 		: ($menu.choice="fork")
 			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.cwd.platformPath)
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.workspace.platformPath)
 			
 			If (Is macOS:C1572)
 				
@@ -939,15 +938,15 @@ Function _openManager()
 			//———————————————————————————————————————
 		: ($menu.choice="githubDesktop")
 			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.cwd.platformPath)
+			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.workspace.platformPath)
 			
 			If (Is macOS:C1572)
 				
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+This:C1470.Git.cwd.path+"\"")
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+This:C1470.Git.workspace.path+"\"")
 				
 			Else 
 				
-				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").platformPath+" "+This:C1470.Git.cwd.platformPath)
+				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").platformPath+" "+This:C1470.Git.workspace.platformPath)
 				
 			End if 
 			
@@ -957,17 +956,11 @@ Function _openManager()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _stageUnstageManager($e : cs:C1710.evt)
 	
-	var $staged : Boolean
-	var $current : Object
-	var $sel : Collection
-	var $file : 4D:C1709.File
-	var $menu : cs:C1710.menu
-	
 	$e:=$e || cs:C1710.evt.new()
 	
-	$staged:=$e.objectName="staged"
-	$current:=$staged ? This:C1470.staged.item : This:C1470.unstaged.item
-	$sel:=$staged ? This:C1470.staged.items : This:C1470.unstaged.items
+	var $staged : Boolean:=$e.objectName="staged"
+	var $current:=$staged ? This:C1470.staged.item : This:C1470.unstaged.item
+	var $sel:=$staged ? This:C1470.staged.items : This:C1470.unstaged.items
 	
 	If ($sel.length<=1)
 		
@@ -1035,15 +1028,16 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 			End if 
 			
-			$menu:=cs:C1710.menu.new()
+			var $menu:=cs:C1710.menu.new()
 			
 			If ($sel.length=1)
 				
+				// FIXME: To localize
 				$menu.append("Open"; "open")
 				
 				If (["??"; " D"; "A "].indexOf($current.status)=-1)
 					
-					$menu.append("externalDiff"; "diffTool").shortcut("D")
+					$menu.append(":xliff:externalDiff"; "diffTool").shortcut("D")
 					
 				End if 
 				
@@ -1051,12 +1045,12 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 				If ([" D"].indexOf($current.status)=-1)
 					
-					$menu.append("showInFinder"; "show")
-					$menu.append("deleteLocalFile"; "delete")
+					$menu.append(":xliff:showInFinder"; "show")
+					$menu.append(":xliff:deleteLocalFile"; "delete")
 					
 				End if 
 				
-				$menu.append("copyPath"; "copy")
+				$menu.append(":xliff:copyPath"; "copy")
 				
 				$menu.line()
 				
@@ -1066,12 +1060,12 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 				If ($staged)
 					
-					$menu.append("unstage"; "unstage").shortcut("S"; 512)
+					$menu.append(":xliff:unstage"; "unstage").shortcut("S"; 512)
 					
 				Else 
 					
-					$menu.append("stage"; "stage").shortcut("S"; 512)
-					$menu.append("discardChanges"; "discard")
+					$menu.append(":xliff:stage"; "stage").shortcut("S"; 512)
+					$menu.append(":xliff:discardChanges"; "discard")
 					
 				End if 
 				
@@ -1085,26 +1079,26 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				: ($staged)\
 					 & (Form:C1466.staged.length>0)
 					
-					$menu.append("unstageAll"; "unStageAll").shortcut("S"; 512+2048)
+					$menu.append(":xliff:unstageAll"; "unStageAll").shortcut("S"; 512+2048)
 					
 					//———————————————————————————————————————
 				: (Form:C1466.unstaged.length>0)
 					
-					$menu.append("stageAll"; "stageAll").shortcut("S"; 512+2048)
+					$menu.append(":xliff:stageAll"; "stageAll").shortcut("S"; 512+2048)
 					
 					//———————————————————————————————————————
 			End case 
 			
 			If ($current#Null:C1517)
 				
-				$file:=File:C1566($current.path)
+				var $file:=This:C1470.Git.workspace.file($current.path)
 				
 				$menu.line()\
-					.append("ignore"; cs:C1710.menu.new()\
+					.append(":xliff:ignore"; cs:C1710.menu.new()\
 					.append(Replace string:C233(Localized string:C991("ignoreFile"); "{file}"; $file.fullName); "ignoreFile")\
 					.append(Replace string:C233(Localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $file.extension); "ignoreExtension")\
 					.line()\
-					.append("customPattern"; "ignoreCustom"))
+					.append(":xliff:customPattern"; "ignoreCustom"))
 				
 			End if 
 			
@@ -1138,17 +1132,13 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 Function _commitsManager()
 	
 	var $t : Text
-	var $p : Picture
-	var $x : Blob
-	var $commit; $o : Object
-	var $c : Collection
 	
 	This:C1470.detailCommit.unselect()
 	Form:C1466.commitDetail.clear()
 	This:C1470.selector.unselect()
 	Form:C1466.diff:=""
 	
-	$commit:=This:C1470.commits.item
+	var $commit:=This:C1470.commits.item
 	
 	If ($commit=Null:C1517)
 		
@@ -1160,7 +1150,7 @@ Function _commitsManager()
 	
 	This:C1470.detail.show()
 	
-	$c:=Split string:C1554($commit.parent.short; " ")
+	var $c:=Split string:C1554($commit.parent.short; " ")
 	
 	If (This:C1470.Git.diffList($c.length=0 ? "" : $c.length>1 ? $c[1] : $c[0]; $commit.fingerprint.short))
 		
@@ -1168,7 +1158,7 @@ Function _commitsManager()
 			
 			$c:=Split string:C1554($t; "\t"; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 			
-			$o:={\
+			var $o:={\
 				status: $c[0]; \
 				path: $c[1]; \
 				label: $c[1]; \
@@ -1205,7 +1195,7 @@ Function _commitsManager()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function DoDiff($item : Object)
 	
-	var $code; $t : Text
+	var $code; $diff : Text
 	var $tgt
 	
 	If ($item=Null:C1517)
@@ -1225,12 +1215,13 @@ Function DoDiff($item : Object)
 			//––––––––––––––––––––––––––––––––––––––––––––––––
 		: ($item.added)
 			
-			$tgt:=This:C1470.Git.getPath($item.path)
+			$tgt:=This:C1470.Git.getTarget($item.path)
 			
 			Case of 
 					
 					//______________________________________________________
-				: (Value type:C1509($tgt)=Is object:K8:27)  // File
+				: (Value type:C1509($tgt)=Is object:K8:27)\
+					 && (OB Instance of:C1731($tgt; 4D:C1709.File))
 					
 					If (Bool:C1537($tgt.exists))
 						
@@ -1294,8 +1285,8 @@ Function DoDiff($item : Object)
 				$code:=Replace string:C233($code; "<"; "&lt;")
 				$code:=Replace string:C233($code; ">"; "&gt;")
 				
-				ST SET TEXT:C1115($t; $code; ST Start text:K78:15; ST End text:K78:16)
-				ST SET ATTRIBUTES:C1093($t; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "green")
+				ST SET TEXT:C1115($diff; $code; ST Start text:K78:15; ST End text:K78:16)
+				ST SET ATTRIBUTES:C1093($diff; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "green")
 				
 			End if 
 			
@@ -1322,28 +1313,24 @@ Function DoDiff($item : Object)
 					//______________________________________________________
 			End case 
 			
-			$t:=This:C1470.GetStyledDiffText($item)
+			$diff:=This:C1470.GetStyledDiffText($item)
 			
 			//––––––––––––––––––––––––––––––––––––––––––––––––
 	End case 
 	
-	Form:C1466.diff:=$t
+	Form:C1466.diff:=$diff
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function GetStyledDiffText($item : Object) : Text
 	
-	var $color; $line; $styled : Text
-	var $continue : Boolean
-	var $indx; $len; $pos : Integer
-	var $o : Object
-	var $c : Collection
-	var $git : cs:C1710.Git
+	var $line; $styled : Text
+	var $len; $pos : Integer
 	
-	$git:=This:C1470.Git
+	var $git : cs:C1710.Git:=This:C1470.Git
 	
 	If (Not:C34($git.success))
 		
-		$o:=$git.history.pop()
+		var $o : Object:=$git.history.pop()
 		ST SET TEXT:C1115($styled; String:C10($o.cmd)+"\r\r"+String:C10($o.error); ST Start text:K78:15; ST End text:K78:16)
 		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "red")
 		
@@ -1357,7 +1344,7 @@ Function GetStyledDiffText($item : Object) : Text
 		
 	End if 
 	
-	$c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1)
+	var $c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1)
 	
 	// Delete the initial lines
 	While ($c.length>0)
@@ -1397,11 +1384,13 @@ Function GetStyledDiffText($item : Object) : Text
 		
 	End if 
 	
+	var $indx:=0
+	
 	For each ($line; $c)
 		
 		If (Length:C16($line)>0)
 			
-			$color:="gray"
+			var $color:="gray"
 			
 			Case of 
 					
@@ -1443,9 +1432,9 @@ Function GetStyledDiffText($item : Object) : Text
 	$styled:=Replace string:C233($styled; "<br/>"; "")
 	
 	// Separate blocks
-	$indx:=1
+	var $start:=1
 	
-	While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$"; $styled; $indx; $pos; $len))
+	While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$"; $styled; $start; $pos; $len))
 		
 		If ($pos>1)
 			
@@ -1453,7 +1442,7 @@ Function GetStyledDiffText($item : Object) : Text
 			
 		End if 
 		
-		$indx+=$len
+		$start+=$len
 		
 	End while 
 	
@@ -1521,59 +1510,60 @@ Function Discard($items : Collection)
 	
 	var $tgt
 	var $o : Object
-	var $git : cs:C1710.Git
 	
 	CONFIRM:C162(Localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); Localized string:C991("discard"))
 	
-	If (Bool:C1537(OK))
+	If (Not:C34(Bool:C1537(OK)))
 		
-		$git:=This:C1470.Git
+		return 
 		
-		For each ($o; $items)
+	End if 
+	
+	var $git : cs:C1710.Git:=This:C1470.Git
+	
+	For each ($o; $items)
+		
+		If ($o.status="??")
 			
-			If ($o.status="??")
+			$tgt:=This:C1470.Git.getTarget($o.path)
+			
+			Case of 
+					
+					//——————————————————————————————————
+				: (Value type:C1509($tgt)=Is text:K8:3)  // Method
+					
+					// Warning: No update if 4D App don't be unactivated/activated
+					$tgt:=File:C1566(Form:C1466.project.parent.parent.path+$o.path)
+					
+					//——————————————————————————————————
+				: (Value type:C1509($tgt)=Is object:K8:27)  // File
+					
+					// <NOTHING MORE TO DO>
+					
+					//——————————————————————————————————
+			End case 
+			
+			If (Bool:C1537($tgt.exists))
 				
-				$tgt:=This:C1470.Git.getPath($o.path)
-				
-				Case of 
-						
-						//——————————————————————————————————
-					: (Value type:C1509($tgt)=Is text:K8:3)  // Method
-						
-						// Warning: No update if 4D App don't be unactivated/activated
-						$tgt:=File:C1566(Form:C1466.project.parent.parent.path+$o.path)
-						
-						//——————————————————————————————————
-					: (Value type:C1509($tgt)=Is object:K8:27)  // File
-						
-						// <NOTHING MORE TO DO>
-						
-						//——————————————————————————————————
-				End case 
-				
-				If (Bool:C1537($tgt.exists))
-					
-					$tgt.delete()
-					
-				Else 
-					
-					TRACE:C157
-					
-				End if 
+				$tgt.delete()
 				
 			Else 
 				
-				$git.checkout($o.path)
+				TRACE:C157
 				
 			End if 
-		End for each 
-		
-		RELOAD PROJECT:C1739
-		
-		This:C1470.DoDiff()
-		This:C1470.onActivate()
-		
-	End if 
+			
+		Else 
+			
+			$git.checkout($o.path)
+			
+		End if 
+	End for each 
+	
+	RELOAD PROJECT:C1739
+	
+	This:C1470.DoDiff()
+	This:C1470.onActivate()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Switch($branch : Object)
@@ -2108,7 +2098,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="open")
 			
-			$tgt:=This:C1470.Git.getPath($current.path)
+			$tgt:=This:C1470.Git.getTarget($current.path)
 			
 			Case of 
 					
@@ -2166,7 +2156,7 @@ Function handleMenus($what : Text; $current : Object)
 			
 			$file:=File:C1566($current.path)
 			
-			$gitignore:=$git.cwd.file(".gitignore")
+			$gitignore:=$git.workspace.file(".gitignore")
 			$ignore:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
 			Case of 
