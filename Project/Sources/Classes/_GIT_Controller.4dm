@@ -351,8 +351,6 @@ Function handleEvents($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
 	
-	This:C1470.darkMode:=FORM Get color scheme:C1761="dark"
-	
 	This:C1470.toolbarLeft.distributeLeftToRight({\
 		minWidth: 50; \
 		spacing: 10})
@@ -612,7 +610,7 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onActivate()
 	
-	If (Form:C1466.dark#This:C1470.form.darkScheme)
+	If (This:C1470.form.isSchemeModified())
 		
 		This:C1470._loadIcons()
 		
@@ -1873,7 +1871,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.text($text).position(2; 15)\
 				.fontStyle($style.bold ? Bold:K14:2 : Plain:K14:1)\
-				.color($style.main ? (Form:C1466.dark ? "white" : "black") : (Form:C1466.dark ? "silver" : "darkgray"))
+				.color($style.main ? (This:C1470.form.darkScheme ? "white" : "black") : (This:C1470.form.darkScheme ? "silver" : "darkgray"))
 			
 			return $svg.picture()
 			
@@ -2164,13 +2162,11 @@ Function getAvatar($mail : Text) : Picture
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function metaCommits($item : Object) : Object
 	
-	return {}
-	
-	//If ($item.branch=This.Git.workingBranch.name)
-	//return {}
-	//Else 
-	//return {cell: {commitTitle: {fontStyle: "italic"; stroke: "grey"}}}
-	//End if 
+	If ($item=This:C1470.commits.item)
+		
+		return This:C1470.form.lightScheme ? {fill: "skyblue"} : Null:C1517
+		
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function meta($item : Object) : Object
@@ -2215,7 +2211,7 @@ Function _loadIcons()
 	var $key : Text
 	var $icon : Picture
 	
-	Form:C1466.dark:=This:C1470.form.darkScheme
+	This:C1470.commits.selectionHighlight:=This:C1470.form.lightScheme
 	
 	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
 		
