@@ -307,8 +307,15 @@ with 4D "{version}"</target>
           <target>Yesterday</target>
         </trans-unit>
       </group>
+      <group resname="GitHub">
+        <trans-unit id="V8K672oPrhbaPX2ZGutoFw" resname="thisCodeHasBeenPlacedOnTheClipboard">
+          <source>This code has been placed on the clipboard, so you can paste it when you need it</source>
+          <target>This code has been placed on the clipboard, so you can paste it when you need it</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
 
 
 

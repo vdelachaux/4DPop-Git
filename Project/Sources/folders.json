@@ -6,6 +6,12 @@
 	"# 🚧 DEV": {
 		"methods": [
 			"00_TEST"
+		],
+		"classes": [
+			"_CLI",
+			"_gitWorker",
+			"DataStore",
+			"GithubAPI"
 		]
 	},
 	"♻️ LIBRAIRIES": {
@@ -34,8 +40,7 @@
 	"👥 NAMESPACE": {
 		"classes": [
 			"gh",
-			"Git",
-			"GithubAPI"
+			"Git"
 		]
 	},
 	"👩‍💻 UI": {
@@ -60,6 +65,7 @@
 			"evt",
 			"form",
 			"group",
+			"hierList",
 			"hList",
 			"input",
 			"listbox",
