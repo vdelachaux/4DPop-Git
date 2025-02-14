@@ -4,7 +4,7 @@ property toBeInitialized : Boolean:=True:C214
 property pageNumber : Integer:=0
 property entryOrder : Collection:=[]
 property _darkExtension : Text:="_dark"
-property colorScheme : Text:=FORM Get color scheme:C1761
+property colorScheme : Text
 
 property __CLASS__ : Object:=OB Class:C1730(This:C1470)
 property name : Text:=Current form name:C1298

@@ -180,7 +180,7 @@
 					"style": "custom",
 					"radioGroup": "pages",
 					"focusable": true,
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/toolbar/open.png",
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Contents/Resources/images/toolbox/resources.png",
 					"customBackgroundPicture": "/RESOURCES/Images/radio-back.svg"
 				},
 				"history": {
@@ -196,7 +196,7 @@
 					"style": "custom",
 					"radioGroup": "pages",
 					"focusable": true,
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/toolbox/lists.png",
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Contents/Resources/images/toolbox/lists.png",
 					"customBackgroundPicture": "/RESOURCES/Images/radio-back.svg"
 				},
 				"vSeparator_1": {
@@ -209,8 +209,8 @@
 				},
 				"embeddedDialogs": {
 					"type": "subform",
-					"left": 271,
-					"top": 870,
+					"left": 220,
+					"top": 939,
 					"width": 32,
 					"height": 30,
 					"sizingX": "grow",
@@ -592,11 +592,12 @@
 					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
 					"selectedItemsSource": "formGetInstance.commits.items",
 					"showHeaders": false,
-					"rowHeight": "25px",
+					"rowHeight": "23px",
 					"class": "flat",
+					"metaSource": "formGetInstance.metaCommits(This:C1470)",
+					"hideSystemHighlight": true,
 					"alternateFill": "automatic",
 					"resizingMode": "rightToLeft",
-					"metaSource": "formGetInstance.metaCommits(This:C1470)",
 					"columns": [
 						{
 							"header": {
@@ -955,5 +956,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 995
+	"geometryStamp": 999
 }
