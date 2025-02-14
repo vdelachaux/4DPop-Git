@@ -13,37 +13,59 @@ git push -u origin main
 
 */
 
-var $gh:=cs:C1710.GithubAPI.new()
+//var $gh:=cs.GithubAPI.new()
 //var $token : Object:=$gh.getAppToken()
 
+var $gh:=cs:C1710.gh.new()
+
+//If (Not($gh.authorized))
+//$gh.logIn()
+//End if 
+//If ($gh.authorized)
+//$gh.logout()
+//End if 
+//ASSERT($gh.authorized)
+
+
 //$gh.getUser($gh.token)
-
 ////$gh.AuthorizeApp()
-
 //$gh._getToken()
+//$zen:=$gh.zen()
 
-$zen:=$gh.zen()
 
-//// Try creating a repository
-//$gh.CreateRepos("TEST REPO")
+// Try creating a repository
+var $repo:="TEST REPO"
+var $remote:=$gh.createRepo($repo)
 
-//// Try delete a repository
-//$gh.DeleteRepos("test-repo")
-
+If ($gh.success)
+	
 /*
-
+	
 // Create readme
 File("~repo/README.md").setText("# "+$name)
 git add README.md
 git commit -m "first commit"
-
+	
 // Add the origin to to the repository
 git remote add origin + $remoteURL
-
+	
 // Create the main branch
 git branch -M main
-
+	
 // Push
 git push -u origin main
-
+	
 */
+	
+End if 
+
+//If (Length($remote)>0)
+
+
+//// Try delete a repository
+//$gh.deleteRepo("test-repo")
+
+
+//End if 
+
+

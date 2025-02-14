@@ -306,8 +306,15 @@ avec 4D "{version}"</target>
           <target>Hier</target>
         </trans-unit>
       </group>
+      <group resname="GitHub">
+        <trans-unit id="V8K672oPrhbaPX2ZGutoFw" resname="thisCodeHasBeenPlacedOnTheClipboard">
+          <source>This code has been placed on the clipboard, so you can paste it when you need it</source>
+          <target>Ce code a été placé dans le presse-papiers, afin que vous puissiez le coller lorsque vous en aurez besoin.</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
 
 
 

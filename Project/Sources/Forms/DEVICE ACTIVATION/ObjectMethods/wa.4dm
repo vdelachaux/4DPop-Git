@@ -13,6 +13,8 @@ Case of
 		//______________________________________________________
 	: ($url="https://github.com/login/device/")
 		
+		var $t:=Get text from pasteboard:C524
+		
 		INVOKE ACTION:C1439(ak paste:K76:55)
 		
 		//______________________________________________________

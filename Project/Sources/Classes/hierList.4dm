@@ -6,23 +6,46 @@ Class constructor($list)
 	
 	This:C1470.SetList($list)
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get ref() : Integer
+	
+	return This:C1470[""].ref
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set ref($ref : Integer)
+	
+	This:C1470.SetList($ref)
+	
 	// MARK:- [List]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Creates a new list in memory and returns its unique list reference number.
-Function Create() : Integer
+Function Creates() : Integer
 	
-	This:C1470.Clear()
+	This:C1470.Clears()
 	
 	This:C1470[""].ref:=New list:C375
-	
 	This:C1470[""].uid:=0
 	This:C1470.success:=Is a list:C621(This:C1470[""].ref)
 	
 	return This:C1470[""].ref
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Load an already existing list in memory and returns its unique list reference number.
+Function Load($list) : Integer
+	
+	This:C1470.SetList($list)
+	
+	If (This:C1470.success)
+		
+		// TODO: Scan references to allow unique reference
+		
+	End if 
+	
+	return This:C1470[""].ref
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Populates the current list reference
-Function SetList($list) : cs:C1710.hierarchicalList
+Function SetList($list) : Integer
 	
 	If (Is a list:C621(This:C1470[""].ref))
 		
@@ -62,20 +85,20 @@ Function SetList($list) : cs:C1710.hierarchicalList
 	This:C1470[""].uid:=0
 	This:C1470.success:=Is a list:C621(This:C1470[""].ref)
 	
-	return This:C1470
+	return This:C1470[""].ref
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Returns a copy of the current list
-Function copy() : cs:C1710.hierarchicalList
+Function Copy() : cs:C1710.hierList
 	
 	If (Asserted:C1132(This:C1470.isList; "No list to duplicate"))
 		
-		return cs:C1710.hierarchicalList.new(Copy list:C626(This:C1470[""].ref))
+		return cs:C1710.hierList.new(Copy list:C626(This:C1470[""].ref))
 		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Clear($keepSubLists : Boolean) : cs:C1710.hierarchicalList
+Function Clears($keepSubLists : Boolean) : cs:C1710.hierList
 	
 	ASSERT:C1129(Is a list:C621(This:C1470[""].ref))
 	
@@ -98,7 +121,8 @@ Function Clear($keepSubLists : Boolean) : cs:C1710.hierarchicalList
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Empty() : cs:C1710.hierarchicalList
+	/// Clears a list but keeps its reference valid
+Function Empties() : cs:C1710.hierList
 	
 	var $t : Text
 	var $i; $ref; $root : Integer
@@ -212,7 +236,7 @@ Function set properties($properties : Object)
 	SET LIST PROPERTIES:C387(This:C1470[""].ref; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean) : cs:C1710.hierarchicalList
+Function Append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean) : cs:C1710.hierList
 	
 	If (Value type:C1509($item)=Is object:K8:27)
 		
@@ -245,15 +269,50 @@ Function Append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean) 
 	
 	return This:C1470
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function Insert($item; $ref : Integer; $sublist : Integer; $expanded : Boolean; $beforeItemRef : Integer)
+	
+	If (Value type:C1509($item)=Is object:K8:27)
+		
+		var $label : Text:=$item.label || ""
+		$ref:=$item.ref || $ref
+		
+	Else 
+		
+		$label:=String:C10($item)
+		
+	End if 
+	
+	If ($ref=0)
+		
+		// Set a unique reference
+		This:C1470[""].uid+=1
+		$ref:=This:C1470[""].uid
+		
+	End if 
+	
+	If ($beforeItemRef#0)
+		
+		If ($sublist=0)
+			
+			INSERT IN LIST:C625(This:C1470[""].ref; $beforeItemRef; $label; $ref)
+			
+		Else 
+			
+			INSERT IN LIST:C625(This:C1470[""].ref; $beforeItemRef; $label; $ref; $sublist; $expanded)
+			
+		End if 
+		
+	Else 
+		
+		INSERT IN LIST:C625(This:C1470[""].ref; *; $label; $ref; $sublist; $expanded)
+		
+	End if 
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get lastRef() : Integer
 	
 	return This:C1470[""].uid
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get ref() : Integer
-	
-	return This:C1470.success ? This:C1470[""].ref : 0
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Deselect all items
@@ -313,7 +372,7 @@ Function saveSelection()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function restoreSelection()
 	
-	ARRAY LONGINT:C221($references; 0x0000)
+	ARRAY LONGINT:C221($references; 0)
 	
 	If (This:C1470[""].selection.refs#Null:C1517)\
 		 && (This:C1470[""].selection.refs.length>0)
@@ -337,13 +396,11 @@ Function set selectedPosition($pos : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get selectedPositions() : Collection
 	
-	var $c : Collection
-	
-	$c:=[]
+	var $c:=[]
 	
 	If (This:C1470.success)
 		
-		ARRAY LONGINT:C221($references; 0x0000)
+		ARRAY LONGINT:C221($references; 0)
 		$references{0}:=Selected list items:C379(This:C1470[""].ref; $references)
 		ARRAY TO COLLECTION:C1563($c; $references)
 		
@@ -423,14 +480,14 @@ Function SetItemStyle($style : Integer; $ref : Integer)
 	SET LIST ITEM PROPERTIES:C386($root; $ref; $enterable; $style)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetAdditionalText($text : Text; $ref : Integer) : cs:C1710.hierarchicalList
+Function SetAdditionalText($text : Text; $ref : Integer) : cs:C1710.hierList
 	
 	SET LIST ITEM PARAMETER:C986(This:C1470[""].ref; $ref; Additional text:K28:7; $text)
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetParameter($param : Object; $ref : Integer) : cs:C1710.hierarchicalList
+Function SetParameter($param : Object; $ref : Integer) : cs:C1710.hierList
 	
 	ASSERT:C1129($param.key#Null:C1517)
 	
@@ -519,7 +576,7 @@ Function GetParameter($param : Object) : Variant
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function SetIcon($param : Object; $ref : Integer) : cs:C1710.hierarchicalList
+Function SetIcon($param : Object; $ref : Integer) : cs:C1710.hierList
 	
 	var $icon : Picture
 	$icon:=$param.icon

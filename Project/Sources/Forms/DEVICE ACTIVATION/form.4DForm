@@ -21,9 +21,9 @@
 				"wa": {
 					"type": "webArea",
 					"left": 0,
-					"top": 0,
+					"top": 80,
 					"width": 570,
-					"height": 900,
+					"height": 820,
 					"sizingX": "grow",
 					"sizingY": "grow",
 					"bottom": 900,
@@ -34,11 +34,44 @@
 					"method": "ObjectMethods/wa.4dm",
 					"urlSource": "Form:C1466.url",
 					"borderStyle": "none"
+				},
+				"Input": {
+					"type": "input",
+					"left": 0,
+					"top": 12,
+					"width": 570,
+					"height": 33,
+					"dataSource": "Form:C1466.otc",
+					"fontTheme": "main",
+					"fontSize": 24,
+					"enterable": false,
+					"hideFocusRing": false,
+					"showSelection": true,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"textAlign": "center",
+					"right": 570
+				},
+				"Text": {
+					"type": "text",
+					"text": ":xliff:thisCodeHasBeenPlacedOnTheClipboard",
+					"top": 49,
+					"left": 0,
+					"width": 570,
+					"height": 31,
+					"textAlign": "center"
+				},
+				"Line": {
+					"type": "line",
+					"top": 80,
+					"left": 0,
+					"width": 570,
+					"height": 0
 				}
 			}
 		}
 	],
-	"geometryStamp": 102,
+	"geometryStamp": 128,
 	"method": "method.4dm",
 	"editor": {
 		"activeView": "View 1",

@@ -116,14 +116,13 @@ Function init()
 	This:C1470.open:=This:C1470.form.Button("open")
 	
 	// Mark:Page 0️⃣ Left pannel
-	//This.selector:=This.form.HList("selector")
 	var $list:=New list:C375
 	APPEND TO LIST:C376($list; "Branches"; -21; New list:C375; True:C214)
 	APPEND TO LIST:C376($list; "Remotes"; -22; New list:C375; True:C214)
 	APPEND TO LIST:C376($list; "Tags"; -23; New list:C375; True:C214)
 	APPEND TO LIST:C376($list; "stashes"; -24; New list:C375; True:C214)
-	SET LIST PROPERTIES:C387($list; 0; 0; 25)
 	This:C1470.selector:=This:C1470.form.HList("selector"; $list)
+	This:C1470.selector.properties:={lineHeight: 25}
 	
 	// Mark:Page 1️⃣ Changes
 	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
@@ -202,7 +201,7 @@ Function handleEvents($e : cs:C1710.evt)
 				//______________________________________________________
 			: ($e.unload)
 				
-				This:C1470.selector.clear()
+				This:C1470.selector.clearList()
 				
 				//______________________________________________________
 		End case 
@@ -641,14 +640,14 @@ Function onActivate()
 		
 	End if 
 	
-	//This.selector.saveSelection()
+	This:C1470.selector.saveSelection()
 	
 	This:C1470.branchList()
 	This:C1470.remoteList()
 	This:C1470.tagList()
 	This:C1470.stachList()
 	
-	//This.selector.restoreSelection()
+	This:C1470.selector.restoreSelection()
 	
 	This:C1470.form.refresh()
 	
@@ -657,66 +656,72 @@ Function stachList()
 	
 	var $o : Object
 	
-	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-24))).Empty()
-	
+	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublistByRef(-24)).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.stash()
 	
-	If ($git.stashes.length>0)
+	If ($git.stashes.length=0)
 		
-		For each ($o; $git.stashes)
-			
-			$o.type:="stash"
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-				.SetIcon({icon: Form:C1466.icons.stash})
-			
-		End for each 
+		return 
+		
 	End if 
+	
+	For each ($o; $git.stashes)
+		
+		$o.type:="stash"
+		
+		$list.Append($o.name)\
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
+			.SetIcon({icon: Form:C1466.icons.stash})
+		
+	End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function tagList()
 	
 	var $t : Text
 	
-	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-23))).Empty()
-	
+	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublistByRef(-23)).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.updateTags()
 	
-	If ($git.tags.length>0)
+	If ($git.tags.length=0)
 		
-		var $c : Collection:=$git.FETCH_HEAD("tag")
+		return 
 		
-		For each ($t; $git.tags)
-			
-			$sublist.Append($t)\
-				.SetParameter({key: "data"; value: $c.query("tag = :1"; $t).first()})\
-				.SetIcon({icon: Form:C1466.icons.tag})
-			
-		End for each 
 	End if 
+	
+	var $c : Collection:=$git.FETCH_HEAD("tag")
+	
+	For each ($t; $git.tags)
+		
+		$list.Append($t)\
+			.SetParameter({key: "data"; value: $c.query("tag = :1"; $t).first()})\
+			.SetIcon({icon: Form:C1466.icons.tag})
+		
+	End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function remoteList()
 	
 	var $o : Object
 	
-	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-22))).Empty()
-	
+	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublistByRef(-22)).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.updateRemotes()
 	
-	If ($git.remotes.length>0)
+	If ($git.remotes.length=0)
 		
-		For each ($o; $git.remotes)
-			
-			$o.type:="remote"
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-				.SetIcon({icon: Form:C1466.icons[(Position:C15("github.com"; $o.url)>0 ? "github" : "gitlab")]})
-			
-		End for each 
+		return 
+		
 	End if 
+	
+	For each ($o; $git.remotes)
+		
+		$o.type:="remote"
+		
+		$list.Append($o.name)\
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
+			.SetIcon({icon: Form:C1466.icons[(Position:C15("github.com"; $o.url)>0 ? "github" : "gitlab")]})
+		
+	End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchList()
@@ -724,56 +729,58 @@ Function branchList()
 	var $notPulled; $notPushed : Integer
 	var $o : Object
 	
-	var $sublist:=cs:C1710.hierarchicalList.new(This:C1470.selector.getSublist(This:C1470.selector.getItemPositionByRef(-21))).Empty()
-	
+	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublist(This:C1470.selector.itemPosition(-21))).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.branch()
 	
-	If ($git.branches.length>0)
+	If ($git.branches.length=0)
 		
-		For each ($o; $git.branches)
-			
-			$o.type:="branch"
-			
-			// TODO: hieararchical branches
-			// Var $c :=Split string($o.name; "/")
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
-			
-			If ($o.current)
-				
-				$sublist.SetIcon({icon: Form:C1466.icons.master})\
-					.SetItemStyle(Bold:K14:2)
-				
-			Else 
-				
-				$sublist.SetIcon({icon: Form:C1466.icons.branch})
-				
-			End if 
-			
-			$notPushed:=$git.branchPushNumber($o.name)
-			$notPulled:=$git.branchFetchNumber($o.name)
-			
-			Case of 
-					//______________________________________________________
-				: ($notPulled>0) & ($notPushed>0)
-					
-					$sublist.SetAdditionalText(String:C10($notPushed)+"↑↓"+String:C10($notPulled)+" ")
-					
-					//______________________________________________________
-				: ($notPushed>0)
-					
-					$sublist.SetAdditionalText(String:C10($notPushed)+"↑ ")
-					
-					//______________________________________________________
-				: ($notPulled>0)
-					
-					$sublist.SetAdditionalText("↓"+String:C10($notPulled)+" ")
-					
-					//______________________________________________________
-			End case 
-		End for each 
+		return 
+		
 	End if 
+	
+	For each ($o; $git.branches)
+		
+		$o.type:="branch"
+		
+		// TODO: hieararchical branches
+		// Var $c :=Split string($o.name; "/")
+		
+		$list.Append($o.name)\
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
+		
+		If ($o.current)
+			
+			$list.SetIcon({icon: Form:C1466.icons.master})\
+				.SetItemStyle(Bold:K14:2)
+			
+		Else 
+			
+			$list.SetIcon({icon: Form:C1466.icons.branch})
+			
+		End if 
+		
+		$notPushed:=$git.branchPushNumber($o.name)
+		$notPulled:=$git.branchFetchNumber($o.name)
+		
+		Case of 
+				//______________________________________________________
+			: ($notPulled>0) & ($notPushed>0)
+				
+				$list.SetAdditionalText(String:C10($notPushed)+"↑↓"+String:C10($notPulled)+" ")
+				
+				//______________________________________________________
+			: ($notPushed>0)
+				
+				$list.SetAdditionalText(String:C10($notPushed)+"↑ ")
+				
+				//______________________________________________________
+			: ($notPulled>0)
+				
+				$list.SetAdditionalText("↓"+String:C10($notPulled)+" ")
+				
+				//______________________________________________________
+		End case 
+	End for each 
 	
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -783,7 +790,7 @@ Function _selectorManager($e : cs:C1710.evt)
 	
 	var $data : Object
 	
-	var $list:=cs:C1710.hierarchicalList.new(This:C1470.selector.ref)
+	var $list:=cs:C1710.hierList.new(This:C1470.selector.ref)
 	$data:=$list.GetParameter({key: "data"; type: Is object:K8:27})
 	
 	Case of 
@@ -1078,7 +1085,7 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 			
 			If ($current#Null:C1517)
 				
-				var $file:=This:C1470.Git.workspace.file($current.path)
+				var $file : 4D:C1709.File:=This:C1470.Git.workspace.file($current.path)
 				
 				$menu.line()\
 					.append(":xliff:ignore"; cs:C1710.menu.new()\
@@ -1554,26 +1561,20 @@ Function Discard($items : Collection)
 	This:C1470.onActivate()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Switch($branch : Object)
+Function Checkout($branch : Object)
 	
 	This:C1470.Git.branch("use"; $branch.name)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateGithubRepository()
 	
-	var $remote : Text
-	var $private : Boolean
-	var $file : 4D:C1709.File
-	var $gh : cs:C1710.gh
-	var $git : cs:C1710.Git
-	
-	$git:=This:C1470.Git
-	$gh:=cs:C1710.gh.new()
+	var $git : cs:C1710.Git:=This:C1470.Git
+	var $gh:=cs:C1710.gh.new()
 	
 	If ($gh.authorized)
 		
-		$private:=True:C214
-		$remote:=$gh.createRepo(Form:C1466.project; $private)
+		var $private:=True:C214
+		var $remote:=$gh.createRepo(Form:C1466.project; $private)
 		
 		If (Length:C16($remote)>0)
 			
@@ -1584,7 +1585,7 @@ Function CreateGithubRepository()
 				If ($git.execute("git remote set-url --add "+$remote))
 					
 					// Create readme
-					$file:=File:C1566("/PACKAGE/README.md"; *)
+					var $file:=File:C1566("/PACKAGE/README.md"; *)
 					
 					If (Not:C34($file.exists))
 						
@@ -1612,40 +1613,32 @@ Function CreateGithubRepository()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function updateCommitList()
 	
-	var $branch; $line; $main; $meta; $style : Text
-	var $empty; $label; $separator : Picture
-	var $i; $notPushed : Integer
+	var $line; $meta; $style : Text
+	var $empty; $separator : Picture
+	var $i; $offset; $x : Integer
 	var $item
-	var $commit : Object
-	var $c; $commits; $metas; $tags : Collection
-	var $git : cs:C1710.Git
+	var $stash : Object
+	var $svg : cs:C1710.svg
 	
-	$commit:={}
-	$commits:=[]
+	ARRAY LONGINT:C221($len; 0)
+	ARRAY LONGINT:C221($pos; 0)
 	
 	CREATE THUMBNAIL:C679($separator; $separator; 5)
 	CREATE THUMBNAIL:C679($empty; $empty; 5)
 	
-	
-	var $o : Object
-	$o:={\
+	var $o:={\
 		colors: ["orange"; "green"; "blue"; "red"]; \
 		stashes: []; \
 		nodes: []; \
 		level: 0\
 		}
 	
-	var $graphMain : Picture
-	$graphMain:=This:C1470.getLabelTag("graph"; $o.colors[0])
+	var $git : cs:C1710.Git:=This:C1470.Git
+	var $graphMain:=This:C1470.getLabelTag("graph"; $o.colors[0])
+	var $notPushed:=$git.branchPushNumber($git.currentBranch)
 	
-	$git:=This:C1470.Git
-	
-	// $notPushed:=$git.branchPushNumber()
-	$notPushed:=$git.branchPushNumber($git.currentBranch)
-	
-	var $date; $today; $yesterday : Date
-	$today:=Current date:C33
-	$yesterday:=$today-1
+	var $today:=Current date:C33
+	var $yesterday : Date:=$today-1
 	
 	//$git.execute("log --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	$git.execute("log --all --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
@@ -1663,29 +1656,25 @@ Function updateCommitList()
 9 = ref names
 */
 	
-	ARRAY LONGINT:C221($pos; 0)
-	ARRAY LONGINT:C221($len; 0)
-	
-	
 	// One commit per line
+	var $commits:=[]
+	
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
 		
-		$c:=Split string:C1554($line; "|")
-		
-		//ASSERT($c[0]#"wip Windows")
+		var $c:=Split string:C1554($line; "|")
 		
 		If (Match regex:C1019("index\\son\\s"; $line; 1; *))
 			
-			var $node : Boolean
-			$node:=True:C214
+			var $node:=True:C214
 			$o.level-=1
+			
 			continue
 			
 		End if 
 		
 		CLEAR VARIABLE:C89($style)
 		
-		$tags:=[Null:C1517; Null:C1517; Null:C1517]
+		var $tags:=[Null:C1517; Null:C1517; Null:C1517]
 		
 		$i+=1
 		
@@ -1695,7 +1684,7 @@ Function updateCommitList()
 			
 		End if 
 		
-		$metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+		var $metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 		
 		If ($metas.length>0)
 			
@@ -1716,8 +1705,8 @@ Function updateCommitList()
 						
 						$tags[1]:=This:C1470.getLabelTag("current branch"; Replace string:C233($meta; "HEAD ->"; ""))
 						
-						$branch:=$git.workingBranch.name
-						$main:=$branch
+						var $branch : Text:=$git.workingBranch.name
+						var $main:=$branch
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="tag: @")  // Tag
@@ -1740,7 +1729,6 @@ Function updateCommitList()
 					: ($meta="refs/stash")\
 						 && (Match regex:C1019("(?mi-s)On\\s([^:]*):\\s(.*)"; $c[0]; 1; $pos; $len; *))
 						
-						var $stash : Object
 						$stash:={\
 							on: Substring:C12($c[0]; $pos{1}; $len{1}); \
 							index: Split string:C1554($c[5]; " ")[1]; \
@@ -1776,8 +1764,6 @@ Function updateCommitList()
 							
 						End if 
 						
-						
-						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					Else   // Branch
 						
@@ -1795,16 +1781,14 @@ Function updateCommitList()
 		End if 
 		
 		// Mark:Create label
-		var $offset; $x : Integer
 		$offset:=20
 		
 		If ($o.level=0)
 			
-			$label:=$graphMain+$separator
+			var $label:=$graphMain+$separator
 			
 		Else 
 			
-			var $svg : cs:C1710.svg
 			$svg:=cs:C1710.svg.new()
 			
 			$svg.width($offset*($o.level+1)).height(30)
@@ -1838,9 +1822,9 @@ Function updateCommitList()
 		
 		$label+=This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
 		
-		$date:=Date:C102($c[3])
+		var $date:=Date:C102($c[3])
 		
-		$commit:={\
+		var $commit:={\
 			label: $label; \
 			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
 			stamp: ($date=$today ? Localized string:C991("today") : $date=$yesterday ? Localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
@@ -1861,8 +1845,7 @@ Function updateCommitList()
 	// Restore selection, if any
 	If (This:C1470.commits.item#Null:C1517)
 		
-		var $indx : Integer
-		$indx:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)[0]
+		var $indx : Integer:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)[0]
 		This:C1470.commits.select($indx+1)
 		
 	End if 
@@ -1872,7 +1855,6 @@ Function updateCommitList()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
-	var $icon : Picture
 	var $svg:=cs:C1710.svg.new()
 	
 	Case of 
@@ -1992,14 +1974,8 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleMenus($what : Text; $current : Object)
 	
-	var $ignore : Text
-	var $tgt
-	var $data : Object
-	var $file; $gitignore : 4D:C1709.File
-	var $git : cs:C1710.Git
-	
 	$what:=$what || Get selected menu item parameter:C1005
-	$git:=This:C1470.Git
+	var $git : cs:C1710.Git:=This:C1470.Git
 	
 	Case of 
 			
@@ -2030,7 +2006,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="delete")
 			
-			$file:=File:C1566(Convert path POSIX to system:C1107($current.path); fk platform path:K87:2)
+			var $file:=File:C1566(Convert path POSIX to system:C1107($current.path); fk platform path:K87:2)
 			CONFIRM:C162(Replace string:C233(Localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName))
 			
 			If (Bool:C1537(OK))
@@ -2048,7 +2024,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="open")
 			
-			$tgt:=This:C1470.Git.getTarget($current.path)
+			var $tgt : Variant:=This:C1470.Git.getTarget($current.path)
 			
 			Case of 
 					
@@ -2106,8 +2082,8 @@ Function handleMenus($what : Text; $current : Object)
 			
 			$file:=File:C1566($current.path)
 			
-			$gitignore:=$git.workspace.file(".gitignore")
-			$ignore:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
+			var $gitignore:=$git.workspace.file(".gitignore")
+			var $ignore:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
 			Case of 
 					
@@ -2132,10 +2108,10 @@ Function handleMenus($what : Text; $current : Object)
 					//____________________________
 				: ($what="ignoreCustom")
 					
-					$data:=New object:C1471(\
-						"window"; Open form window:C675("PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
-						"pattern"; $current.path; \
-						"files"; $git.changes)
+					var $data:={\
+						window: Open form window:C675("PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
+						pattern: $current.path; \
+						files: $git.changes}
 					
 					DIALOG:C40("PATTERN"; $data)
 					CLOSE WINDOW:C154
@@ -2249,10 +2225,10 @@ Function _loadIcons()
 		
 	End for each 
 	
-	This:C1470.selector._setItem("icon"; Form:C1466.icons.branch; This:C1470.selector.getItemPositionByRef(-21))
-	This:C1470.selector._setItem("icon"; Form:C1466.icons.remote; This:C1470.selector.getItemPositionByRef(-22))
-	This:C1470.selector._setItem("icon"; Form:C1466.icons.tag; This:C1470.selector.getItemPositionByRef(-23))
-	This:C1470.selector._setItem("icon"; Form:C1466.icons.stash; This:C1470.selector.getItemPositionByRef(-24))
+	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.branch}; -21)
+	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.remote}; -22)
+	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.tag}; -23)
+	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.stash}; -24)
 	
 	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath; $icon)
 	Form:C1466.logo:=$icon
