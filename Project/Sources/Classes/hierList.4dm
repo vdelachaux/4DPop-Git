@@ -129,7 +129,7 @@ Function Empties() : cs:C1710.hierList
 	
 	$root:=This:C1470[""].ref
 	
-	For ($i; Count list items:C380($root); 1; -1)
+	For ($i; Count list items:C380($root; *); 1; -1)
 		
 		GET LIST ITEM:C378($root; $i; $ref; $t)
 		DELETE FROM LIST:C624($root; $ref; *)
