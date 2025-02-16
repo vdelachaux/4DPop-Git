@@ -914,6 +914,29 @@ Function FETCH_HEAD($type : Text) : Collection
 	return $c
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function REMOTE_ORIGIN() : Collection
+	
+	var $folder : 4D:C1709.Folder:=This:C1470.root.folder("refs/remotes/origin")
+	var $file : 4D:C1709.File
+	var $c:=[]
+	
+	For each ($file; $folder.files())
+		
+		If ($file.name="HEAD")
+			
+			continue
+			
+		End if 
+		
+		var $o:={name: $file.name; ref: Split string:C1554($file.getText(); "\n")[0]}
+		
+		$c.push($o)
+		
+	End for each 
+	
+	return $c
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function open($what : Text)
 	
 	var $errorStream; $outputStream; $inputStream : Text

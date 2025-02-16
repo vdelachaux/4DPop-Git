@@ -118,8 +118,8 @@ Function init()
 	// Mark:Page 0️⃣ Left pannel
 	var $list:=New list:C375
 	APPEND TO LIST:C376($list; "Branches"; -21; New list:C375; True:C214)
-	APPEND TO LIST:C376($list; "Remotes"; -22; New list:C375; True:C214)
-	APPEND TO LIST:C376($list; "Tags"; -23; New list:C375; True:C214)
+	APPEND TO LIST:C376($list; "Remotes"; -22; New list:C375; False:C215)
+	APPEND TO LIST:C376($list; "Tags"; -23; New list:C375; False:C215)
 	APPEND TO LIST:C376($list; "stashes"; -24; New list:C375; True:C214)
 	This:C1470.selector:=This:C1470.form.HList("selector"; $list)
 	This:C1470.selector.properties:={lineHeight: 25}
@@ -654,7 +654,8 @@ Function stachList()
 	
 	var $o : Object
 	
-	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublistByRef(-24)).Empties()
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-24)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.stash()
 	
 	If ($git.stashes.length=0)
@@ -673,12 +674,18 @@ Function stachList()
 		
 	End for each 
 	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function tagList()
 	
 	var $t : Text
-	
-	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublistByRef(-23)).Empties()
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-23)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.updateTags()
 	
 	If ($git.tags.length=0)
@@ -697,12 +704,18 @@ Function tagList()
 		
 	End for each 
 	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function remoteList()
 	
 	var $o : Object
-	
-	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublistByRef(-22)).Empties()
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-22)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.updateRemotes()
 	
 	If ($git.remotes.length=0)
@@ -711,15 +724,32 @@ Function remoteList()
 		
 	End if 
 	
-	For each ($o; $git.remotes)
+	var $c : Collection:=$git.REMOTE_ORIGIN()
+	
+	For each ($o; $c)
 		
 		$o.type:="remote"
 		
+		
 		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-			.SetIcon({icon: Form:C1466.icons[(Position:C15("github.com"; $o.url)>0 ? "github" : "gitlab")]})
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)}).SetIcon({icon: Form:C1466.icons["github"]})
+		
+		//.SetIcon({icon: Form.icons[(Position("github.com"; $o.url)>0 ? "github" : "gitlab")]})
 		
 	End for each 
+	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
+	
+	//For each ($o; $git.remotes)
+	//$o.type:="remote"
+	//$list.Append($o.name)\
+		.SetParameter({key: "data"; value: JSON Stringify($o)})\
+		.SetIcon({icon: Form.icons[(Position("github.com"; $o.url)>0 ? "github" : "gitlab")]})
+	//End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchList()
@@ -727,7 +757,8 @@ Function branchList()
 	var $notPulled; $notPushed : Integer
 	var $o : Object
 	
-	var $list:=cs:C1710.hierList.new(This:C1470.selector.getSublist(This:C1470.selector.itemPosition(-21))).Empties()
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-21)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
 	var $git : cs:C1710.Git:=This:C1470.Git.branch()
 	
 	If ($git.branches.length=0)
@@ -779,6 +810,12 @@ Function branchList()
 				//______________________________________________________
 		End case 
 	End for each 
+	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
 	
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
