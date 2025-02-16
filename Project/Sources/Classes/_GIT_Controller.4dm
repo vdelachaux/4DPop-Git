@@ -786,10 +786,15 @@ Function _selectorManager($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
 	
-	var $data : Object
+	//If ($e.doubleClick)
 	
-	var $list:=cs:C1710.hierList.new(This:C1470.selector.ref)
-	$data:=$list.GetParameter({key: "data"; type: Is object:K8:27})
+	//TRACE
+	
+	//End if 
+	
+	
+	var $list : cs:C1710.hierList:=This:C1470.selector.list  //cs.hierList.new(This.selector.list.ref)
+	var $data : Object:=$list.GetParameter({key: "data"; type: Is object:K8:27})
 	
 	Case of 
 			
@@ -805,7 +810,9 @@ Function _selectorManager($e : cs:C1710.evt)
 				 && (Not:C34(Bool:C1537($data.current)))  // && it is a branch
 				
 				// TODO: Ckeckout branch
-				TRACE:C157  // This.Switch($o)
+				TRACE:C157
+				
+				//This.Git.checkout("")
 				
 			End if 
 			
@@ -1503,6 +1510,8 @@ Function Discard($items : Collection)
 	
 	var $tgt
 	var $o : Object
+	
+	//TODO: Use embedded confirmation
 	
 	CONFIRM:C162(Localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); Localized string:C991("discard"))
 	
