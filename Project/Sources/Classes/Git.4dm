@@ -839,6 +839,8 @@ Function updateRemotes() : cs:C1710.Git
 	
 	This:C1470.remotes.clear()
 	
+	// TODO: Use~/.git/refs/remotes/origin
+	
 	If (This:C1470.execute("remote -v"))
 		
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
