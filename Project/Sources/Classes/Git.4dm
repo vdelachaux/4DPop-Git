@@ -511,11 +511,15 @@ Function pull($rebase : Boolean; $stash : Boolean) : Boolean
 	This:C1470.execute($c.join(" "))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function push($origin : Text; $branch : Text) : Boolean
+Function push($origin : Text; $branch : Text; $force : Boolean) : Boolean
 	
-	var $c : Collection
+	If ($force)
+		
+		return This:C1470.forcePush($origin; $branch)
+		
+	End if 
 	
-	$c:=["push"]
+	var $c:=["push"]
 	
 	If (Count parameters:C259>=2)
 		
@@ -536,9 +540,7 @@ Function push($origin : Text; $branch : Text) : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function forcePush($origin : Text; $branch : Text) : Boolean
 	
-	var $c : Collection
-	
-	$c:=["push"]
+	var $c:=["push"]
 	
 	If (Count parameters:C259>=2)
 		
@@ -703,7 +705,7 @@ Function checkout($what)
 			//_____________________________
 		: (Value type:C1509($what)=Is text:K8:3)
 			
-			This:C1470.execute("checkout -- "+This:C1470._quoted($what))
+			This:C1470.execute("checkout "+$what)
 			
 			//_____________________________
 		: (Value type:C1509($what)=Is collection:K8:32)
