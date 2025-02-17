@@ -20,6 +20,8 @@ property BINARY_FILE:=Localized string:C991("binaryFile")
 
 property pages:={changes: 1; commits: 2}
 
+property checkout:={stash: False:C215; noChange: False:C215; discard: False:C215}
+
 // MARK:Delegates 📦
 property form : cs:C1710.form
 
@@ -29,7 +31,8 @@ detail : cs:C1710.group
 
 property alertDialog; \
 pullDialog; \
-pushDialog : cs:C1710.onBoard
+pushDialog; \
+checkoutDialog : cs:C1710.onBoard
 
 property changes; \
 history; \
@@ -74,6 +77,8 @@ property authorAvatar : cs:C1710.picture
 property selector : cs:C1710.hList
 
 property Git:=cs:C1710.Git.new()
+
+///.PRODUCT_RESOURCES/Internal Components/development.4dbase/Contents/Resources/images/toolbox/resources.png
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
@@ -189,6 +194,15 @@ Function handleEvents($e : cs:C1710.evt)
 				
 				If (This:C1470.form.page=This:C1470.pages.commits)
 					
+					If (Form:C1466.page2Inited=Null:C1517)
+						
+						var $o : cs:C1710.coord:=This:C1470.commits.coordinates
+						$o.right:=This:C1470.form.window.width
+						This:C1470.commits.setCoordinates($o)
+						Form:C1466.page2Inited:=True:C214
+						
+					End if 
+					
 					This:C1470.updateCommitList()
 					
 				End if 
@@ -234,7 +248,7 @@ Function handleEvents($e : cs:C1710.evt)
 			//==============================================
 		: (This:C1470.pull.catch($e; On Clicked:K2:4))
 			
-			If (Not:C34(Bool:C1537(This:C1470.autostash)))
+			If (Not:C34(This:C1470.autostash))
 				
 				$git.execute("config rebase.autoStash")
 				This:C1470.autostash:=$git.success
@@ -420,6 +434,9 @@ Function onLoad()
 	
 	This:C1470.pushDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PUSH")
 	This:C1470.pushDialog.me:=This:C1470.pushDialog
+	
+	This:C1470.checkoutDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "CHECKOUT")
+	This:C1470.checkoutDialog.me:=This:C1470.pushDialog
 	
 	This:C1470.goToPage(This:C1470.pages.changes)
 	
@@ -729,10 +746,9 @@ Function remoteList()
 	For each ($o; $c)
 		
 		$o.type:="remote"
-		
-		
 		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)}).SetIcon({icon: Form:C1466.icons["github"]})
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
+			.SetIcon({icon: Form:C1466.icons["github"]})
 		
 		//.SetIcon({icon: Form.icons[(Position("github.com"; $o.url)>0 ? "github" : "gitlab")]})
 		
@@ -743,13 +759,6 @@ Function remoteList()
 		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
 		
 	End if 
-	
-	//For each ($o; $git.remotes)
-	//$o.type:="remote"
-	//$list.Append($o.name)\
-		.SetParameter({key: "data"; value: JSON Stringify($o)})\
-		.SetIcon({icon: Form.icons[(Position("github.com"; $o.url)>0 ? "github" : "gitlab")]})
-	//End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchList()
@@ -823,15 +832,8 @@ Function _selectorManager($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
 	
-	//If ($e.doubleClick)
-	
-	//TRACE
-	
-	//End if 
-	
-	
-	var $list : cs:C1710.hierList:=This:C1470.selector.list  //cs.hierList.new(This.selector.list.ref)
-	var $data : Object:=$list.GetParameter({key: "data"; type: Is object:K8:27})
+	var $list : cs:C1710.hierList:=This:C1470.selector.list
+	var $data : Object:=$e.doubleClick ? Form:C1466.selectedBranch : $list.GetParameter({key: "data"; type: Is object:K8:27})
 	
 	Case of 
 			
@@ -846,11 +848,30 @@ Function _selectorManager($e : cs:C1710.evt)
 			If ($data.ref#Null:C1517)\
 				 && (Not:C34(Bool:C1537($data.current)))  // && it is a branch
 				
-				// TODO: Ckeckout branch
-				TRACE:C157
-				
-				//This.Git.checkout("")
-				
+				If ($data.name#This:C1470.Git.currentBranch)
+					
+					var $git : cs:C1710.Git:=This:C1470.Git
+					
+					If ($git.status()>0)
+						
+						This:C1470.checkoutDialog.show({\
+							branch: $data.name; \
+							stash: This:C1470.checkout.stash; \
+							noChange: This:C1470.checkout.noChange; \
+							discard: This:C1470.checkout.discard\
+							})
+						
+						return 
+						
+					End if 
+					
+					This:C1470.Git.checkout($data.name)
+					
+					RELOAD PROJECT:C1739
+					
+					This:C1470._commitsManager()
+					
+				End if 
 			End if 
 			
 			// ______________________________________________________
@@ -864,6 +885,8 @@ Function _selectorManager($e : cs:C1710.evt)
 			
 			// ______________________________________________________
 		: ($e.selectionChange)
+			
+			Form:C1466.selectedBranch:=$data
 			
 			If (This:C1470.form.page=This:C1470.pages.commits)
 				
@@ -885,6 +908,8 @@ Function _selectorManager($e : cs:C1710.evt)
 			Else 
 				
 				This:C1470.goToPage(This:C1470.pages.commits)
+				
+				// TODO: Defer selection
 				
 			End if 
 			

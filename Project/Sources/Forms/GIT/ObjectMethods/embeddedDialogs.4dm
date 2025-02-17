@@ -90,6 +90,44 @@ If ($e.code<0)
 			RELOAD PROJECT:C1739
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+		: (Bool:C1537($me.checkout))
+			
+			$form.checkout:={\
+				noChange: $me.noChange; \
+				stash: $me.stash; \
+				discard: $me.discard}
+			
+			Case of 
+					
+					// ______________________________________________________
+				: ($form.checkout.noChange)
+					
+					// Autostash
+					
+					// Checkout
+					
+					// ______________________________________________________
+				: ($form.checkout.stash)
+					
+					$form.autostash:=True:C214
+					
+					// Stach
+					
+					// Checkout
+					
+					// Apply stash
+					
+					// ______________________________________________________
+				: ($form.checkout.discard)
+					
+					// Discard
+					
+					// Checkout
+					
+					// ______________________________________________________
+			End case 
+			
+			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 	End case 
 	
 	// MARK:-Standard actions

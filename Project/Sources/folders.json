@@ -10,7 +10,6 @@
 		"classes": [
 			"_CLI",
 			"_gitWorker",
-			"DataStore",
 			"GithubAPI"
 		]
 	},
@@ -94,6 +93,7 @@
 		"forms": [
 			"_TEMPLATE",
 			"ALERT",
+			"CHECKOUT",
 			"DEVICE ACTIVATION",
 			"EMBEDDED BACK",
 			"GIT",

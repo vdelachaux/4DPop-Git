@@ -472,6 +472,10 @@ Function _doBranchMenu()
 		If ($menu.popup().selected)
 			
 			Form:C1466.branch:=$menu.choice
+			$git.stash("autostash "+String:C10(Current date:C33; ISO date:K1:8))
+			
+			$git.checkout(Form:C1466.branch)
+			RELOAD PROJECT:C1739
 			This:C1470.form.refresh()
 			
 		End if 

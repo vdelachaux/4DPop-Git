@@ -145,7 +145,8 @@
 					],
 					"sizingY": "grow",
 					"dataSource": "formGetInstance.selector.ref",
-					"borderStyle": "none"
+					"borderStyle": "none",
+					"fill": "transparent"
 				},
 				"Line8": {
 					"type": "line",
@@ -170,7 +171,7 @@
 				"changes": {
 					"type": "radio",
 					"text": ":xliff:local",
-					"top": 2,
+					"top": 3,
 					"left": 2,
 					"width": 107,
 					"height": 56,
@@ -180,13 +181,16 @@
 					"style": "custom",
 					"radioGroup": "pages",
 					"focusable": true,
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Contents/Resources/images/toolbox/resources.png",
-					"customBackgroundPicture": "/RESOURCES/Images/radio-back.svg"
+					"icon": "/RESOURCES/Images/workspace.png",
+					"customBackgroundPicture": "/RESOURCES/Images/checkBox-back.svg",
+					"textPlacement": "bottom",
+					"imageHugsTitle": false,
+					"iconFrames": 5
 				},
 				"history": {
 					"type": "radio",
 					"text": ":xliff:allCommits",
-					"top": 2,
+					"top": 3,
 					"left": 110,
 					"width": 107,
 					"height": 56,
@@ -196,8 +200,9 @@
 					"style": "custom",
 					"radioGroup": "pages",
 					"focusable": true,
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Contents/Resources/images/toolbox/lists.png",
-					"customBackgroundPicture": "/RESOURCES/Images/radio-back.svg"
+					"icon": "/RESOURCES/Images/lists.png",
+					"customBackgroundPicture": "/RESOURCES/Images/checkBox-back.svg",
+					"iconFrames": 5
 				},
 				"vSeparator_1": {
 					"type": "line",
@@ -956,5 +961,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 999
+	"geometryStamp": 1019
 }
