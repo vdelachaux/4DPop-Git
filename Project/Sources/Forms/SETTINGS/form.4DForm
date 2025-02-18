@@ -114,26 +114,26 @@
 				},
 				"Input": {
 					"type": "input",
-					"left": 214,
-					"top": 159,
-					"width": 261,
+					"left": 280,
+					"top": 134,
+					"width": 181,
 					"height": 17,
-					"dataSource": "Form:C1466.user.name+\" (\"+Form:C1466.user.login+\")\"",
+					"dataSource": "Form:C1466.user.name",
 					"class": "infos"
 				},
 				"Input1": {
 					"type": "input",
-					"left": 214,
-					"top": 186,
-					"width": 261,
+					"left": 280,
+					"top": 159,
+					"width": 181,
 					"height": 17,
 					"dataSource": "Form:C1466.user.email",
 					"class": "infos"
 				},
 				"Input2": {
 					"type": "input",
-					"left": 148,
-					"top": 159,
+					"left": 214,
+					"top": 134,
 					"width": 53,
 					"height": 49,
 					"dataSource": "Form:C1466.avatar",
@@ -207,18 +207,10 @@
 		}
 	],
 	"method": "method.4dm",
-	"geometryStamp": 265,
+	"geometryStamp": 272,
 	"inheritedForm": "_TEMPLATE",
 	"editor": {
 		"groups": {
-			"Group": [
-				"Text",
-				"instances",
-				"Text1",
-				"Input",
-				"Input1",
-				"Input2"
-			],
 			"Group1": [
 				"ghAvailable",
 				"ghAuthorized",

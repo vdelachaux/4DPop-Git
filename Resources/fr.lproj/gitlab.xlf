@@ -305,6 +305,14 @@ avec 4D "{version}"</target>
           <source>Yesterday</source>
           <target>Hier</target>
         </trans-unit>
+        <trans-unit id="hEdnZc25Q8UIww3FAsrc0w" resname="bOK">
+          <source>OK</source>
+          <target>OK</target>
+        </trans-unit>
+        <trans-unit id="KOaM1JL0HW3O72JV0RBGHA" resname="bCancel">
+          <source>Cancel</source>
+          <target>Annuler</target>
+        </trans-unit>
       </group>
       <group resname="GitHub">
         <trans-unit id="V8K672oPrhbaPX2ZGutoFw" resname="thisCodeHasBeenPlacedOnTheClipboard">
@@ -314,6 +322,7 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
 
 
 

@@ -2,25 +2,25 @@ var $e:=FORM Event:C1606
 
 If ($e.code<0)
 	
-	var $me : Object:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
+	var $this : Object:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
 	
 	// MARK:-Specific actions
-	var $form:=formGetInstance
+	var $form : cs:C1710._GIT_Controller:=formGetInstance
 	var $git : cs:C1710.Git:=$form.Git
 	
 	Case of 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: ($me.CANCELLED)
+		: ($this.CANCELLED)
 			
 			// <NOTHING MORE TO DO>
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($me.push))
+		: (Bool:C1537($this.push))
 			
 			If ($git.remotes.length=0)
 				
-				var $gh:=cs:C1710.gh.new()
+				var $gh : cs:C1710.gh:=cs:C1710.gh.me
 				
 				If (Not:C34($gh.available))
 					
@@ -39,22 +39,16 @@ If ($e.code<0)
 				End if 
 				
 				// Create remote
-				var $remote : Text
-				$remote:=$gh.createRepo($git.workspace.name)
+				var $remote:=$gh.createRepo($git.workspace.name)
 				
 				// Add the remote
 				$git.execute("remote add -m -t origin "+$remote)
-				
-				$git.remotes.push({\
-					name: "master"; \
-					url: $remote\
-					})
-				
+				$git.remotes.push({name: "master"; url: $remote})
 				$git.push("origin"; "refs/heads/master")
 				
 			Else 
 				
-				If ($me.force)
+				If ($this.force)
 					
 					$git.forcePush()
 					
@@ -80,58 +74,65 @@ If ($e.code<0)
 			End if 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($me.pull))
+		: (Bool:C1537($this.pull))
 			
-			Form:C1466.stash:=Bool:C1537($me.stash)
+			Form:C1466.stash:=Bool:C1537($this.stash)
 			
-			$git.pull(Bool:C1537($me.rebase); Bool:C1537($me.stash))
-			$form.onActivate()
+			$git.pull(Bool:C1537($this.rebase); Bool:C1537($this.stash))
 			
 			RELOAD PROJECT:C1739
 			
+			$form.onActivate()
+			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($me.checkout))
+		: (Bool:C1537($this.checkout))
 			
 			$form.checkout:={\
-				noChange: $me.noChange; \
-				stash: $me.stash; \
-				discard: $me.discard}
+				noChange: $this.noChange; \
+				stash: $this.stash; \
+				discard: $this.discard}
 			
 			Case of 
 					
 					// ______________________________________________________
 				: ($form.checkout.noChange)
 					
-					// Autostash
-					
-					// Checkout
+					$git.stash("save"; "4DPop autostash "+String:C10(Current date:C33; Internal date long:K1:5)+" at "+String:C10(Current time:C178; HH MM:K7:2))
+					var $success:=$git.checkout($this.branch).success
 					
 					// ______________________________________________________
 				: ($form.checkout.stash)
 					
 					$form.autostash:=True:C214
 					
-					// Stach
-					
-					// Checkout
-					
-					// Apply stash
+					$git.stash("save")
+					$success:=$git.checkout($this.branch).success
+					$git.stash("pop")
 					
 					// ______________________________________________________
 				: ($form.checkout.discard)
 					
-					// Discard
-					
-					// Checkout
+					$form.Discard(Form:C1466.unstaged)
+					$success:=$git.checkout($this.branch).success
 					
 					// ______________________________________________________
 			End case 
+			
+			RELOAD PROJECT:C1739
+			
+			$form.onActivate()
+			
+			If (Not:C34($success))
+				
+				
+				
+			End if 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 	End case 
 	
 	// MARK:-Standard actions
-	$me.me.hide()
+	$this.me.hide()
 	
 	return 
 	

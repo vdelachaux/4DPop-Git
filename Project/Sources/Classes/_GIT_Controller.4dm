@@ -203,7 +203,7 @@ Function handleEvents($e : cs:C1710.evt)
 						
 					End if 
 					
-					This:C1470.updateCommitList()
+					This:C1470.updateCommits()
 					
 				End if 
 				
@@ -365,6 +365,8 @@ Function handleEvents($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
 	
+	This:C1470.form.window.title:="4DPop Git - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
+	
 	This:C1470.toolbarLeft.distributeLeftToRight({\
 		minWidth: 50; \
 		spacing: 10})
@@ -413,9 +415,10 @@ Function onLoad()
 			//________________________________________________________________________________
 		: (This:C1470.Git.error="Git not installed")
 			
-			CONFIRM:C162(Localized string:C991("gitNotInstalled"))
+			var $data:={main: Localized string:C991("gitNotInstalled")}
+			This:C1470.onDialogConfirm($data)
 			
-			If (Bool:C1537(OK))
+			If (Bool:C1537($data.action))
 				
 				OPEN URL:C673("https://git-scm.com/download/win")
 				
@@ -635,7 +638,7 @@ Function onActivate()
 	
 	If (This:C1470.form.page=This:C1470.pages.commits)
 		
-		This:C1470.updateCommitList()
+		This:C1470.updateCommits()
 		
 	End if 
 	
@@ -657,174 +660,14 @@ Function onActivate()
 	
 	This:C1470.selector.saveSelection()
 	
-	This:C1470.branchList()
-	This:C1470.remoteList()
-	This:C1470.tagList()
-	This:C1470.stachList()
+	This:C1470.updateBranches()
+	This:C1470.updateRemotes()
+	This:C1470.updateTags()
+	This:C1470.updateStashes()
 	
 	This:C1470.selector.restoreSelection()
 	
 	This:C1470.form.refresh()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function stachList()
-	
-	var $o : Object
-	
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-24)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.stash()
-	
-	If ($git.stashes.length=0)
-		
-		return 
-		
-	End if 
-	
-	For each ($o; $git.stashes)
-		
-		$o.type:="stash"
-		
-		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-			.SetIcon({icon: Form:C1466.icons.stash})
-		
-	End for each 
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function tagList()
-	
-	var $t : Text
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-23)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.updateTags()
-	
-	If ($git.tags.length=0)
-		
-		return 
-		
-	End if 
-	
-	var $c : Collection:=$git.FETCH_HEAD("tag")
-	
-	For each ($t; $git.tags)
-		
-		$list.Append($t)\
-			.SetParameter({key: "data"; value: $c.query("tag = :1"; $t).first()})\
-			.SetIcon({icon: Form:C1466.icons.tag})
-		
-	End for each 
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function remoteList()
-	
-	var $o : Object
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-22)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.updateRemotes()
-	
-	If ($git.remotes.length=0)
-		
-		return 
-		
-	End if 
-	
-	var $c : Collection:=$git.REMOTE_ORIGIN()
-	
-	For each ($o; $c)
-		
-		$o.type:="remote"
-		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-			.SetIcon({icon: Form:C1466.icons["github"]})
-		
-		//.SetIcon({icon: Form.icons[(Position("github.com"; $o.url)>0 ? "github" : "gitlab")]})
-		
-	End for each 
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function branchList()
-	
-	var $notPulled; $notPushed : Integer
-	var $o : Object
-	
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-21)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.branch()
-	
-	If ($git.branches.length=0)
-		
-		return 
-		
-	End if 
-	
-	For each ($o; $git.branches)
-		
-		$o.type:="branch"
-		
-		// TODO: hieararchical branches
-		// Var $c :=Split string($o.name; "/")
-		
-		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
-		
-		If ($o.current)
-			
-			$list.SetIcon({icon: Form:C1466.icons.master})\
-				.SetItemStyle(Bold:K14:2)
-			
-		Else 
-			
-			$list.SetIcon({icon: Form:C1466.icons.branch})
-			
-		End if 
-		
-		$notPushed:=$git.branchPushNumber($o.name)
-		$notPulled:=$git.branchFetchNumber($o.name)
-		
-		Case of 
-				//______________________________________________________
-			: ($notPulled>0) & ($notPushed>0)
-				
-				$list.SetAdditionalText(String:C10($notPushed)+"↑↓"+String:C10($notPulled)+" ")
-				
-				//______________________________________________________
-			: ($notPushed>0)
-				
-				$list.SetAdditionalText(String:C10($notPushed)+"↑ ")
-				
-				//______________________________________________________
-			: ($notPulled>0)
-				
-				$list.SetAdditionalText("↓"+String:C10($notPulled)+" ")
-				
-				//______________________________________________________
-		End case 
-	End for each 
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
 	
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1571,13 +1414,12 @@ Function Unstage($items : Collection)
 Function Discard($items : Collection)
 	
 	var $tgt
-	var $o : Object
+	var $o:={main: Localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); \
+		buttons: {okTitle: Localized string:C991("discard")}}
 	
-	//TODO: Use embedded confirmation
+	This:C1470.onDialogConfirm($o)
 	
-	CONFIRM:C162(Localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); Localized string:C991("discard"))
-	
-	If (Not:C34(Bool:C1537(OK)))
+	If (Not:C34(Bool:C1537($o.action)))
 		
 		return 
 		
@@ -1637,8 +1479,10 @@ Function Checkout($branch : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateGithubRepository()
 	
+	TRACE:C157
+	
 	var $git : cs:C1710.Git:=This:C1470.Git
-	var $gh:=cs:C1710.gh.new()
+	var $gh:=cs:C1710.gh.me
 	
 	If ($gh.authorized)
 		
@@ -1680,11 +1524,11 @@ Function CreateGithubRepository()
 	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateCommitList()
+Function updateCommits()
 	
 	var $line; $meta; $style : Text
 	var $empty; $separator : Picture
-	var $i; $offset; $x : Integer
+	var $i; $x : Integer
 	var $item
 	var $stash : Object
 	var $svg : cs:C1710.svg
@@ -1709,7 +1553,6 @@ Function updateCommitList()
 	var $today:=Current date:C33
 	var $yesterday : Date:=$today-1
 	
-	//$git.execute("log --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	$git.execute("log --all --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	
 /*
@@ -1719,7 +1562,7 @@ Function updateCommitList()
 3 = time stamp
 4 = sha
 5 = parent short sha
-6 = parent sh
+6 = parent sha
 7 = author mail
 8 = shortened reflog
 9 = ref names
@@ -1850,28 +1693,39 @@ Function updateCommitList()
 		End if 
 		
 		// Mark:Create label
-		$offset:=20
+		var $offset:=20
+		var $label:=$empty
 		
 		If ($o.level=0)
 			
-			var $label:=$graphMain+$separator
+			// Var $label:=$graphMain+$separator
 			
 		Else 
 			
-			$svg:=cs:C1710.svg.new()
-			
-			$svg.width($offset*($o.level+1)).height(30)
-			
-			For ($i; 0; $o.level; 1)
+			// $svg:=cs.svg.new()
+			If ($o.level>=0)
 				
-				$x:=5+($offset*$i)
-				$svg.line($x; 0; $x; 24).color($o.colors[$i]).stroke(2)
+				// $svg.width($offset*($o.level+1)).height(30)
+				For ($i; 0; $o.level; 1)
+					
+					// $x:=5+($offset*$i)
+					// $svg.line($x; 0; $x; 24).color($o.colors[$i]).stroke(2)
+					//$label:=$label+$separator
+					
+				End for 
 				
-			End for 
+				// $svg.circle(3; $x; 10).color($o.colors[$i-1])
+			Else 
+				
+				// $svg.width($offset).height(30)
+				// $x:=5
+				// $svg.line($x; 0; $x; 24).color($o.colors[0]).stroke(2)
+				// $svg.circle(3; $x; 10).color($o.colors[0])
+				//$label:=$label+$separator
+				
+			End if 
 			
-			$svg.circle(3; $x; 10).color($o.colors[$i-1])
-			
-			$label:=$svg.picture()+$separator
+			// $label:=$svg.picture()+$separator
 			
 		End if 
 		
@@ -1914,12 +1768,176 @@ Function updateCommitList()
 	// Restore selection, if any
 	If (This:C1470.commits.item#Null:C1517)
 		
-		var $indx : Integer:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)[0]
-		This:C1470.commits.select($indx+1)
+		$c:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)
 		
+		If ($c.length>0)
+			
+			This:C1470.commits.select($c[0]+1)
+			
+		End if 
 	End if 
 	
 	This:C1470.form.update()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function updateStashes()
+	
+	var $o : Object
+	
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-24)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
+	var $git : cs:C1710.Git:=This:C1470.Git.stash()
+	
+	If ($git.stashes.length=0)
+		
+		return 
+		
+	End if 
+	
+	For each ($o; $git.stashes)
+		
+		$o.type:="stash"
+		
+		$list.Append($o.name)\
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
+			.SetIcon({icon: Form:C1466.icons.stash})
+		
+	End for each 
+	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function updateTags()
+	
+	var $t : Text
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-23)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
+	var $git : cs:C1710.Git:=This:C1470.Git.updateTags()
+	
+	If ($git.tags.length=0)
+		
+		return 
+		
+	End if 
+	
+	var $c : Collection:=$git.FETCH_HEAD("tag")
+	
+	For each ($t; $git.tags)
+		
+		$list.Append($t)\
+			.SetParameter({key: "data"; value: $c.query("tag = :1"; $t).first()})\
+			.SetIcon({icon: Form:C1466.icons.tag})
+		
+	End for each 
+	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function updateRemotes()
+	
+	var $o : Object
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-22)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
+	var $git : cs:C1710.Git:=This:C1470.Git.updateRemotes()
+	
+	If ($git.remotes.length=0)
+		
+		return 
+		
+	End if 
+	
+	var $c : Collection:=$git.REMOTE_ORIGIN()
+	
+	For each ($o; $c)
+		
+		$o.type:="remote"
+		$list.Append($o.name)\
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
+			.SetIcon({icon: Form:C1466.icons["github"]})
+		
+		//.SetIcon({icon: Form.icons[(Position("github.com"; $o.url)>0 ? "github" : "gitlab")]})
+		
+	End for each 
+	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function updateBranches()
+	
+	var $notPulled; $notPushed : Integer
+	var $o : Object
+	
+	var $item : Object:=This:C1470.selector.list.GetItemByReference(-21)
+	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
+	var $git : cs:C1710.Git:=This:C1470.Git.branch()
+	
+	If ($git.branches.length=0)
+		
+		return 
+		
+	End if 
+	
+	For each ($o; $git.branches)
+		
+		$o.type:="branch"
+		
+		// TODO: hieararchical branches
+		// Var $c :=Split string($o.name; "/")
+		
+		$list.Append($o.name)\
+			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
+		
+		If ($o.current)
+			
+			$list.SetIcon({icon: Form:C1466.icons.master})\
+				.SetItemStyle(Bold:K14:2)
+			
+		Else 
+			
+			$list.SetIcon({icon: Form:C1466.icons.branch})
+			
+		End if 
+		
+		$notPushed:=$git.branchPushNumber($o.name)
+		$notPulled:=$git.branchFetchNumber($o.name)
+		
+		Case of 
+				//______________________________________________________
+			: ($notPulled>0) & ($notPushed>0)
+				
+				$list.SetAdditionalText(String:C10($notPushed)+"↑↓"+String:C10($notPulled)+" ")
+				
+				//______________________________________________________
+			: ($notPushed>0)
+				
+				$list.SetAdditionalText(String:C10($notPushed)+"↑ ")
+				
+				//______________________________________________________
+			: ($notPulled>0)
+				
+				$list.SetAdditionalText("↓"+String:C10($notPulled)+" ")
+				
+				//______________________________________________________
+		End case 
+	End for each 
+	
+	If (Not:C34($item.expanded))
+		
+		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
+		
+	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
@@ -1993,7 +2011,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				
 			End if 
 			
-			$svg.image(Form:C1466.icons.github).position(0.6; 0.6)
+			$svg.image(Form:C1466.icons.github)
 			
 			return $svg.picture()
 			
@@ -2004,7 +2022,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				.radius(4).position(0.5; 0.5)\
 				.stroke("blue").fill("lavender").opacity(0.5)
 			
-			$svg.image(Form:C1466.icons.tag).position(1; 1)
+			$svg.image(Form:C1466.icons.tag)
 			
 			$svg.line(21; 0; 21; 20).stroke("blue").opacity(0.5)
 			
@@ -2019,7 +2037,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				.radius(4).position(0.5; 0.5)\
 				.stroke("grey").fill("lightgray").opacity(0.5)
 			
-			$svg.image(Form:C1466.icons.stash).position(1; 1)
+			$svg.image(Form:C1466.icons.stash)
 			
 			$svg.line(21; 0; 21; 20).stroke("grey").opacity(0.5)
 			
@@ -2076,9 +2094,12 @@ Function handleMenus($what : Text; $current : Object)
 		: ($what="delete")
 			
 			var $file:=File:C1566(Convert path POSIX to system:C1107($current.path); fk platform path:K87:2)
-			CONFIRM:C162(Replace string:C233(Localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName))
 			
-			If (Bool:C1537(OK))
+			var $data:={main: Replace string:C233(Localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName)}
+			
+			This:C1470.onDialogConfirm($data)
+			
+			If (Bool:C1537($data.action))
 				
 				File:C1566(Form:C1466.project.parent.parent.path+$current.path).delete()
 				
@@ -2308,3 +2329,56 @@ Function _loadIcons()
 	Form:C1466.iconModified:=$icon
 	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/moved.svg").platformPath; $icon)
 	Form:C1466.iconMoved:=$icon
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Display an alert dialog horizontally centered & at the top 1/3
+Function onDialogAlert($data : Object)
+	
+	$data.type:="alert"
+	This:C1470._onDialogMessage($data)
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Display a confirmation dialog horizontally centered & at the top 1/3
+Function onDialogConfirm($data : Object)
+	
+	$data.type:="confirm"
+	$data.buttons:=$data.buttons || {}
+	$data.buttons.cancel:=True:C214
+	This:C1470._onDialogMessage($data)
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Position the window horizontally centered & at the top 1/3
+Function _onDialogMessage($data : Object)
+	
+	var $bottom; $height; $left; $right; $top; $width : Integer
+	
+	FORM GET PROPERTIES:C674("MESSAGE"; $width; $height)
+	GET WINDOW RECT:C443($left; $top; $right; $bottom)
+	
+	$left+=((($right-$left)-$width)\2)
+	$top+=(($bottom-$top)\3)
+	
+	$data:=$data || {}
+	$data._winRef:=Open form window:C675("MESSAGE"; Movable form dialog box:K39:8+0x00080000; $left; $top)
+	
+	DIALOG:C40("MESSAGE"; $data)
+	CLOSE WINDOW:C154($data._winRef)
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Display a request dialog horizontally centered & at the top 1/3
+Function onDialogRequest($data : Object)
+	
+	var $bottom; $height; $left; $right; $top; $width : Integer
+	
+	FORM GET PROPERTIES:C674("REQUEST"; $width; $height)
+	GET WINDOW RECT:C443($left; $top; $right; $bottom)
+	
+	$left+=((($right-$left)-$width)\2)
+	$top+=(($bottom-$top)\3)
+	
+	$data:=$data || {}
+	$data._winRef:=Open form window:C675("REQUEST"; Movable form dialog box:K39:8+0x00080000; $left; $top)
+	
+	DIALOG:C40("REQUEST"; $data)
+	CLOSE WINDOW:C154($data._winRef)
+	

@@ -256,7 +256,7 @@ Function set title($title : Text)
 		 && ($title[[1]]#Char:C90(1))
 		
 		$t:=Formula from string:C1601("Get localized string:C991($1)"; sk execute in host database:K88:5).call(Null:C1517; $title)
-		$title:=Length:C16($t)>0 ? $t : $title  // Revert if no localization
+		$title:=$t || $title  // Revert if no localization
 		
 	End if 
 	//%W+533.1
