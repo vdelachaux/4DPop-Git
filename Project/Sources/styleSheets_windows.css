@@ -1,3 +1,7 @@
+.mac {
+	visibility: "hidden";
+}
+
 checkbox,
 radio,
 button,

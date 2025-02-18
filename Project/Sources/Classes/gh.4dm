@@ -21,7 +21,7 @@ property history:=[]
 property exe; remote : Text
 property status : Object
 
-Class constructor
+singleton Class constructor
 	
 	This:C1470.available:=This:C1470.getExe()
 	

@@ -11,7 +11,7 @@ property error:=""
 property errors:=[]
 property warning:=""
 property warnings:=[]
-property user:={}
+property user:={name: ""; email: ""}
 property workingBranch:={}
 property branches:=[]
 property changes:=[]
@@ -23,9 +23,14 @@ property HEAD:=""
 property _token:=""
 property BrancUnpulledCommit:=0
 
-property debug:=Structure file:C489=Structure file:C489(*)
+// Mark:Constants
+property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
+property SOURCES:=Folder:C1567("/SOURCES/"; *)
+property DEBUG:=Structure file:C489=Structure file:C489(*)
 
 Class constructor($folder : 4D:C1709.Folder)
+	
+	$folder:=Count parameters:C259<1 ? This:C1470.PACKAGE : $folder
 	
 	// Current workspace
 	This:C1470.workspace:=This:C1470._workspace($folder)
@@ -46,23 +51,23 @@ Class constructor($folder : 4D:C1709.Folder)
 		
 	End if 
 	
-	If (This:C1470.execute("version"))
-		
-		This:C1470._version:=This:C1470.result
-		
-		var $len; $pos : Integer
-		
-		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?(?:\\s\\([^)]*\\))"; This:C1470.result; 1; $pos; $len))
-			
-			This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
-			
-		Else 
-			
-			// Store full result
-			This:C1470._version:=This:C1470.result
-			
-		End if 
-	End if 
+	//If (This.execute("version"))
+	
+	//This._version:=This.result
+	
+	//var $len; $pos : Integer
+	
+	//If (Match regex("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?(?:\\s\\([^)]*\\))"; This.result; 1; $pos; $len))
+	
+	//This._version:=Substring(This.result; $pos; $len)
+	
+	//Else 
+	
+	//// Store full result
+	//This._version:=This.result
+	
+	//End if 
+	//End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	// Obtain user token (same as dependency manager token)
@@ -106,6 +111,8 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 		
 	End if 
 	
+	This:C1470.result:=""
+	
 	If (Length:C16($command)=0)
 		
 		This:C1470._pushError("Missing command parameter")
@@ -126,6 +133,25 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
 	This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
 	
+	Case of 
+			//______________________________________________________
+		: (This:C1470.success)
+			
+			// <NOTHING MORE TO DO>
+			
+			//______________________________________________________
+		: ($command="checkout")
+			
+			This:C1470.success:=($errorStream="Switched to branch @") && ($outputStream="Your branch is up to date with @")
+			
+			//______________________________________________________
+		Else 
+			
+			// A "Case of" statement should never omit "Else"
+			
+			//______________________________________________________
+	End case 
+	
 	This:C1470.history.insert(0; {\
 		cmd: "$ "+$command; \
 		success: This:C1470.success; \
@@ -133,7 +159,7 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 		error: $errorStream\
 		})
 	
-	If (Not:C34(Bool:C1537(This:C1470.debug)))\
+	If (Not:C34(Bool:C1537(This:C1470.DEBUG)))\
 		 && (This:C1470.history.length>20)
 		
 		This:C1470.history.resize(20)
@@ -149,7 +175,8 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 			This:C1470.warning:=""
 			
 			// Delete the last line break, if any
-			This:C1470.result:=Split string:C1554(This:C1470._normalizeLF($outputStream); "\n"; sk ignore empty strings:K86:1).join("\n")
+			var $t : Text:=Split string:C1554(This:C1470._normalizeLF($outputStream); "\n"; sk ignore empty strings:K86:1).join("\n")
+			This:C1470.result:=$t
 			
 			//——————————————————————
 		: (Length:C16($errorStream)>0)
@@ -231,35 +258,55 @@ Function init()
 		
 	End if 
 	
+	This:C1470.user.name:=This:C1470.userName()
+	This:C1470.user.email:=This:C1470.userMail()
+	
 	// Ignore file permission
 	This:C1470.execute("config core.filemode false")
 	
+	//If (This.execute("version"))
+	//This._version:=This.result
+	//var $len; $pos : Integer
+	//If (Match regex("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This.result; 1; $pos; $len))
+	//This._version:=Substring(This.result; $pos; $len)
+	//Else 
+	//// Store full result
+	//This._version:=This.result
+	//End if 
+	//End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function userName() : Text
+	
 	If (This:C1470.execute("config --get user.name"))
 		
-		This:C1470.user.name:=This:C1470.result
+		return Split string:C1554(This:C1470._normalizeLF(This:C1470.history[0].out); "\n"; sk ignore empty strings:K86:1).join("\n")
 		
 	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function userMail() : Text
 	
 	If (This:C1470.execute("config --get user.email"))
 		
-		This:C1470.user.email:=This:C1470.result
+		return Split string:C1554(This:C1470._normalizeLF(This:C1470.history[0].out); "\n"; sk ignore empty strings:K86:1).join("\n")
 		
 	End if 
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function version() : Text
+	
+	var $len; $pos : Integer
+	
 	If (This:C1470.execute("version"))
 		
-		This:C1470._version:=This:C1470.result
-		
-		var $len; $pos : Integer
-		
-		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
+		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?(?:\\s\\([^)]*\\))"; This:C1470.result; 1; $pos; $len))
 			
-			This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
+			return Substring:C12(This:C1470.result; $pos; $len)
 			
 		Else 
 			
-			// Store full result
-			This:C1470._version:=This:C1470.result
+			return This:C1470.result
 			
 		End if 
 	End if 
@@ -283,6 +330,11 @@ Function get lfs() : Boolean
 Function update()
 	
 	This:C1470.HEAD:=Split string:C1554(This:C1470._normalizeLF(This:C1470.root.file("HEAD").getText()); "\n"; sk ignore empty strings:K86:1)[0]
+	
+	This:C1470.user.name:=This:C1470.userName()
+	This:C1470.user.email:=This:C1470.userMail()
+	This:C1470._version:=This:C1470.version()
+	
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Updates the collection of changes and returns their number
@@ -696,7 +748,7 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function checkout($what)
+Function checkout($what) : cs:C1710.Git
 	
 	var $item
 	
@@ -730,6 +782,8 @@ Function checkout($what)
 			
 			//_____________________________
 	End case 
+	
+	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchFetchNumber($branch : Text) : Integer
@@ -993,7 +1047,7 @@ Function open($what : Text)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function stash($name : Text) : cs:C1710.Git
+Function stash($action : Text; $name : Text) : cs:C1710.Git
 	
 	var $line : Text
 	var $i : Integer
@@ -1001,8 +1055,8 @@ Function stash($name : Text) : cs:C1710.Git
 	Case of 
 			
 			//———————————————————————————————————
-		: (Length:C16($name)=0)\
-			 | ($name="list")  // Update list
+		: (Length:C16($action)=0)\
+			 | ($action="list")  // Update list
 			
 			This:C1470.stashes.clear()
 			
@@ -1022,10 +1076,26 @@ Function stash($name : Text) : cs:C1710.Git
 				End for each 
 			End if 
 			
+			//———————————————————————————————————
+		: ($action="snapshot")
+			
+			This:C1470.execute("stash -u"+(Length:C16($name)>0 ? " -m "+$name : "")+" --keep-index")
+			This:C1470.execute("stash apply refs/stash")
+			
+			//———————————————————————————————————
+		: ($action="save")
+			
+			This:C1470.execute("stash -u"+(Length:C16($name)>0 ? " -m "+$name : ""))
+			
+			//———————————————————————————————————
+		: ($action="pop")
+			
+			This:C1470.execute("stash pop")
+			
 			//________________________________________
 		Else 
 			
-			This:C1470._pushError("Unmanaged entrypoint for stash method: "+$name)
+			This:C1470._pushError("Unmanaged entrypoint for stash method: "+$action)
 			
 			//________________________________________
 	End case 
@@ -1078,7 +1148,7 @@ Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
 					If ($path="@/ObjectMethods/@")  // Object method
 						
 						$path:=Replace string:C233($path; "Project/Sources/Forms/"; "")
-						$path:=Replace string:C233($path; "ObjectMethods"; "")
+						$path:=Replace string:C233($path; "ObjectMethods/"; "")
 						return "[projectForm]/"+$path
 						
 					Else   // Form method
@@ -1127,8 +1197,8 @@ Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
 	// Search for the .git folder in the package or in a parent directory 
 Function _workspace($folder : 4D:C1709.Folder) : 4D:C1709.Folder
 	
-	$folder:=$folder#Null:C1517 ? $folder : Folder:C1567("/PACKAGE"; *)
-	$folder:=Folder:C1567($folder.platformPath; fk platform path:K87:2)  // Unsandboxed
+	$folder:=$folder#Null:C1517 ? $folder : This:C1470.PACKAGE
+	//$folder:=Folder($folder.platformPath; fk platform path)  // Unsandboxed
 	
 	While ($folder#Null:C1517)\
 		 && (Not:C34($folder.folder(".git").exists))
@@ -1139,6 +1209,8 @@ Function _workspace($folder : 4D:C1709.Folder) : 4D:C1709.Folder
 				
 				//_________________________________
 			: ($folder=Null:C1517)
+				
+				$folder:=This:C1470.PACKAGE
 				
 				break
 				

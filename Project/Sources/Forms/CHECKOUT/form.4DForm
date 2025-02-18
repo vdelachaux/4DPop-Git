@@ -100,10 +100,11 @@
 				"Static Picture2": {
 					"type": "picture",
 					"top": 97,
-					"left": 201,
+					"left": 202,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/Images/Widget/branch.png"
+					"picture": "/RESOURCES/Images/Main/branch.png",
+					"pictureFormat": "scaled"
 				},
 				"Input": {
 					"type": "input",
@@ -169,7 +170,7 @@
 			}
 		}
 	],
-	"geometryStamp": 204,
+	"geometryStamp": 213,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

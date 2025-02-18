@@ -16,7 +16,7 @@ git push -u origin main
 //var $gh:=cs.GithubAPI.new()
 //var $token : Object:=$gh.getAppToken()
 
-var $gh:=cs:C1710.gh.new()
+var $gh:=cs:C1710.gh.me
 
 //If (Not($gh.authorized))
 //$gh.logIn()

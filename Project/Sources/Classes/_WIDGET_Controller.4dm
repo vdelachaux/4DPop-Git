@@ -6,13 +6,13 @@ property release; lts; alpha : Boolean
 property major; minor; version : Text
 
 // Mark:Constants
-property PACKAGE:=Folder:C1567("/PACKAGE"; *)
+property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
 property SOURCES:=Folder:C1567("/SOURCES/"; *)
 property timer:=20  // Timer value for refresh
 
 // MARK:Delegates 📦
 property form : cs:C1710.form
-property git : cs:C1710.Git
+property Git : cs:C1710.Git
 
 property icon; \
 more; \
@@ -74,26 +74,6 @@ Function init()
 		
 	End if 
 	
-	var $folder:=Folder:C1567(This:C1470.PACKAGE.platformPath; fk platform path:K87:2)  // Unsndboxed
-	
-	While ($folder#Null:C1517)\
-		 && Not:C34($folder.folder(".git").exists)
-		
-		$folder:=$folder.parent
-		
-	End while 
-	
-	If ($folder#Null:C1517)\
-		 && ($folder.exists)
-		
-		This:C1470.git:=cs:C1710.Git.new($folder)
-		
-	Else 
-		
-		This:C1470.git:=Null:C1517
-		
-	End if 
-	
 	Form:C1466.fetchNumber:=0
 	Form:C1466.pushNumber:=0
 	
@@ -131,7 +111,7 @@ Function handleEvents($e : cs:C1710.evt)
 				//==============================================
 			: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
 				
-				This:C1470.git:=cs:C1710.Git.new(Folder:C1567("/PACKAGE"; *))
+				This:C1470.Git:=cs:C1710.Git.new()
 				This:C1470.form.refresh()
 				
 				//==============================================
@@ -168,7 +148,7 @@ Function onLoad()
 	// Update UI
 Function update()
 	
-	var $git : cs:C1710.Git:=This:C1470.git
+	var $git : cs:C1710.Git:=This:C1470.Git
 	
 	If ($git=Null:C1517)
 		
@@ -260,7 +240,7 @@ Function update()
 Function _doChangesMenu()
 	
 	var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
-	var $git : cs:C1710.Git:=This:C1470.git
+	var $git : cs:C1710.Git:=This:C1470.Git
 	
 	If ($git.status()=0)
 		
@@ -393,7 +373,7 @@ Function _doChangesMenu()
 		
 	End if 
 	
-	var $tgt:=This:C1470.git.getTarget($menu.choice; Folder:C1567(fk database folder:K87:14; *))
+	var $tgt:=This:C1470.Git.getTarget($menu.choice; Folder:C1567(fk database folder:K87:14; *))
 	
 	Case of 
 			
@@ -451,7 +431,7 @@ Function _doChangesMenu()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doBranchMenu()
 	
-	var $git : cs:C1710.Git:=This:C1470.git
+	var $git : cs:C1710.Git:=This:C1470.Git
 	
 	$git.branch()
 	
@@ -484,7 +464,7 @@ Function _doBranchMenu()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doMoreMenu()
 	
-	var $git : cs:C1710.Git:=This:C1470.git
+	var $git : cs:C1710.Git:=This:C1470.Git
 	
 	var $menu:=cs:C1710.menu.new()\
 		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
@@ -602,8 +582,7 @@ Function _doMoreMenu()
 				
 			End if 
 			
-			$git.execute("stash -u"+(Length:C16($t)>0 ? " -m "+$t : ""))
-			$git.execute("stash apply refs/stash")
+			$git.stash("snapshot"; $t)
 			
 			//———————————————————————————————————————
 		: ($menu.choice="settings")

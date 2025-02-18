@@ -1,0 +1,228 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"width": 480,
+	"height": 130,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onTimer"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "842pt",
+		"paperHeight": "595pt"
+	},
+	"pages": [
+		{
+			"objects": {
+				"win.topBackgound": {
+					"type": "rectangle",
+					"top": 0,
+					"left": 0,
+					"width": 480,
+					"height": 75,
+					"visibility": "hidden",
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"stroke": "transparent",
+					"fill": "automatic"
+				},
+				"comment": {
+					"type": "input",
+					"top": 49,
+					"left": 109,
+					"width": 351,
+					"height": 14,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.comment",
+					"stroke": "#B1B1B1",
+					"fontTheme": "additional",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"hideFocusRing": true,
+					"showSelection": true,
+					"multiline": "yes",
+					"wordwrap": "normal",
+					"dropping": "none"
+				},
+				"win.bottom.Backgound": {
+					"type": "rectangle",
+					"top": 75,
+					"left": 0,
+					"width": 480,
+					"height": 55,
+					"sizingX": "grow",
+					"sizingY": "move",
+					"fill": "automatic",
+					"stroke": "transparent",
+					"class": "win"
+				},
+				"main": {
+					"type": "input",
+					"top": 20,
+					"left": 109,
+					"width": 351,
+					"height": 16,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.main",
+					"fontTheme": "main",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"hideFocusRing": true,
+					"showSelection": true,
+					"multiline": "yes",
+					"wordwrap": "normal",
+					"dropping": "none"
+				},
+				"additional": {
+					"type": "input",
+					"top": 49,
+					"left": 109,
+					"width": 351,
+					"height": 14,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.additional",
+					"fontTheme": "additional",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"hideFocusRing": true,
+					"showSelection": true,
+					"multiline": "yes",
+					"wordwrap": "normal",
+					"dropping": "none"
+				},
+				"win.separator": {
+					"type": "line",
+					"top": 90,
+					"left": 0,
+					"width": 480,
+					"sizingX": "grow",
+					"sizingY": "move",
+					"class": "win"
+				}
+			}
+		},
+		{
+			"objects": {
+				"userIcon": {
+					"type": "input",
+					"top": 20,
+					"left": 25,
+					"width": 64,
+					"height": 64,
+					"visibility": "hidden",
+					"dataSource": "Form:C1466.icon",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"hideFocusRing": true,
+					"contextMenu": "none",
+					"pictureFormat": "proportionalCenter",
+					"dragging": "none"
+				},
+				"cancel": {
+					"type": "button",
+					"top": 90,
+					"left": 162,
+					"width": 96,
+					"height": 22,
+					"sizingY": "move",
+					"action": "cancel",
+					"shortcutKey": "[Esc]",
+					"text": ":xliff:bCancel",
+					"method": "ObjectMethods/cancel.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"alternate": {
+					"type": "button",
+					"top": 90,
+					"left": 271,
+					"width": 96,
+					"height": 22,
+					"sizingY": "move",
+					"action": "cancel",
+					"text": "xxx",
+					"method": "ObjectMethods/alternate.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"ok": {
+					"type": "button",
+					"top": 90,
+					"left": 380,
+					"width": 80,
+					"height": 22,
+					"sizingY": "move",
+					"dataSource": "OK",
+					"action": "accept",
+					"shortcutKey": "[Return]",
+					"text": ":xliff:bOK",
+					"defaultButton": true,
+					"method": "ObjectMethods/ok.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"option": {
+					"type": "checkbox",
+					"top": 93,
+					"left": 27,
+					"width": 126,
+					"height": 16,
+					"visibility": "hidden",
+					"sizingY": "move",
+					"dataSource": "Form:C1466.buttons.optionValue",
+					"text": "__option__",
+					"events": [
+						"onClick"
+					]
+				},
+				"icon": {
+					"type": "picture",
+					"top": 20,
+					"left": 25,
+					"width": 64,
+					"height": 64,
+					"pictureFormat": "scaled",
+					"picture": "/.PRODUCT_RESOURCES/Images/alert.png"
+				},
+				"badge": {
+					"type": "picture",
+					"top": 60,
+					"left": 66,
+					"width": 26,
+					"height": 26,
+					"visibility": "hidden",
+					"pictureFormat": "scaled",
+					"picture": "/RESOURCES/Images/Server.png"
+				}
+			}
+		}
+	],
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"geometryStamp": 35,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
+}

@@ -68,6 +68,10 @@ Class constructor($param)
 	
 	This:C1470._callback:=Formula:C1597(formCallBack).source
 	
+	var $width; $height; $numPages : Integer
+	FORM GET PROPERTIES:C674(String:C10(This:C1470.name); $width; $height; $numPages)
+	This:C1470.pageNumber:=$numPages
+	
 	Case of 
 			
 			//______________________________________________________
