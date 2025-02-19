@@ -4,7 +4,7 @@ If (Form:C1466.gh.authorized)
 	
 Else 
 	
-	Form:C1466.gh.logIn()
+	Form:C1466.gh.login()
 	
 End if 
 

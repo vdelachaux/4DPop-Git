@@ -1,6 +1,6 @@
 property type; name; version : Text
 property isCompiled; isInterpreted; isDebug; isProject; isBinary; isRemote; isLocal; isServer; isMatrix; isComponent; isDataless; internal : Boolean
-property dataReadOnly; isModifiable : Boolean
+property success; dataReadOnly; isModifiable : Boolean
 property databaseFolder; dataFolder : 4D:C1709.Folder
 property preferencesFolder; settingsFolder; resourcesFolder; userPreferencesFolder : 4D:C1709.Folder
 property structureFile; dataFile; plistFile; buildAppSettingsFile : 4D:C1709.File
@@ -9,9 +9,9 @@ property parameters : Variant
 property project : Object
 property compatibilityVersion : Integer
 
-property motor : cs:C1710.motor
+property errors:=[]
 
-Class extends _classCore
+property motor : cs:C1710.motor
 
 Class constructor($full : Boolean)
 	
@@ -180,14 +180,9 @@ Class constructor($full : Boolean)
 		$custom:=Replace string:C233($custom; "&apos;"; "'")
 		$custom:=Replace string:C233($custom; "&quot;"; "\"")
 		
-		This:C1470.parameters:=This:C1470.isJson($custom) ? JSON Parse:C1218($custom) : $custom
-		
-	End if 
-	
-	If (Not:C34(This:C1470.internal))
-		
-		// Make a _singleton
-		This:C1470.Singletonize(This:C1470)
+		This:C1470.parameters:=Match regex:C1019("\"(?si-m)^(?:\\\\{.*\\\\}$)|(?:^\\\\[.*\\\\]$)\""; $custom; 1; *)\
+			 ? JSON Parse:C1218($custom)\
+			 : $custom
 		
 	End if 
 	
@@ -327,11 +322,9 @@ Function deleteGeometry()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function compile($options : Object) : Boolean
 	
-	var $compile; $error : Object
-	
 	If (Count parameters:C259>0)
 		
-		$compile:=Compile project:C1760($options)
+		var $compile:=Compile project:C1760($options)
 		
 	Else 
 		
@@ -580,6 +573,44 @@ Function _restart($compiled : Boolean; $userParam) : Object
 		This:C1470._pushError(Last errors:C1799.length>0 ? Last errors:C1799[0].message : "Failed to restart the database")
 		
 	End try
+	
+	// MARK:- Private
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _pushError($message : Text)
+	
+	var $current; $o : Object
+	
+	var $c:=Call chain:C1662
+	
+	For each ($o; $c)
+		
+		If (Position:C15("_pushError"; $o.name)#1)
+			
+			$current:=$o
+			break
+			
+		End if 
+	End for each 
+	
+	If ($current#Null:C1517)
+		
+		$message:=$current.name+" - "+(Length:C16($message)>0 ? $message : "Unknown error at line "+String:C10($current.line))
+		
+	Else 
+		
+		If ($c.length>0)
+			
+			$message:=$c[1].name+" - "+(Length:C16($message)>0 ? $message : "Unknown error at line "+String:C10($c[1].line))
+			
+		Else 
+			
+			$message:=Length:C16($message)>0 ? $message : "Unknown but irritating error!"
+			
+		End if 
+	End if 
+	
+	This:C1470.errors.push($message)
+	This:C1470.success:=False:C215
 	
 	//MARK:-⚠️ NOT THREAD SAFE
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===

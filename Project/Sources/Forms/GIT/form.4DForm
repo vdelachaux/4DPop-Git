@@ -262,6 +262,7 @@
 					"alternateFill": "automatic",
 					"borderStyle": "none",
 					"class": "flat",
+					"selectionMode": "multiple",
 					"columns": [
 						{
 							"header": {
@@ -324,6 +325,7 @@
 					"selectedItemsSource": "formGetInstance.staged.items",
 					"metaSource": "formGetInstance.meta(This:C1470)",
 					"fill": "transparent",
+					"selectionMode": "multiple",
 					"columns": [
 						{
 							"header": {
@@ -573,6 +575,18 @@
 					"sizingX": "move",
 					"tooltip": ":xliff:stageAll",
 					"iconFrames": 1
+				},
+				"Button": {
+					"type": "button",
+					"text": "Button",
+					"top": 16,
+					"left": 596,
+					"width": 106,
+					"height": 30,
+					"events": [
+						"onClick"
+					],
+					"method": "ObjectMethods/Button.4dm"
 				}
 			}
 		},
@@ -961,5 +975,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 1019
+	"geometryStamp": 1026
 }

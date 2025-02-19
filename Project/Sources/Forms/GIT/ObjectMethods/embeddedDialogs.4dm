@@ -20,11 +20,15 @@ If ($e.code<0)
 			
 			If ($git.remotes.length=0)
 				
-				var $gh : cs:C1710.gh:=cs:C1710.gh.me
+				var $gh:=cs:C1710.gh.me
 				
 				If (Not:C34($gh.available))
 					
-					$form.alertDialog.show({\
+					$form.onDialogAlert({\
+						title: $gh.lastError; \
+						additional: "Installation instructions can be found at:\n\nhttps://github.com/cli/cli#installation"})
+					
+					//$form.alertDialog.show({\
 						title: $gh.lastError; \
 						additional: "Installation instructions can be found at:\n\nhttps://github.com/cli/cli#installation"})
 					
@@ -32,7 +36,7 @@ If ($e.code<0)
 					
 				End if 
 				
-				If (Not:C34($gh.logIn()))
+				If (Not:C34($gh.login()))
 					
 					return 
 					
@@ -43,8 +47,8 @@ If ($e.code<0)
 				
 				// Add the remote
 				$git.execute("remote add -m -t origin "+$remote)
-				$git.remotes.push({name: "master"; url: $remote})
-				$git.push("origin"; "refs/heads/master")
+				$git.remotes.push({name: $git.currentBranch; url: $remote})
+				$git.push("origin"; $git.currentBranch)
 				
 			Else 
 				
@@ -65,7 +69,11 @@ If ($e.code<0)
 				
 			Else 
 				
-				$form.alertDialog.show({\
+				$form.onDialogAlert({\
+					title: "Error"; \
+					additional: $git.error})
+				
+				//$form.alertDialog.show({\
 					title: "Error"; \
 					additional: $git.error})
 				
@@ -124,7 +132,7 @@ If ($e.code<0)
 			
 			If (Not:C34($success))
 				
-				
+				$form.onDialogAlert({main: "Git encountered an error"; additional: $git.error})
 				
 			End if 
 			

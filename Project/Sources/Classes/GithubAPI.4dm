@@ -5,7 +5,7 @@ property hasToken:=False:C215
 property URL:="https://api.github.com"
 property clientId:="0b65d7deae9a2a88bcf4"
 
-property repo : Object
+property repo; user : Object
 
 property _token : Text
 property latest : 4D:C1709.HTTPRequest

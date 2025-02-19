@@ -23,7 +23,7 @@ property status : Object
 
 singleton Class constructor
 	
-	This:C1470.available:=This:C1470.getExe()
+	This:C1470.available:=This:C1470._exe()
 	
 	If (This:C1470.available)
 		
@@ -39,38 +39,6 @@ singleton Class constructor
 Function get lastError() : Text
 	
 	return This:C1470.errors.length>0 ? This:C1470.errors[0] : ""
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Locates the exe to use
-Function getExe() : Boolean
-	
-	var $cmd; $error; $in; $out : Text
-	
-	If (Is macOS:C1572)
-		
-		$cmd:="find /usr -type f -name gh"
-		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
-		This:C1470.success:=Bool:C1537(OK)
-		
-		If (This:C1470.success)
-			
-			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
-			
-		Else 
-			
-			// Use embedded binary
-			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
-			
-		End if 
-		
-	Else 
-		
-		// Use embedded binary
-		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh.exe")).path
-		
-	End if 
-	
-	return True:C214
 	
 	// MARK:- [auth]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -102,7 +70,7 @@ Function getStatus() : Object
 			return {\
 				host: $c[0]; \
 				user: Substring:C12($c[1]; $pos{1}; $len{1}); \
-				scope: Split string:C1554(Substring:C12($c[4]; Position:C15(":"; $c[4])+1); ","; 2)\
+				scope: Split string:C1554(Substring:C12($c[4]; Position:C15(":"; $c[4])+1); ","; sk trim spaces:K86:2)\
 				}
 			
 		End if 
@@ -112,7 +80,7 @@ Function getStatus() : Object
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Authenticate with a GitHub host.
-Function logIn() : Boolean
+Function login() : Boolean
 	
 	If (This:C1470.authorized)
 		
@@ -170,14 +138,19 @@ Function checkToken() : Boolean
 	/// Create a new GitHub repository.
 Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	
-	This:C1470.logIn()
+	This:C1470.login()
 	
 	If (This:C1470.authorized)
 		
-		var $cmd:=This:C1470.exe+" repo create "
-		$cmd+=This:C1470._compliantRepositoryName($name)
-		$cmd+=$private ? " --private" : " --public"
-		var $worker:=4D:C1709.SystemWorker.new($cmd; This:C1470).wait()
+		var $c:=[\
+			This:C1470.exe; \
+			"repo"; \
+			"create"; \
+			This:C1470._compliantRepositoryName($name); \
+			$private ? "--private" : "--public"\
+			]
+		
+		var $worker:=4D:C1709.SystemWorker.new($c.join(" "); This:C1470).wait()
 		
 		If (This:C1470.success)
 			
@@ -190,28 +163,34 @@ Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	/// Delete a GitHub repository.
 Function deleteRepo($name : Text) : Boolean
 	
-	This:C1470.logIn()
+	This:C1470.login()
 	
 	This:C1470.status:=This:C1470.status || This:C1470.getStatus()
 	
 	If (This:C1470.status.scope.includes("delete_repo"))
 		
-		var $cmd:=This:C1470.exe+" repo delete "
-		$cmd+=This:C1470._compliantRepositoryName($name)
-		$cmd+=" --yes"
-		var $worker:=4D:C1709.SystemWorker.new($cmd; This:C1470).wait()
+		var $c:=[\
+			This:C1470.exe; \
+			"repo"; \
+			"delete"; \
+			This:C1470._compliantRepositoryName($name); \
+			"--yes"\
+			]
+		
+		var $worker:=4D:C1709.SystemWorker.new($c.join(" "); This:C1470).wait()
 		
 		return This:C1470.success
 		
 	Else 
 		
 		// Try to refresh
-		$cmd:=This:C1470.exe+"  auth refresh -h github.com -s delete_repo"
+		var $cmd:=This:C1470.exe+"  auth refresh -h github.com -s delete_repo"
 		$worker:=4D:C1709.SystemWorker.new($cmd; This:C1470).wait()
 		
 		If (This:C1470.success)
 			
 			This:C1470.getStatus()
+			
 			return This:C1470.deleteRepo($name)
 			
 		End if 
@@ -312,6 +291,38 @@ Function onTerminate($worker : 4D:C1709.SystemWorker)
 	End if 
 	
 	// MARK:- Private
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	/// Locates the exe to use
+Function _exe() : Boolean
+	
+	var $error; $in; $out : Text
+	
+	If (Is macOS:C1572)
+		
+		var $cmd:="find /usr -type f -name gh"
+		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
+		This:C1470.success:=Bool:C1537(OK)
+		
+		If (This:C1470.success)
+			
+			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
+			
+		Else 
+			
+			// Use embedded binary
+			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/bin/gh")).path
+			
+		End if 
+		
+	Else 
+		
+		// Use embedded binary
+		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/bin/gh.exe")).path
+		
+	End if 
+	
+	return (Length:C16(This:C1470.exe)>0) && File:C1566(This:C1470.exe).exists
+	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _unsanboxed($target : Object) : Object
 	

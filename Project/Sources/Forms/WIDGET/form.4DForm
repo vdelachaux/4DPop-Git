@@ -26,7 +26,8 @@
 					"dataSourceTypeHint": "integer",
 					"class": "mini infos",
 					"focusable": false,
-					"contextMenu": "none"
+					"contextMenu": "none",
+					"tooltip": ":xliff:numberOfCommitsToBePulled"
 				},
 				"swap": {
 					"type": "picture",
@@ -49,7 +50,8 @@
 					"dataSourceTypeHint": "integer",
 					"contextMenu": "none",
 					"textAlign": "left",
-					"class": "mini infos"
+					"class": "mini infos",
+					"tooltip": ":xliff:numberOfCommitsToBePushed"
 				},
 				"icon": {
 					"type": "button",
@@ -75,50 +77,7 @@
 						"onClick"
 					],
 					"icon": "/RESOURCES/Images/Widget/more.png",
-					"style": "toolbar",
-					"focusable": false
-				},
-				"branch": {
-					"type": "button",
-					"text": "Form.branch",
-					"top": 28,
-					"left": 7,
-					"width": 150,
-					"height": 17,
-					"events": [
-						"onClick"
-					],
-					"icon": "/RESOURCES/Images/Widget/branch.png",
-					"textPlacement": "right",
-					"style": "custom",
-					"popupPlacement": "linked"
-				},
-				"initRepository": {
-					"type": "button",
-					"text": "Init Repository",
-					"top": 33,
-					"left": 27,
-					"width": 123,
-					"height": 20,
-					"events": [
-						"onClick"
-					],
-					"visibility": "hidden"
-				},
-				"localChanges": {
-					"type": "button",
-					"top": 51,
-					"left": 17,
-					"width": 56,
-					"height": 22,
-					"events": [
-						"onClick"
-					],
-					"icon": "/RESOURCES/Images/Widget/changes.png",
-					"textPlacement": "right",
-					"style": "custom",
-					"popupPlacement": "linked",
-					"class": "mini"
+					"style": "toolbar"
 				},
 				"todo": {
 					"type": "button",
@@ -143,11 +102,61 @@
 					],
 					"style": "custom",
 					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagFixMe.png"
+				},
+				"branch": {
+					"type": "button",
+					"text": "Form.branch",
+					"top": 28,
+					"left": 7,
+					"width": 150,
+					"height": 17,
+					"events": [
+						"onClick",
+						"onAlternateClick",
+						"onLongClick"
+					],
+					"icon": "/RESOURCES/Images/Widget/branch.png",
+					"textPlacement": "right",
+					"style": "custom",
+					"popupPlacement": "linked",
+					"method": "ObjectMethods/branch.4dm"
+				},
+				"localChanges": {
+					"type": "button",
+					"top": 51,
+					"left": 17,
+					"width": 56,
+					"height": 22,
+					"events": [
+						"onClick",
+						"onAlternateClick",
+						"onLongClick"
+					],
+					"icon": "/RESOURCES/Images/Widget/changes.png",
+					"textPlacement": "right",
+					"style": "custom",
+					"popupPlacement": "linked",
+					"class": "mini",
+					"tooltip": ":xliff:numberOfChangesInTheLocalDirectory",
+					"method": "ObjectMethods/localChanges.4dm"
+				},
+				"initRepository": {
+					"type": "button",
+					"text": "Init Repository",
+					"top": 31,
+					"left": 12,
+					"width": 134,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"visibility": "hidden",
+					"tooltip": ":xliff:clickToInitializeAsAGitRepository"
 				}
 			}
 		}
 	],
-	"geometryStamp": 906,
+	"geometryStamp": 928,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
