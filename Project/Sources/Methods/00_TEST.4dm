@@ -4,20 +4,33 @@ C_DATE:C307($dateGMT)
 C_LONGINT:C283($lError; $lIAT)
 C_TIME:C306($time; $timeGMT)
 C_TEXT:C284($t; $tContents; $tPrivate; $tResponse; $tToken; $tURL)
-C_TEXT:C284($tVersion)
+
 C_OBJECT:C1216($o; $oJWT; $oPayload)
 
-
+var $git:=cs:C1710.Git.new()
+var $gh:=cs:C1710.gh.me
 
 Case of 
 		
 		//______________________________________________________
 	: (True:C214)
 		
-		var $git:=cs:C1710.Git.new()
+		$gh.deleteRepo("test-git")
+		ASSERT:C1129($gh.success)
+		BEEP:C151
 		
-		var $version:=$git.Version("short")
-		$version:=$git.Version()
+		//______________________________________________________
+	: (True:C214)
+		
+		var $number:=$git.branchFetchNumber("refactor")
+		
+		
+		//______________________________________________________
+	: (True:C214)
+		
+		
+		var $version:=$git.getVersion("short")
+		$version:=$git.getVersion()
 		
 /*
 var $path:=Folder(Folder(fk database folder).platformPath; fk platform path).file("Project/Sources/Methods/GIT.4dm").path

@@ -5,15 +5,16 @@ property currentBranch:=""
 property release; lts; alpha : Boolean
 property major; minor; version : Text
 
-// Mark:Constants
+// MARK: Delegates 📦
+property form : cs:C1710.form
+property Git:=cs:C1710.Git.new()
+
+// MARK: Constants 🧰
 property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
 property SOURCES:=Folder:C1567("/SOURCES/"; *)
 property timer:=20  // Timer value for refresh
 
-// MARK:Delegates 📦
-property form : cs:C1710.form
-property Git : cs:C1710.Git
-
+// MARK: UI 🖥️
 property icon; \
 more; \
 branch; \
@@ -49,13 +50,8 @@ Function init()
 	This:C1470.fetch:=This:C1470.form.Input("fetch").addToGroup(This:C1470.gitItems)
 	This:C1470.swap:=This:C1470.form.Static("swap").addToGroup(This:C1470.gitItems)
 	This:C1470.push:=This:C1470.form.Input("push").addToGroup(This:C1470.gitItems)
+	
 	This:C1470.initRepository:=This:C1470.form.Button("initRepository").addToGroup(This:C1470.gitItems)
-	
-	This:C1470.fetch.setHelpTip("numberOfCommitsToBePulled")
-	This:C1470.push.setHelpTip("numberOfCommitsToBePushed")
-	This:C1470.localChanges.setHelpTip("numberOfChangesInTheLocalDirectory")
-	
-	This:C1470.initRepository.setHelpTip("clickToInitializeAsAGitRepository")
 	
 	var $c:=Split string:C1554(Application version:C493; "")
 	
@@ -92,55 +88,69 @@ Function handleEvents($e : cs:C1710.evt)
 				This:C1470.form.onLoad()
 				
 				//______________________________________________________
-			: ($e.timer)
+			: ($e.timer) || ($e.activate)
 				
 				This:C1470.form.update()
 				
 				//______________________________________________________
 		End case 
 		
-	Else   // <== WIDGETS METHOD
+		return 
 		
-		Case of 
-				
-				//==============================================
-			: (This:C1470.branch.catch($e; On Clicked:K2:4))
-				
-				This:C1470._doBranchMenu()
-				
-				//==============================================
-			: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
-				
-				This:C1470.Git:=cs:C1710.Git.new()
-				This:C1470.form.refresh()
-				
-				//==============================================
-			: (This:C1470.more.catch($e; On Clicked:K2:4))
-				
-				This:C1470._doMoreMenu()
-				
-				//==============================================
-			: (This:C1470.localChanges.catch($e; On Clicked:K2:4))
-				
-				This:C1470._doChangesMenu()
-				
-				//==============================================
-			: (This:C1470.icon.catch($e; On Clicked:K2:4))
-				
-				4DPop Git
-				
-				//==============================================
-			: (This:C1470.todo.catch($e; On Clicked:K2:4))\
-				 | (This:C1470.fixme.catch($e; On Clicked:K2:4))
-				
-				This:C1470._doTagMenu($e.objectName)
-				
-				//==============================================
-		End case 
 	End if 
+	
+	Case of   // <== WIDGETS METHOD
+			
+			//==============================================
+		: (This:C1470.branch.catch($e; [On Clicked:K2:4; On Long Click:K2:37; On Alternative Click:K2:36]))
+			
+			This:C1470._doBranchMenu()
+			
+			//==============================================
+		: (This:C1470.initRepository.catch($e; On Clicked:K2:4))
+			
+			Form:C1466.init:=True:C214
+			This:C1470.form.refresh(60)
+			
+			This:C1470.Git.init()
+			
+			4DPop Git
+			
+			//==============================================
+		: (This:C1470.more.catch($e; On Clicked:K2:4))
+			
+			This:C1470._doMoreMenu()
+			
+			//==============================================
+		: (This:C1470.localChanges.catch($e; [On Clicked:K2:4; On Long Click:K2:37; On Alternative Click:K2:36]))
+			
+			This:C1470._doChangesMenu()
+			
+			//==============================================
+		: (This:C1470.icon.catch($e; On Clicked:K2:4))
+			
+			If (This:C1470.Git.root=Null:C1517) || Not:C34(This:C1470.Git.root.exists)
+				
+				Form:C1466.init:=True:C214
+				This:C1470.form.refresh(60)
+				
+			End if 
+			
+			4DPop Git
+			
+			//==============================================
+		: (This:C1470.todo.catch($e; On Clicked:K2:4))\
+			 | (This:C1470.fixme.catch($e; On Clicked:K2:4))
+			
+			This:C1470._doTagMenu($e.objectName)
+			
+			//==============================================
+	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
+	
+	This:C1470.form.appendEvents([On Clicked:K2:4; On Long Click:K2:37; On Alternative Click:K2:36])
 	
 	This:C1470.form.refresh()
 	
@@ -150,10 +160,27 @@ Function update()
 	
 	var $git : cs:C1710.Git:=This:C1470.Git
 	
-	If ($git=Null:C1517)
+	If (Bool:C1537(Form:C1466.init))
+		
+		$git._updateWorkspace()
+		
+		If ($git.root#Null:C1517) && ($git.root.exists)
+			
+			Form:C1466.init:=False:C215
+			
+		End if 
+	End if 
+	
+	If ($git.root=Null:C1517) || Not:C34($git.root.exists)
 		
 		This:C1470.gitItems.hide()
 		This:C1470.initRepository.show()
+		
+		If (Bool:C1537(Form:C1466.init))
+			
+			This:C1470.form.refresh(60)
+			
+		End if 
 		
 		return 
 		
@@ -204,13 +231,16 @@ Function update()
 				; "{version}"; This:C1470.version))
 			
 		End if 
-		
-		This:C1470.branch.setTitle(This:C1470.currentBranch)
-		This:C1470.branch.bestSize(Align center:K42:3; 50; 140)
-		
 	End if 
 	
+	This:C1470.branch.setTitle(This:C1470.currentBranch)
+	This:C1470.branch.bestSize(Align center:K42:3; 50; 140)
+	
+	$git.branch()
+	This:C1470.branch.linkedPopupMenu:=$git.branches.length>1
+	
 	Form:C1466.branch:=This:C1470.currentBranch
+	
 	
 	Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
 	Form:C1466.pushNumber:=$git.branchPushNumber($branch)
@@ -219,17 +249,15 @@ Function update()
 	
 	If ($changes>0)
 		
-		This:C1470.localChanges.setLinkedPopupMenu()\
-			.setTitle(String:C10($changes))\
-			.bestSize(Align left:K42:2)
+		This:C1470.localChanges.setLinkedPopupMenu().setTitle(String:C10($changes))
 		
 	Else 
 		
-		This:C1470.localChanges.setNoPopupMenu()\
-			.setTitle("0")\
-			.bestSize(Align left:K42:2)
+		This:C1470.localChanges.setNoPopupMenu().setTitle("0")
 		
 	End if 
+	
+	This:C1470.localChanges.bestSize(Align left:K42:2)
 	
 	This:C1470.gitItems.show()
 	This:C1470.initRepository.hide()
@@ -438,12 +466,12 @@ Function _doBranchMenu()
 	If ($git.branches.length>0)
 		
 		var $menu:=cs:C1710.menu.new()
-		
 		var $o : Object
+		var $noChange : Boolean:=$git.status()=0
 		
 		For each ($o; $git.branches)
 			
-			$menu.append($o.name; $o.name).mark($o.current)
+			$menu.append($o.name; $o.name).mark($o.current).enable($o.current || $noChange)
 			
 		End for each 
 		
@@ -453,7 +481,6 @@ Function _doBranchMenu()
 			
 			Form:C1466.branch:=$menu.choice
 			$git.stash("autostash "+String:C10(Current date:C33; ISO date:K1:8))
-			
 			$git.checkout(Form:C1466.branch)
 			RELOAD PROJECT:C1739
 			This:C1470.form.refresh()
@@ -464,17 +491,18 @@ Function _doBranchMenu()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doMoreMenu()
 	
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git : cs:C1710.Git:=This:C1470.Git.branch()
+	var $available : Boolean:=$git.branches.length>0
 	
 	var $menu:=cs:C1710.menu.new()\
-		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
+		.append(":xliff:repoManager"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
 		.line()\
 		.append(":xliff:saveSnapshot"; "snapshot").icon("/RESOURCES/Images/Menus/stash.png")\
 		.line()\
 		.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
-		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($git.execute("config --get remote.origin.url"))\
+		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($available)\
 		.line()\
 		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
 	
@@ -487,13 +515,13 @@ Function _doMoreMenu()
 		
 		If (File:C1566("/usr/local/bin/fork").exists)
 			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png").enable($available)
 			
 		End if 
 		
 		If (File:C1566("/usr/local/bin/github").exists)
 			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png").enable($available)
 			
 		End if 
 		
@@ -503,14 +531,13 @@ Function _doMoreMenu()
 		
 		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
 			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png").enable($available)
 			
 		End if 
 		
 		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/bin/github").exists)
 			
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png").enable($available)
 			
 		End if 
 	End if 
@@ -527,12 +554,12 @@ Function _doMoreMenu()
 			
 			If (Is macOS:C1572)
 				
-				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
+				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; $git.workspace.platformPath)
 				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
 				
 			Else 
 				
-				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").platformPath+" "+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath)
+				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").platformPath+" "+$git.workspace.platformPath)
 				
 			End if 
 			
@@ -541,11 +568,11 @@ Function _doMoreMenu()
 			
 			If (Is macOS:C1572)
 				
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).path+"\"")
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+$git.workspace.path+"\"")
 				
 			Else 
 				
-				LAUNCH EXTERNAL PROCESS:C811("github \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath+"\"")
+				LAUNCH EXTERNAL PROCESS:C811("github \""+$git.workspace.platformPath+"\"")
 				
 			End if 
 			
@@ -553,6 +580,8 @@ Function _doMoreMenu()
 		: ($menu.choice="tool")
 			
 			4DPop Git
+			
+			This:C1470.form.setTimer(100)
 			
 			//———————————————————————————————————————
 		: ($menu.choice="terminal")\

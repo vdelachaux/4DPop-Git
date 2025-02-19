@@ -5,11 +5,10 @@
 	"(SETTINGS)": {},
 	"# 🚧 DEV": {
 		"methods": [
+			"_test API",
 			"00_TEST"
 		],
 		"classes": [
-			"_CLI",
-			"_gitWorker",
 			"GithubAPI"
 		]
 	},
@@ -23,7 +22,6 @@
 			"noError"
 		],
 		"classes": [
-			"_classCore",
 			"color",
 			"error",
 			"feature",
@@ -132,6 +130,14 @@
 		],
 		"classes": [
 			"env"
+		]
+	},
+	"MESSAGE": {
+		"methods": [
+			"HDI_MESSAGE"
+		],
+		"forms": [
+			"MESSAGE"
 		]
 	},
 	"WIDGET": {

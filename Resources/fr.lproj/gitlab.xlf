@@ -270,6 +270,10 @@ avec 4D "{version}"</target>
           <source>Open with {app}</source>
           <target>Ouvrir avec {app}</target>
         </trans-unit>
+        <trans-unit id="iTdA8mAygH2s5d_WjOaUyQ" resname="repoManager">
+          <source>4DPop Git Viewer…</source>
+          <target>4DPop Git Viewer…</target>
+        </trans-unit>
       </group>
       <group resname="File">
         <trans-unit id="RtkC6IdKC4I7IQD0yDnxUQ" resname="modifiedFile">
@@ -322,6 +326,7 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
 
 
 

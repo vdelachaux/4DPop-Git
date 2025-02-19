@@ -29,8 +29,7 @@ property toolbarLeft; \
 commitment; \
 detail : cs:C1710.group
 
-property alertDialog; \
-pullDialog; \
+property pullDialog; \
 pushDialog; \
 checkoutDialog : cs:C1710.onBoard
 
@@ -392,7 +391,7 @@ Function onLoad()
 	// Form values
 	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
 	
-	Form:C1466.version:=This:C1470.Git.Version()
+	Form:C1466.version:=This:C1470.Git.getVersion("short")
 	
 	Form:C1466.unstaged:=[]
 	Form:C1466.staged:=[]
@@ -429,8 +428,8 @@ Function onLoad()
 			//________________________________________________________________________________
 	End case 
 	
-	This:C1470.alertDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "ALERT")
-	This:C1470.alertDialog.me:=This:C1470.alertDialog
+	//This.alertDialog:=cs.onBoard.new("embeddedDialogs"; "ALERT")
+	//This.alertDialog.me:=This.alertDialog
 	
 	This:C1470.pullDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PULL")
 	This:C1470.pullDialog.me:=This:C1470.pullDialog
@@ -712,7 +711,11 @@ Function _selectorManager($e : cs:C1710.evt)
 					
 					RELOAD PROJECT:C1739
 					
-					This:C1470._commitsManager()
+					This:C1470.selector.saveSelection()
+					This:C1470.updateBranches()
+					This:C1470.selector.restoreSelection()
+					
+					This:C1470.form.refresh()
 					
 				End if 
 			End if 
@@ -1479,8 +1482,6 @@ Function Checkout($branch : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateGithubRepository()
 	
-	TRACE:C157
-	
 	var $git : cs:C1710.Git:=This:C1470.Git
 	var $gh:=cs:C1710.gh.me
 	
@@ -1579,6 +1580,12 @@ Function updateCommits()
 			
 			var $node:=True:C214
 			$o.level-=1
+			
+			continue
+			
+		End if 
+		
+		If (Match regex:C1019("^untracked files"; $line; 1; *))
 			
 			continue
 			
@@ -1796,7 +1803,11 @@ Function updateStashes()
 	
 	For each ($o; $git.stashes)
 		
-		$o.type:="stash"
+		Use ($o)
+			
+			$o.type:="stash"
+			
+		End use 
 		
 		$list.Append($o.name)\
 			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
@@ -1858,7 +1869,12 @@ Function updateRemotes()
 	
 	For each ($o; $c)
 		
-		$o.type:="remote"
+		Use ($o)
+			
+			$o.type:="remote"
+			
+		End use 
+		
 		$list.Append($o.name)\
 			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
 			.SetIcon({icon: Form:C1466.icons["github"]})
@@ -1891,7 +1907,11 @@ Function updateBranches()
 	
 	For each ($o; $git.branches)
 		
-		$o.type:="branch"
+		Use ($o)
+			
+			$o.type:="branch"
+			
+		End use 
 		
 		// TODO: hieararchical branches
 		// Var $c :=Split string($o.name; "/")
@@ -2198,7 +2218,7 @@ Function handleMenus($what : Text; $current : Object)
 					//____________________________
 				: ($what="ignoreCustom")
 					
-					var $data:={\
+					$data:={\
 						window: Open form window:C675("PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
 						pattern: $current.path; \
 						files: $git.changes}

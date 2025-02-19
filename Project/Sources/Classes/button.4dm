@@ -75,19 +75,19 @@ Otherwise, the possible values are :
 					: ($value="none")
 						
 						This:C1470.setFormat(";;;;;;;;;;0")
-						This:C1470.removeEvent(On Alternative Click:K2:36)
+						This:C1470.removeEvent([On Alternative Click:K2:36; On Long Click:K2:37])
 						
 						//______________________________________________________
 					: ($value="linked")
 						
 						This:C1470.setFormat(";;;;;;;;;;1")
-						This:C1470.removeEvent(On Alternative Click:K2:36)
+						This:C1470.addEvent(On Clicked:K2:4)
 						
 						//______________________________________________________
 					: ($value="separate")
 						
 						This:C1470.setFormat(";;;;;;;;;;2")
-						This:C1470.addEvent(On Alternative Click:K2:36)
+						This:C1470.addEvent([On Clicked:K2:4; On Alternative Click:K2:36; On Long Click:K2:37])
 						
 						//______________________________________________________
 				End case 
@@ -102,7 +102,7 @@ Otherwise, the possible values are :
 		Else 
 			
 			This:C1470.setFormat(";;;;;;;;;;0")
-			This:C1470.removeEvent(On Alternative Click:K2:36)
+			This:C1470.removeEvent([On Alternative Click:K2:36; On Long Click:K2:37])
 			
 		End if 
 		
