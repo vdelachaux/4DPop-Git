@@ -88,7 +88,7 @@ Function handleEvents($e : cs:C1710.evt)
 				This:C1470.form.onLoad()
 				
 				//______________________________________________________
-			: ($e.timer) || ($e.activate)
+			: ($e.timer)
 				
 				This:C1470.form.update()
 				
@@ -263,7 +263,7 @@ Function update()
 		
 	End if 
 	
-	This:C1470.localChanges.bestSize(Align left:K42:2)
+	This:C1470.localChanges.bestSize({minWidth: 25})
 	
 	This:C1470.gitItems.show()
 	This:C1470.initRepository.hide()
@@ -276,9 +276,8 @@ Function _doChangesMenu()
 	var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
 	var $git : cs:C1710.Git:=This:C1470.Git
 	
-	If ($git.status()=0)
+	If ($git.status()=0)  // No change
 		
-		// No change
 		return 
 		
 	End if 
@@ -441,9 +440,9 @@ Function _doChangesMenu()
 			If (Bool:C1537($tgt.exists))
 				
 				If ($tgt.extension=".zip")\
-					 | ($tgt.extension=".dmg")\
-					 | ($tgt.extension=".dylib")\
-					 | ($tgt.extension=".4D@")
+					 || ($tgt.extension=".dmg")\
+					 || ($tgt.extension=".dylib")\
+					 || ($tgt.extension=".4D@")
 					
 					SHOW ON DISK:C922($tgt.platformPath)
 					

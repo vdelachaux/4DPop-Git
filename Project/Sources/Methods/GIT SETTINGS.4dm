@@ -6,8 +6,6 @@
 // ----------------------------------------------------
 #DECLARE($run : Boolean)
 
-var $winRef : Integer
-
 If (Count parameters:C259=0)
 	
 	BRING TO FRONT:C326(New process:C317(Current method name:C684; 0; Current method name:C684; True:C214; *))
@@ -18,7 +16,7 @@ End if
 If (Is macOS:C1572)\
  && (Form:C1466#Null:C1517)
 	
-	$winRef:=Open form window:C675("SETTINGS"; Sheet form window:K39:12)
+	var $winRef:=Open form window:C675("SETTINGS"; Sheet form window:K39:12)
 	
 Else 
 	
