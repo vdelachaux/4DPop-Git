@@ -7,7 +7,7 @@ C_TEXT:C284($t; $tContents; $tPrivate; $tResponse; $tToken; $tURL)
 
 C_OBJECT:C1216($o; $oJWT; $oPayload)
 
-var $git:=cs:C1710.Git.new()
+var $git:=cs:C1710.Git.me
 var $gh:=cs:C1710.gh.me
 
 Case of 
@@ -100,7 +100,7 @@ $git.diff($path)
 		//______________________________________________________
 	: (False:C215)
 		
-		$o:=cs:C1710.Git.new()
+		$o:=cs:C1710.Git.me
 		
 		$o.execute("log --abbrev-commit --oneline")
 		$o.execute("log --abbrev-commit --format=%s,%an,%h,%aD")

@@ -14,7 +14,7 @@ If (Count parameters:C259=0)
 	
 End if 
 
-var $git:=cs:C1710.Git.new()
+var $git:=cs:C1710.Git.me
 
 If ($git.root=Null:C1517) || Not:C34($git.root.exists)
 	

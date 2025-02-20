@@ -7,7 +7,14 @@ property autostash:=False:C215
 
 property darkMode : Boolean
 
-// Mark:Constants
+property pages:={changes: 1; commits: 2}
+
+property checkout:={\
+stash: True:C214; \
+noChange: False:C215; \
+discard: False:C215}
+
+// MARK: Constants 🧰
 // FIXME:Manage all cases 🐞
 property UNSTAGED_STATUS:=["??"; " M"; " D"; " R"; " C"]  //; "MD"; "AM"; "AD"]
 property STAGED_STATUS:=["A "; "D "; "M "; "R "; "C "]
@@ -18,13 +25,11 @@ property MODIFIED_FILE:=Localized string:C991("modifiedFile")
 property DELETED_FILE:=Localized string:C991("fileRemoved")
 property BINARY_FILE:=Localized string:C991("binaryFile")
 
-property pages:={changes: 1; commits: 2}
-
-property checkout:={stash: False:C215; noChange: False:C215; discard: False:C215}
-
 // MARK:Delegates 📦
 property form : cs:C1710.form
+property Git:=cs:C1710.Git.me
 
+// MARK: UI 🖥️
 property toolbarLeft; \
 commitment; \
 detail : cs:C1710.group
@@ -75,10 +80,6 @@ property authorAvatar : cs:C1710.picture
 
 property selector : cs:C1710.hList
 
-property Git:=cs:C1710.Git.new()
-
-///.PRODUCT_RESOURCES/Internal Components/development.4dbase/Contents/Resources/images/toolbox/resources.png
-
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
@@ -126,7 +127,7 @@ Function init()
 	APPEND TO LIST:C376($list; "Tags"; -23; New list:C375; False:C215)
 	APPEND TO LIST:C376($list; "stashes"; -24; New list:C375; True:C214)
 	This:C1470.selector:=This:C1470.form.HList("selector"; $list)
-	This:C1470.selector.properties:={lineHeight: 25}
+	This:C1470.selector.properties:={lineHeight: 25; expandCollapseOnDoubleClick: False:C215}
 	
 	// Mark:Page 1️⃣ Changes
 	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
@@ -480,14 +481,18 @@ Function update()
 			
 			For each ($o; Form:C1466.unstaged)
 				
-				$o.added:=$o.status="??"
-				$o.modified:=$o.status="@M@"
-				$o.deleted:=$o.status="@D@"
-				
-				$o.icon:=$o.modified ? Form:C1466.iconModified\
-					 : $o.deleted ? Form:C1466.iconDeleted\
-					 : $o.added ? Form:C1466.iconAdded\
-					 : Null:C1517
+				Use ($o)
+					
+					$o.added:=$o.status="??"
+					$o.modified:=$o.status="@M@"
+					$o.deleted:=$o.status="@D@"
+					
+					$o.icon:=$o.modified ? Form:C1466.iconModified\
+						 : $o.deleted ? Form:C1466.iconDeleted\
+						 : $o.added ? Form:C1466.iconAdded\
+						 : Null:C1517
+					
+				End use 
 				
 			End for each 
 			
@@ -495,17 +500,20 @@ Function update()
 			
 			For each ($o; Form:C1466.staged)
 				
-				$o.added:=$o.status="@A@"
-				$o.modified:=$o.status="@M@"
-				$o.deleted:=$o.status="@D@"
-				$o.moved:=$o.status="@R@"
-				
-				$o.icon:=$o.modified ? Form:C1466.iconModified\
-					 : $o.deleted ? Form:C1466.iconDeleted\
-					 : $o.moved ? Form:C1466.iconMoved\
-					 : $o.added ? Form:C1466.iconAdded\
-					 : Null:C1517
-				
+				Use ($o)
+					
+					$o.added:=$o.status="@A@"
+					$o.modified:=$o.status="@M@"
+					$o.deleted:=$o.status="@D@"
+					$o.moved:=$o.status="@R@"
+					
+					$o.icon:=$o.modified ? Form:C1466.iconModified\
+						 : $o.deleted ? Form:C1466.iconDeleted\
+						 : $o.moved ? Form:C1466.iconMoved\
+						 : $o.added ? Form:C1466.iconAdded\
+						 : Null:C1517
+					
+				End use 
 			End for each 
 			
 			// Mark:Restore selections
@@ -666,6 +674,11 @@ Function onActivate()
 	
 	This:C1470.selector.restoreSelection()
 	
+	This:C1470.selector.properties:={\
+		expandCollapseOnDoubleClick: False:C215; \
+		multiSelections: False:C215; \
+		editable: False:C215}
+	
 	This:C1470.form.refresh()
 	
 	//Mark:-Managers
@@ -687,38 +700,55 @@ Function _selectorManager($e : cs:C1710.evt)
 			// ______________________________________________________
 		: ($e.doubleClick)
 			
-			If ($data.ref#Null:C1517)\
-				 && (Not:C34(Bool:C1537($data.current)))  // && it is a branch
-				
-				If ($data.name#This:C1470.Git.currentBranch)
+			Case of 
 					
-					var $git : cs:C1710.Git:=This:C1470.Git
+					// …………………………………………………………………………
+				: ($data.ref=Null:C1517)
 					
-					If ($git.status()>0)
+					// <NOTHING MORE TO DO>
+					
+					// …………………………………………………………………………
+				: ($data.type="remote")
+					
+					// TODO: Checkout if not in local directory
+					
+					// …………………………………………………………………………
+				: ($data.type="branch")\
+					 && (Not:C34(Bool:C1537($data.current)))
+					
+					If ($data.name#Form:C1466.currentBranch)
 						
-						This:C1470.checkoutDialog.show({\
-							branch: $data.name; \
-							stash: This:C1470.checkout.stash; \
-							noChange: This:C1470.checkout.noChange; \
-							discard: This:C1470.checkout.discard\
-							})
+						Form:C1466.currentBranch:=$data.name
 						
-						return 
+						var $git : cs:C1710.Git:=This:C1470.Git
+						
+						If ($git.status()>0)
+							
+							This:C1470.checkoutDialog.show({\
+								branch: $data.name; \
+								stash: This:C1470.checkout.stash; \
+								noChange: This:C1470.checkout.noChange; \
+								discard: This:C1470.checkout.discard\
+								})
+							
+							return 
+							
+						End if 
+						
+						This:C1470.Git.checkout($data.name)
+						
+						RELOAD PROJECT:C1739
+						
+						This:C1470.selector.saveSelection()
+						This:C1470.updateBranches()
+						This:C1470.selector.restoreSelection()
+						
+						This:C1470.form.refresh()
 						
 					End if 
 					
-					This:C1470.Git.checkout($data.name)
-					
-					RELOAD PROJECT:C1739
-					
-					This:C1470.selector.saveSelection()
-					This:C1470.updateBranches()
-					This:C1470.selector.restoreSelection()
-					
-					This:C1470.form.refresh()
-					
-				End if 
-			End if 
+					// …………………………………………………………………………
+			End case 
 			
 			// ______________________________________________________
 		: ($e.click)
@@ -1591,6 +1621,7 @@ Function updateCommits()
 			
 		End if 
 		
+		
 		CLEAR VARIABLE:C89($style)
 		
 		var $tags:=[Null:C1517; Null:C1517; Null:C1517]
@@ -1603,7 +1634,7 @@ Function updateCommits()
 			
 		End if 
 		
-		var $metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+		var $metas:=$c.length>=10 ? Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2) : []
 		
 		If ($metas.length>0)
 			
@@ -1921,6 +1952,8 @@ Function updateBranches()
 		
 		If ($o.current)
 			
+			Form:C1466.currentBranch:=$o.name
+			
 			$list.SetIcon({icon: Form:C1466.icons.master})\
 				.SetItemStyle(Bold:K14:2)
 			
@@ -1952,6 +1985,8 @@ Function updateBranches()
 				//______________________________________________________
 		End case 
 	End for each 
+	
+	//$list.properties
 	
 	If (Not:C34($item.expanded))
 		

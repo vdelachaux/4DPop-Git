@@ -11,13 +11,14 @@
 	"windowMaxHeight": 32767,
 	"events": [
 		"onLoad",
-		"onTimer"
+		"onTimer",
+		"onPageChange"
 	],
 	"destination": "detailScreen",
 	"pages": [
 		{
 			"objects": {
-				"Button": {
+				"page1": {
 					"type": "button",
 					"text": "Git",
 					"top": 20,
@@ -30,9 +31,9 @@
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/git.png",
 					"iconFrames": 1,
-					"method": "ObjectMethods/Button.4dm"
+					"method": "ObjectMethods/page1.4dm"
 				},
-				"Button1": {
+				"page2": {
 					"type": "button",
 					"text": "Github",
 					"top": 20,
@@ -45,7 +46,7 @@
 					"style": "toolbar",
 					"icon": "/RESOURCES/Images/github.svg",
 					"iconFrames": 1,
-					"method": "ObjectMethods/Button1.4dm"
+					"method": "ObjectMethods/page2.4dm"
 				},
 				"Line2": {
 					"type": "line",
@@ -78,6 +79,14 @@
 					"iconFrames": 4,
 					"action": "cancel",
 					"visibility": "hidden"
+				},
+				"selector": {
+					"type": "rectangle",
+					"top": 248,
+					"left": 41,
+					"width": 52,
+					"height": 51,
+					"stroke": "#1e90ff"
 				}
 			}
 		},
@@ -207,7 +216,7 @@
 		}
 	],
 	"method": "method.4dm",
-	"geometryStamp": 272,
+	"geometryStamp": 281,
 	"inheritedForm": "_TEMPLATE",
 	"editor": {
 		"groups": {
