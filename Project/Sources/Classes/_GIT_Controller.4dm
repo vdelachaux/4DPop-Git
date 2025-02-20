@@ -389,6 +389,8 @@ Function onLoad()
 	This:C1470.diff.font:="Courier"
 	This:C1470.diff.fontSize:=14
 	
+	This:C1470.form.appendEvents(On Alternative Click:K2:36)
+	
 	// Form values
 	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
 	
@@ -688,7 +690,19 @@ Function _selectorManager($e : cs:C1710.evt)
 	$e:=$e || cs:C1710.evt.new()
 	
 	var $list : cs:C1710.hierList:=This:C1470.selector.list
-	var $data : Object:=$e.doubleClick ? Form:C1466.selectedBranch : $list.GetParameter({key: "data"; type: Is object:K8:27})
+	var $data : Object:=$e.doubleClick || $e.click ? Form:C1466.selectedBranch : $list.GetParameter({key: "data"; type: Is object:K8:27})
+	
+	If ($data=Null:C1517)
+		
+		var $c:=This:C1470.selector.parameters
+		var $o : Object:=$c.length>0 ? $c.query("name = data").first() : Null:C1517
+		
+		If ($o#Null:C1517)
+			
+			$data:=$o.value
+			
+		End if 
+	End if 
 	
 	Case of 
 			
@@ -710,42 +724,13 @@ Function _selectorManager($e : cs:C1710.evt)
 					// …………………………………………………………………………
 				: ($data.type="remote")
 					
-					// TODO: Checkout if not in local directory
+					// TODO: Create local branch
 					
 					// …………………………………………………………………………
 				: ($data.type="branch")\
 					 && (Not:C34(Bool:C1537($data.current)))
 					
-					If ($data.name#Form:C1466.currentBranch)
-						
-						Form:C1466.currentBranch:=$data.name
-						
-						var $git : cs:C1710.Git:=This:C1470.Git
-						
-						If ($git.status()>0)
-							
-							This:C1470.checkoutDialog.show({\
-								branch: $data.name; \
-								stash: This:C1470.checkout.stash; \
-								noChange: This:C1470.checkout.noChange; \
-								discard: This:C1470.checkout.discard\
-								})
-							
-							return 
-							
-						End if 
-						
-						This:C1470.Git.checkout($data.name)
-						
-						RELOAD PROJECT:C1739
-						
-						This:C1470.selector.saveSelection()
-						This:C1470.updateBranches()
-						This:C1470.selector.restoreSelection()
-						
-						This:C1470.form.refresh()
-						
-					End if 
+					This:C1470.handleMenus("checkout"; $data)
 					
 					// …………………………………………………………………………
 			End case 
@@ -755,7 +740,52 @@ Function _selectorManager($e : cs:C1710.evt)
 			
 			If (Contextual click:C713)
 				
-				// TODO: Contextual menu
+				var $menu:=cs:C1710.menu.new()
+				
+				Case of 
+						
+						// …………………………………………………………………………
+					: ($data.ref=Null:C1517)
+						
+						// <NOTHING MORE TO DO>
+						
+						// …………………………………………………………………………
+					: ($data.type="remote")
+						
+						// TODO: Create local branch
+						
+						// …………………………………………………………………………
+					: ($data.type="tag")
+						
+						$menu.append("Copy tag name"; "copyName")
+						
+						// …………………………………………………………………………
+					: ($data.type="stash")
+						
+						// TODO: Apply | Rename | Delete
+						
+						// …………………………………………………………………………
+					: ($data.type="branch")
+						
+						If ($data.name#Form:C1466.currentBranch)
+							
+							$menu.append("Checkout \""+$data.name+"\""; "checkout")\
+								.line()
+							
+						End if 
+						
+						$menu.append("Copy branch name"; "copyName")
+						
+						// …………………………………………………………………………
+				End case 
+				
+				If (Not:C34($menu.popup().selected))
+					
+					return 
+					
+				End if 
+				
+				This:C1470.handleMenus($menu.choice; $data)
 				
 			End if 
 			
@@ -770,7 +800,7 @@ Function _selectorManager($e : cs:C1710.evt)
 				
 				If ($data#Null:C1517)
 					
-					var $c : Collection:=Form:C1466.commits.indices("fingerprint.short = :1 OR fingerprint.long = :1"; String:C10($data.ref))
+					$c:=Form:C1466.commits.indices("fingerprint.short = :1 OR fingerprint.long = :1"; String:C10($data.ref))
 					
 					If ($c.length>0)\
 						 && ($c[0]#-1)
@@ -1870,8 +1900,11 @@ Function updateTags()
 	
 	For each ($t; $git.tags)
 		
+		var $o:=$c.query("tag = :1"; $t).first()
+		$o.type:="tag"
+		
 		$list.Append($t)\
-			.SetParameter({key: "data"; value: $c.query("tag = :1"; $t).first()})\
+			.SetParameter({key: "data"; value: $o})\
 			.SetIcon({icon: Form:C1466.icons.tag})
 		
 	End for each 
@@ -2114,7 +2147,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	$svg.close()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function handleMenus($what : Text; $current : Object)
+Function handleMenus($what : Text; $data : Object)
 	
 	$what:=$what || Get selected menu item parameter:C1005
 	var $git : cs:C1710.Git:=This:C1470.Git
@@ -2138,7 +2171,12 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="copy")
 			
-			SET TEXT TO PASTEBOARD:C523($current.path)
+			SET TEXT TO PASTEBOARD:C523($data.path)
+			
+			//______________________________________________________
+		: ($what="copyName")
+			
+			SET TEXT TO PASTEBOARD:C523($data.name || $data.tag)
 			
 			//______________________________________________________
 		: ($what="discard")
@@ -2148,15 +2186,14 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="delete")
 			
-			var $file:=File:C1566(Convert path POSIX to system:C1107($current.path); fk platform path:K87:2)
+			var $file:=File:C1566(Convert path POSIX to system:C1107($data.path); fk platform path:K87:2)
+			var $o:={main: Replace string:C233(Localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName)}
 			
-			var $data:={main: Replace string:C233(Localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName)}
+			This:C1470.onDialogConfirm($o)
 			
-			This:C1470.onDialogConfirm($data)
-			
-			If (Bool:C1537($data.action))
+			If (Bool:C1537($o.action))
 				
-				File:C1566(Form:C1466.project.parent.parent.path+$current.path).delete()
+				File:C1566(Form:C1466.project.parent.parent.path+$data.path).delete()
 				
 				RELOAD PROJECT:C1739
 				
@@ -2169,7 +2206,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="open")
 			
-			var $tgt : Variant:=This:C1470.Git.getTarget($current.path)
+			var $tgt : Variant:=This:C1470.Git.getTarget($data.path)
 			
 			Case of 
 					
@@ -2205,7 +2242,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="show")
 			
-			SHOW ON DISK:C922(File:C1566("/PACKAGE/"+$current.path; *).platformPath)
+			SHOW ON DISK:C922(File:C1566("/PACKAGE/"+$data.path; *).platformPath)
 			
 			//______________________________________________________
 		: ($what="stage")
@@ -2225,23 +2262,22 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="ignore@")
 			
-			$file:=File:C1566($current.path)
+			$file:=File:C1566($data.path)
 			
-			var $gitignore:=$git.workspace.file(".gitignore")
-			var $ignore:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
+			var $ignore:=$git.gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
 			Case of 
 					
 					//____________________________
 				: ($what="ignoreFile")
 					
-					If ($current.status#"??")
+					If ($data.status#"??")
 						
-						$git.untrack($current.path)
+						$git.untrack($data.path)
 						
 					End if 
 					
-					$ignore+="\r"+$current.path
+					$ignore+="\r"+$data.path
 					
 					//____________________________
 				: ($what="ignoreExtension")
@@ -2255,7 +2291,7 @@ Function handleMenus($what : Text; $current : Object)
 					
 					$data:={\
 						window: Open form window:C675("PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
-						pattern: $current.path; \
+						pattern: $data.path; \
 						files: $git.changes}
 					
 					DIALOG:C40("PATTERN"; $data)
@@ -2275,12 +2311,43 @@ Function handleMenus($what : Text; $current : Object)
 					//____________________________
 			End case 
 			
-			$gitignore.setText($ignore; "UTF-8"; Document with LF:K24:22)
+			$git.gitignore.setText($ignore; "UTF-8"; Document with LF:K24:22)
 			
 			$git.status()
 			
 			This:C1470.form.refresh()
 			
+			//______________________________________________________
+		: ($what="checkout")
+			
+			If ($data.name#Form:C1466.currentBranch)
+				
+				Form:C1466.currentBranch:=$data.name
+				
+				If ($git.status()>0)
+					
+					This:C1470.checkoutDialog.show({\
+						branch: $data.name; \
+						stash: This:C1470.checkout.stash; \
+						noChange: This:C1470.checkout.noChange; \
+						discard: This:C1470.checkout.discard\
+						})
+					
+					return 
+					
+				End if 
+				
+				This:C1470.Git.checkout($data.name)
+				
+				RELOAD PROJECT:C1739
+				
+				This:C1470.selector.saveSelection()
+				This:C1470.updateBranches()
+				This:C1470.selector.restoreSelection()
+				
+				This:C1470.form.refresh()
+				
+			End if 
 			//______________________________________________________
 		Else 
 			

@@ -106,20 +106,16 @@
 				"branch": {
 					"type": "button",
 					"text": "Form.branch",
-					"top": 28,
-					"left": 7,
-					"width": 150,
+					"top": 25,
+					"left": 5,
+					"width": 152,
 					"height": 17,
 					"events": [
-						"onClick",
-						"onAlternateClick",
-						"onLongClick"
+						"onClick"
 					],
 					"icon": "/RESOURCES/Images/Widget/branch.png",
 					"textPlacement": "right",
-					"style": "custom",
-					"popupPlacement": "linked",
-					"method": "ObjectMethods/branch.4dm"
+					"style": "custom"
 				},
 				"localChanges": {
 					"type": "button",
@@ -128,17 +124,13 @@
 					"width": 56,
 					"height": 22,
 					"events": [
-						"onClick",
-						"onAlternateClick",
-						"onLongClick"
+						"onClick"
 					],
 					"icon": "/RESOURCES/Images/Widget/changes.png",
 					"textPlacement": "right",
 					"style": "custom",
-					"popupPlacement": "linked",
 					"class": "mini",
-					"tooltip": ":xliff:numberOfChangesInTheLocalDirectory",
-					"method": "ObjectMethods/localChanges.4dm"
+					"tooltip": ":xliff:numberOfChangesInTheLocalDirectory"
 				},
 				"initRepository": {
 					"type": "button",
@@ -156,7 +148,7 @@
 			}
 		}
 	],
-	"geometryStamp": 928,
+	"geometryStamp": 935,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

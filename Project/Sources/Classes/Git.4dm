@@ -21,9 +21,8 @@ property stashes:=[]
 property tags:=[]
 property HEAD:=""
 property _token:=""
-//property BranchUnpulledCommit:=0
 
-// Mark:Constants
+// MARK: Constants 🧰
 property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
 property SOURCES:=Folder:C1567("/SOURCES/"; *)
 property DEBUG:=Structure file:C489=Structure file:C489(*)

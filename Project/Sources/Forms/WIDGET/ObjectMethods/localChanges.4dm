@@ -1,1 +1,0 @@
-// FIXME: Events are not triggered if there is no method for custom buttons.

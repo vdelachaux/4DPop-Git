@@ -89,6 +89,12 @@ Otherwise, the possible values are :
 						This:C1470.setFormat(";;;;;;;;;;2")
 						This:C1470.addEvent([On Clicked:K2:4; On Alternative Click:K2:36; On Long Click:K2:37])
 						
+						// Enable events at the form level
+						ARRAY LONGINT:C221($codes; 0)
+						APPEND TO ARRAY:C911($codes; On Long Click:K2:37)
+						APPEND TO ARRAY:C911($codes; On Alternative Click:K2:36)
+						OBJECT SET EVENTS:C1239(*; ""; $codes; Enable events others unchanged:K42:38)
+						
 						//______________________________________________________
 				End case 
 				
