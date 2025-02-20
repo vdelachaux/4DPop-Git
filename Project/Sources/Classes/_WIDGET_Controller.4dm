@@ -7,7 +7,7 @@ property major; minor; version : Text
 
 // MARK: Delegates 📦
 property form : cs:C1710.form
-property Git:=cs:C1710.Git.new()
+property Git:=cs:C1710.Git.me
 
 // MARK: Constants 🧰
 property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
@@ -164,7 +164,8 @@ Function update()
 		
 		$git._updateWorkspace()
 		
-		If ($git.root#Null:C1517) && ($git.root.exists)
+		If ($git.root#Null:C1517)\
+			 && ($git.root.exists)
 			
 			Form:C1466.init:=False:C215
 			
@@ -186,7 +187,13 @@ Function update()
 		
 	End if 
 	
-	var $branch : Text:=Form:C1466.branch || $git.currentBranch
+	If ($git.branches.length=0)
+		
+		$git.branch()
+		
+	End if 
+	
+	var $branch : Text:=$git.branches.query("current = true").first().name
 	
 	If ($branch#This:C1470.currentBranch)
 		
@@ -204,12 +211,12 @@ Function update()
 			If (This:C1470.release)
 				
 				$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
-					 || (This:C1470.currentBranch=(This:C1470.major+"RX"))
+					 || (This:C1470.currentBranch=(This:C1470.major+"Rx"))
 				
 			Else 
 				
 				$success:=(This:C1470.currentBranch=(This:C1470.version+"@"))\
-					 || (This:C1470.currentBranch=(This:C1470.major+".X"))
+					 || (This:C1470.currentBranch=(This:C1470.major+".x"))
 				
 			End if 
 		End if 
@@ -240,7 +247,6 @@ Function update()
 	This:C1470.branch.linkedPopupMenu:=$git.branches.length>1
 	
 	Form:C1466.branch:=This:C1470.currentBranch
-	
 	
 	Form:C1466.fetchNumber:=$git.branchFetchNumber($branch)
 	Form:C1466.pushNumber:=$git.branchPushNumber($branch)

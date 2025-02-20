@@ -130,9 +130,11 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 			// <NOTHING MORE TO DO>
 			
 			// —————————————————————— ⚠️ In some cases, the result can be found in the error stream
-		: ($command="checkout")
+		: ($command="@checkout@")
 			
-			This:C1470.success:=($errorStream="Switched to branch @") && ($outputStream="Your branch is up to date with @")
+			This:C1470.success:=(($errorStream="Switched to branch @") && ($outputStream="Your branch is up to date with @"))\
+				 || ($errorStream="@switched to branch@")\
+				 || ($errorStream="Already on @")
 			
 			// ——————————————————————
 	End case 
@@ -1039,12 +1041,23 @@ shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 			//———————————————————————————————————
 		: ($action="save")
 			
-			This:C1470.execute("stash -u"+(Length:C16($name)>0 ? " -m "+$name : ""))
+/*This.execute("stash -u"+(Length($name)>0 ? " -m "+$name : ""))*/
+			
+			If (Length:C16($name)>0)
+				
+				This:C1470.execute("stash --all --include-untracked -m "+$name)
+				
+			Else 
+				
+				This:C1470.execute("stash push --all --include-untracked")
+				
+			End if 
+			
 			
 			//———————————————————————————————————
 		: ($action="pop")
 			
-			This:C1470.execute("stash pop")
+			This:C1470.execute("stash pop --quiet")
 			
 			//________________________________________
 		Else 

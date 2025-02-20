@@ -10,7 +10,7 @@ Case of
 		//______________________________________________________
 	: ($e.load)
 		
-		Form:C1466.git:=cs:C1710.Git.new()
+		Form:C1466.git:=cs:C1710.Git.me
 		
 		OBJECT SET ENTERABLE:C238(*; "ghAvailable"; False:C215)
 		OBJECT SET ENTERABLE:C238(*; "ghAuthorized"; False:C215)
@@ -34,14 +34,24 @@ Case of
 		SET TIMER:C645(-1)
 		
 		//______________________________________________________
+	: ($e.pageChange)
+		
+		SET TIMER:C645(-1)
+		
+		//______________________________________________________
 	: ($e.timer)
 		
 		SET TIMER:C645(0)
 		
+		var $page:=FORM Get current page:C276
+		
+		OBJECT GET COORDINATES:C663(*; "page"+String:C10($page); $left; $top; $right; $bottom)
+		OBJECT SET COORDINATES:C1248(*; "selector"; $left; $top-5; $right; $bottom)
+		
 		Case of 
 				
 				//______________________________________________________
-			: (FORM Get current page:C276=1)
+			: ($page=1)
 				
 				If (Form:C1466.instances#Null:C1517)
 					
@@ -59,9 +69,8 @@ Case of
 				ARRAY LONGINT:C221($pos; 0x0000)
 				
 				var $exe : Text
+				
 				For each ($exe; ["/usr/local/bin/git"; "/usr/bin/git"; "4DPop Git"])
-					
-					//var $file : 4D.File:=$exe="4DPop Git" ? File(File("/RESOURCES/bin/git").platformPath; fk platform path) : File($exe)
 					
 					If ($exe="4DPop Git")
 						
@@ -136,7 +145,7 @@ Case of
 				End if 
 				
 				//______________________________________________________
-			: (FORM Get current page:C276=2)
+			: ($page=2)
 				
 				OBJECT SET TITLE:C194(*; "log"; Form:C1466.gh.authorized ? "Logout" : "Login…")
 				OBJECT SET VISIBLE:C603(*; "log"; True:C214)

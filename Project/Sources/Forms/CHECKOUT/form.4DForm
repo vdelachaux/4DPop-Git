@@ -43,7 +43,7 @@
 				},
 				"ok": {
 					"type": "button",
-					"text": "Pull",
+					"text": "Checkout",
 					"top": 198,
 					"left": 389,
 					"width": 78,
