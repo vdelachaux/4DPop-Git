@@ -314,6 +314,11 @@ Function get lastRef() : Integer
 	
 	return This:C1470[""].uid
 	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set lastRef($ref : Integer)
+	
+	This:C1470[""].uid:=$ref  // 0 if omitted
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Deselect all items
 Function unselect()

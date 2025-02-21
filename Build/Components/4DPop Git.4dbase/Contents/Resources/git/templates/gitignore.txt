@@ -1,0 +1,69 @@
+# Ignore invisible files/folders except .gitignore
+.*
+!.git*
+
+#--------------------------------
+# Ignore data file
+#--------------------------------
+[dD][aA][tT][aA]/
+*.4DD
+*.4DIndx
+*.4DIndy
+*.Match
+*.journal
+
+#--------------------------------
+# Ignore derived data
+#--------------------------------
+Project/DerivedData/
+
+#--------------------------------
+# Ignore settings & preferences
+#--------------------------------
+Preferences/
+!4DPop AppMaker.*
+
+Settings/
+!buildApp.4DSettings
+
+userPreferences.*/
+
+#--------------------------------
+# Ignore Trash
+#--------------------------------
+Project/Trash/
+
+#--------------------------------
+# Ignore backup
+#--------------------------------
+*.4BK
+backupHistory.json
+
+#--------------------------------
+# Miscellaneous
+#--------------------------------
+*__Orphan__*
+*symbols.txt
+ehthumbs.db
+Thumbs.db
+
+Resources/php.ini
+
+Components/
+!Build/Components
+
+Project/Sources/Methods/Method*.4dm
+Project/Sources/Methods/00_*.4dm
+
+Libraries/lib4d-arm64.dylib
+
+DEV/
+
+#--------------------------------
+# [!] Never omit forms
+#--------------------------------
+!**/Forms/*/
+
+#--------------------------------
+# Added by user
+#--------------------------------

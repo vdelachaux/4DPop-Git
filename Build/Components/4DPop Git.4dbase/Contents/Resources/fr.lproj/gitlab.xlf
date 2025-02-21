@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xliff version="1.0" xmlns:d4="http://www.4d.com/d4-ns">
+
+  <file datatype="plaintext" original="Undefined" source-language="en" target-language="fr">
+    <header>
+      <prop-group name="4DPop XLIFF Pro">
+        <prop prop-type="version">3.1</prop>
+      </prop-group>
+    </header>
+    <body>
+      <group resname="dialog">
+        <trans-unit id="dMFxr5Xj0AH1qBl3qia+dQ" resname="workspace">
+          <source>WORKSPACE</source>
+          <target>ESPACE DE TRAVAIL</target>
+        </trans-unit>
+        <trans-unit id="ZqzIky_4T6wr9uni1_5qTQ" resname="index">
+          <source>INDEX</source>
+          <target>INDEX</target>
+        </trans-unit>
+        <trans-unit id="A_tVonj+_Sgw29iHS8T5xg" resname="stage">
+          <source>Stage</source>
+          <target>Indexer</target>
+        </trans-unit>
+        <trans-unit id="lTizPW6zjeqSJOZjj7CXHg" resname="unstage">
+          <source>Unstage</source>
+          <target>Désindexer</target>
+        </trans-unit>
+        <trans-unit id="AyO2m8EiXOgZFA05LyFSMw" resname="amend">
+          <source>Amend the last commit</source>
+          <target>Modifier le dernier commit</target>
+        </trans-unit>
+        <trans-unit id="2tjglcIuUs+iqgqzc7GhaA" resname="commit">
+          <source>Commit</source>
+          <target>Valider</target>
+        </trans-unit>
+        <trans-unit id="m1eCt3Zer7FJr1B7LYLu5g" resname="fetch">
+          <source>Fetch</source>
+          <target>Récupérer</target>
+        </trans-unit>
+        <trans-unit id="KGxiVBp7ZwvrYL47c9ukmw" resname="pull">
+          <source>Pull</source>
+          <target>Tirer</target>
+        </trans-unit>
+        <trans-unit id="PTg1qHngd9RKJmByw1R4og" resname="push">
+          <source>Push</source>
+          <target>Pousser</target>
+        </trans-unit>
+        <trans-unit id="Ns9zxuxcdnyD_+nRGs_EWA" resname="open">
+          <source>Open in…</source>
+          <target>Ouvrir dans…</target>
+        </trans-unit>
+        <trans-unit id="epR84MCiFWzBS5y1JmovAg" resname="changes">
+          <source>Changes</source>
+          <target>Modifications</target>
+        </trans-unit>
+        <trans-unit id="oPUK6zDP1HgG1_zUvx1KQQ" resname="stageAll">
+          <source>Stage All</source>
+          <target>Tout indexer</target>
+        </trans-unit>
+        <trans-unit id="vJ9IbrPhw87DGL+HOXxXYw" resname="unstageAll">
+          <source>Unstage All</source>
+          <target>Tout désindexer</target>
+        </trans-unit>
+        <trans-unit id="AQLyod9JsgSAg5zSXmsj2g" resname="ignore">
+          <source>Ignore</source>
+          <target>Ignorer</target>
+        </trans-unit>
+        <trans-unit id="Rh32j6qet6CVP95knSSQAQ" resname="ignoreAllExtensionFiles">
+          <source>Ignore All "{extension}" Files</source>
+          <target>Ignorer tous les fichiers "{extension}"</target>
+        </trans-unit>
+        <trans-unit id="RiZW9flrLvgH5T_HOqUcpg" resname="customPattern">
+          <source>Custom Pattern…</source>
+          <target>Motif personnalisé…</target>
+        </trans-unit>
+        <trans-unit id="ESwBerHeKRWhhZ4eZKHHCA" resname="showInFinder">
+          <source>Show in Finder</source>
+          <target>Afficher dans le Finder</target>
+        </trans-unit>
+        <trans-unit id="f5P_vS0d8N1G_nnZlGE4IA" resname="discardChanges">
+          <source>Discard Changes…</source>
+          <target>Ne pas retenir…</target>
+        </trans-unit>
+        <trans-unit id="CEdi+WcxF9sGLukdC30Dig" resname="externalDiff">
+          <source>External Diff</source>
+          <target>Diff externe</target>
+        </trans-unit>
+        <trans-unit id="7t5qSSDMWY4845d8ROE8KA" resname="discard">
+          <source>Discard</source>
+          <target>Rejeter</target>
+        </trans-unit>
+        <trans-unit id="OPdyJO+MPMGl95uQTWY+_w" resname="doYouWantToDiscardAllChangesInTheSelectedFiles">
+          <source>Do you want to discard all changes in the selected files?
+
+All uncommitted changes will be lost.</source>
+          <target>Voulez-vous écarter toutes les modifications des fichiers sélectionnés?
+
+Toutes les modifications non validées seront perdues.</target>
+        </trans-unit>
+        
+        
+        
+        <trans-unit id="PpfP4oF59uHwzvf1ucvTCw" resname="allCommits">
+          <source>History</source>
+          <target>Historique</target>
+        </trans-unit>
+        <trans-unit id="THAQ+mal4QRJV+0bEylrPA" resname="commitSubject">
+          <source>Commit Subject</source>
+          <target>Message</target>
+        </trans-unit>
+        <trans-unit id="FhEte77oUzoXDpK7VyAz8g" resname="description">
+          <source>Description</source>
+          <target>Description</target>
+        </trans-unit>
+        <trans-unit id="_eyMZ4K1DaJMWuOxzdidTg" resname="ignoreFile">
+          <source>Ignore file "{file}"</source>
+          <target>Ignorer le fichier "{file}"</target>
+        </trans-unit>
+        <trans-unit id="xDCrNzQQXeVDcLivamDhXA" resname="cancel">
+          <source>Cancel</source>
+          <target>Annuler</target>
+        </trans-unit>
+        <trans-unit id="zVH3KHCrVTxP+GE9uSsWMA" resname="validate">
+          <source>Validate</source>
+          <target>Valider</target>
+        </trans-unit>
+        <trans-unit id="aNVFBeFMSXaQ443hdSjT5w" resname="copyPath">
+          <source>Copy Path</source>
+          <target>Copier le chemin</target>
+        </trans-unit>
+        <trans-unit id="5hb6hqhz9VDsPTjwt7mYdw" resname="deleteLocalFile">
+          <source>Delete local file</source>
+          <target>Supprimer le fichier local</target>
+        </trans-unit>
+        <trans-unit id="SWGm9PkXcypHYSKG+ywBeQ" resname="areYouSureYouWantToDeleteTheFile">
+          <source>Are you sure you want to delete the file "{name}"?</source>
+          <target>Voulez-vous vraiment supprimer le fichier "{name}"?</target>
+        </trans-unit>
+        <trans-unit id="xQasXoJ2ScXIbgFos23kvg" resname="gitNotInstalled">
+          <source>Git not installed.
+
+Do you want to download the installer?</source>
+          <target>Git n'est pas installé.
+
+Voulez-vous télécharger l'installateur ?</target>
+        </trans-unit>
+        <trans-unit id="JooE3WNXydNpOb1u6CueRw" resname="name(optional)">
+          <source>Name (optional)</source>
+          <target>Nom (facultatif)</target>
+        </trans-unit>
+        <trans-unit id="TnqtftaBecYGx68P3zexgQ" resname="local">
+          <source>Local</source>
+          <target>Local</target>
+        </trans-unit>
+      </group>
+      <group resname="pattern">
+        <trans-unit id="RxY9OfmekBpp22bMfG8PUQ" resname="addPatternToGitignore">
+          <source>Add Pattern to .gitignore</source>
+          <target>Ajouter une règle à .gitignore</target>
+        </trans-unit>
+        <trans-unit id="FPchc0C+7qGzQgH8yostCA" resname="gitUsesGlobbingPatternsToMatchAgainstFileNames">
+          <source>Git uses globbing patterns to match against file names. </source>
+          <target>Git utilise des motifs (globbing) qu'il compare aux noms de fichier.</target>
+        </trans-unit>
+        <trans-unit id="g7xqnub2LMc8gJ8TAKc5DA" resname="clicHelpButtonToGetMoreInformationsAboutThePatternFormats">
+          <source>Clic help button to get more informations about the pattern formats.</source>
+          <target>Cliquez sur le bouton d'aide pour obtenir plus d'informations sur les formats de motif.</target>
+        </trans-unit>
+        <trans-unit id="GXmqCSnsFVIwgUGXzONsNQ" resname="pattern">
+          <source>Pattern</source>
+          <target>Motif</target>
+        </trans-unit>
+        <trans-unit id="p6nJ2poDIxFT5ZT2iaeSqw" resname="preview">
+          <source>Preview</source>
+          <target state="new">Preview</target>
+        </trans-unit>
+        <trans-unit id="og8Wgzw6ygbAQ+yLRM2LMA" resname="filesMatches">
+          <source>{count} files matches</source>
+          <target>{count} fichiers correspondent</target>
+        </trans-unit>
+      </group>
+      <group resname="initialization">
+        <trans-unit id="7jWwytnJHt3zXJnnRc8D7w" resname="thisDatabaseIsNotUnderGitControl">
+          <source>This database is not under git control.</source>
+          <target>Cette base de données n'est pas sous le contrôle de git.</target>
+        </trans-unit>
+        <trans-unit id="bYmOW_vbfk7dr+Nl2wHDHw" resname="initializeTheGitRepository">
+          <source>Initialize the git repository</source>
+          <target>Initialiser le dépôt git</target>
+        </trans-unit>
+        <trans-unit id="TlElQfWi6HbpN1BaM333BA" resname="thisDatabaseIsUnderGitSourceControlButNotAtThisLevel">
+          <source>This database is under git source control but not at this level.
+
+Initialize a git repository here anyway?</source>
+          <target>Cette base de données est sous le contrôle de git mais pas à ce niveau.
+
+Initialiser un dépôt git ici quand même ?</target>
+        </trans-unit>
+      </group>
+      <group resname="widget">
+        <trans-unit id="eZs4Us+h3PmEW8itkkIiaQ" resname="clickToInitializeAsAGitRepository">
+          <source>Click to initialize as a git repository</source>
+          <target>Cliquer pour initialiser le dépôt git</target>
+        </trans-unit>
+        <trans-unit id="Jz5U+6rwKrzQVtbJtol+fw" resname="numberOfCommitsToBePulled">
+          <source>Number of commits to be pulled</source>
+          <target>Nombre de commits à récupérer</target>
+        </trans-unit>
+        <trans-unit id="y6OQq0OV4_3Qk8Cd7kGVcA" resname="numberOfCommitsToBePushed">
+          <source>Number of commits to be pushed</source>
+          <target>Nombre de commits à envoyer</target>
+        </trans-unit>
+        <trans-unit id="ZDWZU0_Xxrm_HpR3wYapxw" resname="numberOfChangesInTheLocalDirectory">
+          <source>Number of changes in the local directory</source>
+          <target>Nombre de modifications dans le répertoire local</target>
+        </trans-unit>
+        <trans-unit id="vqr16GW3Hw3H9dsw6das1w" resname="IsTheCurrentBranch">
+          <source>"{branch}" is the current branch</source>
+          <target>"{branch}" est la branche courante</target>
+        </trans-unit>
+        <trans-unit id="Hso4Db_Z0G+C2O5xrHwudQ" resname="warningBranch">
+          <source>⚠️ You are editing the"{branch}" branch of "{project}"
+with 4D "{version}"</source>
+          <target>⚠️ Vous éditez la branche "{branch}" de "{project}"
+avec 4D "{version}"</target>
+        </trans-unit>
+        <trans-unit id="q7Ma8DFf_d2FwID04ZQjzA" resname="classes">
+          <source>Classes</source>
+          <target>Classes</target>
+        </trans-unit>
+        <trans-unit id="SFO3+Dos8Z5Hacf_fKL9tg" resname="methods">
+          <source>Methods</source>
+          <target>Methodes</target>
+        </trans-unit>
+        <trans-unit id="o4YfQPB2QVvTKL39hSg2dQ" resname="forms">
+          <source>Forms</source>
+          <target>Formulaires</target>
+        </trans-unit>
+        <trans-unit id="roarkVsThS2KfrL4f_3Vgg" resname="others">
+          <source>Others</source>
+          <target>Autres</target>
+        </trans-unit>
+        <trans-unit id="5N134rZTSSKlnkrUrsmAZg" resname="fileDeleted">
+          <source>The file "{path}" has been deleted</source>
+          <target>Le fichier "{path}" a été supprimé</target>
+        </trans-unit>
+      </group>
+      <group resname="menus">
+        <trans-unit id="OMGlwYp9spkzVPJ6kuRh+Q" resname="openInTerminal">
+          <source>Open in Terminal</source>
+          <target>Ouvrir dans le terminal</target>
+        </trans-unit>
+        <trans-unit id="2z6PlpDFqQh7xxbLvwHr7w" resname="showOnDisk">
+          <source>Show on disk</source>
+          <target>Montrer sur le disque</target>
+        </trans-unit>
+        <trans-unit id="i8PfSN8MP5qVSkRKKacP4w" resname="viewOnGithub">
+          <source>View on Github</source>
+          <target>Voir sur Github</target>
+        </trans-unit>
+        <trans-unit id="7YawiGZW9c2mLJ0cLKDY9A" resname="refresh">
+          <source>Refresh</source>
+          <target>Actualiser</target>
+        </trans-unit>
+        <trans-unit id="1RqbUAsfb2UASwgY39iNqw" resname="saveSnapshot">
+          <source>Save Snapshot</source>
+          <target>Enregistrer l'instantané</target>
+        </trans-unit>
+        <trans-unit id="MRlvf5HFK2R9n75HQrSNug" resname="openWith">
+          <source>Open with {app}</source>
+          <target>Ouvrir avec {app}</target>
+        </trans-unit>
+        <trans-unit id="iTdA8mAygH2s5d_WjOaUyQ" resname="repoManager">
+          <source>4DPop Git Viewer…</source>
+          <target>4DPop Git Viewer…</target>
+        </trans-unit>
+      </group>
+      <group resname="File">
+        <trans-unit id="RtkC6IdKC4I7IQD0yDnxUQ" resname="modifiedFile">
+          <source>Modified file</source>
+          <target>Fichier modifié</target>
+        </trans-unit>
+        <trans-unit id="zKOZOTTl853p25Dr_P9mZw" resname="newFile">
+          <source>New file</source>
+          <target>Nouveau fichier</target>
+        </trans-unit><trans-unit id="+za1OrqoL57PkN28OtwcrA" resname="fileRemoved">
+          <source>File deleted</source>
+          <target>Fichier supprimé</target>
+        </trans-unit>
+        <trans-unit id="gWWLclEEdScAY1ykZJlCOQ" resname="binaryFile">
+          <source>Binary file</source>
+          <target>Fichier binaire</target>
+        </trans-unit>
+        <trans-unit id="vTuBNtZPtuTQguHei7LDKQ" resname="fileMoved">
+          <source>File moved
+    • From: {origin}
+    • To: {dest}</source>
+          <target>Fichier déplacé
+    • De : {origin}
+    • Ves : {dest}</target>
+        </trans-unit>
+      </group>
+      <group resname="Common">
+        <trans-unit id="_QV+y3JxwqeVyIptkO6CTw" resname="today">
+          <source>Today</source>
+          <target>Aujourd'hui</target>
+        </trans-unit>
+        <trans-unit id="cv5Ce93eSnhanKPcvz7pOA" resname="yesterday">
+          <source>Yesterday</source>
+          <target>Hier</target>
+        </trans-unit>
+        <trans-unit id="hEdnZc25Q8UIww3FAsrc0w" resname="bOK">
+          <source>OK</source>
+          <target>OK</target>
+        </trans-unit>
+        <trans-unit id="KOaM1JL0HW3O72JV0RBGHA" resname="bCancel">
+          <source>Cancel</source>
+          <target>Annuler</target>
+        </trans-unit>
+      </group>
+      <group resname="GitHub">
+        <trans-unit id="V8K672oPrhbaPX2ZGutoFw" resname="thisCodeHasBeenPlacedOnTheClipboard">
+          <source>This code has been placed on the clipboard, so you can paste it when you need it</source>
+          <target>Ce code a été placé dans le presse-papiers, afin que vous puissiez le coller lorsque vous en aurez besoin.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</xliff>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" font-family="'lucida grande','segoe UI',sans-serif" font-size="12" height="18" preserveAspectRatio="none" shape-rendering="crispEdges" stroke="black" text-rendering="geometricPrecision" viewport-fill="none" width="18" xmlns:vdl="https://github.com/vdelachaux" xmlns:xlink="http://www.w3.org/1999/xlink">
-
-  <rect fill="darkviolet" height="14" rx="3" stroke="aliceblue" width="14" x="2" y="2"/>
-
-  <text fill="aliceblue" font-size="14" font-weight="bold" stroke="aliceblue" x="2" y="14">→</text>
-
-</svg>

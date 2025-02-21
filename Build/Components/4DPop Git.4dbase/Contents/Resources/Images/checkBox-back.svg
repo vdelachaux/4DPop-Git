@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" height="284" width="112" shape-rendering="crispEdges">
+  <g fill="none" vector-effect="non-scaling-stroke">
+    <!-- false -->
+    <rect height="69" stroke="white" width="99%" x="0.5" y="1"/>
+    <!--   true -->
+    <rect height="68" stroke="#48a7ee" stroke-width="2" width="97%" x="1.5" y="72"/>
+    <!--   false rollover -->
+    <rect height="69" stroke="#48a7ee" width="99%" x="0.5" y="142.5"/>
+    <!--   true rollover -->
+    <rect height="69" stroke="#48a7ee" width="99%" x="0.5" y="213.5"/>
+    <!--   Disabled -->
+    <rect height="69" stroke="none" width="99%" x="0.5" y="284.5"/>
+  </g>
+</svg>
