@@ -36,7 +36,8 @@ detail : cs:C1710.group
 
 property pullDialog; \
 pushDialog; \
-checkoutDialog : cs:C1710.onBoard
+checkoutDialog; \
+newBranchDialog : cs:C1710.onBoard
 
 property changes; \
 history; \
@@ -448,6 +449,9 @@ Function onLoad()
 	This:C1470.checkoutDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "CHECKOUT")
 	This:C1470.checkoutDialog.me:=This:C1470.pushDialog
 	
+	This:C1470.newBranchDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "NEW BRANCH")
+	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
+	
 	This:C1470.goToPage(This:C1470.pages.changes)
 	
 	This:C1470.form.refresh()
@@ -764,6 +768,13 @@ Function _selectorManager($e : cs:C1710.evt)
 					// …………………………………………………………………………
 			End case 
 			
+			If (This:C1470.form.pageNumber=2)
+				
+				// TODO: WIP Create branch
+				//$menu.append("New Branch…"; "newBranch")
+				
+			End if 
+			
 			If (Not:C34($menu.popup().selected))
 				
 				return 
@@ -807,7 +818,7 @@ Function _selectorManager($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _openManager()
 	
-	var $menu:=cs:C1710.menu.new()
+	var $menu:=cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
 	
 	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
@@ -2336,10 +2347,23 @@ Function handleMenus($what : Text; $data : Object)
 				
 			End if 
 			//______________________________________________________
+		: ($what="newBranch")
+			
+			This:C1470.newBranchDialog.show({\
+				at: $data.ref; \
+				label: $data.name; \
+				branch: ""; \
+				checkout: True:C214; \
+				stash: This:C1470.checkout.stash; \
+				noChange: This:C1470.checkout.noChange; \
+				discard: This:C1470.checkout.discard\
+				})
+			
+			//
+			//______________________________________________________
 		Else 
 			
 			ALERT:C41("Unmanaged tool: \""+$what+"\"…\r\rWe are going tout doux 🤒")
-			
 			
 			//———————————————————————————————————————
 	End case 

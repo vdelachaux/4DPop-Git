@@ -25,29 +25,53 @@
 			"objects": {
 				"main": {
 					"type": "rectangle",
-					"top": 56,
+					"top": 25,
 					"left": 52,
 					"width": 436,
-					"height": 202,
+					"height": 262,
 					"borderRadius": 10,
 					"fill": "automatic",
 					"stroke": "automatic"
 				},
+				"Group Box": {
+					"type": "groupBox",
+					"text": "Branch",
+					"top": 62,
+					"left": 108,
+					"width": 359,
+					"height": 89
+				},
+				"Rectangle": {
+					"type": "rectangle",
+					"top": 102,
+					"left": 204,
+					"width": 247,
+					"height": 21,
+					"fill": "automatic"
+				},
+				"Group Box1": {
+					"type": "groupBox",
+					"text": "Local changes",
+					"top": 157,
+					"left": 108,
+					"width": 359,
+					"height": 89
+				},
 				"title": {
 					"type": "text",
-					"top": 70,
+					"top": 39,
 					"left": 108,
 					"width": 365,
 					"height": 16,
 					"fontTheme": "main",
-					"text": "Checkout"
+					"text": "New Branch"
 				},
 				"ok": {
 					"type": "button",
-					"text": "Checkout",
-					"top": 218,
-					"left": 389,
-					"width": 78,
+					"text": "Create and Checkout",
+					"top": 255,
+					"left": 309,
+					"width": 158,
 					"height": 22,
 					"events": [
 						"onClick"
@@ -62,7 +86,7 @@
 				},
 				"Static Picture1": {
 					"type": "picture",
-					"top": 70,
+					"top": 43,
 					"left": 68,
 					"width": 32,
 					"height": 32,
@@ -72,8 +96,8 @@
 				"cancel": {
 					"type": "button",
 					"text": "Cancel",
-					"top": 218,
-					"left": 291,
+					"top": 255,
+					"left": 211,
 					"width": 78,
 					"height": 22,
 					"events": [
@@ -88,17 +112,17 @@
 				},
 				"additional1": {
 					"type": "text",
-					"text": "Switch to:",
-					"top": 97,
-					"left": 108,
-					"width": 93,
+					"text": "Name:",
+					"top": 106,
+					"left": 120,
+					"width": 73,
 					"height": 13,
 					"fontTheme": "additional",
 					"textAlign": "right"
 				},
 				"Static Picture2": {
 					"type": "picture",
-					"top": 95,
+					"top": 104,
 					"left": 207,
 					"width": 16,
 					"height": 16,
@@ -108,24 +132,19 @@
 				"Input": {
 					"type": "input",
 					"left": 226,
-					"top": 95,
-					"width": 138,
+					"top": 104,
+					"width": 223,
 					"height": 17,
 					"dataSource": "Form:C1466.branch",
-					"class": "infos"
-				},
-				"Group Box1": {
-					"type": "groupBox",
-					"text": "Local changes",
-					"top": 120,
-					"left": 108,
-					"width": 359,
-					"height": 89
+					"class": "",
+					"borderStyle": "none",
+					"placeholder": "Enter Branch Name",
+					"hideFocusRing": true
 				},
 				"Radio Button": {
 					"type": "radio",
 					"text": "Don't change",
-					"top": 139,
+					"top": 176,
 					"left": 207,
 					"width": 136,
 					"height": 18,
@@ -139,7 +158,7 @@
 				"Radio Button1": {
 					"type": "radio",
 					"text": "Stash and reaply",
-					"top": 162,
+					"top": 199,
 					"left": 207,
 					"width": 136,
 					"height": 18,
@@ -153,7 +172,7 @@
 				"Radio Button2": {
 					"type": "radio",
 					"text": "Discard",
-					"top": 185,
+					"top": 222,
 					"left": 207,
 					"width": 136,
 					"height": 18,
@@ -163,11 +182,73 @@
 					"radioGroup": "change",
 					"dataSource": "Form:C1466.discard",
 					"dataSourceTypeHint": "boolean"
+				},
+				"additional3": {
+					"type": "text",
+					"text": "At:",
+					"top": 83,
+					"left": 113,
+					"width": 78,
+					"height": 13,
+					"fontTheme": "additional",
+					"textAlign": "right"
+				},
+				"Static Picture4": {
+					"type": "picture",
+					"top": 81,
+					"left": 207,
+					"width": 16,
+					"height": 16,
+					"picture": "/RESOURCES/Images/Main/master.png",
+					"pictureFormat": "scaled"
+				},
+				"Input1": {
+					"type": "input",
+					"left": 224,
+					"top": 81,
+					"width": 59,
+					"height": 17,
+					"dataSource": "Form:C1466.at",
+					"class": "infos",
+					"stroke": "#c0c0c0"
+				},
+				"checkout": {
+					"type": "checkbox",
+					"text": "Check out",
+					"top": 127,
+					"left": 207,
+					"width": 232,
+					"height": 16,
+					"events": [
+						"onClick"
+					],
+					"dataSourceTypeHint": "boolean",
+					"dataSource": "Form:C1466.checkout"
+				},
+				"Input2": {
+					"type": "input",
+					"left": 282,
+					"top": 81,
+					"width": 169,
+					"height": 17,
+					"dataSource": "Form:C1466.label",
+					"class": "infos"
 				}
-			}
+			},
+			"entryOrder": [
+				"Input",
+				"Radio Button",
+				"Radio Button1",
+				"Radio Button2",
+				"cancel",
+				"ok",
+				"checkout",
+				"Input2",
+				"Input1"
+			]
 		}
 	],
-	"geometryStamp": 267,
+	"geometryStamp": 407,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
