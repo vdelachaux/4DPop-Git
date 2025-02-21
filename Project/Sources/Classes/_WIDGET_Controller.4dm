@@ -298,13 +298,13 @@ Function _doChangesMenu()
 				//______________________________________________________
 			: ($c.indexOf("Classes")=2)
 				
-				$classes:=$classes || cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
+				$classes:=$classes || cs:C1710.menu.new({embedded: True:C214})
 				$classes.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			: ($c.indexOf("Forms")=2)
 				
-				$forms:=$forms || cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
+				$forms:=$forms || cs:C1710.menu.new({embedded: True:C214})
 				
 				Case of 
 						
@@ -329,20 +329,20 @@ Function _doChangesMenu()
 				//______________________________________________________
 			: ($c.indexOf("Methods")=2)
 				
-				$methods:=$methods || cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
+				$methods:=$methods || cs:C1710.menu.new({embedded: True:C214})
 				$methods.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			Else 
 				
-				$others:=$others || cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
+				$others:=$others || cs:C1710.menu.new({embedded: True:C214})
 				$others.append($c.join("/"); $o.path).icon($icon)
 				
 				//______________________________________________________
 		End case 
 	End for each 
 	
-	$menu:=cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
+	$menu:=cs:C1710.menu.new({embedded: True:C214})
 	
 	If ($classes#Null:C1517)
 		
@@ -502,9 +502,8 @@ Function _doMoreMenu()
 	var $available : Boolean:=$git.branches.length>0
 	
 	
-	var $menu:=cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
-	
-	$menu.append(":xliff:repoManager"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
+	var $menu:=cs:C1710.menu.new({embedded: True:C214})\
+		.append(":xliff:repoManager"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
 		.line()\
 		.append(":xliff:saveSnapshot"; "snapshot").icon("/RESOURCES/Images/Menus/stash.png")\
 		.line()\
@@ -646,7 +645,7 @@ Function _doTagMenu($tag : Text)
 		End if 
 	End for each 
 	
-	var $menu:=cs:C1710.menu.new({localize: False:C215; iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
+	var $menu:=cs:C1710.menu.new({localize: False:C215; embedded: True:C214})
 	
 	For each ($file; $todo)
 		

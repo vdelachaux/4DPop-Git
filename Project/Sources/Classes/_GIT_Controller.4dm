@@ -818,7 +818,7 @@ Function _selectorManager($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _openManager()
 	
-	var $menu:=cs:C1710.menu.new({iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
+	var $menu:=cs:C1710.menu.new({embedded: True:C214})
 	
 	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
@@ -2260,7 +2260,7 @@ Function handleMenus($what : Text; $data : Object)
 			//______________________________________________________
 		: ($what="ignore@")
 			
-			$file:=File:C1566($data.path)
+			$file:=This:C1470.Git.workspace.file($data.path)
 			
 			var $ignore:=$git.gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
