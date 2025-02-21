@@ -127,7 +127,12 @@ Function init()
 	APPEND TO LIST:C376($list; "Tags"; -23; New list:C375; False:C215)
 	APPEND TO LIST:C376($list; "stashes"; -24; New list:C375; True:C214)
 	This:C1470.selector:=This:C1470.form.HList("selector"; $list)
-	This:C1470.selector.properties:={lineHeight: 25; expandCollapseOnDoubleClick: False:C215}
+	This:C1470.selector.properties:={\
+		lineHeight: 25; \
+		expandCollapseOnDoubleClick: False:C215; \
+		multiSelections: False:C215; \
+		editable: False:C215}
+	
 	
 	// Mark:Page 1️⃣ Changes
 	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
@@ -676,11 +681,6 @@ Function onActivate()
 	
 	This:C1470.selector.restoreSelection()
 	
-	This:C1470.selector.properties:={\
-		expandCollapseOnDoubleClick: False:C215; \
-		multiSelections: False:C215; \
-		editable: False:C215}
-	
 	This:C1470.form.refresh()
 	
 	//Mark:-Managers
@@ -688,28 +688,14 @@ Function onActivate()
 Function _selectorManager($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
-	
-	var $list : cs:C1710.hierList:=This:C1470.selector.list
-	var $data : Object:=$e.doubleClick || $e.click ? Form:C1466.selectedBranch : $list.GetParameter({key: "data"; type: Is object:K8:27})
-	
-	If ($data=Null:C1517)
-		
-		var $c:=This:C1470.selector.parameters
-		var $o : Object:=$c.length>0 ? $c.query("name = data").first() : Null:C1517
-		
-		If ($o#Null:C1517)
-			
-			$data:=$o.value
-			
-		End if 
-	End if 
+	var $data : Object:=This:C1470.selector.list.GetParameter({key: "data"; type: Is object:K8:27})
 	
 	Case of 
 			
 			// ______________________________________________________
 		: ($data=Null:C1517)
 			
-			return 
+			// <NOTHING MORE TO DO>
 			
 			// ______________________________________________________
 		: ($e.doubleClick)
@@ -738,61 +724,56 @@ Function _selectorManager($e : cs:C1710.evt)
 			// ______________________________________________________
 		: ($e.click)
 			
-			If (Contextual click:C713)
+			If (Not:C34(Contextual click:C713) || ($data.ref=Null:C1517))
 				
-				var $menu:=cs:C1710.menu.new()
-				
-				Case of 
-						
-						// …………………………………………………………………………
-					: ($data.ref=Null:C1517)
-						
-						// <NOTHING MORE TO DO>
-						
-						// …………………………………………………………………………
-					: ($data.type="remote")
-						
-						// TODO: Create local branch
-						
-						// …………………………………………………………………………
-					: ($data.type="tag")
-						
-						$menu.append("Copy tag name"; "copyName")
-						
-						// …………………………………………………………………………
-					: ($data.type="stash")
-						
-						// TODO: Apply | Rename | Delete
-						
-						// …………………………………………………………………………
-					: ($data.type="branch")
-						
-						If ($data.name#Form:C1466.currentBranch)
-							
-							$menu.append("Checkout \""+$data.name+"\""; "checkout")\
-								.line()
-							
-						End if 
-						
-						$menu.append("Copy branch name"; "copyName")
-						
-						// …………………………………………………………………………
-				End case 
-				
-				If (Not:C34($menu.popup().selected))
-					
-					return 
-					
-				End if 
-				
-				This:C1470.handleMenus($menu.choice; $data)
+				return 
 				
 			End if 
 			
+			var $menu:=cs:C1710.menu.new()
+			
+			Case of 
+					
+					// …………………………………………………………………………
+				: ($data.type="remote")
+					
+					// TODO: Create local branch
+					
+					// …………………………………………………………………………
+				: ($data.type="tag")
+					
+					$menu.append("Copy tag name"; "copyName")
+					
+					// …………………………………………………………………………
+				: ($data.type="stash")
+					
+					// TODO: Apply | Rename | Delete
+					
+					// …………………………………………………………………………
+				: ($data.type="branch")
+					
+					If ($data.name#Form:C1466.currentBranch)
+						
+						$menu.append("Checkout \""+$data.name+"\""; "checkout")\
+							.line()
+						
+					End if 
+					
+					$menu.append("Copy branch name"; "copyName")
+					
+					// …………………………………………………………………………
+			End case 
+			
+			If (Not:C34($menu.popup().selected))
+				
+				return 
+				
+			End if 
+			
+			This:C1470.handleMenus($menu.choice; $data)
+			
 			// ______________________________________________________
 		: ($e.selectionChange)
-			
-			Form:C1466.selectedBranch:=$data
 			
 			If (This:C1470.form.page=This:C1470.pages.commits)
 				
@@ -800,13 +781,12 @@ Function _selectorManager($e : cs:C1710.evt)
 				
 				If ($data#Null:C1517)
 					
-					$c:=Form:C1466.commits.indices("fingerprint.short = :1 OR fingerprint.long = :1"; String:C10($data.ref))
+					var $c : Collection:=Form:C1466.commits.indices("fingerprint.short = :1 OR fingerprint.long = :1"; String:C10($data.ref))
 					
 					If ($c.length>0)\
 						 && ($c[0]#-1)
 						
 						This:C1470.commits.reveal($c[0]+1)
-						This:C1470.commits.focus()
 						
 					End if 
 				End if 
@@ -1101,9 +1081,8 @@ Function _commitsManager()
 	var $t : Text
 	
 	This:C1470.detailCommit.unselect()
-	Form:C1466.commitDetail.clear()
-	This:C1470.selector.unselect()
 	
+	Form:C1466.commitDetail.clear()
 	Form:C1466.diff:=""
 	
 	var $commit:=This:C1470.commits.item
@@ -1862,6 +1841,8 @@ Function updateStashes()
 		
 	End if 
 	
+	$list.lastRef:=400
+	
 	For each ($o; $git.stashes)
 		
 		Use ($o)
@@ -1896,6 +1877,8 @@ Function updateTags()
 		
 	End if 
 	
+	$list.lastRef:=300
+	
 	var $c : Collection:=$git.FETCH_HEAD("tag")
 	
 	For each ($t; $git.tags)
@@ -1928,6 +1911,8 @@ Function updateRemotes()
 		return 
 		
 	End if 
+	
+	$list.lastRef:=200
 	
 	var $c : Collection:=$git.REMOTE_ORIGIN()
 	
@@ -1968,6 +1953,8 @@ Function updateBranches()
 		return 
 		
 	End if 
+	
+	$list.lastRef:=100
 	
 	For each ($o; $git.branches)
 		
@@ -2351,7 +2338,8 @@ Function handleMenus($what : Text; $data : Object)
 			//______________________________________________________
 		Else 
 			
-			ALERT:C41("Unmanaged tool: \""+$what+"\"…\r\rWe are going tout doux ;-)")
+			ALERT:C41("Unmanaged tool: \""+$what+"\"…\r\rWe are going tout doux 🤒")
+			
 			
 			//———————————————————————————————————————
 	End case 
