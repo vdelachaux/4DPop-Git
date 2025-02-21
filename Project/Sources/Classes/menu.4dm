@@ -201,7 +201,8 @@ Function append($item; $param; $mark; $afterItem : Integer) : cs:C1710.menu
 					//______________________________________________________
 				Else 
 					
-					$t:=Formula from string:C1601("Get localized string:C991($1)"; sk execute in host database:K88:5).call(Null:C1517; $item)
+					//$t:=Formula from string("Get localized string:C991($1)"; sk execute in host database).call(Null; $item)
+					$t:=Localized string:C991($item)
 					
 					//______________________________________________________
 			End case 

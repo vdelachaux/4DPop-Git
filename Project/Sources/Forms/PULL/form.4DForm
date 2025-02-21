@@ -13,6 +13,7 @@
 	"bottomMargin": 0,
 	"events": [
 		"onLoad",
+		"onClick",
 		"onResize"
 	],
 	"destination": "detailScreen",
@@ -51,7 +52,6 @@
 					"events": [
 						"onClick"
 					],
-					"method": "ObjectMethods/ok.4dm",
 					"shortcutAccel": false,
 					"shortcutControl": false,
 					"shortcutShift": false,
@@ -88,7 +88,6 @@
 					"events": [
 						"onClick"
 					],
-					"method": "ObjectMethods/cancel.4dm",
 					"shortcutAccel": false,
 					"shortcutControl": false,
 					"shortcutShift": false,

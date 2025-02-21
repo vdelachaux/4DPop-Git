@@ -872,6 +872,11 @@ shared Function updateRemotes() : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+shared Function addRemote($name : Text; $url : Text)
+	
+	This:C1470.remotes.push(OB Copy:C1225({name: $name; url: $url}; ck shared:K85:29))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 shared Function updateTags() : cs:C1710.Git
 	
 	var $t : Text

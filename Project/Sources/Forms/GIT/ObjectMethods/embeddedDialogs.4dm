@@ -46,9 +46,12 @@ If ($e.code<0)
 				var $remote:=$gh.createRepo($git.workspace.name)
 				
 				// Add the remote
-				$git.execute("remote add -m -t origin "+$remote)
-				$git.remotes.push({name: $git.currentBranch; url: $remote})
-				$git.push("origin"; $git.currentBranch)
+				If ($git.execute("remote add -m -t origin "+$remote))
+					
+					$git.addRemote($git.currentBranch; $remote)
+					$git.push("origin"; $git.currentBranch)
+					
+				End if 
 				
 			Else 
 				
@@ -70,10 +73,6 @@ If ($e.code<0)
 			Else 
 				
 				$form.onDialogAlert({\
-					title: "Error"; \
-					additional: $git.error})
-				
-				//$form.alertDialog.show({\
 					title: "Error"; \
 					additional: $git.error})
 				
@@ -122,6 +121,50 @@ If ($e.code<0)
 					
 					$form.Discard(Form:C1466.unstaged)
 					$success:=$git.checkout($this.branch).success
+					
+					// ______________________________________________________
+			End case 
+			
+			RELOAD PROJECT:C1739
+			
+			$form.onActivate()
+			
+			If (Not:C34($success))
+				
+				$form.onDialogAlert({main: "Git encountered an error"; additional: $git.error})
+				
+			End if 
+			
+			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+		: (Bool:C1537($this.newBranch))
+			
+			Case of 
+					
+					// ______________________________________________________
+				: (Length:C16(String:C10($this.branch))=0)
+					
+					BEEP:C151
+					
+					// ______________________________________________________
+				: ($form.checkout.noChange)
+					
+					$git.stash("save"; "4DPop autostash "+String:C10(Current date:C33; Internal date long:K1:5)+" at "+String:C10(Current time:C178; HH MM:K7:2))
+					$success:=$git.branch($this.checkout ? "createAndUse" : "create"; $this.branch).success
+					
+					// ______________________________________________________
+				: ($form.checkout.stash)
+					
+					$form.autostash:=True:C214
+					
+					$git.stash("save")
+					$success:=$git.branch($this.checkout ? "createAndUse" : "create"; $this.branch).success
+					$git.stash("pop")
+					
+					// ______________________________________________________
+				: ($form.checkout.discard)
+					
+					$form.Discard(Form:C1466.unstaged)
+					$success:=$git.branch($this.checkout ? "createAndUse" : "create"; $this.branch).success
 					
 					// ______________________________________________________
 			End case 
