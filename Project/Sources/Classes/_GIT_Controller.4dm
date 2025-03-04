@@ -845,10 +845,13 @@ Function _openManager()
 	
 	$menu:=cs:C1710.menu.new()
 	
+	var $hasRemote:=This:C1470.Git.execute("config --get remote.origin.url")
+	$hasRemote:=$hasRemote ? Position:C15("github.com"; String:C10(This:C1470.Git.result))>0 : $hasRemote
+	
 	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
-		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable(This:C1470.Git.execute("config --get remote.origin.url"))
+		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)
 	
 	$menu.line()
 	

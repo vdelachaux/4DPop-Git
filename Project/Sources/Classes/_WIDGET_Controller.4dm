@@ -490,6 +490,9 @@ Function _doMoreMenu()
 	
 	$git:=This:C1470.git
 	
+	var $hasRemote:=$git.execute("config --get remote.origin.url")
+	$hasRemote:=$hasRemote ? Position:C15("github.com"; String:C10($git.result))>0 : $hasRemote
+	
 	$menu:=This:C1470.menu.new()\
 		.append("4DPop Git"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
 		.line()\
@@ -499,6 +502,7 @@ Function _doMoreMenu()
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
 		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($git.execute("config --get remote.origin.url"))\
+		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
 		.line()\
 		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
 	
