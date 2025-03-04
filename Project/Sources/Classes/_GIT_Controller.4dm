@@ -866,6 +866,12 @@ Function _openManager()
 			
 		End if 
 		
+		If (File:C1566("/usr/local/bin/stree").exists)
+			
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Sourcetree"); "sourcetree").icon("/RESOURCES/Images/Menus/stree.png")
+			
+		End if 
+		
 	Else 
 		
 		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
@@ -930,6 +936,15 @@ Function _openManager()
 			Else 
 				
 				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").platformPath+" "+This:C1470.Git.cwd.platformPath)
+				
+			End if 
+			
+			//———————————————————————————————————————
+		: ($menu.choice="sourcetree")
+			
+			If (Is macOS:C1572)
+				
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/stree \""+This:C1470.Git.cwd.path+"\"")
 				
 			End if 
 			

@@ -521,6 +521,12 @@ Function _doMoreMenu()
 			
 		End if 
 		
+		If (File:C1566("/usr/local/bin/stree").exists)
+			
+			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Sourcetree"); "sourcetree").icon("/RESOURCES/Images/Menus/stree.png")
+			
+		End if 
+		
 	Else 
 		
 		// TODO:On Windows
@@ -570,6 +576,15 @@ Function _doMoreMenu()
 			Else 
 				
 				LAUNCH EXTERNAL PROCESS:C811("github \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).platformPath+"\"")
+				
+			End if 
+			
+			//———————————————————————————————————————
+		: ($menu.choice="sourcetree")
+			
+			If (Is macOS:C1572)
+				
+				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/stree \""+Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).path+"\"")
 				
 			End if 
 			
