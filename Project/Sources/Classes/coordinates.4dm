@@ -1,4 +1,4 @@
-property name : Text
+property name:=""
 property left; top; right; bottom : Integer
 
 Class constructor($left; $top : Integer; $right : Integer; $bottom : Integer)
@@ -7,19 +7,31 @@ Class constructor($left; $top : Integer; $right : Integer; $bottom : Integer)
 	
 	Case of 
 			
+			// ______________________________________________________
+		: (Value type:C1509($1)=Is longint:K8:6)\
+			 || (Value type:C1509($1)=Is real:K8:4)
+			
+			// Left
+			
 			//______________________________________________________
-		: (Value type:C1509($left)=Is object:K8:27)
+		: (Value type:C1509($1)=Is object:K8:27)
 			
 			var $o : Object
-			$o:=Try($left.getCoordinates())
+			
+			If ($1.getCoordinates#Null:C1517)\
+				 && (OB Instance of:C1731($1.getCoordinates; 4D:C1709.Function))
+				
+				$o:=$1.getCoordinates()
+				
+			End if 
 			
 			If ($o#Null:C1517)  // Widget
 				
-				This:C1470.name:=String:C10($left.name)
+				This:C1470.name:=String:C10($1.name)
 				
 			Else 
 				
-				$o:=$left
+				$o:=$1
 				
 			End if 
 			
@@ -29,10 +41,15 @@ Class constructor($left; $top : Integer; $right : Integer; $bottom : Integer)
 			$bottom:=Num:C11($o.bottom)
 			
 			//______________________________________________________
-		: (Value type:C1509($left)=Is text:K8:3)  // Object name
+		: (Value type:C1509($1)=Is text:K8:3)  // Object name
 			
-			This:C1470.name:=$left
+			This:C1470.name:=$1
 			OBJECT GET COORDINATES:C663(*; This:C1470.name; $left; $top; $right; $bottom)
+			
+		Else 
+			
+			throw:C1805(_error("The first parameter must be an Object or Text"))
+			return 
 			
 			//______________________________________________________
 	End case 
@@ -45,12 +62,10 @@ Class constructor($left; $top : Integer; $right : Integer; $bottom : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get windowCoordinates() : Object
 	
-	var $bottom; $left; $right; $top : Integer
-	
-	$left:=This:C1470.left
-	$top:=This:C1470.top
-	$right:=This:C1470.right
-	$bottom:=This:C1470.bottom
+	var $left : Integer:=This:C1470.left
+	var $top : Integer:=This:C1470.top
+	var $right : Integer:=This:C1470.right
+	var $bottom : Integer:=This:C1470.bottom
 	
 	CONVERT COORDINATES:C1365($left; $top; XY Current form:K27:5; XY Current window:K27:6)
 	CONVERT COORDINATES:C1365($right; $bottom; XY Current form:K27:5; XY Current window:K27:6)
@@ -65,12 +80,10 @@ Function get windowCoordinates() : Object
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get screenCoordinates() : Object
 	
-	var $bottom; $left; $right; $top : Integer
-	
-	$left:=This:C1470.left
-	$top:=This:C1470.top
-	$right:=This:C1470.right
-	$bottom:=This:C1470.bottom
+	var $left : Integer:=This:C1470.left
+	var $top : Integer:=This:C1470.top
+	var $right : Integer:=This:C1470.right
+	var $bottom : Integer:=This:C1470.bottom
 	
 	CONVERT COORDINATES:C1365($left; $top; XY Current form:K27:5; XY Screen:K27:7)
 	CONVERT COORDINATES:C1365($right; $bottom; XY Current form:K27:5; XY Screen:K27:7)
@@ -93,17 +106,21 @@ Function get height() : Integer
 	return Try(This:C1470.bottom-This:C1470.top)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get dimensions() : Object
+Function get rect() : cs:C1710.rect
 	
-	return {\
-		width: This:C1470.width; \
-		height: This:C1470.height\
-		}
+	return cs:C1710.rect.new(This:C1470.width; This:C1470.height)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function apply($name : Text)
 	
 	$name:=$name || This:C1470.name
-	ASSERT:C1129(Length:C16($name)>0; "Missing target name!")
 	
-	OBJECT SET COORDINATES:C1248(*; $name; This:C1470.left; This:C1470.top; This:C1470.right; This:C1470.bottom)
+	If (Length:C16($name)>0)
+		
+		OBJECT SET COORDINATES:C1248(*; $name; This:C1470.left; This:C1470.top; This:C1470.right; This:C1470.bottom)
+		
+	Else 
+		
+		throw:C1805(_error("Missing target name!"))
+		
+	End if 

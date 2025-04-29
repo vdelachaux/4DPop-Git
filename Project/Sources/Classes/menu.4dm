@@ -1,17 +1,8 @@
 property __CLASS__ : Object
+property data; submenus : Collection
+property choice; ref : Text
+property autoRelease; released; localize; metacharacters; selected : Boolean
 property _iconAccessor : 4D:C1709.Function
-
-property ref:=""
-property autoRelease:=True:C214
-property released:=False:C215
-property localize:=True:C214
-property metacharacters:=False:C215
-property selected:=False:C215
-property embedded:=False:C215  // the class is not from a component
-property choice:=""
-property submenus:=[]
-property data:=[]
-
 
 Class constructor($data)
 	
@@ -19,6 +10,15 @@ Class constructor($data)
 	
 	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
 	
+	This:C1470.ref:=""
+	This:C1470.autoRelease:=True:C214
+	This:C1470.released:=False:C215
+	This:C1470.localize:=True:C214
+	This:C1470.metacharacters:=False:C215
+	This:C1470.selected:=False:C215
+	This:C1470.choice:=""
+	This:C1470.submenus:=[]
+	This:C1470.data:=[]
 	
 	If (Count parameters:C259>=1)
 		
@@ -71,11 +71,6 @@ Class constructor($data)
 								This:C1470.metacharacters:=True:C214
 								
 								//-----------------
-							: ($data="embedded")
-								
-								This:C1470.embedded:=True:C214
-								
-								//-----------------
 							Else   // Menu bar name 
 								
 								This:C1470.ref:=Try(Create menu:C408($data))
@@ -100,12 +95,6 @@ Class constructor($data)
 				
 				//______________________________________________________
 			: (Value type:C1509($data)=Is object:K8:27)
-				
-				If ($data.embedded#Null:C1517)
-					
-					This:C1470.embedded:=$data.embedded
-					
-				End if 
 				
 				If ($data.localize#Null:C1517)
 					
@@ -210,14 +199,10 @@ Function append($item; $param; $mark; $afterItem : Integer) : cs:C1710.menu
 					End if 
 					
 					//______________________________________________________
-				: (This:C1470.embedded)
-					
-					$t:=Localized string:C991($item)
-					
-					//______________________________________________________
 				Else 
 					
-					$t:=Formula from string:C1601("Get localized string:C991($1)"; sk execute in host database:K88:5).call(Null:C1517; $item)
+					$t:=Formula from string:C1601("Localized string:C991($1)"; sk execute in host database:K88:5).call(Null:C1517; $item)\
+						 || Localized string:C991($item)
 					
 					//______________________________________________________
 			End case 
@@ -453,21 +438,14 @@ Function icon($proxy : Text; $index : Integer) : cs:C1710.menu
 	
 	$index:=Count parameters:C259>=2 ? $index : -1
 	
-	If (This:C1470.embedded)
+	If (This:C1470._iconAccessor#Null:C1517)
 		
-		SET MENU ITEM ICON:C984(This:C1470.ref; $index; This:C1470._proxy($proxy))
+		This:C1470._iconAccessor.call(Null:C1517; This:C1470.ref; $index; This:C1470._proxy($proxy))
 		
 	Else 
 		
-		If (This:C1470._iconAccessor#Null:C1517)
-			
-			This:C1470._iconAccessor.call(Null:C1517; This:C1470.ref; $index; This:C1470._proxy($proxy))
-			
-		Else 
-			
-			Formula from string:C1601("SET MENU ITEM ICON:C984($1; $2; $3)"; sk execute in host database:K88:5).call(Null:C1517; This:C1470.ref; $index; This:C1470._proxy($proxy))
-			
-		End if 
+		Formula from string:C1601("SET MENU ITEM ICON:C984($1; $2; $3)"; sk execute in host database:K88:5).call(Null:C1517; This:C1470.ref; $index; This:C1470._proxy($proxy))
+		
 	End if 
 	
 	return This:C1470

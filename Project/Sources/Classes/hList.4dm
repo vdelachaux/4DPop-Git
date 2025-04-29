@@ -1,92 +1,77 @@
 Class extends scrollable
 
+property ref : Integer  // Hierarchical list reference
+property latest : Integer:=0
 property list : cs:C1710.hierList
 
-Class constructor($name : Text; $ref : Integer)
+Class constructor($name : Text; $ref : Integer; $parent : Object)
 	
-	Super:C1705($name)
+	Super:C1705($name; $parent)
 	
-	ASSERT:C1129(This:C1470.type=Object type hierarchical list:K79:7)
-	
-	This:C1470.list:=cs:C1710.hierList.new($ref)
-	
-	// MARK:- [Working on the data source]
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get ref() : Integer
-	
-	return This:C1470.list.ref
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set ref($ref : Integer)
-	
-	This:C1470.list.SetList($ref)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Creates a new list in memory and returns its unique list reference number.
-Function createList() : Integer
-	
-	return This:C1470.list.Creates()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Load an existing list in memory and returns its unique list reference number.
-Function loadList($list) : Integer
-	
-	return This:C1470.list.Load($list)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Deletes the current reference list
-Function clearList($keepSubLists : Boolean)
-	
-	This:C1470.list.Clears()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Returns a copy of the current list
-Function copyList() : Integer
-	
-	If (Asserted:C1132(This:C1470.isAList; "No list to duplicate"))
+	If (Not:C34(This:C1470.type=Object type hierarchical list:K79:7))
 		
-		return Copy list:C626(This:C1470.ref)
+		_error("The widget is not a hierarchical list")
+		
+		return 
 		
 	End if 
 	
+	This:C1470.ref:=$ref
+	This:C1470.datasource:=OBJECT Get data source:C1265(*; This:C1470.name)
+	
+	This:C1470.list:=cs:C1710.hierList.new(This:C1470.ref)
+	
+	
+	// MARK:-[List]
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Creates a new list in memory and returns its unique list reference number.
+Function create() : Integer
+	
+	This:C1470.clear()
+	This:C1470.ref:=New list:C375
+	
+	
+	return This:C1470.ref
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Deletes the current reference list
+Function clear($keepSubLists : Boolean)
+	
+	If (This:C1470.isList)
+		
+		If ($keepSubLists)
+			
+			CLEAR LIST:C377(This:C1470.ref)
+			
+		Else 
+			
+			CLEAR LIST:C377(This:C1470.ref; *)  // Default is list and sublists
+			
+		End if 
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns a copy of the current list
+Function copy() : cs:C1710.hList
+	
+	If (Asserted:C1132(This:C1470.isList; "No list to duplicate"))
+		
+		return cs:C1710.hList.new(This:C1470.name; Copy list:C626(This:C1470.ref))
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Alias of copy()
+Function clone() : cs:C1710.hList
+	
+	return This:C1470.copy()
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// Is the current reference a valid list?
-Function get isAList() : Boolean
+Function get isList() : Boolean
 	
-	return This:C1470.list.isList
+	return Is a list:C621(This:C1470.ref)
 	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// Get current list properties
-Function get properties() : Object
-	
-	return This:C1470.list.properties
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-	/// Set one or more properties for the current list
-Function set properties($properties : Object)
-	
-	This:C1470.list.properties:=$properties
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// The number of elements in the first level
-Function get firstLevelItemCount() : Integer
-	
-	return This:C1470.list.firstLevelItemCount
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Appends a new item to the current list
-Function append($item; $ref : Integer; $sublist : Integer; $expanded : Boolean)
-	
-	This:C1470.list.Append($item; $ref; $sublist; $expanded)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Inserts an item to the current list
-Function insert($item; $ref : Integer; $sublist : Integer; $expanded : Boolean; $beforeItemRef : Integer)
-	
-	This:C1470.list.Insert($item; $ref; $sublist; $expanded; $beforeItemRef)
-	
-	// MARK:- [Working on the form instance]
-	// MARK: ************** List *************
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The total number of items present in the list
 Function get itemCount() : Integer
@@ -98,6 +83,147 @@ Function get itemCount() : Integer
 Function get visibleItemCount() : Integer
 	
 	return Count list items:C380(*; This:C1470.name)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The properties about the current list [⚠️ only work with datasource]
+Function get properties() : Object
+	
+	var $appearance; $doubleClick; $editable; $icon; $lineHeight; $multiSelection : Integer
+	
+	If (Asserted:C1132(Not:C34(Is nil pointer:C315(This:C1470.datasource)); Current method name:C684+" works only with a datatsource :-(("))
+		
+		GET LIST PROPERTIES:C632((This:C1470.datasource)->; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
+		
+		return {\
+			lineHeight: $lineHeight; \
+			expandCollapseOnDoubleClick: Not:C34(Bool:C1537($doubleClick)); \
+			multiSelections: Bool:C1537($multiSelection); \
+			editable: Bool:C1537($editable)}
+		
+	End if 
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set properties($properties : Object)
+	
+	var $key : Text
+	var $appearance; $doubleClick; $editable; $icon; $lineHeight; $multiSelection : Integer
+	
+/*If (Asserted(Not(Is nil pointer(This.datasource)); Current method name+" works only with a datatsource :-(("))*/
+	If (Not:C34(Is nil pointer:C315(This:C1470.datasource)))
+		
+		GET LIST PROPERTIES:C632((This:C1470.datasource)->; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
+		
+		For each ($key; $properties)
+			
+			Case of 
+					
+					//______________________________________________________
+				: ($key="lineHeight")
+					
+					$lineHeight:=Num:C11($properties[$key])
+					
+					//______________________________________________________
+				: ($key="expandCollapseOnDoubleClick")
+					
+					$doubleClick:=Num:C11(Not:C34(Bool:C1537($properties[$key])))
+					
+					//______________________________________________________
+				: ($key="multiSelections")
+					
+					$multiSelection:=Num:C11(Bool:C1537($properties[$key]))
+					
+					//______________________________________________________
+				: ($key="editable")
+					
+					$editable:=Num:C11(Bool:C1537($properties[$key]))
+					
+					//______________________________________________________
+			End case 
+			
+		End for each 
+		
+		SET LIST PROPERTIES:C387((This:C1470.datasource)->; $appearance; $icon; $lineHeight; $doubleClick; $multiSelection; $editable)
+		
+	Else 
+		
+		This:C1470.list.properties:=$properties
+		
+	End if 
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The selected item positions [⛔️ READ ONLY]
+Function get selected() : Collection
+	
+	var $c : Collection
+	
+	ARRAY LONGINT:C221($selected; 0x0000)
+	$selected{0}:=Selected list items:C379(*; This:C1470.name; $selected)
+	
+	$c:=[]
+	ARRAY TO COLLECTION:C1563($c; $selected)
+	
+	return $c
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The selected item refrernces [⛔️ READ ONLY]
+Function get selectedReferences() : Collection
+	
+	var $c : Collection
+	
+	ARRAY LONGINT:C221($selected; 0x0000)
+	$selected{0}:=Selected list items:C379(*; This:C1470.name; $selected; *)
+	
+	$c:=[]
+	ARRAY TO COLLECTION:C1563($c; $selected)
+	
+	return $c
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Appends a new item to the current list
+Function append($itemText : Text; $ref : Integer; $sublist : Integer; $expanded : Boolean)
+	
+	// ⚠️ APPEND TO LIST doesn't accept object name
+	
+	Case of 
+			
+			//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		: (Count parameters:C259=2) || ($sublist=0)
+			
+			INSERT IN LIST:C625(*; This:C1470.name; 0; $itemText; $ref)
+			
+			//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		: (Count parameters:C259=4)
+			
+			INSERT IN LIST:C625(*; This:C1470.name; 0; $itemText; $ref; $sublist; $expanded)
+			
+			//––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+	End case 
+	
+	This:C1470.latest:=$ref
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Inserts an item to the current list
+Function insert($itemText : Text; $ref : Integer; $sublist : Integer; $expanded : Boolean; $beforeItemRef : Integer)
+	
+	If ($beforeItemRef#0)
+		
+		If ($sublist=0)
+			
+			INSERT IN LIST:C625(*; This:C1470.name; $beforeItemRef; $itemText; $ref)
+			
+		Else 
+			
+			INSERT IN LIST:C625(*; This:C1470.name; $beforeItemRef; $itemText; $ref; $sublist; $expanded)
+			
+		End if 
+		
+	Else 
+		
+		INSERT IN LIST:C625(*; This:C1470.name; *; $itemText; $ref; $sublist; $expanded)
+		
+	End if 
+	
+	This:C1470.latest:=$ref
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// True if at least one element could be folded.
@@ -150,13 +276,14 @@ Function collapseAll($keep : Boolean)
 	
 	var $itemText : Text
 	var $expanded : Boolean
-	var $i; $ref; $subList : Integer
+	var $count; $current; $i; $ref; $subList : Integer
 	
 	$keep:=Count parameters:C259=0 ? This:C1470.itemSublist>0 : $keep
 	
 	// Keep the current item reference to restore if any
-	var $current:=This:C1470.itemRef
-	var $count:=This:C1470.itemCount
+	$current:=This:C1470.itemRef
+	
+	$count:=This:C1470.itemCount
 	
 	Repeat 
 		
@@ -191,9 +318,9 @@ Function expandAll()
 	
 	var $itemText : Text
 	var $expanded : Boolean
-	var $i; $ref; $subList : Integer
+	var $count; $i; $ref; $subList : Integer
 	
-	var $count:=This:C1470.itemCount
+	$count:=This:C1470.itemCount
 	
 	For ($i; 1; This:C1470.itemCount; 1)
 		
@@ -209,72 +336,7 @@ Function expandAll()
 	
 	This:C1470.unselect()
 	
-	// MARK: ************* Item ************** 
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Returns the position of an element from its reference, current element if the reference is omitted
-Function itemPosition($ref : Integer) : Integer
-	
-	$ref:=Count parameters:C259>=1 ? $ref : This:C1470.itemRef
-	
-	return List item position:C629(*; This:C1470.name; $ref)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// The position of the selected element
-Function get itemSelected() : Integer
-	
-	return Selected list items:C379(*; This:C1470.name)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set itemSelected($pos : Integer)
-	
-	SELECT LIST ITEMS BY POSITION:C381(*; This:C1470.name; $pos)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// The selected item positions
-Function get selectedItems() : Collection
-	
-	ARRAY LONGINT:C221($selected; 0)
-	$selected{0}:=Selected list items:C379(*; This:C1470.name; $selected)
-	
-	var $c:=[]
-	ARRAY TO COLLECTION:C1563($c; $selected)
-	
-	return $c
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// The selected item refrerences
-Function get selectedItemsReferences() : Collection
-	
-	ARRAY LONGINT:C221($selected; 0)
-	$selected{0}:=Selected list items:C379(*; This:C1470.name; $selected; *)
-	
-	var $c:=[]
-	ARRAY TO COLLECTION:C1563($c; $selected)
-	
-	return $c
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function getSublist($pos : Integer) : Integer
-	
-	return This:C1470._getItem("sublist"; $pos)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function getSublistByRef($ref : Integer) : Integer
-	
-	return This:C1470._getItem("sublist"; This:C1470.itemPosition($ref))
-	
-	// MARK: ******** Current element ******** 
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// The ref of the current element
-Function get itemRef() : Integer
-	
-	return This:C1470._getItem("ref")
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set itemRef($ref : Integer)
-	
-	This:C1470.setItem("ref"; $ref)
-	
+	// MARK:-[Item]
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The value of the current element
 Function get itemValue() : Text
@@ -284,7 +346,18 @@ Function get itemValue() : Text
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set itemValue($value : Text)
 	
-	This:C1470.setItem("value"; $value)
+	This:C1470._setItem("value"; $value)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The ref of the current element
+Function get itemRef() : Integer
+	
+	return This:C1470._getItem("ref")
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set itemRef($ref : Integer)
+	
+	This:C1470._setItem("ref"; $ref)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The sub-list of the current element
@@ -295,7 +368,17 @@ Function get itemSublist() : Integer
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set itemSublist($sublist : Integer)
 	
-	This:C1470.setItem("sublist"; $sublist)
+	This:C1470._setItem("sublist"; $sublist)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getSublist($pos : Integer) : Integer
+	
+	return This:C1470._getItem("sublist"; $pos)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getSublistByRef($ref : Integer) : Integer
+	
+	return This:C1470._getItem("sublist"; This:C1470.getItemPositionByRef($ref))
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The expanded state of the sub-list of the current element
@@ -306,7 +389,7 @@ Function get itemExpanded() : Boolean
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set itemExpanded($expanded : Boolean)
 	
-	This:C1470.setItem("expanded"; $expanded)
+	This:C1470._setItem("expanded"; $expanded)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	///The icon associated with the current element
@@ -317,7 +400,7 @@ Function get itemIcon() : Picture
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set itemIcon($icon : Picture)
 	
-	This:C1470.setItem("icon"; $icon)
+	This:C1470._setItem("icon"; $icon)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// The current element position
@@ -334,12 +417,13 @@ Function get parameters() : Collection
 	var $bool : Boolean
 	var $time : Time
 	var $o : Object
+	var $c : Collection
 	
 	ARRAY TEXT:C222($names; 0x0000)
 	ARRAY TEXT:C222($values; 0x0000)
 	GET LIST ITEM PARAMETER ARRAYS:C1195(*; This:C1470.name; *; $names; $values)
 	
-	var $c:=[]
+	$c:=[]
 	ARRAY TO COLLECTION:C1563($c; $names; "name"; $values; "value")
 	
 	GET SYSTEM FORMAT:C994(Decimal separator:K60:1; $decimalSep)
@@ -425,6 +509,12 @@ Function expand($itemPos : Integer)
 		
 	End if 
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the itemRef position
+Function getItemPositionByRef($ref : Integer) : Integer
+	
+	return List item position:C629(*; This:C1470.name; $ref)
+	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 	/// Returns information about the element specified by itemPos or the current element if omitted
 Function _getItem($request : Text; $itemPos : Integer) : Variant
@@ -459,7 +549,6 @@ Function _getItem($request : Text; $itemPos : Integer) : Variant
 			GET LIST ITEM:C378(*; This:C1470.name; $itemPos; $ref; $itemText; $sublist; $expanded)
 			
 		End if 
-		
 	End if 
 	
 	Case of 
@@ -489,65 +578,59 @@ Function _getItem($request : Text; $itemPos : Integer) : Variant
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 	/// Sets information of the element itemPos or the current element if omitted
-Function setItem($request : Text; $value; $item : Integer)
+Function _setItem($request : Text; $value; $itemPos : Integer)
 	
-	var $itemText : Text
-	var $expanded : Boolean
-	var $ref; $sublist : Integer
+	var $icon : Picture
 	
 	If ($request="icon")
 		
-		// $item is the item reference
-		
-		If ($item=0)
+		If ($itemPos=0)
 			
-			SET LIST ITEM ICON:C950(*; This:C1470.name; *; $value)
+			SET LIST ITEM ICON:C950(*; This:C1470.name; *; $icon)
 			
 		Else 
 			
-			SET LIST ITEM ICON:C950(*; This:C1470.name; $item; $value)
+			SET LIST ITEM ICON:C950(*; This:C1470.name; $itemPos; $icon)
 			
 		End if 
 		
-		return 
-		
-	End if 
-	
-	If ($item=0)
-		
-		GET LIST ITEM:C378(*; This:C1470.name; *; $ref; $itemText; $sublist; $expanded)
-		
 	Else 
 		
-		// $item is the item position
-		GET LIST ITEM:C378(*; This:C1470.name; $item; $ref; $itemText; $sublist; $expanded)
+		If ($itemPos=0)
+			
+			GET LIST ITEM:C378(*; This:C1470.name; *; $ref; $itemText; $sublist; $expanded)
+			
+		Else 
+			
+			GET LIST ITEM:C378(*; This:C1470.name; $itemPos; $ref; $itemText; $sublist; $expanded)
+			
+		End if 
 		
+		Case of 
+				
+				//______________________________________________________
+			: ($request="value")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $value; $ref; $sublist; $expanded)
+				
+				//______________________________________________________
+			: ($request="ref")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $value; $sublist; $expanded)
+				
+				//______________________________________________________
+			: ($request="sublist")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $ref; $value; $expanded)
+				
+				//______________________________________________________
+			: ($request="expanded")
+				
+				SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $ref; $sublist; $value)
+				
+				//______________________________________________________
+		End case 
 	End if 
-	
-	Case of 
-			
-			//______________________________________________________
-		: ($request="value")
-			
-			SET LIST ITEM:C385(*; This:C1470.name; *; $value; $ref; $sublist; $expanded)
-			
-			//______________________________________________________
-		: ($request="ref")
-			
-			SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $value; $sublist; $expanded)
-			
-			//______________________________________________________
-		: ($request="sublist")
-			
-			SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $ref; $value; $expanded)
-			
-			//______________________________________________________
-		: ($request="expanded")
-			
-			SET LIST ITEM:C385(*; This:C1470.name; *; $itemText; $ref; $sublist; $value)
-			
-			//______________________________________________________
-	End case 
 	
 	// MARK:-[Find]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -563,54 +646,35 @@ Function findReference($itemText : Text; $scope : Integer) : Integer
 	return Find in list:C952(*; This:C1470.name; $itemText; $scope; *)
 	
 	// MARK:-[Selection]
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Select all items
-Function selectAll()
-	
-	//This.list.selectAll()
-	
-	var $current:=OBJECT Get name:C1087(Object with focus:K67:3)
-	GOTO OBJECT:C206(*; This:C1470.name)
-	INVOKE ACTION:C1439(ak select all:K76:57; ak current form:K76:70)
-	GOTO OBJECT:C206(*; $current)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Deselect all items
-Function unselect()
-	
-	This:C1470.list.unselect()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function saveSelection()
-	
-	This:C1470.list.saveSelection()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function restoreSelection()
-	
-	This:C1470.list.restoreSelection()
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get selectedItemPosition() : Integer
-	
-	return This:C1470.list.selectedPosition
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set selectedItemPosition($pos : Integer)
-	
-	This:C1470.list.selectedPosition:=$pos
-	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// A collection of indexes of selected items
 Function get selectedItemIndexes() : Collection
 	
-	return This:C1470.list.selectedPositions
+	var $dummy : Integer
+	var $c : Collection
+	$c:=[]
+	
+	ARRAY LONGINT:C221($selected; 0)
+	$dummy:=Selected list items:C379(*; This:C1470.name; $selected)
+	
+	ARRAY TO COLLECTION:C1563($c; $selected)
+	
+	return $c
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	/// A collection of refernces of selected items
 Function get selectedItemReferences() : Collection
 	
-	return This:C1470.list.selectedReferences
+	var $dummy : Integer
+	var $c : Collection
+	$c:=[]
+	
+	ARRAY LONGINT:C221($selected; 0)
+	$dummy:=Selected list items:C379(*; This:C1470.name; $selected; *)
+	
+	ARRAY TO COLLECTION:C1563($c; $selected)
+	
+	return $c
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Selects the item whose item position is passed
@@ -636,5 +700,21 @@ Function selectByReference($ref : Integer)
 	// TODO: Accept a collection of references
 	
 	// ⚠️ SELECT LIST ITEMS BY REFERENCE doesn't accept object name
-	This:C1470.selectByPosition(This:C1470.itemPosition($ref))
+	This:C1470.selectByPosition(This:C1470.getItemPositionByRef($ref))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Deselect all items
+Function selectAll()
+	
+	var $focused : Text
+	$focused:=OBJECT Get name:C1087(Object with focus:K67:3)
+	GOTO OBJECT:C206(*; This:C1470.name)
+	INVOKE ACTION:C1439(ak select all:K76:57; ak current form:K76:70)
+	GOTO OBJECT:C206(*; $focused)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Deselect all items
+Function unselect()
+	
+	SELECT LIST ITEMS BY POSITION:C381(*; This:C1470.name; This:C1470.itemCount+1)
 	

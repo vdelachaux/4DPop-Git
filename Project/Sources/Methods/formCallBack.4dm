@@ -1,10 +1,5 @@
-//%attributes = {}
+//%attributes = {"invisible":true,"shared":true}
 #DECLARE($data : Object; $function : Text)
-
-If (False:C215)
-	C_OBJECT:C1216(formCallBack; $1)
-	C_TEXT:C284(formCallBack; $2)
-End if 
 
 var $instance : 4D:C1709.Class
 

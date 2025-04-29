@@ -9,6 +9,8 @@ property darkMode : Boolean
 
 property pages:={changes: 1; commits: 2}
 
+property helptip:=cs:C1710.tips.new()
+
 property checkout:={\
 stash: True:C214; \
 noChange: False:C215; \
@@ -30,26 +32,24 @@ property form : cs:C1710.form
 property Git:=cs:C1710.Git.me
 
 // MARK: UI 🖥️
-property toolbarLeft; \
+property centeredToolbarButtons; \
 commitment; \
-detail : cs:C1710.group
+detail; \
+groupDiff : cs:C1710.group
 
 property pullDialog; \
 pushDialog; \
 checkoutDialog; \
 newBranchDialog : cs:C1710.onBoard
 
-property changes; \
-history; \
-fetch; pull; \
-push; \
+property changes; history; \
+fetch; pull; push; \
 open; \
-stage; \
-stageAll; \
-unstage; \
+stage; unstage; \
 diffTool; \
-commit; \
-amend : cs:C1710.button
+commit; amend; \
+fileStage; \
+fileMore : cs:C1710.button
 
 property menu; \
 unstaged; \
@@ -75,11 +75,12 @@ titleTop; \
 title; \
 titleBottom; \
 detailSplitter; \
-detailSeparator : cs:C1710.static
+detailSeparator; \
+emptyIndex : cs:C1710.static
 
 property authorAvatar : cs:C1710.picture
 
-property selector : cs:C1710.hList
+property windowFrame : cs:C1710.subform
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
@@ -111,43 +112,34 @@ Function init()
 		":xliff:CommonMenuEdit"; $menuEdit]).set()
 	
 	// Mark:Page 0️⃣ Toolbar
-	This:C1470.toolbarLeft:=This:C1470.form.group.new()
-	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.toolbarLeft)
-	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.toolbarLeft)
-	This:C1470.push:=This:C1470.form.Button("push").addToGroup(This:C1470.toolbarLeft)
+	This:C1470.windowFrame:=This:C1470.form.Subform("windowFrame")
 	
 	This:C1470.changes:=This:C1470.form.Button("changes")
 	This:C1470.history:=This:C1470.form.Button("history")
 	
+	This:C1470.centeredToolbarButtons:=This:C1470.form.Group()
+	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.centeredToolbarButtons)
+	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.centeredToolbarButtons)
+	This:C1470.push:=This:C1470.form.Button("push").addToGroup(This:C1470.centeredToolbarButtons)
+	
 	This:C1470.open:=This:C1470.form.Button("open")
-	
-	// Mark:Page 0️⃣ Left pannel
-	var $list:=New list:C375
-	APPEND TO LIST:C376($list; "Branches"; -21; New list:C375; True:C214)
-	APPEND TO LIST:C376($list; "Remotes"; -22; New list:C375; False:C215)
-	APPEND TO LIST:C376($list; "Tags"; -23; New list:C375; False:C215)
-	APPEND TO LIST:C376($list; "stashes"; -24; New list:C375; True:C214)
-	This:C1470.selector:=This:C1470.form.HList("selector"; $list)
-	This:C1470.selector.properties:={\
-		lineHeight: 25; \
-		expandCollapseOnDoubleClick: False:C215; \
-		multiSelections: False:C215; \
-		editable: False:C215}
-	
 	
 	// Mark:Page 1️⃣ Changes
 	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
 	This:C1470.stage:=This:C1470.form.Button("stage")
-	This:C1470.stageAll:=This:C1470.form.Button("stageAll")
 	
 	This:C1470.staged:=This:C1470.form.Listbox("staged")
 	This:C1470.unstage:=This:C1470.form.Button("unstage")
+	This:C1470.emptyIndex:=This:C1470.form.Static("noChangesInIndex")
 	
 	// Mark:Page 1️⃣ Diff pannel
-	This:C1470.diff:=This:C1470.form.Input("diff")
+	This:C1470.groupDiff:=This:C1470.form.Group()
+	This:C1470.fileStage:=This:C1470.form.Button("stageFile").addToGroup(This:C1470.groupDiff)
+	This:C1470.fileMore:=This:C1470.form.Button("moreFile").addToGroup(This:C1470.groupDiff)
+	This:C1470.diff:=This:C1470.form.Input("diff").addToGroup(This:C1470.groupDiff)
 	
 	// Mark:Page 1️⃣ Commit panel
-	This:C1470.commitment:=This:C1470.form.group.new()
+	This:C1470.commitment:=This:C1470.form.Group()
 	This:C1470.subject:=This:C1470.form.Input("subject").addToGroup(This:C1470.commitment)
 	This:C1470.description:=This:C1470.form.Input("description").addToGroup(This:C1470.commitment)
 	This:C1470.amend:=This:C1470.form.Button("amend").addToGroup(This:C1470.commitment)
@@ -157,7 +149,7 @@ Function init()
 	This:C1470.commits:=This:C1470.form.Listbox("commits")
 	
 	// Mark:Page 2️⃣ Commit
-	This:C1470.detail:=This:C1470.form.group.new()
+	This:C1470.detail:=This:C1470.form.Group()
 	This:C1470.detailCommit:=This:C1470.form.Listbox("detail_list").addToGroup(This:C1470.detail)
 	This:C1470.authorLabel:=This:C1470.form.Static("authorLabel").addToGroup(This:C1470.detail)
 	This:C1470.authorAvatar:=This:C1470.form.Picture("authorAvatar").addToGroup(This:C1470.detail)
@@ -174,6 +166,10 @@ Function init()
 	This:C1470.detailSplitter:=This:C1470.form.Static("detailSplitter").addToGroup(This:C1470.detail)
 	This:C1470.detailSeparator:=This:C1470.form.Static("detailSeparator").addToGroup(This:C1470.detail)
 	This:C1470.detailDiff:=This:C1470.form.Input("detailDiff").addToGroup(This:C1470.detail)
+	
+	// MARK:- [Constraints]
+	// -> The fetch/pull/push buttons must remain centred on the background.
+	This:C1470.form.constraints.new(This:C1470.centeredToolbarButtons).centerHorizontally.with("_background")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.evt)
@@ -202,7 +198,7 @@ Function handleEvents($e : cs:C1710.evt)
 					
 					If (Form:C1466.page2Inited=Null:C1517)
 						
-						var $o : cs:C1710.coord:=This:C1470.commits.coordinates
+						var $o : cs:C1710.coordinates:=This:C1470.commits.coordinates
 						$o.right:=This:C1470.form.window.width
 						This:C1470.commits.setCoordinates($o)
 						Form:C1466.page2Inited:=True:C214
@@ -219,9 +215,19 @@ Function handleEvents($e : cs:C1710.evt)
 				This:C1470.onActivate()
 				
 				//______________________________________________________
+			: ($e.deactivate)
+				
+				This:C1470.windowFrame.refresh()
+				
+				//______________________________________________________
+			: ($e.resize)
+				
+				This:C1470.form.constraints.apply()
+				
+				//______________________________________________________
 			: ($e.unload)
 				
-				This:C1470.selector.clearList()
+				//This.selector.clear()
 				
 				//______________________________________________________
 		End case 
@@ -231,19 +237,51 @@ Function handleEvents($e : cs:C1710.evt)
 	End if 
 	
 	// MARK: Widgets method
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
 	Case of 
 			
 			//==============================================
-		: (This:C1470.changes.catch($e; On Clicked:K2:4))
+		: (This:C1470.changes.catch($e))
 			
-			This:C1470.goToPage(This:C1470.pages.changes)
+			This:C1470._pageManager($e; This:C1470.pages.changes)
 			
 			//==============================================
-		: (This:C1470.history.catch($e; On Clicked:K2:4))
+		: (This:C1470.history.catch($e))
 			
-			This:C1470.goToPage(This:C1470.pages.commits)
+			This:C1470._pageManager($e; This:C1470.pages.commits)
+			
+			//==============================================
+		: (This:C1470.unstaged.catch($e))\
+			 || (This:C1470.staged.catch($e))
+			
+			This:C1470._stageUnstageManager($e)
+			
+			//==============================================
+		: (This:C1470.stage.catch($e; On Clicked:K2:4))
+			
+			If (This:C1470.unstaged.items.length>0)
+				
+				This:C1470.Stage(This:C1470.unstaged.items)
+				
+			Else 
+				
+				This:C1470.StageAll()
+				
+			End if 
+			
+			//==============================================
+		: (This:C1470.unstage.catch($e; On Clicked:K2:4))
+			
+			If (This:C1470.staged.items.length>0)
+				
+				This:C1470.Unstage(This:C1470.staged.items)
+				
+			Else 
+				
+				This:C1470.UnstageAll()
+				
+			End if 
 			
 			//==============================================
 		: (This:C1470.fetch.catch($e; On Clicked:K2:4))
@@ -283,33 +321,9 @@ Function handleEvents($e : cs:C1710.evt)
 			This:C1470._openManager()
 			
 			//==============================================
-		: (This:C1470.selector.catch($e))
-			
-			This:C1470._selectorManager($e)
-			
-			//==============================================
-		: (This:C1470.stage.catch($e; On Clicked:K2:4))
-			
-			This:C1470.Stage(This:C1470.unstaged.items)
-			
-			//==============================================
-		: (This:C1470.stageAll.catch($e; On Clicked:K2:4))
-			
-			This:C1470.StageAll()
-			
-			//==============================================
-		: (This:C1470.unstage.catch($e; On Clicked:K2:4))
-			
-			This:C1470.Unstage(This:C1470.staged.items)
-			
-			//==============================================
-		: (This:C1470.unstaged.catch($e)) | (This:C1470.staged.catch($e))
-			
-			This:C1470._stageUnstageManager($e)
-			
-			//==============================================
 		: (This:C1470.subject.catch($e; On After Edit:K2:43))
 			
+			//TODO: Use value length
 			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Get edited text:C655)))
 			
 			//==============================================
@@ -373,9 +387,13 @@ Function onLoad()
 	
 	This:C1470.form.window.title:="4DPop Git - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
 	
-	This:C1470.toolbarLeft.distributeLeftToRight({\
-		minWidth: 50; \
-		spacing: 10})
+	// The title bar fills the entire width of the window
+	This:C1470.windowFrame.left:=0
+	This:C1470.windowFrame.width:=This:C1470.form.rect.width
+	
+	This:C1470.centeredToolbarButtons.distributeAroundCenter({\
+		minWidth: 30; \
+		spacing: 5})
 	
 	This:C1470.changes.show()
 	This:C1470.history.show()
@@ -386,12 +404,15 @@ Function onLoad()
 	This:C1470.commits.setVerticalScrollbar(2)
 	This:C1470.detailCommit.setVerticalScrollbar(2)
 	
-	This:C1470.stage.bestSize(Align right:K42:4).disable()
-	This:C1470.unstage.bestSize(Align right:K42:4).disable()
+	This:C1470.stage.bestSize().disable()
+	This:C1470.unstage.bestSize().disable()
 	This:C1470.commit.bestSize(Align right:K42:4).disable()
 	This:C1470.open.bestSize(Align right:K42:4)
 	
-	// TODO:Could be preferences
+	// Applying constraints
+	This:C1470.form.constraints.apply()
+	
+	// TODO: Could be preferences
 	This:C1470.diff.font:="Courier"
 	This:C1470.diff.fontSize:=14
 	
@@ -437,9 +458,6 @@ Function onLoad()
 			//________________________________________________________________________________
 	End case 
 	
-	//This.alertDialog:=cs.onBoard.new("embeddedDialogs"; "ALERT")
-	//This.alertDialog.me:=This.alertDialog
-	
 	This:C1470.pullDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PULL")
 	This:C1470.pullDialog.me:=This:C1470.pullDialog
 	
@@ -452,36 +470,29 @@ Function onLoad()
 	This:C1470.newBranchDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "NEW BRANCH")
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
 	
-	This:C1470.goToPage(This:C1470.pages.changes)
+	This:C1470.GoToPage(This:C1470.pages.changes)
 	
 	This:C1470.form.refresh()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
 	
-	var $t : Text
-	var $indx : Integer
-	var $commit; $detail; $o : Object
-	var $c : Collection
-	var $git : cs:C1710.Git
-	
-	$git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
 	Case of 
 			
 			//______________________________________________________
 		: (This:C1470.form.page=This:C1470.pages.changes)
 			
+			
 			If ($git.status()=0)
 				
 				Form:C1466.staged.clear()
-				This:C1470.stage.disable()
-				
-				This:C1470.stage.disable()
-				This:C1470.unstage.disable()
 				
 				This:C1470.commitment.disable()
 				This:C1470.commit.disable()
+				
+				This:C1470._stageUnstageButtonUpdate()
 				
 				return 
 				
@@ -490,6 +501,7 @@ Function update()
 			// Mark:Update file lists
 			Form:C1466.unstaged:=$git.changes.query("status IN :1"; This:C1470.UNSTAGED_STATUS).orderBy("path")
 			
+			var $o : Object
 			For each ($o; Form:C1466.unstaged)
 				
 				Use ($o)
@@ -531,19 +543,17 @@ Function update()
 			If (This:C1470.unstaged.item#Null:C1517)\
 				 & (Form:C1466.unstaged.length>0)
 				
-				$indx:=This:C1470.unstaged.item#Null:C1517\
+				var $indx : Integer:=This:C1470.unstaged.item#Null:C1517\
 					 ? Form:C1466.unstaged.extract("path").indexOf(This:C1470.unstaged.item.path)\
 					 : -1
 				
 				If ($indx=-1)
 					
 					This:C1470.unstaged.unselect()
-					This:C1470.stage.disable()
 					
 				Else 
 					
 					This:C1470.unstaged.reveal($indx+1)
-					This:C1470.stage.enable()
 					
 				End if 
 			End if 
@@ -558,12 +568,10 @@ Function update()
 				If ($indx=-1)
 					
 					This:C1470.staged.unselect()
-					This:C1470.unstage.disable()
 					
 				Else 
 					
 					This:C1470.staged.reveal($indx+1)
-					This:C1470.unstage.enable()
 					
 				End if 
 			End if 
@@ -572,11 +580,14 @@ Function update()
 			This:C1470.commitment.enable(Form:C1466.staged.length>0)
 			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
 			
+			
+			This:C1470._stageUnstageButtonUpdate()
+			
 			//______________________________________________________
 		: (This:C1470.form.page=This:C1470.pages.commits)
 			
-			$commit:=This:C1470.commits.item
-			$detail:=This:C1470.detailCommit.item
+			var $commit:=This:C1470.commits.item
+			var $detail:=This:C1470.detailCommit.item
 			
 			If ($commit=Null:C1517) || ($detail=Null:C1517)
 				
@@ -589,7 +600,7 @@ Function update()
 			
 			This:C1470.detailDiff.show()
 			
-			$c:=Split string:C1554($detail.label; " -> "; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+			var $c:=Split string:C1554($detail.label; " -> "; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 			
 			If ($c.length=2)
 				
@@ -616,6 +627,7 @@ Function update()
 			
 			$c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 			
+			var $t : Text
 			For each ($t; $c)
 				
 				If ($t="Binary file@")
@@ -648,6 +660,8 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onActivate()
 	
+	This:C1470.windowFrame.refresh()
+	
 	If (This:C1470.form.isSchemeModified())
 		
 		This:C1470._loadIcons()
@@ -660,159 +674,46 @@ Function onActivate()
 		
 	End if 
 	
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
-	// MARK: Update menu label
 	If ($git.status()>0)
 		
-		This:C1470.changes.title:=Localized string:C991("local")+" ("+String:C10($git.changes.length)+")"
+		This:C1470.changes.helpTip:=Localized string:C991("changesView")+" ("+String:C10($git.changes.length)+")"
 		
 	Else 
 		
-		This:C1470.changes.title:=Localized string:C991("local")
+		This:C1470.changes.helpTip:=Localized string:C991("changesView")
 		
 		Form:C1466.unstaged.clear()
 		Form:C1466.staged.clear()
 		
 	End if 
 	
-	This:C1470.selector.saveSelection()
-	
-	This:C1470.updateBranches()
-	This:C1470.updateRemotes()
-	This:C1470.updateTags()
-	This:C1470.updateStashes()
-	
-	This:C1470.selector.restoreSelection()
-	
 	This:C1470.form.refresh()
 	
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _selectorManager($e : cs:C1710.evt)
-	
-	$e:=$e || cs:C1710.evt.new()
-	var $data : Object:=This:C1470.selector.list.GetParameter({key: "data"; type: Is object:K8:27})
+Function _pageManager($e : cs:C1710.evt; $page : Integer)
 	
 	Case of 
 			
 			// ______________________________________________________
-		: ($data=Null:C1517)
+		: ($e.mouseEnter)
 			
-			// <NOTHING MORE TO DO>
+			This:C1470.helptip.instantly()
+			This:C1470.helptip.duration:=720*2
 			
 			// ______________________________________________________
-		: ($e.doubleClick)
+		: ($e.mouseLeave)
 			
-			Case of 
-					
-					// …………………………………………………………………………
-				: ($data.ref=Null:C1517)
-					
-					// <NOTHING MORE TO DO>
-					
-					// …………………………………………………………………………
-				: ($data.type="remote")
-					
-					// TODO: Create local branch
-					
-					// …………………………………………………………………………
-				: ($data.type="branch")\
-					 && (Not:C34(Bool:C1537($data.current)))
-					
-					This:C1470.handleMenus("checkout"; $data)
-					
-					// …………………………………………………………………………
-			End case 
+			This:C1470.helptip.restore()
 			
 			// ______________________________________________________
 		: ($e.click)
 			
-			If (Not:C34(Contextual click:C713) || ($data.ref=Null:C1517))
-				
-				return 
-				
-			End if 
-			
-			var $menu:=cs:C1710.menu.new()
-			
-			Case of 
-					
-					// …………………………………………………………………………
-				: ($data.type="remote")
-					
-					// TODO: Create local branch
-					
-					// …………………………………………………………………………
-				: ($data.type="tag")
-					
-					$menu.append("Copy tag name"; "copyName")
-					
-					// …………………………………………………………………………
-				: ($data.type="stash")
-					
-					// TODO: Apply | Rename | Delete
-					
-					// …………………………………………………………………………
-				: ($data.type="branch")
-					
-					If ($data.name#Form:C1466.currentBranch)
-						
-						$menu.append("Checkout \""+$data.name+"\""; "checkout")\
-							.line()
-						
-					End if 
-					
-					$menu.append("Copy branch name"; "copyName")
-					
-					// …………………………………………………………………………
-			End case 
-			
-			If (This:C1470.form.pageNumber=2)
-				
-				// TODO: WIP Create branch
-				//$menu.append("New Branch…"; "newBranch")
-				
-			End if 
-			
-			If (Not:C34($menu.popup().selected))
-				
-				return 
-				
-			End if 
-			
-			This:C1470.handleMenus($menu.choice; $data)
+			This:C1470.GoToPage($page)
 			
 			// ______________________________________________________
-		: ($e.selectionChange)
-			
-			If (This:C1470.form.page=This:C1470.pages.commits)
-				
-				This:C1470.commits.unselect()
-				
-				If ($data#Null:C1517)
-					
-					var $c : Collection:=Form:C1466.commits.indices("fingerprint.short = :1 OR fingerprint.long = :1"; String:C10($data.ref))
-					
-					If ($c.length>0)\
-						 && ($c[0]#-1)
-						
-						This:C1470.commits.reveal($c[0]+1)
-						
-					End if 
-				End if 
-				
-			Else 
-				
-				This:C1470.goToPage(This:C1470.pages.commits)
-				
-				// TODO: Defer selection
-				
-			End if 
-			
-			This:C1470._commitsManager()
-			
-			// ----------------------------------------
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -920,11 +821,11 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 	var $current:=$staged ? This:C1470.staged.item : This:C1470.unstaged.item
 	var $sel:=$staged ? This:C1470.staged.items : This:C1470.unstaged.items
 	
-	If ($sel.length<=1)
-		
-		Form:C1466.current:=$current
-		
-	End if 
+	//If ($sel.length<=1)
+	
+	Form:C1466.current:=$current
+	
+	//End if 
 	
 	Case of 
 			
@@ -1071,20 +972,37 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 			//______________________________________________________
 		: ($e.code=On Selection Change:K2:29)
 			
-			If ($staged)
-				
-				This:C1470.unstage.enable()
-				
-			Else 
-				
-				This:C1470.stage.enable()
-				
-			End if 
-			
 			This:C1470.DoDiff(Form:C1466.current)
 			
 			//______________________________________________________
 	End case 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function _stageUnstageButtonUpdate()
+	
+	If (This:C1470.unstaged.item=Null:C1517) || (This:C1470.unstaged.item.length=0)
+		
+		This:C1470.stage.title:=Localized string:C991("stageAll")
+		
+	Else 
+		
+		This:C1470.stage.title:=Localized string:C991("stage")
+		
+	End if 
+	
+	This:C1470.stage.enable((Form:C1466.unstaged#Null:C1517) && (Form:C1466.unstaged.length>0))
+	
+	If (This:C1470.staged.items=Null:C1517) || (This:C1470.staged.items.length=0)
+		
+		This:C1470.unstage.title:=Localized string:C991("unstageAll")
+		
+	Else 
+		
+		This:C1470.unstage.title:=Localized string:C991("unstage")
+		
+	End if 
+	
+	This:C1470.emptyIndex.show((Form:C1466.staged=Null:C1517) || (Form:C1466.staged.length=0))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _commitsManager()
@@ -1156,11 +1074,11 @@ Function DoDiff($item : Object)
 	var $code; $diff : Text
 	var $tgt
 	
+	This:C1470._stageUnstageButtonUpdate()
+	
 	If ($item=Null:C1517)
 		
 		This:C1470.diff.hide()
-		This:C1470.stage.disable()
-		This:C1470.unstage.disable()
 		
 		return 
 		
@@ -1284,7 +1202,7 @@ Function GetStyledDiffText($item : Object) : Text
 	var $line; $styled : Text
 	var $len; $pos : Integer
 	
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
 	If (Not:C34($git.success))
 		
@@ -1421,7 +1339,7 @@ Function GetStyledDiffText($item : Object) : Text
 	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function goToPage($page : Integer)
+Function GoToPage($page : Integer)
 	
 	This:C1470.changes.value:=Num:C11($page=1)
 	This:C1470.history.value:=Num:C11($page=2)
@@ -1464,6 +1382,14 @@ Function Unstage($items : Collection)
 	This:C1470.onActivate()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function UnstageAll()
+	
+	This:C1470.Git.unstage("all")
+	
+	This:C1470.DoDiff()
+	This:C1470.onActivate()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Discard($items : Collection)
 	
 	var $tgt
@@ -1478,7 +1404,7 @@ Function Discard($items : Collection)
 		
 	End if 
 	
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
 	For each ($o; $items)
 		
@@ -1532,7 +1458,7 @@ Function Checkout($branch : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateGithubRepository()
 	
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	var $gh:=cs:C1710.gh.me
 	
 	If ($gh.authorized)
@@ -1597,7 +1523,7 @@ Function updateCommits()
 		level: 0\
 		}
 	
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	var $graphMain:=This:C1470.getLabelTag("graph"; $o.colors[0])
 	var $notPushed:=$git.branchPushNumber($git.currentBranch)
 	
@@ -1838,194 +1764,6 @@ Function updateCommits()
 	This:C1470.form.update()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateStashes()
-	
-	var $o : Object
-	
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-24)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.stash()
-	
-	If ($git.stashes.length=0)
-		
-		return 
-		
-	End if 
-	
-	$list.lastRef:=400
-	
-	For each ($o; $git.stashes)
-		
-		Use ($o)
-			
-			$o.type:="stash"
-			
-		End use 
-		
-		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-			.SetIcon({icon: Form:C1466.icons.stash})
-		
-	End for each 
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateTags()
-	
-	var $t : Text
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-23)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.updateTags()
-	
-	If ($git.tags.length=0)
-		
-		return 
-		
-	End if 
-	
-	$list.lastRef:=300
-	
-	var $c : Collection:=$git.FETCH_HEAD("tag")
-	
-	For each ($t; $git.tags)
-		
-		var $o:=$c.query("tag = :1"; $t).first()
-		$o.type:="tag"
-		
-		$list.Append($t)\
-			.SetParameter({key: "data"; value: $o})\
-			.SetIcon({icon: Form:C1466.icons.tag})
-		
-	End for each 
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateRemotes()
-	
-	var $o : Object
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-22)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.updateRemotes()
-	
-	If ($git.remotes.length=0)
-		
-		return 
-		
-	End if 
-	
-	$list.lastRef:=200
-	
-	var $c : Collection:=$git.REMOTE_ORIGIN()
-	
-	For each ($o; $c)
-		
-		Use ($o)
-			
-			$o.type:="remote"
-			
-		End use 
-		
-		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-			.SetIcon({icon: Form:C1466.icons["github"]})
-		
-		//.SetIcon({icon: Form.icons[(Position("github.com"; $o.url)>0 ? "github" : "gitlab")]})
-		
-	End for each 
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateBranches()
-	
-	var $notPulled; $notPushed : Integer
-	var $o : Object
-	
-	var $item : Object:=This:C1470.selector.list.GetItemByReference(-21)
-	var $list:=cs:C1710.hierList.new($item.sublist).Empties()
-	var $git : cs:C1710.Git:=This:C1470.Git.branch()
-	
-	If ($git.branches.length=0)
-		
-		return 
-		
-	End if 
-	
-	$list.lastRef:=100
-	
-	For each ($o; $git.branches)
-		
-		Use ($o)
-			
-			$o.type:="branch"
-			
-		End use 
-		
-		// TODO: hieararchical branches
-		// Var $c :=Split string($o.name; "/")
-		
-		$list.Append($o.name)\
-			.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
-		
-		If ($o.current)
-			
-			Form:C1466.currentBranch:=$o.name
-			
-			$list.SetIcon({icon: Form:C1466.icons.master})\
-				.SetItemStyle(Bold:K14:2)
-			
-		Else 
-			
-			$list.SetIcon({icon: Form:C1466.icons.branch})
-			
-		End if 
-		
-		$notPushed:=$git.branchPushNumber($o.name)
-		$notPulled:=$git.branchFetchNumber($o.name)
-		
-		Case of 
-				//______________________________________________________
-			: ($notPulled>0) & ($notPushed>0)
-				
-				$list.SetAdditionalText(String:C10($notPushed)+"↑↓"+String:C10($notPulled)+" ")
-				
-				//______________________________________________________
-			: ($notPushed>0)
-				
-				$list.SetAdditionalText(String:C10($notPushed)+"↑ ")
-				
-				//______________________________________________________
-			: ($notPulled>0)
-				
-				$list.SetAdditionalText("↓"+String:C10($notPulled)+" ")
-				
-				//______________________________________________________
-		End case 
-	End for each 
-	
-	//$list.properties
-	
-	If (Not:C34($item.expanded))
-		
-		This:C1470.selector.collapse(This:C1470.selector.itemPosition($list.ref))
-		
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
 	var $svg:=cs:C1710.svg.new()
@@ -2148,7 +1886,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 Function handleMenus($what : Text; $data : Object)
 	
 	$what:=$what || Get selected menu item parameter:C1005
-	var $git : cs:C1710.Git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
 	Case of 
 			
@@ -2280,7 +2018,7 @@ Function handleMenus($what : Text; $data : Object)
 					//____________________________
 				: ($what="ignoreExtension")
 					
-					// #TO_DO: Must unstack all indexed files with this extension
+					// TODO: Must unstack all indexed files with this extension
 					
 					$ignore+="\r*"+$file.extension
 					
@@ -2339,10 +2077,6 @@ Function handleMenus($what : Text; $data : Object)
 				
 				RELOAD PROJECT:C1739
 				
-				This:C1470.selector.saveSelection()
-				This:C1470.updateBranches()
-				This:C1470.selector.restoreSelection()
-				
 				This:C1470.form.refresh()
 				
 			End if 
@@ -2359,7 +2093,6 @@ Function handleMenus($what : Text; $data : Object)
 				discard: This:C1470.checkout.discard\
 				})
 			
-			//
 			//______________________________________________________
 		Else 
 			
@@ -2439,18 +2172,13 @@ Function _loadIcons()
 	
 	This:C1470.commits.selectionHighlight:=This:C1470.form.lightScheme
 	
-	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
+	For each ($key; ["checked"; "github"; "gitLab"; "master"; "fix"])
 		
 		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".png")).platformPath; $icon)
 		CREATE THUMBNAIL:C679($icon; $icon; 22; 22)
 		Form:C1466.icons[Lowercase:C14($key)]:=$icon
 		
 	End for each 
-	
-	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.branch}; -21)
-	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.remote}; -22)
-	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.tag}; -23)
-	This:C1470.selector.list.SetIcon({icon: Form:C1466.icons.stash}; -24)
 	
 	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath; $icon)
 	Form:C1466.logo:=$icon

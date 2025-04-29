@@ -3,14 +3,14 @@ Class extends widget
 property data : Object
 property dataSource : Object
 
-Class constructor($name : Text; $data; $page : Integer)
+Class constructor($name : Text; $data; $page : Integer; $parent : Object)
 	
-	Super:C1705($name)
+	Super:C1705($name; $parent)
 	
 	This:C1470.dataSource:=$data
 /*
-💡 The widget "Variable or Expression" property mut be: 
-   "formGetInstance.<name>.dataSource"
+💡 The widget "Variable or Expression" property mut be:
+"formGetInstance.<name>.dataSource"
 */
 	
 	This:C1470.data:={}
@@ -70,6 +70,18 @@ Class constructor($name : Text; $data; $page : Integer)
 	End case 
 	
 	This:C1470.pageNumber:=$page
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get pageRef() : Integer
+	
+	If (This:C1470.isChoiceList)
+		
+		var $itemeRef : Integer
+		var $itemeText : Text
+		GET LIST ITEM:C378(*; This:C1470.name; *; $itemeRef; $itemeText)
+		return $itemeRef
+		
+	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get pageNumber() : Integer

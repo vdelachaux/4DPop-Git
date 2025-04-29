@@ -40,6 +40,40 @@ Class constructor($param)
 	End case 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get title() : Text
+	
+	If (This:C1470.ref=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	return Get window title:C450(This:C1470.ref)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set title($title : Text)
+	
+	If (This:C1470.ref=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	// Try to localize from a resname
+	If (Length:C16($title)>0)\
+		 && (Length:C16($title)<=255)\
+		 && (Position:C15(Char:C90(1); $title)#1)
+		
+		var $t : Text:=Formula from string:C1601("Localized string:C991($1)"; sk execute in host database:K88:5).call(Null:C1517; $title)\
+			 || Localized string:C991($title)
+		
+		$title:=$t || $title  // Revert if no localization
+		
+	End if 
+	
+	SET WINDOW TITLE:C213($title; This:C1470.ref)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get type() : Integer
 	
 	If (This:C1470.ref=Null:C1517)
@@ -91,7 +125,58 @@ Function isFrontmost() : Boolean
 		
 	End if 
 	
-	//MARK:-[COORDINATES]
+	//MARK:-[COORDINATES & DIMENSIONS]
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get coordinates() : cs:C1710.coordinates
+	
+	If (This:C1470.ref=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	var $bottom; $left; $right; $top : Integer
+	GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
+	
+	return cs:C1710.coordinates.new($left; $top; $right; $bottom)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setCoordinates($left : Integer; $top : Integer; $right : Integer; $bottom : Integer)
+	
+	If (This:C1470.ref=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get rect() : cs:C1710.rect
+	
+	If (This:C1470.ref=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	var $height; $width : Integer
+	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
+	
+	return cs:C1710.rect.new($width; $height)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setRect($width : Integer; $height : Integer)
+	
+	If (This:C1470.ref=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	var $coordinates:=This:C1470.coordinates
+	SET WINDOW RECT:C444($coordinates.left; $coordinates.top; $coordinates.left+$width; $coordinates.top+$height; This:C1470.ref; *)
+	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get width() : Integer
 	
@@ -101,19 +186,19 @@ Function get width() : Integer
 		
 	End if 
 	
-	return This:C1470.dimensions.width
+	return This:C1470.rect.width
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set width($width : Integer)
 	
-	var $bottom; $left; $right; $top : Integer
-	
-	If (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
-		SET WINDOW RECT:C444($left; $top; $left+$width; $bottom; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	var $coordinates:=This:C1470.coordinates
+	SET WINDOW RECT:C444($coordinates.left; $coordinates.top; $coordinates.left+$width; $coordinates.bottom; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get height() : Integer
@@ -124,19 +209,19 @@ Function get height() : Integer
 		
 	End if 
 	
-	return This:C1470.dimensions.height
+	return This:C1470.rect.height
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set height($height : Integer)
 	
-	var $bottom; $left; $right; $top : Integer
-	
-	If (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
-		SET WINDOW RECT:C444($left; $top; $right; $top+$height; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	var $coordinates:=This:C1470.coordinates
+	SET WINDOW RECT:C444($coordinates.left; $coordinates.top; $coordinates.right; $coordinates.top+$height; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get left() : Integer
@@ -152,14 +237,14 @@ Function get left() : Integer
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set left($left : Integer)
 	
-	var $_; $bottom; $top; $right : Integer
-	
-	If (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($_; $top; $right; $bottom; This:C1470.ref)
-		SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	var $coordinates:=This:C1470.coordinates
+	SET WINDOW RECT:C444($left; $coordinates.top; $coordinates.right; $coordinates.bottom; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get top() : Integer
@@ -175,14 +260,14 @@ Function get top() : Integer
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set top($top : Integer)
 	
-	var $_; $bottom; $left; $right : Integer
-	
-	If (This:C1470.ref#Null:C1517)
+	If (This:C1470.ref=Null:C1517)
 		
-		GET WINDOW RECT:C443($left; $_; $right; $bottom; This:C1470.ref)
-		SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
+		return 
 		
 	End if 
+	
+	var $coordinates:=This:C1470.coordinates
+	SET WINDOW RECT:C444($coordinates.left; $top; $coordinates.right; $coordinates.bottom; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get right() : Integer
@@ -198,16 +283,14 @@ Function get right() : Integer
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set right($right : Integer)
 	
-	var $_; $bottom; $left; $top : Integer
-	
 	If (This:C1470.ref=Null:C1517)
 		
 		return 
 		
 	End if 
 	
-	GET WINDOW RECT:C443($left; $top; $_; $bottom; This:C1470.ref)
-	SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
+	var $coordinates:=This:C1470.coordinates
+	SET WINDOW RECT:C444($coordinates.left; $coordinates.top; $right; $coordinates.bottom; This:C1470.ref; *)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get bottom() : Integer
@@ -223,106 +306,14 @@ Function get bottom() : Integer
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set bottom($bottom : Integer)
 	
-	var $_; $left; $right; $top : Integer
-	
 	If (This:C1470.ref=Null:C1517)
 		
 		return 
 		
 	End if 
 	
-	GET WINDOW RECT:C443($left; $top; $right; $_; This:C1470.ref)
-	SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get title() : Text
-	
-	If (This:C1470.ref=Null:C1517)
-		
-		return 
-		
-	End if 
-	
-	return Get window title:C450(This:C1470.ref)
-	
-	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
-Function set title($title : Text)
-	
-	var $t : Text
-	
-	//%W-533.1
-	If (Length:C16($title)>0)\
-		 && (Length:C16($title)<=255)\
-		 && ($title[[1]]#Char:C90(1))
-		
-		$t:=Formula from string:C1601("Get localized string:C991($1)"; sk execute in host database:K88:5).call(Null:C1517; $title)
-		$title:=$t || $title  // Revert if no localization
-		
-	End if 
-	//%W+533.1
-	
-	SET WINDOW TITLE:C213($title; This:C1470.ref)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get coordinates() : Object
-	
-	var $bottom; $left; $right; $top : Integer
-	
-	If (This:C1470.ref=Null:C1517)
-		
-		return 
-		
-	End if 
-	
-	GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
-	
-	return {\
-		left: $left; \
-		top: $top; \
-		right: $right; \
-		bottom: $bottom}
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setCoordinates($left : Integer; $top : Integer; $right : Integer; $bottom : Integer)
-	
-	If (This:C1470.ref=Null:C1517)
-		
-		return 
-		
-	End if 
-	
-	SET WINDOW RECT:C444($left; $top; $right; $bottom; This:C1470.ref; *)
-	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get dimensions() : Object
-	
-	var $height; $width : Integer
-	
-	If (This:C1470.ref=Null:C1517)
-		
-		return 
-		
-	End if 
-	
-	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
-	
-	return {\
-		width: $width; \
-		height: $height}
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function setDimensions($width : Integer; $height : Integer)
-	
-	var $bottom; $left; $right; $top : Integer
-	
-	If (This:C1470.ref=Null:C1517)
-		
-		return 
-		
-	End if 
-	
-	GET WINDOW RECT:C443($left; $top; $right; $bottom; This:C1470.ref)
-	SET WINDOW RECT:C444($left; $top; $left+$width; $top+$height; This:C1470.ref; *)
+	var $coordinates:=This:C1470.coordinates
+	SET WINDOW RECT:C444($coordinates.left; $coordinates.top; $coordinates.right; $bottom; This:C1470.ref; *)
 	
 	//MARK:-[HANDLING]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -371,9 +362,22 @@ Function minimize()
 	MINIMIZE WINDOW:C454(This:C1470.ref)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function resize($width : Integer; $height : Integer)
+	// Adding h & v pixels to the current window size.
+Function resize($hOffset : Integer; $vOffset : Integer)
 	
-	RESIZE FORM WINDOW:C890($width; $height)
+	RESIZE FORM WINDOW:C890($hOffset; $vOffset)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Adding pixels to the current window width.
+Function resizeHorizontally($offset : Integer)
+	
+	RESIZE FORM WINDOW:C890($offset; 0)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Adding pixels to the current window height.
+Function resizeVertically($offset : Integer)
+	
+	RESIZE FORM WINDOW:C890(0; $offset)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function redraw()
@@ -413,10 +417,6 @@ Function bringToFront()
 	// This is mandatory for a login window when the action fails, for example, to alert a hearing impaired user
 Function vibrate($count : Integer)
 	
-	var $i; $shift : Integer
-	var $o : Object
-	
-	
 	If (This:C1470.ref=Null:C1517)
 		
 		return 
@@ -425,7 +425,15 @@ Function vibrate($count : Integer)
 	
 	$count:=$count=0 ? 6 : $count
 	
-	$o:=This:C1470.coordinates
+	// Must be an even number
+	If (($count%2)#0)
+		
+		$count:=$count+1
+		
+	End if 
+	
+	var $o:=This:C1470.coordinates
+	var $i; $shift : Integer
 	
 	For ($i; 1; $count; 1)
 		
@@ -434,4 +442,3 @@ Function vibrate($count : Integer)
 		DELAY PROCESS:C323(Current process:C322; 2)
 		
 	End for 
-	

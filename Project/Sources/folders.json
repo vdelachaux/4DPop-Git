@@ -42,7 +42,6 @@
 	},
 	"👩‍💻 UI": {
 		"methods": [
-			"COMPILER_UI",
 			"dropableWidgetMethod",
 			"form_spreadToSubforms",
 			"formCallBack",
@@ -53,11 +52,11 @@
 		],
 		"classes": [
 			"button",
+			"colors",
 			"colour",
 			"comboBox",
 			"constraints",
-			"coord",
-			"dim",
+			"coordinates",
 			"dropDown",
 			"evt",
 			"form",
@@ -70,6 +69,7 @@
 			"menuBar",
 			"onBoard",
 			"picture",
+			"rect",
 			"scrollable",
 			"selector",
 			"static",
@@ -105,6 +105,12 @@
 			"_GIT_Controller",
 			"_gravatarRequest",
 			"_PATTERN_Controller"
+		]
+	},
+	"📦 Widgets": {
+		"groups": [
+			"MESSAGE",
+			"WINDOW_FRAME"
 		]
 	},
 	"4️⃣ 4DPop": {
@@ -147,6 +153,14 @@
 		],
 		"classes": [
 			"_WIDGET_Controller"
+		]
+	},
+	"WINDOW_FRAME": {
+		"forms": [
+			"WINDOW_FRAME"
+		],
+		"classes": [
+			"_WINDOW_FRAME_Controller"
 		]
 	},
 	"trash": {

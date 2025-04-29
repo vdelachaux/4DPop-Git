@@ -1,19 +1,28 @@
 Class extends dropDown
 
-property _ordered; automaticExpand : Boolean
-
-Class constructor($name : Text; $data : Object)
+Class constructor($name : Text; $data : Object; $parent : Object)
 	
-	Super:C1705($name; $data)
+	Super:C1705($name; $data; $parent)
 	
-	This:C1470._ordered:=Bool:C1537($data.ordered)
-	This:C1470.automaticExpand:=Bool:C1537($data.automaticExpand)
-	
-	If (This:C1470.automaticExpand)
+	If (Bool:C1537($data.ordered))
 		
-		This:C1470._automaticExpandInit()
+		This:C1470.order()
 		
 	End if 
+	
+	If ($data.automaticExpand)
+		
+		This:C1470.addEvent(On Getting Focus:K2:7)
+		
+	End if 
+	
+	If ($data.automaticInsertion)
+		
+		This:C1470.addEvent(On Data Change:K2:15)
+		
+	End if 
+	
+	This:C1470.filter:=Num:C11(This:C1470.data.type)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get automaticExpand() : Boolean
@@ -27,7 +36,39 @@ Function set automaticExpand($auto : Boolean)
 	
 	If ($auto)
 		
-		This:C1470._automaticExpandInit()
+		This:C1470.addEvent(On Getting Focus:K2:7)
+		
+	End if 
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get automaticInsertion() : Boolean
+	
+	return Bool:C1537(This:C1470.data.automaticInsertion)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set automaticInsertion($auto : Boolean)
+	
+	This:C1470.data.automaticInsertion:=$auto
+	
+	If ($auto)
+		
+		This:C1470.addEvent(On Data Change:K2:15)
+		
+	End if 
+	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+Function get ordered() : Boolean
+	
+	return Bool:C1537(This:C1470.data.ordered)
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+Function set ordered($auto : Boolean)
+	
+	This:C1470.data.ordered:=$auto
+	
+	If ($auto)
+		
+		This:C1470.order()
 		
 	End if 
 	
@@ -86,48 +127,91 @@ Function set filter($filter)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function order()
+	
+	This:C1470.data.values:=This:C1470.data.values.orderBy()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Display the selection list (to use in the On getting focus event)
-Function expand() : cs:C1710.comboBox
+Function expand()
 	
-	var $o : Object
+	GOTO OBJECT:C206(*; This:C1470.name)
+	POST KEY:C465(Down arrow key:K12:19; 0 ?+ Command key bit:K16:2)
 	
-	If (This:C1470.automaticExpand)
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Insert an item or the current value. 
+	// Keep the list ordered if any
+Function insert($item; $order : Boolean) : cs:C1710.comboBox
+	
+	If (Count parameters:C259=0)\
+		 || (Value type:C1509($1)=Is boolean:K8:9)
 		
-		// Get the current widget window coordinates
-		$o:=This:C1470.windowCoordinates
-		POST CLICK:C466($o.right-10; $o.top+10; Current process:C322)
+		var $value : Variant:=This:C1470.value
+		
+	Else 
+		
+		$value:=$item
 		
 	End if 
 	
-	return This:C1470
+	If (Length:C16(String:C10($value))=0)
+		
+		return This:C1470
+		
+	End if 
 	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Display the selection list (to use in the On Data change event)
-Function automaticInsertion($ordered : Boolean)
-	
-	var $index : Integer
-	var $value
-	
-	$value:=This:C1470.data.currentValue
-	$index:=This:C1470.data.values.indexOf($value)
+	var $values:=This:C1470.values
+	var $index : Integer:=$values.indexOf($value)
 	
 	If ($index=-1)
 		
-		This:C1470.data.values.push($value)
+		$values.push($value)
 		
-		If ($ordered | This:C1470._ordered)
+		If (This:C1470.ordered | $order)
 			
-			This:C1470.data.values:=This:C1470.data.values.orderBy()
-			$index:=This:C1470.data.values.indexOf($value)
+			$values:=$values.orderBy()
+			$index:=$values.indexOf($value)
 			
 		End if 
 	End if 
 	
+	This:C1470.data.values:=$values
 	This:C1470.data.index:=$index
 	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-	// Set On Getting focus event, if any
-Function _automaticExpandInit()
 	
-	This:C1470.addEvent(On Getting Focus:K2:7)
+	return This:C1470
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function listModified() : Boolean
+	
+	return Not:C34(This:C1470.data.values.equal(This:C1470._backup.values))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function eventHandler() : Object
+	
+	var $e:=FORM Event:C1606
+	
+	Case of 
+			
+			// ______________________________________________________
+		: ($e.code=On Getting Focus:K2:7)
+			
+			If (This:C1470.data.automaticExpand)
+				
+				This:C1470.expand()
+				
+			End if 
+			
+			// ______________________________________________________
+		: ($e.code=On Data Change:K2:15)
+			
+			If (This:C1470.data.automaticInsertion)
+				
+				This:C1470.insert()
+				
+			End if 
+			
+			// ______________________________________________________
+	End case 
+	
+	return $e

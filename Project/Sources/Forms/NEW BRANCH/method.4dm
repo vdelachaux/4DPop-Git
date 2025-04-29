@@ -58,7 +58,7 @@ If ($adjustGeometry)
 	
 	$adjustGeometry:=False:C215
 	
-	var $height : Integer:=cs:C1710.static.new("Group Box1").dimensions.height
+	var $height : Integer:=cs:C1710.static.new("Group Box1").rect.height
 	var $group:=cs:C1710.group.new("Group Box1,Radio Button,Radio Button1,Radio Button2")
 	
 	If (Form:C1466.checkout)

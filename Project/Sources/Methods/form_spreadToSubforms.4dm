@@ -10,14 +10,9 @@
 // Declarations
 #DECLARE($message : Object)
 
-If (False:C215)
-	C_OBJECT:C1216(form_spreadToSubforms; $1)
-End if 
-
 var $i : Integer
 ARRAY TEXT:C222($widgets; 0)
 
-// ----------------------------------------------------
 EXECUTE METHOD:C1007($message.method)
 
 FORM GET OBJECTS:C898($widgets)

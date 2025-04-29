@@ -10,8 +10,8 @@
     <body>
       <group resname="dialog">
         <trans-unit id="dMFxr5Xj0AH1qBl3qia+dQ" resname="workspace">
-          <source>WORKSPACE</source>
-          <target>ESPACE DE TRAVAIL</target>
+          <source>WORKING DIRECTORY</source>
+          <target>RÉPERTOIRE DE TRAVAIL</target>
         </trans-unit>
         <trans-unit id="ZqzIky_4T6wr9uni1_5qTQ" resname="index">
           <source>INDEX</source>
@@ -49,8 +49,8 @@
           <source>Open in…</source>
           <target>Ouvrir dans…</target>
         </trans-unit>
-        <trans-unit id="epR84MCiFWzBS5y1JmovAg" resname="changes">
-          <source>Changes</source>
+        <trans-unit id="epR84MCiFWzBS5y1JmovAg" resname="changesView">
+          <source>Changes View</source>
           <target>Modifications</target>
         </trans-unit>
         <trans-unit id="oPUK6zDP1HgG1_zUvx1KQQ" resname="stageAll">
@@ -151,6 +151,15 @@ Voulez-vous télécharger l'installateur ?</target>
         <trans-unit id="TnqtftaBecYGx68P3zexgQ" resname="local">
           <source>Local</source>
           <target>Local</target>
+        </trans-unit>
+        <trans-unit id="tDodA6Cy1x7Q0b4AEacrBw" resname="stageFile">
+          <source>Stage File</source>
+          <target>Indexer le fichier</target>
+        </trans-unit>
+        
+        <trans-unit id="f3xIjlStjoeRrYxiBD8FQQ" resname="historyView">
+          <source>History View</source>
+          <target>Historique</target>
         </trans-unit>
       </group>
       <group resname="pattern">
@@ -326,6 +335,9 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
+
+
 
 
 
