@@ -1,9 +1,9 @@
 Class extends widget
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Class constructor($name : Text)
+Class constructor($name : Text; $parent : Object)
 	
-	Super:C1705($name)
+	Super:C1705($name; $parent)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function start($show : Boolean) : cs:C1710.stepper

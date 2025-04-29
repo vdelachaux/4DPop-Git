@@ -12,9 +12,9 @@ property privateEvents; parent : Object
 // MARK: Constants 🔐
 property __SUPER__ : Object
 
-Class constructor($name : Text; $events : Object; $super : Object; $form : Object)
+Class constructor($name : Text; $events : Object; $super : Object; $form : Object; $parent : Object)
 	
-	Super:C1705($name)
+	Super:C1705($name; $parent)
 	
 	Case of 
 			
@@ -125,15 +125,12 @@ Function disable($widget : Text)
 	// MARK:-[Definition]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Returns the width and height of the container.
-Function getParentDimensions() : cs:C1710.dim
+Function getParentRect() : cs:C1710.rect
 	
 	var $height; $width : Integer
-	
 	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
 	
-	return {\
-		width: $width; \
-		height: $height}
+	return cs:C1710.rect.new($width; $height)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Returns  the names of the forms associated with the subform.
@@ -202,14 +199,12 @@ Function setSubform($detail : Text; $list : Text; $table : Pointer) : cs:C1710.s
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function alignHorizontally($alignment : Integer; $reference)
 	
-	var $middle : Integer
-	var $coordinates; $parent : Object
 	
-	$coordinates:=This:C1470.getCoordinates()
+	var $coordinates:=This:C1470.getCoordinates()
 	
 	If (Count parameters:C259=1)
 		
-		$parent:=This:C1470.getParentDimensions()
+		var $parent:=This:C1470.getParentRect()
 		
 	Else 
 		
@@ -223,9 +218,10 @@ Function alignHorizontally($alignment : Integer; $reference)
 			//______________________________________________________
 		: ($alignment=Align center:K42:3)
 			
-			$middle:=$parent.width\2
-			$coordinates.left:=$middle-(This:C1470.dimensions.width\2)
-			$coordinates.right:=$coordinates.left+This:C1470.dimensions.width
+			var $width:=This:C1470.rect.width
+			var $middle : Integer:=$parent.width\2
+			$coordinates.left:=$middle-($width\2)
+			$coordinates.right:=$coordinates.left+$width
 			
 			This:C1470.setCoordinates($coordinates)
 			
@@ -243,12 +239,11 @@ Function alignHorizontally($alignment : Integer; $reference)
 Function _getParent($name : Text) : Object
 	
 	var $height; $width : Integer
-	
 	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
 	
 	return {\
 		name: This:C1470.form.name; \
-		dimensions: {\
+		rect: {\
 		width: $width; \
 		height: $height}; \
 		container: $name}

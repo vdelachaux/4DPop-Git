@@ -43,7 +43,7 @@ Function init()
 	This:C1470.todo:=This:C1470.form.Button("todo")
 	This:C1470.fixme:=This:C1470.form.Button("fixme")
 	
-	This:C1470.gitItems:=This:C1470.form.group.new()
+	This:C1470.gitItems:=This:C1470.form.Group()
 	This:C1470.more:=This:C1470.form.Button("more").addToGroup(This:C1470.gitItems)
 	This:C1470.branch:=This:C1470.form.Button("branch").addToGroup(This:C1470.gitItems)
 	This:C1470.localChanges:=This:C1470.form.Button("localChanges").addToGroup(This:C1470.gitItems)
@@ -406,7 +406,7 @@ Function _doChangesMenu()
 		
 	End if 
 	
-	// %W-550.11
+	//%W-550.11
 	var $tgt:=This:C1470.Git.getTarget($menu.choice; Folder:C1567(fk database folder:K87:14; *))
 	//%W+550.11
 	

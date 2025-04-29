@@ -316,7 +316,6 @@ shared Function update()
 	// Updates the collection of changes and returns their number
 shared Function status($short : Boolean) : Integer
 	
-	var $t : Text
 	$short:=Count parameters:C259>=1 ? $short : True:C214  // Default is True
 	
 	This:C1470.changes.clear()
@@ -325,6 +324,7 @@ shared Function status($short : Boolean) : Integer
 	
 	If (This:C1470.execute($cmd))
 		
+		var $t : Text
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
 			This:C1470.changes.push(OB Copy:C1225({\
@@ -368,7 +368,6 @@ Function add($what)
 		: (Value type:C1509($what)=Is collection:K8:32)
 			
 			var $item
-			
 			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)
@@ -434,25 +433,34 @@ Function unstage($what)
 			//_____________________________
 		: (Value type:C1509($what)=Is text:K8:3)
 			
-			var $c : Collection
-			$c:=Split string:C1554($what; " -> ")
-			
-			If ($c.length>1)  // Moved
-				
-				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[0]))
-				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[1]))
-				
-			Else 
-				
-				This:C1470.execute("reset HEAD "+This:C1470._quoted($what))
-				
-			End if 
+			Case of 
+					
+					//——————————————————————
+				: ($what="all")  // Unstage all stagged files
+					
+					This:C1470.execute("reset")
+					
+					//——————————————————————
+				Else 
+					
+					var $c:=Split string:C1554($what; " -> ")
+					
+					If ($c.length>1)  // Moved
+						
+						This:C1470.execute("reset HEAD "+This:C1470._quoted($c[0]))
+						This:C1470.execute("reset HEAD "+This:C1470._quoted($c[1]))
+						
+					Else 
+						
+						This:C1470.execute("reset HEAD "+This:C1470._quoted($what))
+						
+					End if 
+			End case 
 			
 			//_____________________________
 		: (Value type:C1509($what)=Is collection:K8:32)
 			
 			var $item
-			
 			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)

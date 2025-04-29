@@ -1,0 +1,180 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"events": [
+		"onLoad",
+		"onClick",
+		"onActivate",
+		"onDeactivate",
+		"onTimer",
+		"onResize",
+		"onMouseEnter",
+		"onMouseLeave",
+		"onBoundVariableChange"
+	],
+	"windowTitle": "window title",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {
+				"Line": {
+					"type": "line",
+					"top": 28,
+					"left": 0,
+					"width": 120,
+					"height": 0,
+					"class": "dev",
+					"visibility": "hidden",
+					"startPoint": "topLeft"
+				}
+			}
+		},
+		{
+			"objects": {
+				"dragWindow": {
+					"type": "button",
+					"text": "",
+					"top": 0,
+					"left": 0,
+					"width": 120,
+					"height": 53,
+					"events": [
+						"onClick",
+						"onDoubleClick"
+					],
+					"style": "custom",
+					"display": false,
+					"sizingX": "grow",
+					"sizingY": "grow"
+				},
+				"closeWin": {
+					"type": "button",
+					"top": 0,
+					"left": 88,
+					"width": 32,
+					"height": 32,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "Images/Windows/close.png",
+					"iconFrames": 4,
+					"sizingX": "move",
+					"shortcutAccel": true,
+					"shortcutControl": false,
+					"shortcutShift": false,
+					"shortcutAlt": false,
+					"shortcutKey": "w",
+					"class": "win"
+				},
+				"minusWin": {
+					"type": "button",
+					"top": 0,
+					"left": 0,
+					"width": 32,
+					"height": 32,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "Images/Windows/minimize.png",
+					"iconFrames": 4,
+					"sizingX": "move",
+					"class": "win"
+				},
+				"plusWin": {
+					"type": "button",
+					"top": 0,
+					"left": 44,
+					"width": 32,
+					"height": 32,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "Images/Windows/maximize.png",
+					"iconFrames": 4,
+					"sizingX": "move",
+					"class": "win"
+				},
+				"closeMac": {
+					"type": "button",
+					"text": "",
+					"top": 20,
+					"left": 18,
+					"width": 16,
+					"height": 16,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "Images/macOS/close.png",
+					"shortcutAccel": true,
+					"shortcutControl": false,
+					"shortcutShift": false,
+					"shortcutAlt": false,
+					"shortcutKey": "w",
+					"class": "mac"
+				},
+				"minusMac": {
+					"type": "button",
+					"text": "",
+					"top": 20,
+					"left": 38,
+					"width": 16,
+					"height": 16,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "Images/macOS/minimize.png",
+					"class": "mac"
+				},
+				"plusMac": {
+					"type": "button",
+					"text": "",
+					"top": 20,
+					"left": 58,
+					"width": 16,
+					"height": 16,
+					"events": [
+						"onClick"
+					],
+					"style": "custom",
+					"icon": "Images/macOS/zoom.png",
+					"class": "mac"
+				}
+			}
+		}
+	],
+	"geometryStamp": 327,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"method": "formMethod",
+	"width": 120,
+	"height": 53,
+	"css": [
+		{
+			"path": "macOS.css",
+			"media": "mac"
+		},
+		{
+			"path": "Windows.css",
+			"media": "windows"
+		}
+	],
+	"shared": true
+}

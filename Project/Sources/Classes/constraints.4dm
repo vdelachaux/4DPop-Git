@@ -20,7 +20,7 @@ Class constructor($metrics : Object)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get centerHorizontally() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="horizontal-alignment"
 	$rule.alignment:="center"
 	
@@ -29,7 +29,7 @@ Function get centerHorizontally() : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function horizontallyCentered() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="horizontal-alignment"
 	$rule.alignment:="center"
 	
@@ -38,7 +38,7 @@ Function horizontallyCentered() : cs:C1710.constraints
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get alignLeft() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="horizontal-alignment"
 	$rule.alignment:="left"
 	
@@ -47,7 +47,7 @@ Function get alignLeft() : cs:C1710.constraints
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get alignRight() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="horizontal-alignment"
 	$rule.alignment:="right"
 	
@@ -56,21 +56,21 @@ Function get alignRight() : cs:C1710.constraints
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set mininimumWidth($value : Integer)
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="minimum-width"
 	$rule.value:=$value
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set maximumWidth($value : Integer)
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="maximum-width"
 	$rule.value:=$value
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function tile($value : Real) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="tile"
 	$rule.value:=$value
 	
@@ -79,7 +79,7 @@ Function tile($value : Real) : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function marginLeft($value : Integer) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="margin"
 	$rule.alignment:="left"
 	$rule.margin:=$value
@@ -94,7 +94,7 @@ Function horizontalLeftOffset($value : Integer) : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function marginRight($value : Integer) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="margin"
 	$rule.alignment:="right"
 	$rule.margin:=$value
@@ -109,7 +109,7 @@ Function horizontalRightOffset($value : Integer) : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function autoHorizontalOffset() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="margin"
 	$rule.alignment:="auto"
 	
@@ -118,7 +118,7 @@ Function autoHorizontalOffset() : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function anchorLeft($value : Integer) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="anchor"
 	$rule.alignment:="left"
 	$rule.margin:=$value
@@ -128,7 +128,7 @@ Function anchorLeft($value : Integer) : cs:C1710.constraints
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get anchoredOnTheLeft() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="anchor"
 	$rule.alignment:="left"
 	
@@ -137,7 +137,7 @@ Function get anchoredOnTheLeft() : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function anchorRight($value : Integer) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="anchor"
 	$rule.alignment:="right"
 	$rule.margin:=$value
@@ -147,7 +147,7 @@ Function anchorRight($value : Integer) : cs:C1710.constraints
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get anchoredOnTheRight() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="anchor"
 	$rule.alignment:="right"
 	
@@ -156,7 +156,7 @@ Function get anchoredOnTheRight() : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function anchorCenter() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="anchor"
 	$rule.alignment:="center"
 	
@@ -165,7 +165,7 @@ Function anchorCenter() : cs:C1710.constraints
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get anchoredInTheCenter() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="anchor"
 	$rule.alignment:="center"
 	
@@ -174,7 +174,7 @@ Function get anchoredInTheCenter() : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function fitWidth($value : Integer) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="fit-width"
 	$rule.margin:=$value
 	
@@ -183,7 +183,7 @@ Function fitWidth($value : Integer) : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function fullWidth() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.type:="fit-width"
 	$rule.margin:=0
 	
@@ -305,7 +305,7 @@ Function oneShot($rule) : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function of($target) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.reference:=This:C1470._target($target)
 	
 	return This:C1470
@@ -313,7 +313,7 @@ Function of($target) : cs:C1710.constraints
 	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
 Function with($target) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.reference:=This:C1470._target($target)
 	
 	return This:C1470
@@ -321,7 +321,7 @@ Function with($target) : cs:C1710.constraints
 	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
 Function on($target) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	
 	If ($rule.type="tile")
 		
@@ -338,7 +338,7 @@ Function on($target) : cs:C1710.constraints
 	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
 Function in($target) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.reference:=This:C1470._target($target)
 	
 	return This:C1470
@@ -346,7 +346,7 @@ Function in($target) : cs:C1710.constraints
 	// [Alias] === === === === === === === === === === === === === === === === === === === === === === === ===
 Function ref($target) : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.reference:=This:C1470._target($target)
 	
 	return This:C1470
@@ -354,7 +354,7 @@ Function ref($target) : cs:C1710.constraints
 	// === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onViewport() : cs:C1710.constraints
 	
-	var $rule : Object:=This:C1470._latest()
+	var $rule:=This:C1470._latest()
 	$rule.reference:=Null:C1517
 	
 	return This:C1470
@@ -370,7 +370,7 @@ Function apply()
 	var $height; $max; $type; $width : Integer
 	var $rule : Object
 	var $targets : Collection
-	var $cur; $ref; $viewport : cs:C1710.coord
+	var $cur; $ref; $viewport : cs:C1710.coordinates
 	
 	If (This:C1470.rules.length=0)
 		
@@ -381,7 +381,7 @@ Function apply()
 	
 	// Get the viewport
 	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
-	$viewport:=cs:C1710.coord.new(0; 0; $width; $height)
+	$viewport:=cs:C1710.coordinates.new(0; 0; $width; $height)
 	
 	For each ($rule; This:C1470.rules)
 		
@@ -437,7 +437,7 @@ Function apply()
 			If ($rule.targetIsAGroup)
 				
 				// Retrieve the stored coordinates, or calculate them for the first call, from the bounding box...
-				$cur:=cs:C1710.coord.new($rule.target.boundingBox || $rule.target.enclosingRect())
+				$cur:=cs:C1710.coordinates.new($rule.target.boundingBox || $rule.target.enclosingRect())
 				
 			Else 
 				
@@ -450,14 +450,14 @@ Function apply()
 					
 				End if 
 				
-				$cur:=cs:C1710.coord.new($name)
+				$cur:=cs:C1710.coordinates.new($name)
 				
 			End if 
 			
 			// Reference object
 			If ($rule.reference#Null:C1517)
 				
-				$ref:=cs:C1710.coord.new($rule.reference)
+				$ref:=cs:C1710.coordinates.new($rule.reference)
 				
 			Else 
 				
@@ -788,7 +788,7 @@ Function apply()
 					If ($rule.parent#Null:C1517)
 						
 						// Left is the parent right
-						$ref:=cs:C1710.coord.new($rule.parent)
+						$ref:=cs:C1710.coordinates.new($rule.parent)
 						$cur.left:=$ref.right+Num:C11(OBJECT Get type:C1300(*; $name+".border")#Object type unknown:K79:1)
 						
 					End if 
@@ -856,21 +856,21 @@ Function apply()
 	
 	// MARK:-
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _adjustLabel($name : Text; $rule : Object; $cur : cs:C1710.coord)
+Function _adjustLabel($name : Text; $rule : Object; $cur : cs:C1710.coordinates)
 	
-	var $label : cs:C1710.coord
+	var $label : cs:C1710.coordinates
 	var $width : Integer
 	
 	Case of 
 			//______________________________________________________
 		: ($rule.label#Null:C1517)
 			
-			$label:=cs:C1710.coord.new($rule.label)
+			$label:=cs:C1710.coordinates.new($rule.label)
 			
 			//______________________________________________________
 		: (OBJECT Get type:C1300(*; $name+".label")#Object type unknown:K79:1)
 			
-			$label:=cs:C1710.coord.new($name+".label")
+			$label:=cs:C1710.coordinates.new($name+".label")
 			
 			//______________________________________________________
 	End case 

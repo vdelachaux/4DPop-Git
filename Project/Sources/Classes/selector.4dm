@@ -4,9 +4,9 @@ Class extends widget
 The selector class is intended to manage Dropdown, Combo Box and Tab Control widgets
 */
 
-Class constructor($name : Text; $values : Collection)
+Class constructor($name : Text; $values : Collection; $parent : Object)
 	
-	Super:C1705($name)
+	Super:C1705($name; $parent)
 	
 	// The "binding" property is designed to store a collection of values linked to the values
 	// This allows to display a localized widget while keeping the uniqueness of the associated value

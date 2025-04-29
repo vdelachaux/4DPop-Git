@@ -22,7 +22,7 @@ Function init()
 	
 	This:C1470.help:=This:C1470.form.Button("help")
 	
-	This:C1470._footer:=This:C1470.form.group.new()
+	This:C1470._footer:=This:C1470.form.Group()
 	This:C1470.done:=This:C1470.form.Button("done").addToGroup(This:C1470._footer)
 	This:C1470.cancel:=This:C1470.form.Button("cancel").addToGroup(This:C1470._footer)
 	

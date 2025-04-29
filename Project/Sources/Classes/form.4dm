@@ -1,183 +1,195 @@
 // MARK: Default values ⚙️
-property isSubform : Boolean:=False:C215
-property toBeInitialized : Boolean:=True:C214
+property isSubform:=False:C215
+property toBeInitialized:=True:C214
 property pageNumber : Integer:=0
-property entryOrder : Collection:=[]
-property _darkExtension : Text:="_dark"
-property colorScheme : Text
+property entryOrder:=[]
+property colorScheme:=FORM Get color scheme:C1761
 
-property __CLASS__ : Object:=OB Class:C1730(This:C1470)
 property name : Text:=Current form name:C1298
 property isMatrix : Boolean:=Structure file:C489=Structure file:C489(*)
 
 // MARK: Delegates 📦
 property window : cs:C1710.window
+property constraints:=cs:C1710.constraints.new()
 
 // MARK: Other 💾
 property context : Collection
 property current
 property pages : Object
 
+property _darkExtension:="_dark"
 property _callback : Text
 property _definition; _cursorsHash : Object
-property _instantiableWidgets; _mapEvents : Collection
 property _worker : Text
 property _timerID : Integer
 
-property __DELEGATES__ : Collection
+property _instantiableWidgets:=[\
+cs:C1710.button; \
+cs:C1710.comboBox; \
+cs:C1710.dropDown; \
+cs:C1710.hList; \
+cs:C1710.input; \
+cs:C1710.listbox; \
+cs:C1710.picture; \
+cs:C1710.selector; \
+cs:C1710.static; \
+cs:C1710.stepper; \
+cs:C1710.subform; \
+cs:C1710.tabControl; \
+cs:C1710.thermometer; \
+cs:C1710.webArea; \
+cs:C1710.widget]
+
+// Maps between event names and their value
+property _mapEvents:=[\
+{e: "onLoad"; k: On Load:K2:1}; \
+{e: "onUnload"; k: On Unload:K2:2}; \
+{e: "onValidate"; k: On Validate:K2:3}; \
+{e: "onClick"; k: On Clicked:K2:4}; \
+{e: "onDoubleClick"; k: On Double Clicked:K2:5}; \
+{e: "onAlternateClick"; k: On Alternative Click:K2:36}; \
+{e: "onLongClick"; k: On Long Click:K2:37}; \
+{e: "onBeforeKeystroke"; k: On Before Keystroke:K2:6}; \
+{e: "onAfterKeystroke"; k: On After Keystroke:K2:26}; \
+{e: "onAfterEdit"; k: On After Edit:K2:43}; \
+{e: "onGettingFocus"; k: On Getting Focus:K2:7}; \
+{e: "onLosingFocus"; k: On Losing Focus:K2:8}; \
+{e: "onActivate"; k: On Activate:K2:9}; \
+{e: "onDeactivate"; k: On Deactivate:K2:10}; \
+{e: "onOutsideCall"; k: On Outside Call:K2:11}; \
+{e: "onPageChange"; k: On Page Change:K2:54}; \
+{e: "onBeginDragOver"; k: On Begin Drag Over:K2:44}; \
+{e: "onDrop"; k: On Drop:K2:12}; \
+{e: "onDragOver"; k: On Drag Over:K2:13}; \
+{e: "onMouseEnter"; k: On Mouse Enter:K2:33}; \
+{e: "onMouseMove"; k: On Mouse Move:K2:35}; \
+{e: "onMouseLeave"; k: On Mouse Leave:K2:34}; \
+{e: "onMouseUp"; k: On Mouse Up:K2:58}; \
+{e: "onMenuSelect"; k: On Menu Selected:K2:14}; \
+{e: "onBoundVariableChange"; k: On Bound Variable Change:K2:52}; \
+{e: "onDataChange"; k: On Data Change:K2:15}; \
+{e: "onPluginArea"; k: On Plug in Area:K2:16}; \
+{e: "onHeader"; k: On Header:K2:17}; \
+{e: "onPrintingDetail"; k: On Printing Detail:K2:18}; \
+{e: "onPrintingBreak"; k: On Printing Break:K2:19}; \
+{e: "onPrintingFooter"; k: On Printing Footer:K2:20}; \
+{e: "onCloseBox"; k: On Close Box:K2:21}; \
+{e: "onDisplayDetail"; k: On Display Detail:K2:22}; \
+{e: "onOpenDetail"; k: On Open Detail:K2:23}; \
+{e: "onCloseDetail"; k: On Close Detail:K2:24}; \
+{e: "onResize"; k: On Resize:K2:27}; \
+{e: "onSelectionChange"; k: On Selection Change:K2:29}; \
+{e: "onLoadecord"; k: On Load Record:K2:38}; \
+{e: "onTimer"; k: On Timer:K2:25}; \
+{e: "onScroll"; k: On Scroll:K2:57}; \
+{e: "onBeforeDataEntry"; k: On Before Data Entry:K2:39}; \
+{e: "onColumnMoved"; k: On Column Moved:K2:30}; \
+{e: "onRowMoved"; k: On Row Moved:K2:32}; \
+{e: "onColumnResize"; k: On Column Resize:K2:31}; \
+{e: "onHeaderClick"; k: On Header Click:K2:40}; \
+{e: "onFooterClick"; k: On Footer Click:K2:55}; \
+{e: "onAfterSort"; k: On After Sort:K2:28}; \
+{e: "onExpand"; k: On Expand:K2:41}; \
+{e: "onCollapse"; k: On Collapse:K2:42}; \
+{e: "onDeleteAction"; k: On Delete Action:K2:56}; \
+{e: "onURLResourceLoading"; k: On URL Resource Loading:K2:46}; \
+{e: "onBeginURLLoading"; k: On Begin URL Loading:K2:45}; \
+{e: "onEndURLLoading"; k: On End URL Loading:K2:47}; \
+{e: "onURLFiltering"; k: On URL Filtering:K2:49}; \
+{e: "onURLLoadingError"; k: On URL Loading Error:K2:48}; \
+{e: "onOpenExternalLink"; k: On Open External Link:K2:50}; \
+{e: "onWindowOpeningDenied"; k: On Window Opening Denied:K2:51}; \
+{e: "onVPReady"; k: On VP Ready:K2:59}; \
+{e: "onRowResize"; k: On Row Resize:K2:60}]
+
+property __CLASS__ : 4D:C1709.Class
 property __SUPER__ : Object
 property __CONTAINER__ : Object
 property __DIALOG__ : 4D:C1709.Class
 
-// MARK: DEPRECATED ⚠️
-/*************************************************************************
-Deprecated properties! 
-
-Use now in the form controller class to initialize a widget, for example: 
-
-    This.form.Button(“buttonName”) ✅
-
-Instead of : 
-
-    This.form.button.new(“buttonName”) ❌
-
-To avoid warnings from the syntax checker and compiler
+// FIXME: USEFUL?
+/*
+property __DELEGATES__:=[\
+cs.button; \
+cs.comboBox; \
+cs.dropDown; \
+cs.group; \
+cs.hList; \
+cs.input; \
+cs.listbox; \
+cs.picture; \
+cs.selector; \
+cs.static; \
+cs.stepper; \
+cs.subform; \
+cs.tabControl; \
+cs.thermometer; \
+cs.webArea; \
+cs.widget; \
+cs.window; \
+cs.constraints\
+]
 */
-property button : 4D:C1709.Class
-property comboBox : 4D:C1709.Class
-property dropDown : 4D:C1709.Class
-property group : 4D:C1709.Class
-property hList : 4D:C1709.Class
-property input : 4D:C1709.Class
-property listbox : 4D:C1709.Class
-property picture : 4D:C1709.Class
-property selector : 4D:C1709.Class
-property static : 4D:C1709.Class
-property stepper : 4D:C1709.Class
-property subform : 4D:C1709.Class
-property tabControl : 4D:C1709.Class
-property thermometer : 4D:C1709.Class
-property webArea : 4D:C1709.Class
-property widget : 4D:C1709.Class
-property constraints : 4D:C1709.Class
-/**************************************************************************/
 
-Class constructor($param)
+Class constructor($param; $me : Object)
+	
+	This:C1470.__CLASS__:=OB Class:C1730(This:C1470)
 	
 	// TODO:Test if  OBJECT Get subform container value could be usable to make it automatic
 	
 	This:C1470._callback:=Formula:C1597(formCallBack).source
 	
-	var $width; $height; $numPages : Integer
-	FORM GET PROPERTIES:C674(String:C10(This:C1470.name); $width; $height; $numPages)
-	This:C1470.pageNumber:=$numPages
-	
 	Case of 
 			
 			//______________________________________________________
-		: ($param=Null:C1517)
+		: ($1=Null:C1517)
 			
 			//
 			
 			//______________________________________________________
-		: (Value type:C1509($param)=Is text:K8:3)  // Callback method's name
+		: (Value type:C1509($1)=Is text:K8:3)  // Callback method's name
 			
-			This:C1470._callback:=$param
+			This:C1470._callback:=$1
 			
 			//______________________________________________________
-		: (Value type:C1509($param)=Is object:K8:27)\
-			 && (OB Instance of:C1731(OB Class:C1730($param); 4D:C1709.Class))
+		: (Value type:C1509($1)=Is object:K8:27)\
+			 && (OB Instance of:C1731(OB Class:C1730($1); 4D:C1709.Class))
 			
-			This:C1470.__SUPER__:=$param
-			$param.__CLASS__:=OB Class:C1730($param)
+			This:C1470.__SUPER__:=$1
+			$1.__CLASS__:=OB Class:C1730($1)
 			
-			This:C1470._worker:=String:C10($param.worker) || This:C1470._worker
-			This:C1470._callback:=String:C10($param.callback) || This:C1470._callback
-			This:C1470.isSubform:=$param.isSubform || This:C1470.isSubform
-			This:C1470.toBeInitialized:=$param.toBeInitialized || This:C1470.toBeInitialized
-			This:C1470._darkExtension:=String:C10($param.darkExtension) || This:C1470._darkExtension
-			This:C1470.entryOrder:=$param.entryOrder || This:C1470.entryOrder
-			This:C1470.pages:=$param.pages || This:C1470.pages
+			This:C1470._worker:=String:C10($1.worker) || This:C1470._worker
+			This:C1470._callback:=String:C10($1.callback) || This:C1470._callback
+			This:C1470.isSubform:=$1.isSubform || This:C1470.isSubform
+			This:C1470.toBeInitialized:=$1.toBeInitialized || This:C1470.toBeInitialized
+			This:C1470._darkExtension:=String:C10($1.darkExtension) || This:C1470._darkExtension
+			This:C1470.entryOrder:=$1.entryOrder || This:C1470.entryOrder
+			This:C1470.pages:=$1.pages || This:C1470.pages
 			
 			//______________________________________________________
 		Else 
 			
-			ASSERT:C1129(False:C215; "The 'param' parameter must be a text or an object.")
+			throw:C1805(_error("The first parameter must be an Object or Text"))
+			return 
 			
 			//______________________________________________________
 	End case 
 	
 	// MARK:Delegates 📦
 	This:C1470.window:=cs:C1710.window.new(This:C1470)
-	This:C1470.constraints:=cs:C1710.constraints.new()
 	
-	// MARK: -DEPRECATED ⚠️
-	This:C1470.button:=cs:C1710.button
-	This:C1470.comboBox:=cs:C1710.comboBox
-	This:C1470.dropDown:=cs:C1710.dropDown
-	This:C1470.group:=cs:C1710.group
-	This:C1470.hList:=cs:C1710.hList
-	This:C1470.input:=cs:C1710.input
-	This:C1470.listbox:=cs:C1710.listbox
-	This:C1470.picture:=cs:C1710.picture
-	This:C1470.selector:=cs:C1710.selector
-	This:C1470.static:=cs:C1710.static
-	This:C1470.stepper:=cs:C1710.stepper
-	This:C1470.subform:=cs:C1710.subform
-	This:C1470.tabControl:=cs:C1710.tabControl
-	This:C1470.thermometer:=cs:C1710.thermometer
-	This:C1470.webArea:=cs:C1710.webArea
-	This:C1470.widget:=cs:C1710.widget
-	// MARK:-
-	
-	This:C1470._instantiableWidgets:=[\
-		cs:C1710.static; \
-		cs:C1710.button; \
-		cs:C1710.comboBox; \
-		cs:C1710.dropDown; \
-		cs:C1710.hList; \
-		cs:C1710.input; \
-		cs:C1710.listbox; \
-		cs:C1710.picture; \
-		cs:C1710.selector; \
-		cs:C1710.stepper; \
-		cs:C1710.subform; \
-		cs:C1710.tabControl; \
-		cs:C1710.thermometer; \
-		cs:C1710.webArea; \
-		cs:C1710.widget]
-	
-	// FIXME: USEFUL?
-	This:C1470.__DELEGATES__:=[\
-		cs:C1710.button; \
-		cs:C1710.comboBox; \
-		cs:C1710.dropDown; \
-		cs:C1710.group; \
-		cs:C1710.hList; \
-		cs:C1710.input; \
-		cs:C1710.listbox; \
-		cs:C1710.picture; \
-		cs:C1710.selector; \
-		cs:C1710.static; \
-		cs:C1710.stepper; \
-		cs:C1710.subform; \
-		cs:C1710.tabControl; \
-		cs:C1710.thermometer; \
-		cs:C1710.webArea; \
-		cs:C1710.widget; \
-		cs:C1710.window; \
-		cs:C1710.constraints\
-		]
-	
-	This:C1470.me()
+	This:C1470.me($me)
 	
 	This:C1470.setPageNames()
 	
-	// FIXME: USEFUL?
-	This:C1470._mapEvents:=This:C1470._mapEventsDefinition()
-	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function me($formDefinition : Object)
+	
+	If (This:C1470._definition#Null:C1517)
+		
+		return 
+		
+	End if 
 	
 	If ($formDefinition=Null:C1517)\
 		 && (This:C1470.isMatrix)
@@ -205,6 +217,7 @@ Function me($formDefinition : Object)
 		This:C1470._definition:=$formDefinition
 		This:C1470.pageNumber:=$formDefinition.pages.length-1
 		
+		// Preparing the contexts container
 		This:C1470.context:=[].resize(This:C1470.pageNumber+1)
 		
 	End if 
@@ -223,15 +236,9 @@ Function handleEvents($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
 	
-	var $event; $key : Text
-	var $o; $page : Object
-	var $events; $widgets : Collection
-	var $widget : cs:C1710.widget
-	
 	// Defines the container reference in subform instances
-	$widgets:=This:C1470._getInstantiated(cs:C1710.subform)
-	
-	For each ($o; $widgets)
+	var $o : Object
+	For each ($o; This:C1470._getInstantiated(cs:C1710.subform))
 		
 		$o._execute(Formula:C1597(Form:C1466.__DIALOG__.__CONTAINER__:=$o))
 		
@@ -240,18 +247,21 @@ Function onLoad()
 	// Add the widgets events that we cannot select in the form properties 😇
 	// ⚠️ OBJECT GET EVENTS return an empty array if no object method, so we analyze the json form
 	
-	$widgets:=This:C1470._getInstantiated()
+	var $widgets : Collection:=This:C1470._getInstantiated()
 	
 	If ($widgets.length>0)
 		
-		$events:=[]
+		var $events:=[]
 		
 		If (This:C1470._definition#Null:C1517)
 			
+			var $page : Object
 			For each ($page; This:C1470._definition.pages)
 				
 				If ($page#Null:C1517)
 					
+					var $key : Text
+					var $widget : cs:C1710.widget
 					For each ($key; $page.objects)
 						
 						$widget:=$widgets.query("name = :1"; $key).first()
@@ -263,9 +273,10 @@ Function onLoad()
 							
 						End if 
 						
+						var $event : Text
 						For each ($event; $page.objects[$key].events)
 							
-							$o:=This:C1470._mapEvents.query("e = :1"; $event).pop()
+							$o:=This:C1470._mapEvents.query("e = :1"; $event).first()
 							
 							If (Asserted:C1132($o#Null:C1517; "FIXME: Add missing event map for "+$event))
 								
@@ -361,25 +372,25 @@ Function focus($widget)
 	Case of 
 			
 			//______________________________________________________
-		: ($widget=Null:C1517)
+		: ($1=Null:C1517)
 			
 			GOTO OBJECT:C206(*; "")
 			
 			//______________________________________________________
-		: (Value type:C1509($widget)=Is text:K8:3)
+		: (Value type:C1509($1)=Is text:K8:3)
 			
-			GOTO OBJECT:C206(*; $widget)
+			GOTO OBJECT:C206(*; $1)
 			
 			//______________________________________________________
-		: (Value type:C1509($widget)=Is object:K8:27)\
-			 && (OB Instance of:C1731($widget; cs:C1710.widget))
+		: (Value type:C1509($1)=Is object:K8:27)\
+			 && (OB Instance of:C1731($1; cs:C1710.widget))
 			
-			GOTO OBJECT:C206(*; $widget.name)
+			GOTO OBJECT:C206(*; $1.name)
 			
 			//______________________________________________________
 		Else 
 			
-			ASSERT:C1129(False:C215; "Widget must be a widget object or a name!")
+			throw:C1805(_error("The parameter must be a Widget or an Form Object Name"))
 			
 			//______________________________________________________
 	End case 
@@ -406,12 +417,8 @@ Function focusPrevious()
 	/// Returns the text currently selected
 Function get highlight() : Text
 	
-	var $widget : Text
-	var $begin; $end : Integer
-	var $ptr : Pointer
-	
-	$widget:=OBJECT Get name:C1087(Object with focus:K67:3)
-	$ptr:=OBJECT Get pointer:C1124(Object named:K67:5; $widget)
+	var $widget:=OBJECT Get name:C1087(Object with focus:K67:3)
+	var $ptr:=OBJECT Get pointer:C1124(Object named:K67:5; $widget)
 	
 	If (Length:C16($widget)=0)\
 		 | (Is nil pointer:C315($ptr))
@@ -420,6 +427,7 @@ Function get highlight() : Text
 		
 	End if 
 	
+	var $begin; $end : Integer
 	GET HIGHLIGHT:C209(*; $widget; $begin; $end)
 	
 	If ($end>$begin)
@@ -466,7 +474,7 @@ Function get lightScheme() : Boolean
 	return FORM Get color scheme:C1761="light"
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-	/// Returns a resource name with the current "dark" suffix if the color scheme is dark.
+	/// Returns the current scheme suffix
 Function get resourceScheme() : Text
 	
 	return This:C1470.darkScheme ? This:C1470._darkExtension : ""
@@ -492,12 +500,12 @@ Function resourceFromScheme($path : Text) : Text
 	
 	If (This:C1470.darkScheme)
 		
-		var $file : 4D:C1709.File:=File:C1566($path)
+		var $file:=File:C1566($path)
 		
-		var $c : Collection:=Split string:C1554($file.fullName; ".")
+		var $c:=Split string:C1554($file.fullName; ".")
 		$c[0]+=This:C1470._darkExtension
 		
-		var $t : Text:=Replace string:C233($path; $file.fullName; $c.join("."))
+		var $t:=Replace string:C233($path; $file.fullName; $c.join("."))
 		$path:=File:C1566($t).exists ? $t : $path
 		
 	End if 
@@ -523,7 +531,7 @@ Function _proxy($proxy : Text) : Text
 			return "path:/RESOURCES/"+Delete string:C232($proxy; 1; 1)
 			
 			//______________________________________________________
-		: ($proxy="|@")
+		: (Position:C15("|"; $proxy)=1)
 			
 			return "path:/.PRODUCT_RESOURCES/"+Delete string:C232($proxy; 1; 1)
 			
@@ -581,10 +589,10 @@ Function deferTimer($id : Integer; $tickCount : Integer)
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get deferedTimer() : Integer
 	
-	var $timerID : Integer:=This:C1470._timerID
+	var $id:=This:C1470._timerID
 	This:C1470._timerID:=0
 	
-	return $timerID
+	return $id
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 Function set deferedTimer($id : Integer) : Integer
@@ -608,17 +616,14 @@ Function get worker() : Variant
 	/// Sets the associated worker
 Function set worker($worker)
 	
-	var $type : Integer
-	
-	$type:=Value type:C1509($worker)
-	
-	If (Asserted:C1132(($type=Is text:K8:3)\
-		 | ($type=Is real:K8:4)\
-		 | ($type=Is longint:K8:6); "The parameter must be a text or a number"))
+	If (Not:C34([Is longint:K8:6; Is real:K8:4; Is text:K8:3].includes(Value type:C1509($worker))))
 		
-		This:C1470._worker:=$worker
+		throw:C1805(_error("The 'worker' parameter must be an number or a name"))
+		return 
 		
 	End if 
+	
+	This:C1470._worker:=$worker
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Assigns a task to the associated worker
@@ -636,53 +641,50 @@ Function callWorker($method;  ...  : Variant)
 	// .callWorker ( process : Integer ; method : Text ; param : Collection )
 	// .callWorker ( process : Integer ; method : Text ; param1, param2, …, paramN )
 	// ---------------------------------------------------------------------------------
-	
-	
 	var $code : Text
 	var $i : Integer
 	var $parameters : Collection
 	
-	If (This:C1470._worker#Null:C1517)
+	If (This:C1470._worker=Null:C1517)
 		
-		If (Count parameters:C259=1)
-			
-			CALL WORKER:C1389(This:C1470._worker; $method)
-			
-		Else 
-			
-			$code:="CALL WORKER:C1389(\""+String:C10(This:C1470._worker)+"\"; \""+$method+"\""
-			
-			If (Value type:C1509($2)=Is collection:K8:32)
-				
-				$parameters:=$2
-				
-				For ($i; 0; $parameters.length-1; 1)
-					
-					$code:=$code+"; $1["+String:C10($i)+"]"
-					
-				End for 
-				
-			Else 
-				
-				$parameters:=[]
-				
-				For ($i; 2; Count parameters:C259; 1)
-					
-					$parameters.push(${$i})
-					$code:=$code+"; $1["+String:C10($i-2)+"]"
-					
-				End for 
-			End if 
-			
-			$code:=$code+")"
-			
-			Formula from string:C1601($code).call(Null:C1517; $parameters)
-			
-		End if 
+		throw:C1805(_error("No associated worker"))
+		return 
+		
+	End if 
+	
+	If (Count parameters:C259=1)
+		
+		CALL WORKER:C1389(This:C1470._worker; $method)
 		
 	Else 
 		
-		ASSERT:C1129(False:C215; "No associated worker")
+		$code:="CALL WORKER:C1389(\""+String:C10(This:C1470._worker)+"\"; \""+$method+"\""
+		
+		If (Value type:C1509($2)=Is collection:K8:32)
+			
+			$parameters:=$2
+			
+			For ($i; 0; $parameters.length-1; 1)
+				
+				$code:=$code+"; $1["+String:C10($i)+"]"
+				
+			End for 
+			
+		Else 
+			
+			$parameters:=[]
+			
+			For ($i; 2; Count parameters:C259; 1)
+				
+				$parameters.push(${$i})
+				$code:=$code+"; $1["+String:C10($i-2)+"]"
+				
+			End for 
+		End if 
+		
+		$code:=$code+")"
+		
+		Formula from string:C1601($code).call(Null:C1517; $parameters)
 		
 	End if 
 	
@@ -775,12 +777,9 @@ Function getContainerValue() : Variant
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get events() : Collection
 	
-	var $c : Collection
-	
 	ARRAY LONGINT:C221($codes; 0)
-	
 	OBJECT GET EVENTS:C1238(*; ""; $codes)
-	$c:=[]
+	var $c:=[]
 	ARRAY TO COLLECTION:C1563($c; $codes)
 	
 	return $c
@@ -808,24 +807,26 @@ Function _setEvents($events; $mode : Integer)
 	
 	ARRAY LONGINT:C221($codes; 0)
 	
+	var $type:=Value type:C1509($events)
+	
 	Case of 
 			
 			//______________________________________________________
-		: (Value type:C1509($events)=Is collection:K8:32)
+		: ($type=Is collection:K8:32)
 			
 			COLLECTION TO ARRAY:C1562($events; $codes)
 			
 			//______________________________________________________
-		: (Value type:C1509($events)=Is integer:K8:5)\
-			 | (Value type:C1509($events)=Is longint:K8:6)\
-			 | (Value type:C1509($events)=Is real:K8:4)
+		: ($type=Is longint:K8:6)\
+			 | ($type=Is real:K8:4)
 			
 			APPEND TO ARRAY:C911($codes; $events)
 			
 			//______________________________________________________
 		Else 
 			
-			ASSERT:C1129(False:C215; "The event parameter must be an number or a collection")
+			throw:C1805(_error("The event parameter must be an number or a collection"))
+			return 
 			
 			//______________________________________________________
 	End case 
@@ -873,42 +874,38 @@ Function callMe($method : Text;  ...  : Variant)
 .callMe ( method : Text ; param1, param2, …, paramN )
 */
 	
-	
-	var $code : Text
-	var $i : Integer
-	var $param : Collection
-	
 	If (Count parameters:C259=1)
 		
 		CALL FORM:C1391(This:C1470.window.ref; $method)
 		
 	Else 
 		
-		$code:="CALL FORM:C1391("+String:C10(This:C1470.window.ref)+"; \""+$method+"\""
+		var $code:="CALL FORM:C1391("+String:C10(This:C1470.window.ref)+"; \""+$method+"\""
 		
 		If (Value type:C1509($2)=Is collection:K8:32)
 			
-			$param:=${2}
+			$param:=$2
 			
-			For ($i; 0; $2.length-1; 1)
+			var $i : Integer
+			For ($i; 0; $param.length-1; 1)
 				
-				$code:=$code+"; $1["+String:C10($i)+"]"
+				$code+="; $1["+String:C10($i)+"]"
 				
 			End for 
 			
 		Else 
 			
-			$param:=[]
+			var $param:=[]
 			
 			For ($i; 2; Count parameters:C259; 1)
 				
 				$param.push(${$i})
-				$code:=$code+"; $1["+String:C10($i-2)+"]"
+				$code+="; $1["+String:C10($i-2)+"]"
 				
 			End for 
 		End if 
 		
-		$code:=$code+")"
+		$code+=")"
 		
 		Formula from string:C1601($code).call(Null:C1517; $param)
 		
@@ -924,25 +921,33 @@ Function callChild($subform; $method : Variant;  ...  : Variant)
 	
 	// TODO:Returned value
 	
+	var $target : Text
 	
-	var $code; $target : Text
-	var $i : Integer
-	
-	If (Value type:C1509($subform)=Is object:K8:27)
-		
-		// We assume it's a subform object
-		ASSERT:C1129($subform.name#Null:C1517)
-		$target:=$subform.name
-		
-	Else 
-		
-		$target:=String:C10($subform)
-		
-	End if 
+	Case of 
+			
+			// ______________________________________________________
+		: (Value type:C1509($1)=Is object:K8:27)\
+			 && (OB Instance of:C1731($1.setPrivateEvents; 4D:C1709.Function))
+			
+			$target:=$1.name
+			
+			// ______________________________________________________
+		: (Value type:C1509($1)=Is text:K8:3)
+			
+			$target:=$1
+			
+			// ______________________________________________________
+		Else 
+			
+			throw:C1805(_error("The 'subform' parameter must be a Widget or a Form Object Name"))
+			
+			return 
+			
+			// ______________________________________________________
+	End case 
 	
 	ARRAY TEXT:C222($widgets; 0)
 	FORM GET OBJECTS:C898($widgets; Form all pages:K67:7)
-	var $param : Collection
 	
 	If (Find in array:C230($widgets; $target)>0)
 		
@@ -952,30 +957,33 @@ Function callChild($subform; $method : Variant;  ...  : Variant)
 			
 		Else 
 			
-			$code:="EXECUTE METHOD IN SUBFORM:C1085(\""+$target+"\"; \""+$method+"\";*"
+			var $code:="EXECUTE METHOD IN SUBFORM:C1085(\""+$target+"\"; \""+$method+"\";*"
 			
-			If (Value type:C1509($param)=Is collection:K8:32)
+			If (Value type:C1509($3)=Is collection:K8:32)
 				
+				$param:=$3
+				
+				var $i : Integer
 				For ($i; 0; $param.length-1; 1)
 					
-					$code:=$code+"; $1["+String:C10($i)+"]"
+					$code+="; $1["+String:C10($i)+"]"
 					
 				End for 
 				
 			Else 
 				
-				$param:=[]
+				var $param:=[]
 				
 				For ($i; 3; Count parameters:C259; 1)
 					
 					$param.push(${$i})
 					
-					$code:=$code+"; $1["+String:C10($i-3)+"]"
+					$code+="; $1["+String:C10($i-3)+"]"
 					
 				End for 
 			End if 
 			
-			$code:=$code+")"
+			$code+=")"
 			
 			Formula from string:C1601($code).call(Null:C1517; $param)
 			
@@ -990,7 +998,27 @@ Function callChild($subform; $method : Variant;  ...  : Variant)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function spreadToChilds($message : Object)
 	
-	form_spreadToSubforms($message)
+	// TODO: TO TEST
+	//form_spreadToSubforms($message)
+	
+	// First execute at this level
+	EXECUTE METHOD:C1007($message.method)
+	
+	// Then in call all subforms if any
+	var $name : Text
+	For each ($name; This:C1470.subforms)
+		
+		If (Position:C15($message.target; $name)=1)
+			
+			EXECUTE METHOD IN SUBFORM:C1085($name; $message.method)
+			
+		End if 
+		
+		// Finally go down a level
+		var $this:=This:C1470
+		EXECUTE METHOD IN SUBFORM:C1085($name; Formula:C1597($this.spreadToChilds($message)))
+		
+	End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Send an event to a subform container
@@ -1010,15 +1038,14 @@ Function get page() : Integer
 	return This:C1470.isSubform ? FORM Get current page:C276(*) : FORM Get current page:C276
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Displays a given page
+	/// Defines the pages hashmap table from the collection of names passed
 Function setPageNames($names : Collection)
-	
-	var $i : Integer
 	
 	This:C1470.pages:={}
 	
 	If ($names=Null:C1517)
 		
+		var $i : Integer
 		For ($i; 1; This:C1470.pageNumber; 1)
 			
 			This:C1470.pages["page_"+String:C10($i)]:=$i
@@ -1035,14 +1062,27 @@ Function setPageNames($names : Collection)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Returns the page number from its name
+Function pageFromName($name : Text) : Integer
+	
+	return Num:C11(This:C1470.pages[$name])
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Displays a given page
 Function goToPage($page; $parent : Boolean)
 	
-	ASSERT:C1129((Value type:C1509($page)=Is text:K8:3) || (Value type:C1509($page)=Is real:K8:4) || (Value type:C1509($page)=Is longint:K8:6); "page parameter must be a text or a number")
+	var $type:=Value type:C1509($page)
 	
-	If (Value type:C1509($page)=Is text:K8:3)
+	If (Not:C34([Is longint:K8:6; Is real:K8:4; Is text:K8:3].includes($type)))
 		
-		$page:=Num:C11(This:C1470.pages[$page])
+		throw:C1805(_error("The 'page' parameter must be an number or a name"))
+		return 
+		
+	End if 
+	
+	If ($type=Is text:K8:3)
+		
+		$page:=This:C1470.pageFromName($page)
 		
 	End if 
 	
@@ -1050,7 +1090,7 @@ Function goToPage($page; $parent : Boolean)
 		 & ($page<=This:C1470.pageNumber); "The page "+String:C10($page)+" doesn't exists"))
 		
 		If (This:C1470.isSubform)\
-			 & Not:C34($parent)
+			 && Not:C34($parent)
 			
 			FORM GOTO PAGE:C247($page; *)
 			
@@ -1066,7 +1106,7 @@ Function goToPage($page; $parent : Boolean)
 Function firstPage($parent : Boolean)
 	
 	If (This:C1470.isSubform)\
-		 & Not:C34($parent)
+		 && Not:C34($parent)
 		
 		FORM GOTO PAGE:C247(1; *)
 		
@@ -1081,7 +1121,7 @@ Function firstPage($parent : Boolean)
 Function lastPage($parent : Boolean)
 	
 	If (This:C1470.isSubform)\
-		 & Not:C34($parent)
+		 && Not:C34($parent)
 		
 		FORM GOTO PAGE:C247(This:C1470.pageNumber; *)
 		
@@ -1096,10 +1136,9 @@ Function lastPage($parent : Boolean)
 Function nextPage($parent : Boolean)
 	
 	If (This:C1470.isSubform)\
-		 & Not:C34($parent)
+		 && Not:C34($parent)
 		
-		var $page : Integer
-		$page:=FORM Get current page:C276(*)+1
+		var $page : Integer:=FORM Get current page:C276(*)+1
 		
 		If (Asserted:C1132($page<=This:C1470.pageNumber; "There is no more page to display"))
 			
@@ -1121,10 +1160,9 @@ Function nextPage($parent : Boolean)
 Function previousPage($parent : Boolean)
 	
 	If (This:C1470.isSubform)\
-		 & Not:C34($parent)
+		 && Not:C34($parent)
 		
-		var $page : Integer
-		$page:=FORM Get current page:C276(*)-1
+		var $page : Integer:=FORM Get current page:C276(*)-1
 		
 		If (Asserted:C1132($page>0; "You're already on the first page"))
 			
@@ -1146,52 +1184,28 @@ Function previousPage($parent : Boolean)
 	/// Sets the mouse cursor
 Function setCursor($cursor)
 	
-	If ($cursor#Null:C1517)
-		
-		If (Value type:C1509($cursor)=Is text:K8:3)
-			
-			This:C1470._cursorsHash:=This:C1470._cursorsHash || This:C1470._cursors()
-			$cursor:=Num:C11(This:C1470._cursorsHash[$cursor])
-			
-		End if 
-		
-		SET CURSOR:C469(Num:C11($cursor))
-		
-	Else 
+	If ($cursor=Null:C1517)
 		
 		SET CURSOR:C469
 		
+		return 
+		
 	End if 
+	
+	If (Value type:C1509($cursor)=Is text:K8:3)
+		
+		This:C1470._cursorsHash:=This:C1470._cursorsHash || This:C1470._cursors()
+		$cursor:=Num:C11(This:C1470._cursorsHash[$cursor])
+		
+	End if 
+	
+	SET CURSOR:C469(Num:C11($cursor))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Restores the standard cursor
 Function releaseCursor()
 	
 	SET CURSOR:C469
-	
-	// MARK:-[DRAG & DROP]
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	///
-Function beginDrag($uri : Text; $data; $dragIcon : Picture)
-	
-	var $x : Blob
-	
-	If (Value type:C1509($data)=Is BLOB:K8:12)
-		
-		APPEND DATA TO PASTEBOARD:C403($uri; $data)
-		
-	Else 
-		
-		VARIABLE TO BLOB:C532($data; $x)
-		APPEND DATA TO PASTEBOARD:C403($uri; $x)
-		
-	End if 
-	
-	If (Count parameters:C259>=3)
-		
-		SET DRAG ICON:C1272($dragIcon)
-		
-	End if 
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _cursors() : Object
@@ -1222,19 +1236,41 @@ Function _cursors() : Object
 		horizontalSplitCursor: 9011\
 		}
 	
+	// MARK:-[DRAG & DROP]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// 
+	/// Appends data to the pasteboard under the data type specified in uri. Also sets the drag icon if passed
+Function beginDrag($uri : Text; $data; $dragIcon : Picture)
+	
+	If (Value type:C1509($data)=Is BLOB:K8:12)
+		
+		APPEND DATA TO PASTEBOARD:C403($uri; $data)
+		
+	Else 
+		
+		var $x : Blob
+		VARIABLE TO BLOB:C532($data; $x)
+		APPEND DATA TO PASTEBOARD:C403($uri; $x)
+		
+	End if 
+	
+	If (Count parameters:C259>=3)
+		
+		SET DRAG ICON:C1272($dragIcon)
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the data from the pasteboard whose type you pass in uri
 Function getPasteboard($uri : Text) : Variant
 	
-	var $value
-	var $data : Blob
-	
-	GET PASTEBOARD DATA:C401($uri; $data)
+	var $x : Blob
+	GET PASTEBOARD DATA:C401($uri; $x)
 	
 	If (Bool:C1537(OK))
 		
-		BLOB TO VARIABLE:C533($data; $value)
-		SET BLOB SIZE:C606($data; 0)
+		var $value
+		BLOB TO VARIABLE:C533($x; $value)
+		SET BLOB SIZE:C606($x; 0)
 		
 		return $value
 		
@@ -1295,13 +1331,9 @@ Function getSubformInstance($name : Text) : Object
 	/// Returns a collection of form object names possibly filtered by their type.
 Function _getformObjects($type : Integer) : Collection
 	
-	var $i : Integer
-	var $c : Collection
+	var $c:=[]
 	
 	ARRAY TEXT:C222($objects; 0)
-	
-	$c:=[]
-	
 	FORM GET OBJECTS:C898($objects)
 	
 	Case of 
@@ -1314,6 +1346,7 @@ Function _getformObjects($type : Integer) : Collection
 			//______________________________________________________
 		: (Count parameters:C259=1)  // All form objects of this type
 			
+			var $i : Integer
 			For ($i; 1; Size of array:C274($objects); 1)
 				
 				If (OBJECT Get type:C1300(*; $objects{$i})=$type)
@@ -1332,16 +1365,13 @@ Function _getformObjects($type : Integer) : Collection
 	/// Returns one or more instanciated widgets, possibly filtered by their class & instance name.
 Function _getInstantiated($class : Object; $instanceName : Text) : Variant
 	
-	var $key : Text
-	var $c : Collection
-	
 	Case of 
 			
 			//______________________________________________________
 		: (Count parameters:C259=0)  // All instantiated widgets
 			
-			$c:=[]
-			
+			var $c:=[]
+			var $key : Text
 			For each ($key; This:C1470.__SUPER__)
 				
 				If (Value type:C1509(This:C1470.__SUPER__[$key])=Is object:K8:27)\
@@ -1389,81 +1419,11 @@ Function _getInstantiated($class : Object; $instanceName : Text) : Variant
 			//______________________________________________________
 	End case 
 	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-	/// Maps between event names and their value
-Function _mapEventsDefinition() : Collection
-	
-	var $c : Collection
-	$c:=[]
-	
-	$c.push({e: "onLoad"; k: On Load:K2:1})
-	$c.push({e: "onUnload"; k: On Unload:K2:2})
-	$c.push({e: "onValidate"; k: On Validate:K2:3})
-	$c.push({e: "onClick"; k: On Clicked:K2:4})
-	$c.push({e: "onDoubleClick"; k: On Double Clicked:K2:5})
-	$c.push({e: "onAlternateClick"; k: On Alternative Click:K2:36})
-	$c.push({e: "onLongClick"; k: On Long Click:K2:37})
-	$c.push({e: "onBeforeKeystroke"; k: On Before Keystroke:K2:6})
-	$c.push({e: "onAfterKeystroke"; k: On After Keystroke:K2:26})
-	$c.push({e: "onAfterEdit"; k: On After Edit:K2:43})
-	$c.push({e: "onGettingFocus"; k: On Getting Focus:K2:7})
-	$c.push({e: "onLosingFocus"; k: On Losing Focus:K2:8})
-	$c.push({e: "onActivate"; k: On Activate:K2:9})
-	$c.push({e: "onDeactivate"; k: On Deactivate:K2:10})
-	$c.push({e: "onOutsideCall"; k: On Outside Call:K2:11})
-	$c.push({e: "onPageChange"; k: On Page Change:K2:54})
-	$c.push({e: "onBeginDragOver"; k: On Begin Drag Over:K2:44})
-	$c.push({e: "onDrop"; k: On Drop:K2:12})
-	$c.push({e: "onDragOver"; k: On Drag Over:K2:13})
-	$c.push({e: "onMouseEnter"; k: On Mouse Enter:K2:33})
-	$c.push({e: "onMouseMove"; k: On Mouse Move:K2:35})
-	$c.push({e: "onMouseLeave"; k: On Mouse Leave:K2:34})
-	$c.push({e: "onMouseUp"; k: On Mouse Up:K2:58})
-	$c.push({e: "onMenuSelect"; k: On Menu Selected:K2:14})
-	$c.push({e: "onBoundVariableChange"; k: On Bound Variable Change:K2:52})
-	$c.push({e: "onDataChange"; k: On Data Change:K2:15})
-	$c.push({e: "onPluginArea"; k: On Plug in Area:K2:16})
-	$c.push({e: "onHeader"; k: On Header:K2:17})
-	$c.push({e: "onPrintingDetail"; k: On Printing Detail:K2:18})
-	$c.push({e: "onPrintingBreak"; k: On Printing Break:K2:19})
-	$c.push({e: "onPrintingFooter"; k: On Printing Footer:K2:20})
-	$c.push({e: "onCloseBox"; k: On Close Box:K2:21})
-	$c.push({e: "onDisplayDetail"; k: On Display Detail:K2:22})
-	$c.push({e: "onOpenDetail"; k: On Open Detail:K2:23})
-	$c.push({e: "onCloseDetail"; k: On Close Detail:K2:24})
-	$c.push({e: "onResize"; k: On Resize:K2:27})
-	$c.push({e: "onSelectionChange"; k: On Selection Change:K2:29})
-	$c.push({e: "onLoadecord"; k: On Load Record:K2:38})
-	$c.push({e: "onTimer"; k: On Timer:K2:25})
-	$c.push({e: "onScroll"; k: On Scroll:K2:57})
-	$c.push({e: "onBeforeDataEntry"; k: On Before Data Entry:K2:39})
-	$c.push({e: "onColumnMoved"; k: On Column Moved:K2:30})
-	$c.push({e: "onRowMoved"; k: On Row Moved:K2:32})
-	$c.push({e: "onColumnResize"; k: On Column Resize:K2:31})
-	$c.push({e: "onHeaderClick"; k: On Header Click:K2:40})
-	$c.push({e: "onFooterClick"; k: On Footer Click:K2:55})
-	$c.push({e: "onAfterSort"; k: On After Sort:K2:28})
-	$c.push({e: "onExpand"; k: On Expand:K2:41})
-	$c.push({e: "onCollapse"; k: On Collapse:K2:42})
-	$c.push({e: "onDeleteAction"; k: On Delete Action:K2:56})
-	$c.push({e: "onURLResourceLoading"; k: On URL Resource Loading:K2:46})
-	$c.push({e: "onBeginURLLoading"; k: On Begin URL Loading:K2:45})
-	$c.push({e: "onEndURLLoading"; k: On End URL Loading:K2:47})
-	$c.push({e: "onURLFiltering"; k: On URL Filtering:K2:49})
-	$c.push({e: "onURLLoadingError"; k: On URL Loading Error:K2:48})
-	$c.push({e: "onOpenExternalLink"; k: On Open External Link:K2:50})
-	$c.push({e: "onWindowOpeningDenied"; k: On Window Opening Denied:K2:51})
-	$c.push({e: "onVPReady"; k: On VP Ready:K2:59})
-	$c.push({e: "onRowResize"; k: On Row Resize:K2:60})
-	
-	return $c
-	
 	//MARK:-[DIMENSIONS & RESIZING]
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get dimensions() : Object
+Function get rect() : Object
 	
 	var $height; $width : Integer
-	
 	OBJECT GET SUBFORM CONTAINER SIZE:C1148($width; $height)
 	
 	return {\
@@ -1478,7 +1438,7 @@ Function setHorizontalResising($resize : Boolean; $min : Integer; $max : Integer
 			//______________________________________________________
 		: (Count parameters:C259<=1)
 			
-			FORM SET HORIZONTAL RESIZING:C892($resize)
+			FORM SET HORIZONTAL RESIZING:C892($resize)  // Default is False
 			
 			//______________________________________________________
 		: (Count parameters:C259=2)
@@ -1486,7 +1446,7 @@ Function setHorizontalResising($resize : Boolean; $min : Integer; $max : Integer
 			FORM SET HORIZONTAL RESIZING:C892($resize; $min)
 			
 			//______________________________________________________
-		: (Count parameters:C259=2)
+		: (Count parameters:C259=3)
 			
 			FORM SET HORIZONTAL RESIZING:C892($resize; $min; $max)
 			
@@ -1505,6 +1465,23 @@ Function get horizontallyResizable() : Boolean
 Function set horizontallyResizable($resize : Boolean)
 	
 	FORM SET HORIZONTAL RESIZING:C892($resize)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function setSize($widget; $hMargin : Integer; $vMargin : Integer)
+	
+	If (Value type:C1509($1)=Is text:K8:3)
+		
+		$vMargin:=Count parameters:C259>=3 ? $3 : $hMargin
+		FORM SET SIZE:C891($1; $hMargin; $vMargin)
+		
+	Else 
+		
+		$hMargin:=Num:C11($1)
+		$vMargin:=Count parameters:C259>=2 ? $2 : $hMargin
+		
+		FORM SET SIZE:C891($hMargin; $vMargin; *)
+		
+	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get minWidth() : Integer
@@ -1549,7 +1526,7 @@ Function setVerticalResising($resize : Boolean; $min : Integer; $max : Integer)
 			//______________________________________________________
 		: (Count parameters:C259<=1)
 			
-			FORM SET VERTICAL RESIZING:C893($resize)
+			FORM SET VERTICAL RESIZING:C893($resize)  // Default is False
 			
 			//______________________________________________________
 		: (Count parameters:C259=2)
@@ -1557,7 +1534,7 @@ Function setVerticalResising($resize : Boolean; $min : Integer; $max : Integer)
 			FORM SET VERTICAL RESIZING:C893($resize; $min)
 			
 			//______________________________________________________
-		: (Count parameters:C259=2)
+		: (Count parameters:C259=3)
 			
 			FORM SET VERTICAL RESIZING:C893($resize; $min; $max)
 			
@@ -1617,7 +1594,17 @@ Function set maxHeight($height : Integer)
 	// -------------------------------------------------------------------------------------------------------
 Function Button($name : Text) : cs:C1710.button
 	
-	return cs:C1710.button.new($name)
+	return cs:C1710.button.new($name; This:C1470)
+	
+	// -------------------------------------------------------------------------------------------------------
+Function ComboBox($name : Text; $data : Object) : cs:C1710.comboBox
+	
+	return cs:C1710.comboBox.new($name; $data; This:C1470)
+	
+	// -------------------------------------------------------------------------------------------------------
+Function DropDown($name : Text; $data : Object) : cs:C1710.dropDown
+	
+	return cs:C1710.dropDown.new($name; $data; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Group($members : Variant;  ... ) : cs:C1710.group
@@ -1634,74 +1621,69 @@ Function Group($members : Variant;  ... ) : cs:C1710.group
 	End if 
 	
 	// -------------------------------------------------------------------------------------------------------
-Function ComboBox($name : Text; $data : Object) : cs:C1710.comboBox
-	
-	return cs:C1710.comboBox.new($name; $data)
-	
-	// -------------------------------------------------------------------------------------------------------
-Function DropDown($name : Text; $data : Object) : cs:C1710.dropDown
-	
-	return cs:C1710.dropDown.new($name; $data)
-	
-	// -------------------------------------------------------------------------------------------------------
 Function HList($name : Text; $itemRef : Integer) : cs:C1710.hList
 	
-	return cs:C1710.hList.new($name; $itemRef)
+	return cs:C1710.hList.new($name; $itemRef; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Input($name : Text) : cs:C1710.input
 	
-	return cs:C1710.input.new($name)
+	return cs:C1710.input.new($name; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Listbox($name : Text) : cs:C1710.listbox
 	
-	return cs:C1710.listbox.new($name)
+	return cs:C1710.listbox.new($name; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
-Function Picture($name : Text) : cs:C1710.picture
+Function Picture($name : Text; $data) : cs:C1710.picture
 	
-	return cs:C1710.picture.new($name)
+	return cs:C1710.picture.new($name; $data; This:C1470)
+	
+	// -------------------------------------------------------------------------------------------------------
+Function Scrollable($name : Text; $values : Collection) : cs:C1710.scrollable
+	
+	return cs:C1710.scrollable.new($name; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Selector($name : Text; $values : Collection) : cs:C1710.selector
 	
-	return cs:C1710.selector.new($name; $values)
+	return cs:C1710.selector.new($name; $values; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Static($name : Text) : cs:C1710.static
 	
-	return cs:C1710.static.new($name)
+	return cs:C1710.static.new($name; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Stepper($name : Text) : cs:C1710.stepper
 	
-	return cs:C1710.stepper.new($name)
+	return cs:C1710.stepper.new($name; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Subform($name : Text; $events : Object; $super : Object; $form : Object) : cs:C1710.subform
 	
-	return cs:C1710.subform.new($name; $events; $super; $form)
+	return cs:C1710.subform.new($name; $events; $super; $form; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function TabControl($name : Text; $data; $page : Integer) : cs:C1710.tabControl
 	
-	return cs:C1710.tabControl.new($name; $data; $page)
+	return cs:C1710.tabControl.new($name; $data; $page; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Thermometer($name : Text) : cs:C1710.thermometer
 	
-	return cs:C1710.thermometer.new($name)
+	return cs:C1710.thermometer.new($name; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function WebArea($name : Text; $data) : cs:C1710.webArea
 	
-	return cs:C1710.webArea.new($name; $data)
+	return cs:C1710.webArea.new($name; $data; This:C1470)
 	
 	// -------------------------------------------------------------------------------------------------------
 Function Widget($name : Text) : cs:C1710.widget
 	
-	return cs:C1710.widget.new($name)
+	return cs:C1710.widget.new($name; This:C1470)
 	
 	// MARK:-[MISCELLANEOUS]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===

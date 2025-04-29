@@ -1,18 +1,14 @@
 Class extends widget
 
-property errors; filterdURLs : Collection
-property success : Boolean
+property errors:=[]
+property filterdURLs:=[]
+property success:=False:C215
 
-property _url : Text
+property _url:=""
 
-Class constructor($name : Text; $data)
+Class constructor($name : Text; $data; $parent : Object)
 	
-	Super:C1705($name)
-	
-	This:C1470.success:=False:C215
-	This:C1470.errors:=[]
-	This:C1470.filterdURLs:=[]
-	This:C1470._url:=""
+	Super:C1705($name; $parent)
 	
 	ARRAY TEXT:C222($filters; 0)
 	ARRAY BOOLEAN:C223($allowed; 0)
@@ -62,14 +58,10 @@ Function open($data)
 	Case of 
 			
 			//……………………………………………………………………………………………………
-		: ($data=Null:C1517)
+		: ($data=Null:C1517)\
+			 || (Value type:C1509($data)=Is text:K8:3)
 			
-			// <NOTHING MORE TO DO>
-			
-			//……………………………………………………………………………………………………
-		: (Value type:C1509($data)=Is text:K8:3)
-			
-			This:C1470._url:=$data
+			This:C1470._url:=String:C10($data)
 			
 			//……………………………………………………………………………………………………
 		: (Value type:C1509($data)=Is object:K8:27)
@@ -120,7 +112,12 @@ Function open($data)
 	WA OPEN URL:C1020(*; This:C1470.name; This:C1470._url)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function inspector()
+Function clear()
+	
+	This:C1470.open()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function showInspector()
 	
 	WA OPEN WEB INSPECTOR:C1736(*; This:C1470.name)
 	
@@ -136,7 +133,7 @@ Function set content($content : Text)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Set the web area content
-Function setContent($content : Text; $base : Text)
+Function setContent($content : Text)  //; $base : Text)
 	
 	//⚠️ As WA SET PAGE CONTENT, on Windows, don't accepts relative references,
 	// the page to display must be processed and saved into a temp file then displayed with WA OPEN URL.
@@ -147,17 +144,12 @@ Function setContent($content : Text; $base : Text)
 	
 	return 
 	
-	$base:=$base || "/"
-	WA SET PAGE CONTENT:C1037(*; This:C1470.name; $content; $base)
-	This:C1470.success:=True:C214
+	//$base:=$base || "/"
+	//WA SET PAGE CONTENT(*; This.name; $content; $base)
+	//This.success:=True
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function load($file : 4D:C1709.File)
-	
-	var $t : Text
-	var $index : Integer
-	var $x : Blob
-	var $o : Object
 	
 	If ($file=Null:C1517)
 		
@@ -173,6 +165,7 @@ Function load($file : 4D:C1709.File)
 		
 	End if 
 	
+	var $x : Blob
 	DOCUMENT TO BLOB:C525($file.platformPath; $x)
 	
 	If (OK=0)
@@ -182,7 +175,7 @@ Function load($file : 4D:C1709.File)
 		
 	End if 
 	
-	$t:=Convert to text:C1012($x; "UTF-8")
+	var $t:=Convert to text:C1012($x; "UTF-8")
 	
 	If (OK=0)
 		
@@ -199,16 +192,13 @@ Function load($file : 4D:C1709.File)
 	// Cleanup
 	$t:=Replace string:C233($t; "\r\n"; "\r")
 	$t:=Replace string:C233($t; "\r"; "\n")
-	//$t:=Replace string($t; "\r"; "")
-	//$t:=Replace string($t; "\n"; "")
-	//$t:=Replace string($t; "\t"; "")
 	
 	// Temporary allow "file:// "
 	ARRAY TEXT:C222($filters; 0x0000)
 	ARRAY BOOLEAN:C223($allowed; 0x0000)
 	WA GET URL FILTERS:C1031(*; This:C1470.name; $filters; $allowed)
 	
-	$o:={\
+	var $o:={\
 		filters: []; \
 		allowDeny: []\
 		}
@@ -216,7 +206,7 @@ Function load($file : 4D:C1709.File)
 	ARRAY TO COLLECTION:C1563($o.filters; $filters)
 	ARRAY TO COLLECTION:C1563($o.allowDeny; $allowed)
 	
-	$index:=Find in array:C230($filters; "file*")
+	var $index:=Find in array:C230($filters; "file*")
 	
 	If ($index>0)
 		
@@ -256,7 +246,6 @@ Function evaluateJS($code : Text; $type : Integer) : Variant
 			return WA Evaluate JavaScript:C1029(*; This:C1470.name; $code)
 			
 		End if 
-		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -277,11 +266,9 @@ Function back()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function backMenu()
 	
-	var $menu : cs:C1710.menu
-	
 	If (This:C1470.canBackwards)
 		
-		$menu:=cs:C1710.menu.new(WA Create URL history menu:C1049(*; This:C1470.name; WA previous URLs:K62:1)).popup()
+		var $menu:=cs:C1710.menu.new(WA Create URL history menu:C1049(*; This:C1470.name; WA previous URLs:K62:1)).popup()
 		
 		If ($menu.selected)
 			
@@ -303,11 +290,9 @@ Function forward()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function forwardMenu()
 	
-	var $menu : cs:C1710.menu
-	
 	If (This:C1470.canBackwards)
 		
-		$menu:=cs:C1710.menu.new(WA Create URL history menu:C1049(*; This:C1470.name; WA next URLs:K62:2)).popup()
+		var $menu:=cs:C1710.menu.new(WA Create URL history menu:C1049(*; This:C1470.name; WA next URLs:K62:2)).popup()
 		
 		If ($menu.selected)
 			
@@ -381,8 +366,6 @@ Function getTitle() : Text
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function allow($data; $allow : Boolean)
 	
-	var $filter : Text
-	
 	ARRAY TEXT:C222($filters; 0)
 	ARRAY BOOLEAN:C223($allowed; 0)
 	
@@ -410,9 +393,10 @@ Function allow($data; $allow : Boolean)
 			//______________________________________________________
 		: (Value type:C1509($data)=Is collection:K8:32)
 			
+			var $filter
 			For each ($filter; $data)
 				
-				APPEND TO ARRAY:C911($filters; $filter)
+				APPEND TO ARRAY:C911($filters; String:C10($filter))
 				APPEND TO ARRAY:C911($allowed; $allow)
 				
 			End for each 
@@ -445,9 +429,7 @@ An example result:
 	
 */
 	
-	var $t : Text
-	
-	$t:=WA Get current URL:C1025(*; This:C1470.name)
+	var $t:=WA Get current URL:C1025(*; This:C1470.name)
 	
 	If (($t=":///")\
 		 | (Length:C16($t)=0))
@@ -457,7 +439,6 @@ An example result:
 	End if 
 	
 	$t:="var ua = window.navigator.userAgent.toLowerCase();"
-	
 	$t+="var res={\"userAgent\":ua};"
 	
 	// Chrome

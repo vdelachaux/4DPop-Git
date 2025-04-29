@@ -42,6 +42,6 @@ If ($git.root.parent.path#$git.workspace.path)
 	End if 
 End if 
 
-var $winRef:=Open form window:C675("GIT"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *)
+var $winRef:=Open form window:C675("GIT"; Plain form window no title:K39:19; Horizontally centered:K39:1; Vertically centered:K39:4; *)
 DIALOG:C40("GIT")
 CLOSE WINDOW:C154
