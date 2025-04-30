@@ -406,9 +406,7 @@ Function _doChangesMenu()
 		
 	End if 
 	
-	//%W-550.11
-	var $tgt:=This:C1470.Git.getTarget($menu.choice; Folder:C1567(fk database folder:K87:14; *))
-	//%W+550.11
+	var $tgt : Variant:=This:C1470.Git.getTarget($menu.choice; Folder:C1567(fk database folder:K87:14; *))
 	
 	Case of 
 			

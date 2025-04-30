@@ -1,11 +1,11 @@
 //%attributes = {}
-C_BOOLEAN:C305($bRelative)
-C_DATE:C307($dateGMT)
-C_LONGINT:C283($lError; $lIAT)
-C_TIME:C306($time; $timeGMT)
-C_TEXT:C284($t; $tContents; $tPrivate; $tResponse; $tToken; $tURL)
+var $bRelative : Boolean
+var $dateGMT : Date
+var $lError; $lIAT : Integer
+var $time; $timeGMT : Time
+var $t; $tContents; $tPrivate; $tResponse; $tToken; $tURL : Text
 
-C_OBJECT:C1216($o; $oJWT; $oPayload)
+var $o; $oJWT; $oPayload : Object
 
 var $git:=cs:C1710.Git.me
 var $gh:=cs:C1710.gh.me

@@ -27,6 +27,16 @@
 	"pages": [
 		{
 			"objects": {
+				"Input": {
+					"type": "input",
+					"left": 228,
+					"top": 20,
+					"width": 584,
+					"height": 17,
+					"dataSource": "Form:C1466.windowTitle",
+					"class": "title infos",
+					"focusable": false
+				},
 				"_background": {
 					"type": "rectangle",
 					"top": 59,
@@ -39,17 +49,6 @@
 					"fill": "automatic",
 					"strokeWidth": 0
 				},
-				"gitVersion": {
-					"type": "input",
-					"left": 1202,
-					"top": 418,
-					"width": 117,
-					"height": 14,
-					"dataSource": "Form:C1466.version",
-					"sizingY": "move",
-					"class": "infos mini",
-					"visibility": "hidden"
-				},
 				"Line5": {
 					"type": "line",
 					"top": 59,
@@ -59,33 +58,6 @@
 					"startPoint": "topLeft",
 					"sizingX": "grow",
 					"right": 1123
-				},
-				"open": {
-					"type": "button",
-					"top": 0,
-					"left": 1050,
-					"width": 60,
-					"height": 60,
-					"events": [
-						"onClick"
-					],
-					"style": "toolbar",
-					"icon": "/RESOURCES/Images/Main/openIn.svg",
-					"sizingX": "move",
-					"text": ":xliff:open",
-					"class": "mini",
-					"iconFrames": 1
-				},
-				"gitLogo": {
-					"type": "picture",
-					"top": 417,
-					"left": 1183,
-					"width": 16,
-					"height": 16,
-					"picture": "/RESOURCES/Images/git.png",
-					"pictureFormat": "scaled",
-					"sizingY": "move",
-					"visibility": "hidden"
 				},
 				"embeddedDialogs": {
 					"type": "subform",
@@ -113,10 +85,26 @@
 					"hideFocusRing": true,
 					"focusable": false
 				},
+				"open": {
+					"type": "button",
+					"top": 0,
+					"left": 1050,
+					"width": 60,
+					"height": 60,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/Main/openIn.svg",
+					"sizingX": "move",
+					"text": ":xliff:open",
+					"class": "mini",
+					"iconFrames": 1
+				},
 				"changes": {
 					"type": "radio",
 					"top": 10,
-					"left": 104,
+					"left": 110,
 					"width": 50,
 					"height": 43,
 					"events": [
@@ -136,7 +124,7 @@
 				"history": {
 					"type": "radio",
 					"top": 10,
-					"left": 154,
+					"left": 160,
 					"width": 48,
 					"height": 43,
 					"events": [
@@ -156,6 +144,19 @@
 		},
 		{
 			"objects": {
+				"airbag": {
+					"type": "button",
+					"text": "Button",
+					"top": 899,
+					"left": 0,
+					"width": 325,
+					"height": 11,
+					"events": [],
+					"display": false,
+					"sizingY": "move",
+					"class": "dev",
+					"style": "flat"
+				},
 				"titleWorkingDirectory": {
 					"type": "text",
 					"text": ":xliff:workspace",
@@ -177,25 +178,20 @@
 						"onSelectionChange"
 					],
 					"showHeaders": false,
-					"resizingMode": "legacy",
-					"scrollbarVertical": "visible",
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.staged",
-					"hideFocusRing": true,
-					"horizontalLineStroke": "transparent",
 					"verticalLineStroke": "transparent",
 					"sizingY": "grow",
 					"borderStyle": "none",
 					"visibility": "visible",
 					"sizingX": "grow",
-					"sortable": false,
 					"currentItemSource": "formGetInstance.staged.item",
 					"currentItemPositionSource": "formGetInstance.staged.itemPosition",
 					"selectedItemsSource": "formGetInstance.staged.items",
 					"metaSource": "formGetInstance.meta(This:C1470)",
-					"fill": "transparent",
-					"selectionMode": "multiple",
 					"bottom": 872,
+					"selectionMode": "multiple",
+					"fill": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -253,7 +249,7 @@
 					"visibility": "hidden",
 					"class": "infos"
 				},
-				"Input1": {
+				"currentPath": {
 					"type": "input",
 					"left": 526,
 					"top": 64,
@@ -261,7 +257,8 @@
 					"height": 17,
 					"dataSource": "Form:C1466.current.path",
 					"sizingX": "grow",
-					"class": "infos"
+					"class": "infos",
+					"visibility": "hidden"
 				},
 				"Line4": {
 					"type": "line",
@@ -311,7 +308,9 @@
 						"onClick"
 					],
 					"sizingX": "move",
-					"sizingY": "move"
+					"sizingY": "move",
+					"defaultButton": true,
+					"action": ""
 				},
 				"amend": {
 					"type": "checkbox",
@@ -356,16 +355,6 @@
 					"focusable": false,
 					"sizingY": "move"
 				},
-				"hSplitter": {
-					"type": "splitter",
-					"left": 0,
-					"top": 463,
-					"width": 520,
-					"height": 1,
-					"borderStyle": "dotted",
-					"sizingX": "grow",
-					"splitterMode": "resize"
-				},
 				"unstaged": {
 					"type": "listbox",
 					"left": 0,
@@ -378,7 +367,6 @@
 						"onSelectionChange"
 					],
 					"showHeaders": false,
-					"scrollbarVertical": "visible",
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.unstaged",
 					"verticalLineStroke": "transparent",
@@ -390,10 +378,10 @@
 					"sizingX": "grow",
 					"metaSource": "formGetInstance.meta(This:C1470)",
 					"rowHeight": "1em",
-					"alternateFill": "automatic",
 					"borderStyle": "none",
 					"class": "flat",
 					"selectionMode": "multiple",
+					"fill": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -427,15 +415,6 @@
 						}
 					]
 				},
-				"Line": {
-					"type": "line",
-					"top": 426,
-					"left": 0,
-					"width": 520,
-					"height": 0,
-					"sizingX": "grow",
-					"sizingY": "move"
-				},
 				"Line1": {
 					"type": "line",
 					"top": 872,
@@ -443,7 +422,11 @@
 					"width": 520,
 					"height": 0,
 					"sizingX": "grow",
-					"sizingY": "move"
+					"sizingY": "move",
+					"strokeDashArray": [
+						1,
+						1
+					]
 				},
 				"titleIndexBottom": {
 					"type": "line",
@@ -452,6 +435,73 @@
 					"width": 520,
 					"height": 0,
 					"sizingX": "grow"
+				},
+				"titleWorkingDirectoryBottom": {
+					"type": "line",
+					"top": 84,
+					"left": 0,
+					"width": 1123,
+					"height": 0,
+					"sizingX": "grow"
+				},
+				"stageFile": {
+					"type": "button",
+					"text": ":xliff:stage",
+					"top": 64,
+					"left": 1012,
+					"width": 81,
+					"height": 17,
+					"events": [
+						"onClick"
+					],
+					"sizingX": "move",
+					"visibility": "hidden"
+				},
+				"moreFile": {
+					"type": "button",
+					"top": 64,
+					"left": 1098,
+					"width": 20,
+					"height": 17,
+					"events": [
+						"onClick"
+					],
+					"shortcutAccel": true,
+					"shortcutControl": false,
+					"shortcutShift": true,
+					"shortcutAlt": false,
+					"shortcutKey": "s",
+					"sizingX": "move",
+					"visibility": "hidden",
+					"icon": "/.PRODUCT_RESOURCES/Internal Components/runtime.4dbase/Contents/Resources/images/common/more.png",
+					"iconFrames": 4,
+					"style": "custom"
+				},
+				"context": {
+					"type": "text",
+					"text": "xxx",
+					"top": 883,
+					"left": 534,
+					"width": 454,
+					"height": 16,
+					"fontStyle": "italic",
+					"sizingX": "grow",
+					"sizingY": "move",
+					"textAlign": "center",
+					"class": ""
+				},
+				"noChangesInIndex": {
+					"type": "text",
+					"text": "No changes in index",
+					"top": 546,
+					"left": 7,
+					"width": 504,
+					"height": 16,
+					"textAlign": "center",
+					"stroke": "#c0c0c0",
+					"sizingX": "grow",
+					"fontSize": 18,
+					"visibility": "hidden"
 				},
 				"stage": {
 					"type": "button",
@@ -472,90 +522,100 @@
 					"focusable": false,
 					"sizingY": "move"
 				},
-				"titleWorkingDirectoryBottom": {
+				"Line": {
 					"type": "line",
-					"top": 84,
+					"top": 427,
 					"left": 0,
-					"width": 1123,
+					"width": 520,
 					"height": 0,
-					"sizingX": "grow"
+					"sizingX": "grow",
+					"sizingY": "move",
+					"strokeDashArray": [
+						1,
+						1
+					]
 				},
-				"vSplitter_2": {
+				"Line2": {
+					"type": "line",
+					"top": 463,
+					"left": 0,
+					"width": 520,
+					"height": 0,
+					"sizingX": "grow",
+					"sizingY": "move"
+				},
+				"Line3": {
+					"type": "line",
+					"top": 463,
+					"left": 0,
+					"width": 520,
+					"height": 0,
+					"sizingX": "grow",
+					"sizingY": "move",
+					"stroke": "automatic"
+				},
+				"localHorizontalSplitter": {
+					"type": "splitter",
+					"left": 0,
+					"top": 463,
+					"width": 520,
+					"height": 1,
+					"sizingX": "grow",
+					"splitterMode": "resize"
+				},
+				"Line6": {
+					"type": "line",
+					"top": 60,
+					"left": 521,
+					"width": 0,
+					"height": 850,
+					"sizingY": "grow",
+					"stroke": "automatic",
+					"right": 521
+				},
+				"localVerticalSplitter": {
 					"type": "splitter",
 					"left": 520,
 					"top": 60,
 					"width": 1,
 					"height": 850,
-					"borderStyle": "dotted",
 					"sizingY": "grow"
 				},
-				"stageFile": {
-					"type": "button",
-					"text": ":xliff:stage",
-					"top": 64,
-					"left": 1012,
-					"width": 81,
-					"height": 17,
-					"events": [
-						"onClick"
-					],
-					"shortcutAccel": true,
-					"shortcutControl": false,
-					"shortcutShift": true,
-					"shortcutAlt": false,
-					"shortcutKey": "s",
+				"gitVersion": {
+					"type": "input",
+					"left": 397,
+					"top": 884,
+					"width": 117,
+					"height": 14,
+					"dataSource": "Form:C1466.version",
+					"sizingY": "move",
+					"class": "infos mini",
 					"sizingX": "move"
 				},
-				"moreFile": {
-					"type": "button",
-					"text": "+",
-					"top": 64,
-					"left": 1101,
-					"width": 17,
-					"height": 17,
-					"events": [
-						"onClick"
-					],
-					"shortcutAccel": true,
-					"shortcutControl": false,
-					"shortcutShift": true,
-					"shortcutAlt": false,
-					"shortcutKey": "s",
-					"sizingX": "move"
-				},
-				"Text": {
-					"type": "text",
-					"text": "Discard change\r-------\rOpen File…\rView in Finder\r-------------\rDelete File",
-					"top": 71,
-					"left": 1153,
-					"width": 101,
-					"height": 184,
-					"visibility": "hidden",
-					"stroke": "#98fb98"
-				},
-				"Text1": {
-					"type": "text",
-					"text": "Committing as vdelachaux <vdl4@wanadoo.fr> on branch main",
+				"gitLogo": {
+					"type": "picture",
 					"top": 883,
-					"left": 534,
-					"width": 454,
+					"left": 378,
+					"width": 16,
 					"height": 16,
-					"fontStyle": "italic",
-					"sizingX": "grow",
-					"sizingY": "move"
+					"picture": "/RESOURCES/Images/git.png",
+					"pictureFormat": "scaled",
+					"sizingY": "move",
+					"sizingX": "move"
 				},
-				"noChangesInIndex": {
-					"type": "text",
-					"text": "No changes in index",
-					"top": 546,
-					"left": 7,
-					"width": 504,
-					"height": 16,
-					"textAlign": "center",
-					"stroke": "#c0c0c0",
-					"sizingX": "grow",
-					"fontSize": 18,
-					"visibility": "hidden"
+				"airbag1": {
+					"type": "button",
+					"text": "Button",
+					"top": 899,
+					"left": 798,
+					"width": 325,
+					"height": 11,
+					"events": [],
+					"display": false,
+					"sizingY": "move",
+					"sizingX": "move",
+					"class": "dev",
+					"style": "flat"
 				}
 			}
 		},
@@ -581,9 +641,9 @@
 					"currentItemSource": "formGetInstance.detailCommit.item",
 					"currentItemPositionSource": "formGetInstance.detailCommit.itemPosition",
 					"selectedItemsSource": "formGetInstance.detailCommit.items",
-					"alternateFill": "automatic",
 					"class": "flat",
 					"verticalLineStroke": "transparent",
+					"fill": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -654,7 +714,6 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commits",
-					"verticalLineStroke": "transparent",
 					"sizingX": "grow",
 					"borderStyle": "none",
 					"currentItemSource": "formGetInstance.commits.item",
@@ -665,10 +724,11 @@
 					"class": "flat",
 					"metaSource": "formGetInstance.metaCommits(This:C1470)",
 					"hideSystemHighlight": true,
-					"alternateFill": "automatic",
-					"resizingMode": "rightToLeft",
 					"right": 1123,
 					"sizingY": "grow",
+					"alternateFill": "automatic",
+					"resizingMode": "rightToLeft",
+					"verticalLineStroke": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -682,7 +742,7 @@
 							"footer": {
 								"name": "Footer1"
 							},
-							"width": 550
+							"width": 666
 						},
 						{
 							"header": {
@@ -918,10 +978,10 @@
 				"fetch": {
 					"type": "button",
 					"text": ":xliff:fetch",
-					"top": 5,
-					"left": 548,
+					"top": 0,
+					"left": 867,
 					"width": 60,
-					"height": 48,
+					"height": 60,
 					"events": [
 						"onClick"
 					],
@@ -934,10 +994,10 @@
 				"pull": {
 					"type": "button",
 					"text": ":xliff:pull",
-					"top": 5,
-					"left": 609,
+					"top": 0,
+					"left": 928,
 					"width": 60,
-					"height": 48,
+					"height": 60,
 					"events": [
 						"onClick"
 					],
@@ -950,10 +1010,10 @@
 				"push": {
 					"type": "button",
 					"text": ":xliff:push",
-					"top": 5,
-					"left": 670,
+					"top": 0,
+					"left": 989,
 					"width": 60,
-					"height": 48,
+					"height": 60,
 					"events": [
 						"onClick"
 					],
@@ -977,5 +1037,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 1799
+	"geometryStamp": 2054
 }

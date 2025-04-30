@@ -63,6 +63,10 @@
 		"4DPop Window": {
 			"github": "vdelachaux/4DPop-Window",
 			"version": "latest"
+		},
+		"4d macros": {
+			"github": "4d/4d-macros",
+			"version": "latest"
 		}
 	}
 }
