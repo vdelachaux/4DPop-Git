@@ -32,7 +32,7 @@ property form : cs:C1710.form
 property Git:=cs:C1710.Git.me
 
 // MARK: UI 🖥️
-property centeredToolbarButtons; \
+property commitButtons; \
 commitment; \
 detail; \
 groupDiff : cs:C1710.group
@@ -61,7 +61,8 @@ property diff; \
 subject; \
 description; \
 parent; \
-detailDiff : cs:C1710.input
+detailDiff; \
+currentPath : cs:C1710.input
 
 property authorLabel; \
 authorName; \
@@ -82,6 +83,8 @@ property authorAvatar : cs:C1710.picture
 
 property windowFrame : cs:C1710.subform
 
+property icons : Object
+
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
@@ -98,12 +101,11 @@ Function init()
 	
 	var $menuFile:=cs:C1710.menu.new().file()  // Get a standard file menu
 	
-	// Insert custom
-	//$menuFile.append(".Close"; "close"; 0).shortcut("W").method($menuHandle)
+	// Enrich with custom items
 	$menuFile.line(1)
 	$menuFile.append("Diff"; "diff"; 2).shortcut("D").method($menuHandle)
 	$menuFile.line(3)
-	$menuFile.append("Settings"; "settings"; 4).method($menuHandle)
+	$menuFile.append(":xliff:settings"; "settings"; 4).method($menuHandle)
 	
 	var $menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
 	
@@ -117,10 +119,10 @@ Function init()
 	This:C1470.changes:=This:C1470.form.Button("changes")
 	This:C1470.history:=This:C1470.form.Button("history")
 	
-	This:C1470.centeredToolbarButtons:=This:C1470.form.Group()
-	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.centeredToolbarButtons)
-	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.centeredToolbarButtons)
-	This:C1470.push:=This:C1470.form.Button("push").addToGroup(This:C1470.centeredToolbarButtons)
+	This:C1470.commitButtons:=This:C1470.form.Group()
+	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.commitButtons)
+	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.commitButtons)
+	This:C1470.push:=This:C1470.form.Button("push").addToGroup(This:C1470.commitButtons)
 	
 	This:C1470.open:=This:C1470.form.Button("open")
 	
@@ -134,6 +136,7 @@ Function init()
 	
 	// Mark:Page 1️⃣ Diff pannel
 	This:C1470.groupDiff:=This:C1470.form.Group()
+	This:C1470.currentPath:=This:C1470.form.Input("currentPath").addToGroup(This:C1470.groupDiff)
 	This:C1470.fileStage:=This:C1470.form.Button("stageFile").addToGroup(This:C1470.groupDiff)
 	This:C1470.fileMore:=This:C1470.form.Button("moreFile").addToGroup(This:C1470.groupDiff)
 	This:C1470.diff:=This:C1470.form.Input("diff").addToGroup(This:C1470.groupDiff)
@@ -169,7 +172,9 @@ Function init()
 	
 	// MARK:- [Constraints]
 	// -> The fetch/pull/push buttons must remain centred on the background.
-	This:C1470.form.constraints.new(This:C1470.centeredToolbarButtons).centerHorizontally.with("_background")
+	//This.form.constraints.new(This.commitButtons).centerHorizontally.with("_background")
+	
+	This:C1470._loadScheme()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.evt)
@@ -284,6 +289,43 @@ Function handleEvents($e : cs:C1710.evt)
 			End if 
 			
 			//==============================================
+		: (This:C1470.fileStage.catch($e; On Clicked:K2:4))
+			
+			If (This:C1470.isInIndex)
+				
+				This:C1470.Unstage(This:C1470.staged.items)
+				
+			Else 
+				
+				This:C1470.Stage(This:C1470.unstaged.items)
+				
+			End if 
+			
+			//==============================================
+		: (This:C1470.fileMore.catch($e; On Clicked:K2:4))
+			
+			var $menu:=cs:C1710.menu.new()
+			
+			$menu.append(":xliff:edit"; "open")
+			$menu.append(":xliff:showInFinder"; "show")
+			
+			If (Not:C34(This:C1470.isInIndex))
+				
+				$menu.line()\
+					.append(":xliff:discardChanges"; "discard")\
+					.append(":xliff:deleteLocalFile"; "delete")
+				
+			End if 
+			
+			If (Not:C34($menu.popup().selected))
+				
+				return 
+				
+			End if 
+			
+			This:C1470.handleMenus($menu.choice; This:C1470.isInIndex ? This:C1470.staged.item : This:C1470.unstaged.item)
+			
+			//==============================================
 		: (This:C1470.fetch.catch($e; On Clicked:K2:4))
 			
 			$git.fetch()
@@ -385,13 +427,20 @@ Function handleEvents($e : cs:C1710.evt)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
 	
-	This:C1470.form.window.title:="4DPop Git - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
-	
 	// The title bar fills the entire width of the window
 	This:C1470.windowFrame.left:=0
 	This:C1470.windowFrame.width:=This:C1470.form.rect.width
 	
-	This:C1470.centeredToolbarButtons.distributeAroundCenter({\
+	This:C1470.form.window.title:="4DPop Git - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
+	Form:C1466.windowTitle:=This:C1470.form.window.title
+	
+/*
+This.commitButtons.distributeAroundCenter({\
+minWidth: 30; \
+spacing: 5})
+*/
+	
+	//This.commitButtons.distributeLeftToRight({\
 		minWidth: 30; \
 		spacing: 5})
 	
@@ -427,8 +476,6 @@ Function onLoad()
 	Form:C1466.staged:=[]
 	Form:C1466.commits:=[]
 	Form:C1466.commitDetail:=[]
-	
-	Form:C1466.icons:={}
 	
 	Form:C1466.amend:=False:C215
 	Form:C1466.commitSubject:=""
@@ -478,12 +525,12 @@ Function onLoad()
 Function update()
 	
 	var $git:=This:C1470.Git
+	var $indx : Integer
 	
 	Case of 
 			
 			//______________________________________________________
 		: (This:C1470.form.page=This:C1470.pages.changes)
-			
 			
 			If ($git.status()=0)
 				
@@ -510,13 +557,12 @@ Function update()
 					$o.modified:=$o.status="@M@"
 					$o.deleted:=$o.status="@D@"
 					
-					$o.icon:=$o.modified ? Form:C1466.iconModified\
-						 : $o.deleted ? Form:C1466.iconDeleted\
-						 : $o.added ? Form:C1466.iconAdded\
+					$o.icon:=$o.modified ? This:C1470.icons.edit\
+						 : $o.deleted ? This:C1470.icons.remove\
+						 : $o.added ? This:C1470.icons.add\
 						 : Null:C1517
 					
 				End use 
-				
 			End for each 
 			
 			Form:C1466.staged:=$git.changes.query("status IN :1"; This:C1470.STAGED_STATUS).orderBy("path")
@@ -530,10 +576,10 @@ Function update()
 					$o.deleted:=$o.status="@D@"
 					$o.moved:=$o.status="@R@"
 					
-					$o.icon:=$o.modified ? Form:C1466.iconModified\
-						 : $o.deleted ? Form:C1466.iconDeleted\
-						 : $o.moved ? Form:C1466.iconMoved\
-						 : $o.added ? Form:C1466.iconAdded\
+					$o.icon:=$o.modified ? This:C1470.icons.edit\
+						 : $o.deleted ? This:C1470.icons.remove\
+						 : $o.moved ? This:C1470.icons.rename\
+						 : $o.added ? This:C1470.icons.add\
 						 : Null:C1517
 					
 				End use 
@@ -543,7 +589,7 @@ Function update()
 			If (This:C1470.unstaged.item#Null:C1517)\
 				 & (Form:C1466.unstaged.length>0)
 				
-				var $indx : Integer:=This:C1470.unstaged.item#Null:C1517\
+				$indx:=This:C1470.unstaged.item#Null:C1517\
 					 ? Form:C1466.unstaged.extract("path").indexOf(This:C1470.unstaged.item.path)\
 					 : -1
 				
@@ -579,7 +625,6 @@ Function update()
 			// Mark:Update commit panel
 			This:C1470.commitment.enable(Form:C1466.staged.length>0)
 			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
-			
 			
 			This:C1470._stageUnstageButtonUpdate()
 			
@@ -664,7 +709,7 @@ Function onActivate()
 	
 	If (This:C1470.form.isSchemeModified())
 		
-		This:C1470._loadIcons()
+		This:C1470._loadScheme()
 		
 	End if 
 	
@@ -688,6 +733,15 @@ Function onActivate()
 		Form:C1466.staged.clear()
 		
 	End if 
+	
+	This:C1470.Git.branch()
+	
+	var $t:=Replace string:C233(Localized string:C991("commitingAs"); "{name}"; This:C1470.Git.userName())
+	var $branch : Text:=This:C1470.Git.branches.query("current = true").first().name
+	$t:=Replace string:C233($t; "{branch}"; $branch)
+	cs:C1710.static.new("context").title:=$t
+	
+	Form:C1466.windowTitle:=This:C1470.form.window.title+" on branch "+$branch
 	
 	This:C1470.form.refresh()
 	
@@ -817,15 +871,11 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
 	
-	var $staged : Boolean:=$e.objectName="staged"
+	var $staged:=This:C1470.isInIndex
 	var $current:=$staged ? This:C1470.staged.item : This:C1470.unstaged.item
 	var $sel:=$staged ? This:C1470.staged.items : This:C1470.unstaged.items
 	
-	//If ($sel.length<=1)
-	
 	Form:C1466.current:=$current
-	
-	//End if 
 	
 	Case of 
 			
@@ -855,16 +905,6 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 			
 			If ($current=Null:C1517)
 				
-				If ($staged)
-					
-					This:C1470.unstage.disable()
-					
-				Else 
-					
-					This:C1470.stage.disable()
-					
-				End if 
-				
 				return 
 				
 			End if 
@@ -891,8 +931,7 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 			
 			If ($sel.length=1)
 				
-				// FIXME: To localize
-				$menu.append("Open"; "open")
+				$menu.append(":xliff:edit"; "open")
 				
 				If (["??"; " D"; "A "].indexOf($current.status)=-1)
 					
@@ -1002,6 +1041,8 @@ Function _stageUnstageButtonUpdate()
 		
 	End if 
 	
+	This:C1470.unstage.enable((Form:C1466.staged#Null:C1517) && (Form:C1466.staged.length>0))
+	
 	This:C1470.emptyIndex.show((Form:C1466.staged=Null:C1517) || (Form:C1466.staged.length=0))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -1044,10 +1085,10 @@ Function _commitsManager()
 				moved: $c.length>=3\
 				}
 			
-			$o.icon:=$o.modified ? Form:C1466.iconModified\
-				 : $o.deleted ? Form:C1466.iconDeleted\
-				 : $o.added ? Form:C1466.iconAdded\
-				 : $o.moved ? Form:C1466.iconMoved\
+			$o.icon:=$o.modified ? This:C1470.icons.edit\
+				 : $o.deleted ? This:C1470.icons.remove\
+				 : $o.moved ? This:C1470.icons.rename\
+				 : $o.added ? This:C1470.icons.add\
 				 : Null:C1517
 			
 			If ($c.length>=3)  // Renamed
@@ -1068,30 +1109,37 @@ Function _commitsManager()
 		
 	End if 
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== 
+Function get isInIndex() : Boolean
+	
+	return This:C1470.form.focused=This:C1470.staged.name
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function DoDiff($item : Object)
-	
-	var $code; $diff : Text
-	var $tgt
 	
 	This:C1470._stageUnstageButtonUpdate()
 	
 	If ($item=Null:C1517)
 		
-		This:C1470.diff.hide()
+		This:C1470.groupDiff.hide()
 		
 		return 
 		
 	End if 
 	
-	This:C1470.diff.show()
+	var $diff : Text
+	
+	This:C1470.groupDiff.show()
+	
+	This:C1470.fileStage.title:=Localized string:C991(This:C1470.isInIndex ? "unstage" : "stage")
+	This:C1470.fileStage.bestSize(Align right:K42:4)
 	
 	Case of 
 			
 			//––––––––––––––––––––––––––––––––––––––––––––––––
 		: ($item.added)
 			
-			$tgt:=This:C1470.Git.getTarget($item.path)
+			var $tgt : Variant:=This:C1470.Git.getTarget($item.path)
 			
 			Case of 
 					
@@ -1106,7 +1154,7 @@ Function DoDiff($item : Object)
 								//————————————————————————————————————
 							: ($tgt.extension=".svg")  // Treat svg as text file
 								
-								$code:=$tgt.getText()
+								var $code : Text:=$tgt.getText()
 								
 								//————————————————————————————————————
 							: (Is picture file:C1113($tgt.platformPath))
@@ -1147,11 +1195,6 @@ Function DoDiff($item : Object)
 							End if 
 						End if 
 					End if 
-					
-					//______________________________________________________
-				Else 
-					
-					//
 					
 					//______________________________________________________
 			End case 
@@ -1356,6 +1399,8 @@ Function Stage($items : Collection)
 		
 	End for each 
 	
+	This:C1470.unstaged.items:=[]
+	
 	This:C1470.DoDiff()
 	This:C1470.onActivate()
 	
@@ -1377,6 +1422,8 @@ Function Unstage($items : Collection)
 		This:C1470.Git.unstage($o.path)
 		
 	End for each 
+	
+	This:C1470.staged.items:=[]
 	
 	This:C1470.DoDiff()
 	This:C1470.onActivate()
@@ -1835,7 +1882,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				
 			End if 
 			
-			$svg.image(Form:C1466.icons.github)
+			$svg.image(This:C1470.icons.github)
 			
 			return $svg.picture()
 			
@@ -1846,7 +1893,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				.radius(4).position(0.5; 0.5)\
 				.stroke("blue").fill("lavender").opacity(0.5)
 			
-			$svg.image(Form:C1466.icons.tag)
+			$svg.image(This:C1470.icons.tag)
 			
 			$svg.line(21; 0; 21; 20).stroke("blue").opacity(0.5)
 			
@@ -1861,7 +1908,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				.radius(4).position(0.5; 0.5)\
 				.stroke("grey").fill("lightgray").opacity(0.5)
 			
-			$svg.image(Form:C1466.icons.stash)
+			$svg.image(This:C1470.icons.stash)
 			
 			$svg.line(21; 0; 21; 20).stroke("grey").opacity(0.5)
 			
@@ -2000,7 +2047,7 @@ Function handleMenus($what : Text; $data : Object)
 			
 			$file:=This:C1470.Git.workspace.file($data.path)
 			
-			var $ignore:=$git.gitignore.getText("UTF-8"; Document with CR:K24:21)
+			var $ignore : Text:=$git.gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
 			Case of 
 					
@@ -2165,32 +2212,28 @@ Function meta($item : Object) : Object
 	End case 
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _loadIcons()
-	
-	var $key : Text
-	var $icon : Picture
+Function _loadScheme()
 	
 	This:C1470.commits.selectionHighlight:=This:C1470.form.lightScheme
 	
-	For each ($key; ["checked"; "github"; "gitLab"; "master"; "fix"])
+	This:C1470.icons:={}
+	
+	var $key : Text
+	var $icon : Picture
+	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
 		
 		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".png")).platformPath; $icon)
 		CREATE THUMBNAIL:C679($icon; $icon; 22; 22)
-		Form:C1466.icons[Lowercase:C14($key)]:=$icon
+		This:C1470.icons[Lowercase:C14($key)]:=$icon
 		
 	End for each 
 	
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath; $icon)
-	Form:C1466.logo:=$icon
-	
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/added.svg").platformPath; $icon)
-	Form:C1466.iconAdded:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/deleted.svg").platformPath; $icon)
-	Form:C1466.iconDeleted:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/modified.svg").platformPath; $icon)
-	Form:C1466.iconModified:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/moved.svg").platformPath; $icon)
-	Form:C1466.iconMoved:=$icon
+	For each ($key; ["Add"; "Remove"; "Edit"; "Rename"])
+		
+		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Status/"+$key+".png")).platformPath; $icon)
+		This:C1470.icons[Lowercase:C14($key)]:=$icon
+		
+	End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 	// Display an alert dialog horizontally centered & at the top 1/3

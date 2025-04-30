@@ -161,6 +161,10 @@ Voulez-vous télécharger l'installateur ?</target>
           <source>History View</source>
           <target>Historique</target>
         </trans-unit>
+        <trans-unit id="YGZwePvO5qhfd7h48e4DyA" resname="commitingAs">
+          <source>Committing as {name} on branch {branch} </source>
+          <target>Committing en tant que {name} sur la branche {branch} </target>
+        </trans-unit>
       </group>
       <group resname="pattern">
         <trans-unit id="RxY9OfmekBpp22bMfG8PUQ" resname="addPatternToGitignore">
@@ -283,6 +287,14 @@ avec 4D "{version}"</target>
           <source>4DPop Git Viewer…</source>
           <target>4DPop Git Viewer…</target>
         </trans-unit>
+        <trans-unit id="u2Mq8hBMWZjPSf+J1YxBXg" resname="edit">
+          <source>Edit</source>
+          <target>Éditer</target>
+        </trans-unit>
+        <trans-unit id="jWXm6hveJNjEmpgjoA4MxA" resname="settings">
+          <source>Settings</source>
+          <target>Paramètres</target>
+        </trans-unit>
       </group>
       <group resname="File">
         <trans-unit id="RtkC6IdKC4I7IQD0yDnxUQ" resname="modifiedFile">
@@ -335,6 +347,8 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
+
 
 
 
