@@ -7,7 +7,7 @@ property autostash:=False:C215
 
 property darkMode : Boolean
 
-property pages:={changes: 1; commits: 2}
+property pages:={local: 1; history: 2}
 
 property helptip:=cs:C1710.tips.new()
 
@@ -19,7 +19,7 @@ discard: False:C215}
 // MARK: Constants 🧰
 // FIXME:Manage all cases 🐞
 property UNSTAGED_STATUS:=["??"; " M"; " D"; " R"; " C"]  //; "MD"; "AM"; "AD"]
-property STAGED_STATUS:=["A "; "D "; "M "; "R "; "C "]
+property STAGED_STATUS:=["A "; "D "; "M "; "MM"; "R "; "C "]
 
 property MOVED_FILE:=Localized string:C991("fileMoved")
 property NEW_FILE:=Localized string:C991("newFile")
@@ -75,9 +75,8 @@ parentLabel; \
 titleTop; \
 title; \
 titleBottom; \
-detailSplitter; \
-detailSeparator; \
-emptyIndex : cs:C1710.static
+emptyIndex; \
+noCommitSelected : cs:C1710.static
 
 property authorAvatar : cs:C1710.picture
 
@@ -120,11 +119,11 @@ Function init()
 	This:C1470.history:=This:C1470.form.Button("history")
 	
 	This:C1470.commitButtons:=This:C1470.form.Group()
-	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.commitButtons)
-	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.commitButtons)
+	This:C1470.open:=This:C1470.form.Button("open").addToGroup(This:C1470.commitButtons)
 	This:C1470.push:=This:C1470.form.Button("push").addToGroup(This:C1470.commitButtons)
+	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.commitButtons)
+	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.commitButtons)
 	
-	This:C1470.open:=This:C1470.form.Button("open")
 	
 	// Mark:Page 1️⃣ Changes
 	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
@@ -166,9 +165,9 @@ Function init()
 	This:C1470.titleTop:=This:C1470.form.Static("titleTop").addToGroup(This:C1470.detail)
 	This:C1470.title:=This:C1470.form.Static("title").addToGroup(This:C1470.detail)
 	This:C1470.titleBottom:=This:C1470.form.Static("titleBottom").addToGroup(This:C1470.detail)
-	This:C1470.detailSplitter:=This:C1470.form.Static("detailSplitter").addToGroup(This:C1470.detail)
-	This:C1470.detailSeparator:=This:C1470.form.Static("detailSeparator").addToGroup(This:C1470.detail)
 	This:C1470.detailDiff:=This:C1470.form.Input("detailDiff").addToGroup(This:C1470.detail)
+	
+	This:C1470.noCommitSelected:=This:C1470.form.Static("noCommitSelected")
 	
 	// MARK:- [Constraints]
 	// -> The fetch/pull/push buttons must remain centred on the background.
@@ -199,13 +198,16 @@ Function handleEvents($e : cs:C1710.evt)
 				//______________________________________________________
 			: ($e.pageChange)
 				
-				If (This:C1470.form.page=This:C1470.pages.commits)
+				If (This:C1470.form.page=This:C1470.pages.history)
 					
 					If (Form:C1466.page2Inited=Null:C1517)
 						
-						var $o : cs:C1710.coordinates:=This:C1470.commits.coordinates
-						$o.right:=This:C1470.form.window.width
-						This:C1470.commits.setCoordinates($o)
+						This:C1470.commitButtons.distributeRigthToLeft({\
+							minWidth: 60; \
+							spacing: 5})
+						
+						// FIXME: TURN AROUND - Force calculation of column widths
+						LISTBOX SET COLUMN WIDTH:C833(*; This:C1470.commits.getColumnName(1); This:C1470.form.window.width-520)
 						Form:C1466.page2Inited:=True:C214
 						
 					End if 
@@ -249,12 +251,12 @@ Function handleEvents($e : cs:C1710.evt)
 			//==============================================
 		: (This:C1470.changes.catch($e))
 			
-			This:C1470._pageManager($e; This:C1470.pages.changes)
+			This:C1470._pageManager($e; This:C1470.pages.local)
 			
 			//==============================================
 		: (This:C1470.history.catch($e))
 			
-			This:C1470._pageManager($e; This:C1470.pages.commits)
+			This:C1470._pageManager($e; This:C1470.pages.history)
 			
 			//==============================================
 		: (This:C1470.unstaged.catch($e))\
@@ -432,17 +434,6 @@ Function onLoad()
 	This:C1470.windowFrame.width:=This:C1470.form.rect.width
 	
 	This:C1470.form.window.title:="4DPop Git - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
-	Form:C1466.windowTitle:=This:C1470.form.window.title
-	
-/*
-This.commitButtons.distributeAroundCenter({\
-minWidth: 30; \
-spacing: 5})
-*/
-	
-	//This.commitButtons.distributeLeftToRight({\
-		minWidth: 30; \
-		spacing: 5})
 	
 	This:C1470.changes.show()
 	This:C1470.history.show()
@@ -467,8 +458,13 @@ spacing: 5})
 	
 	This:C1470.form.appendEvents(On Alternative Click:K2:36)
 	
+	// May have been hidden when the dialog geometry was saved
+	This:C1470.emptyIndex.show()
+	This:C1470.noCommitSelected.show()
+	
 	// Form values
 	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
+	Form:C1466.windowTitle:=This:C1470.form.window.title
 	
 	Form:C1466.version:=This:C1470.Git.getVersion("short")
 	
@@ -517,7 +513,7 @@ spacing: 5})
 	This:C1470.newBranchDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "NEW BRANCH")
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
 	
-	This:C1470.GoToPage(This:C1470.pages.changes)
+	This:C1470.GoToPage(This:C1470.pages.local)
 	
 	This:C1470.form.refresh()
 	
@@ -530,7 +526,7 @@ Function update()
 	Case of 
 			
 			//______________________________________________________
-		: (This:C1470.form.page=This:C1470.pages.changes)
+		: (This:C1470.form.page=This:C1470.pages.local)
 			
 			If ($git.status()=0)
 				
@@ -629,7 +625,7 @@ Function update()
 			This:C1470._stageUnstageButtonUpdate()
 			
 			//______________________________________________________
-		: (This:C1470.form.page=This:C1470.pages.commits)
+		: (This:C1470.form.page=This:C1470.pages.history)
 			
 			var $commit:=This:C1470.commits.item
 			var $detail:=This:C1470.detailCommit.item
@@ -705,7 +701,10 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onActivate()
 	
+	// Toolbar
 	This:C1470.windowFrame.refresh()
+	cs:C1710.static.new("context").title:=Replace string:C233(Localized string:C991("commitingAs"); "{name}"; This:C1470.Git.userName())
+	Form:C1466.windowTitle:=This:C1470.form.window.title+" on branch "+This:C1470.Git.currentBranch
 	
 	If (This:C1470.form.isSchemeModified())
 		
@@ -713,7 +712,7 @@ Function onActivate()
 		
 	End if 
 	
-	If (This:C1470.form.page=This:C1470.pages.commits)
+	If (This:C1470.form.page=This:C1470.pages.history)
 		
 		This:C1470.updateCommits()
 		
@@ -733,15 +732,6 @@ Function onActivate()
 		Form:C1466.staged.clear()
 		
 	End if 
-	
-	This:C1470.Git.branch()
-	
-	var $t:=Replace string:C233(Localized string:C991("commitingAs"); "{name}"; This:C1470.Git.userName())
-	var $branch : Text:=This:C1470.Git.branches.query("current = true").first().name
-	$t:=Replace string:C233($t; "{branch}"; $branch)
-	cs:C1710.static.new("context").title:=$t
-	
-	Form:C1466.windowTitle:=This:C1470.form.window.title+" on branch "+$branch
 	
 	This:C1470.form.refresh()
 	
@@ -1059,12 +1049,14 @@ Function _commitsManager()
 	
 	If ($commit=Null:C1517)
 		
+		This:C1470.noCommitSelected.show()
 		This:C1470.detail.hide()
 		
 		return 
 		
 	End if 
 	
+	This:C1470.noCommitSelected.hide()
 	This:C1470.detail.show()
 	
 	var $c:=Split string:C1554($commit.parent.short; " ")
