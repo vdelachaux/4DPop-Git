@@ -30,8 +30,8 @@
 				"Input": {
 					"type": "input",
 					"left": 228,
-					"top": 20,
-					"width": 584,
+					"top": 13,
+					"width": 397,
 					"height": 17,
 					"dataSource": "Form:C1466.windowTitle",
 					"class": "title infos",
@@ -139,6 +139,18 @@
 					"iconFrames": 5,
 					"focusable": true,
 					"tooltip": ":xliff:historyView"
+				},
+				"context": {
+					"type": "text",
+					"text": "xxx",
+					"top": 33,
+					"left": 228,
+					"width": 397,
+					"height": 16,
+					"fontStyle": "italic",
+					"sizingX": "grow",
+					"sizingY": "move",
+					"class": ""
 				}
 			}
 		},
@@ -477,26 +489,13 @@
 					"iconFrames": 4,
 					"style": "custom"
 				},
-				"context": {
-					"type": "text",
-					"text": "xxx",
-					"top": 883,
-					"left": 534,
-					"width": 454,
-					"height": 16,
-					"fontStyle": "italic",
-					"sizingX": "grow",
-					"sizingY": "move",
-					"textAlign": "center",
-					"class": ""
-				},
 				"noChangesInIndex": {
 					"type": "text",
 					"text": "No changes in index",
 					"top": 546,
-					"left": 7,
-					"width": 504,
-					"height": 16,
+					"left": 66,
+					"width": 366,
+					"height": 22,
 					"textAlign": "center",
 					"stroke": "#c0c0c0",
 					"sizingX": "grow",
@@ -529,57 +528,7 @@
 					"width": 520,
 					"height": 0,
 					"sizingX": "grow",
-					"sizingY": "move",
-					"strokeDashArray": [
-						1,
-						1
-					]
-				},
-				"Line2": {
-					"type": "line",
-					"top": 463,
-					"left": 0,
-					"width": 520,
-					"height": 0,
-					"sizingX": "grow",
 					"sizingY": "move"
-				},
-				"Line3": {
-					"type": "line",
-					"top": 463,
-					"left": 0,
-					"width": 520,
-					"height": 0,
-					"sizingX": "grow",
-					"sizingY": "move",
-					"stroke": "automatic"
-				},
-				"localHorizontalSplitter": {
-					"type": "splitter",
-					"left": 0,
-					"top": 463,
-					"width": 520,
-					"height": 1,
-					"sizingX": "grow",
-					"splitterMode": "resize"
-				},
-				"Line6": {
-					"type": "line",
-					"top": 60,
-					"left": 521,
-					"width": 0,
-					"height": 850,
-					"sizingY": "grow",
-					"stroke": "automatic",
-					"right": 521
-				},
-				"localVerticalSplitter": {
-					"type": "splitter",
-					"left": 520,
-					"top": 60,
-					"width": 1,
-					"height": 850,
-					"sizingY": "grow"
 				},
 				"gitVersion": {
 					"type": "input",
@@ -616,6 +565,52 @@
 					"sizingX": "move",
 					"class": "dev",
 					"style": "flat"
+				},
+				"localBottomSeparatorLine": {
+					"type": "line",
+					"top": 463,
+					"left": 0,
+					"width": 520,
+					"height": 0,
+					"sizingX": "grow",
+					"stroke": "automatic"
+				},
+				"localBottomSeparator": {
+					"type": "button",
+					"top": 463,
+					"left": 0,
+					"width": 520,
+					"height": 1,
+					"events": [],
+					"display": false,
+					"style": "regular",
+					"action": "automaticSplitter",
+					"sizingX": "grow"
+				},
+				"localVerticalSeparatorLine": {
+					"type": "line",
+					"top": 60,
+					"left": 520,
+					"width": 1,
+					"height": 850,
+					"right": 521,
+					"startPoint": "bottomLeft",
+					"sizingY": "grow",
+					"stroke": "automatic"
+				},
+				"localVerticalSeparator": {
+					"type": "button",
+					"top": 60,
+					"left": 520,
+					"width": 1,
+					"height": 850,
+					"events": [],
+					"display": false,
+					"style": "regular",
+					"action": "automaticSplitter",
+					"right": 521,
+					"bottom": 910,
+					"sizingY": "grow"
 				}
 			}
 		},
@@ -675,17 +670,6 @@
 						}
 					]
 				},
-				"detailSeparator": {
-					"type": "line",
-					"top": 520,
-					"left": 478,
-					"width": 0,
-					"height": 390,
-					"startPoint": "topLeft",
-					"class": " ",
-					"sizingY": "grow",
-					"visibility": "hidden"
-				},
 				"detailDiff": {
 					"type": "input",
 					"left": 479,
@@ -702,112 +686,6 @@
 					"storeDefaultStyle": true,
 					"visibility": "hidden",
 					"class": "infos"
-				},
-				"commits": {
-					"type": "listbox",
-					"left": 0,
-					"top": 60,
-					"width": 1123,
-					"height": 458,
-					"events": [
-						"onSelectionChange"
-					],
-					"listboxType": "collection",
-					"dataSource": "Form:C1466.commits",
-					"sizingX": "grow",
-					"borderStyle": "none",
-					"currentItemSource": "formGetInstance.commits.item",
-					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
-					"selectedItemsSource": "formGetInstance.commits.items",
-					"showHeaders": false,
-					"rowHeight": "23px",
-					"class": "flat",
-					"metaSource": "formGetInstance.metaCommits(This:C1470)",
-					"hideSystemHighlight": true,
-					"right": 1123,
-					"sizingY": "grow",
-					"alternateFill": "automatic",
-					"resizingMode": "rightToLeft",
-					"verticalLineStroke": "transparent",
-					"columns": [
-						{
-							"header": {
-								"name": "Header1",
-								"text": "Header1"
-							},
-							"name": "label",
-							"dataSource": "This:C1470.label",
-							"dataSourceTypeHint": "picture",
-							"resizable": true,
-							"footer": {
-								"name": "Footer1"
-							},
-							"width": 666
-						},
-						{
-							"header": {
-								"name": "Header13",
-								"text": "Header13"
-							},
-							"name": "avatar",
-							"dataSource": "This:C1470.author.avatar",
-							"resizable": false,
-							"enterable": false,
-							"width": 20,
-							"dataSourceTypeHint": "picture",
-							"pictureFormat": "proportionalCenter",
-							"footer": {
-								"name": "Footer13"
-							}
-						},
-						{
-							"header": {
-								"name": "Header6",
-								"text": "Header6"
-							},
-							"name": "author",
-							"dataSource": "This:C1470.author.name",
-							"footer": {
-								"name": "Footer6"
-							},
-							"width": 150,
-							"enterable": false,
-							"minWidth": 100,
-							"maxWidth": 230
-						},
-						{
-							"header": {
-								"name": "Header7",
-								"text": "Header7"
-							},
-							"name": "fingerprint",
-							"dataSource": "This:C1470.fingerprint.short",
-							"footer": {
-								"name": "Footer7"
-							},
-							"width": 90,
-							"resizable": false,
-							"enterable": false,
-							"maxWidth": 90
-						},
-						{
-							"header": {
-								"name": "Header8",
-								"text": "Header8"
-							},
-							"name": "Column8",
-							"dataSource": "This:C1470.stamp",
-							"footer": {
-								"name": "Footer8"
-							},
-							"dataSourceTypeHint": "text",
-							"enterable": false,
-							"width": 180,
-							"minWidth": 180,
-							"maxWidth": 180,
-							"resizable": false
-						}
-					]
 				},
 				"authorName": {
 					"type": "input",
@@ -888,17 +766,6 @@
 					],
 					"class": "infos"
 				},
-				"detailSplitter": {
-					"type": "splitter",
-					"left": 478,
-					"top": 520,
-					"width": 1,
-					"height": 390,
-					"sizingY": "grow",
-					"visibility": "hidden",
-					"borderStyle": "dotted",
-					"bottom": 910
-				},
 				"titleBottom": {
 					"type": "line",
 					"top": 654,
@@ -964,22 +831,11 @@
 					"visibility": "hidden",
 					"class": "infos"
 				},
-				"hMainSplitter": {
-					"type": "splitter",
-					"left": -1,
-					"top": 519,
-					"width": 1126,
-					"height": 1,
-					"borderStyle": "dotted",
-					"sizingX": "grow",
-					"splitterMode": "resize",
-					"right": 1125
-				},
 				"fetch": {
 					"type": "button",
 					"text": ":xliff:fetch",
 					"top": 0,
-					"left": 867,
+					"left": 881,
 					"width": 60,
 					"height": 60,
 					"events": [
@@ -989,13 +845,14 @@
 					"icon": "/RESOURCES/Images/Main/fetch.svg",
 					"textPlacement": "bottom",
 					"iconFrames": 1,
-					"class": "mini"
+					"class": "mini",
+					"sizingX": "move"
 				},
 				"pull": {
 					"type": "button",
 					"text": ":xliff:pull",
 					"top": 0,
-					"left": 928,
+					"left": 942,
 					"width": 60,
 					"height": 60,
 					"events": [
@@ -1005,13 +862,14 @@
 					"icon": "/RESOURCES/Images/Main/pull.svg",
 					"textPlacement": "bottom",
 					"iconFrames": 1,
-					"class": "mini"
+					"class": "mini",
+					"sizingX": "move"
 				},
 				"push": {
 					"type": "button",
 					"text": ":xliff:push",
 					"top": 0,
-					"left": 989,
+					"left": 1003,
 					"width": 60,
 					"height": 60,
 					"events": [
@@ -1021,7 +879,173 @@
 					"icon": "/RESOURCES/Images/Main/push.svg",
 					"textPlacement": "bottom",
 					"iconFrames": 1,
-					"class": "mini"
+					"class": "mini",
+					"sizingX": "move"
+				},
+				"commits": {
+					"type": "listbox",
+					"left": 0,
+					"top": 60,
+					"width": 1123,
+					"height": 458,
+					"events": [
+						"onSelectionChange"
+					],
+					"listboxType": "collection",
+					"dataSource": "Form:C1466.commits",
+					"borderStyle": "none",
+					"currentItemSource": "formGetInstance.commits.item",
+					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
+					"selectedItemsSource": "formGetInstance.commits.items",
+					"showHeaders": false,
+					"rowHeight": "23px",
+					"class": "flat",
+					"metaSource": "formGetInstance.metaCommits(This:C1470)",
+					"hideSystemHighlight": true,
+					"right": 1123,
+					"sizingY": "grow",
+					"alternateFill": "automatic",
+					"resizingMode": "rightToLeft",
+					"sizingX": "grow",
+					"verticalLineStroke": "transparent",
+					"columns": [
+						{
+							"header": {
+								"name": "Header1",
+								"text": "Header1"
+							},
+							"name": "label",
+							"dataSource": "This:C1470.label",
+							"dataSourceTypeHint": "picture",
+							"resizable": true,
+							"footer": {
+								"name": "Footer1"
+							},
+							"width": 666
+						},
+						{
+							"header": {
+								"name": "Header13",
+								"text": "Header13"
+							},
+							"name": "avatar",
+							"dataSource": "This:C1470.author.avatar",
+							"enterable": false,
+							"width": 20,
+							"dataSourceTypeHint": "picture",
+							"pictureFormat": "proportionalCenter",
+							"footer": {
+								"name": "Footer13"
+							},
+							"resizable": false,
+							"minWidth": 20,
+							"maxWidth": 20
+						},
+						{
+							"header": {
+								"name": "Header6",
+								"text": "Header6"
+							},
+							"name": "author",
+							"dataSource": "This:C1470.author.name",
+							"footer": {
+								"name": "Footer6"
+							},
+							"width": 230,
+							"enterable": false,
+							"minWidth": 230,
+							"maxWidth": 230
+						},
+						{
+							"header": {
+								"name": "Header7",
+								"text": "Header7"
+							},
+							"name": "fingerprint",
+							"dataSource": "This:C1470.fingerprint.short",
+							"footer": {
+								"name": "Footer7"
+							},
+							"width": 90,
+							"resizable": false,
+							"enterable": false,
+							"maxWidth": 90
+						},
+						{
+							"header": {
+								"name": "Header8",
+								"text": "Header8"
+							},
+							"name": "Column8",
+							"dataSource": "This:C1470.stamp",
+							"footer": {
+								"name": "Footer8"
+							},
+							"dataSourceTypeHint": "text",
+							"enterable": false,
+							"width": 180,
+							"minWidth": 180,
+							"resizable": false
+						}
+					]
+				},
+				"commitsBottomSeparatorLine": {
+					"type": "line",
+					"top": 519,
+					"left": 0,
+					"width": 1125,
+					"height": 0,
+					"sizingX": "grow",
+					"stroke": "automatic"
+				},
+				"commitsBottomSeparator": {
+					"type": "button",
+					"top": 519,
+					"left": 0,
+					"width": 1125,
+					"height": 1,
+					"events": [],
+					"display": false,
+					"style": "regular",
+					"action": "automaticSplitter",
+					"sizingX": "grow"
+				},
+				"commitsVerticalSeparatorLine": {
+					"type": "line",
+					"top": 520,
+					"left": 478,
+					"width": 1,
+					"height": 390,
+					"right": 479,
+					"startPoint": "bottomLeft",
+					"sizingY": "grow",
+					"stroke": "automatic"
+				},
+				"commitsVerticalSeparator": {
+					"type": "button",
+					"top": 520,
+					"left": 478,
+					"width": 1,
+					"height": 390,
+					"events": [],
+					"display": false,
+					"style": "regular",
+					"action": "automaticSplitter",
+					"right": 479,
+					"bottom": 910,
+					"sizingY": "grow"
+				},
+				"noCommitSelected": {
+					"type": "text",
+					"text": "Select a commit to view details",
+					"top": 605,
+					"left": 43,
+					"width": 366,
+					"height": 22,
+					"textAlign": "center",
+					"stroke": "#c0c0c0",
+					"sizingX": "grow",
+					"fontSize": 18
 				}
 			}
 		}
@@ -1037,5 +1061,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2054
+	"geometryStamp": 2347
 }

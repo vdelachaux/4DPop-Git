@@ -162,8 +162,8 @@ Voulez-vous télécharger l'installateur ?</target>
           <target>Historique</target>
         </trans-unit>
         <trans-unit id="YGZwePvO5qhfd7h48e4DyA" resname="commitingAs">
-          <source>Committing as {name} on branch {branch} </source>
-          <target>Committing en tant que {name} sur la branche {branch} </target>
+          <source>Committing as {name}</source>
+          <target>Committing en tant que {name}</target>
         </trans-unit>
       </group>
       <group resname="pattern">

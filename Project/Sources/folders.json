@@ -84,6 +84,12 @@
 		]
 	},
 	"📦 MAIN": {
+		"groups": [
+			"Embedded",
+			"GIT",
+			"PATTERN",
+			"SETTINGS"
+		],
 		"methods": [
 			"GIT SETTINGS",
 			"GIT UPDATE"
@@ -166,8 +172,12 @@
 	"trash": {
 		"groups": [
 			"(Embedded)",
+			"(Embedded)",
+			"(GIT)",
 			"(GIT)",
 			"(PATTERN)",
+			"(PATTERN)",
+			"(SETTINGS)",
 			"(SETTINGS)"
 		]
 	}

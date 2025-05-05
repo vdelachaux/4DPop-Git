@@ -162,8 +162,8 @@ Do you want to download the installer?</target>
           <target>History View</target>
         </trans-unit>
         <trans-unit id="YGZwePvO5qhfd7h48e4DyA" resname="commitingAs">
-          <source>Committing as {name} on branch {branch} </source>
-          <target>Committing as {name} on branch {branch} </target>
+          <source>Committing as {name}</source>
+          <target>Committing as {name}</target>
         </trans-unit>
       </group>
       <group resname="pattern">
