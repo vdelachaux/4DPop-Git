@@ -325,7 +325,8 @@
 					"height": 0,
 					"startPoint": "topLeft",
 					"sizingX": "grow",
-					"sizingY": "move"
+					"sizingY": "move",
+					"visibility": "hidden"
 				},
 				"subject": {
 					"type": "input",
@@ -336,7 +337,6 @@
 					"dataSource": "Form:C1466.commitSubject",
 					"placeholder": ":xliff:commitSubject",
 					"sizingX": "grow",
-					"sizingY": "move",
 					"hideFocusRing": true,
 					"events": [
 						"onAfterEdit"
@@ -347,12 +347,14 @@
 					"type": "input",
 					"left": 534,
 					"top": 829,
-					"width": 574,
+					"width": 559,
 					"height": 17,
 					"dataSource": "Form:C1466.commitDescription",
 					"placeholder": ":xliff:description",
 					"sizingX": "grow",
-					"sizingY": "move"
+					"sizingY": "grow",
+					"multiline": "yes",
+					"scrollbarVertical": "visible"
 				},
 				"commit": {
 					"type": "button",
@@ -652,6 +654,43 @@
 					"right": 521,
 					"bottom": 910,
 					"sizingY": "grow"
+				},
+				"localBottomSeparatorLine1": {
+					"type": "line",
+					"top": 798,
+					"left": 521,
+					"width": 620,
+					"height": 1,
+					"sizingX": "grow",
+					"stroke": "automatic",
+					"sizingY": "move"
+				},
+				"localBottomSeparator1": {
+					"type": "button",
+					"top": 798,
+					"left": 521,
+					"width": 620,
+					"height": 1,
+					"events": [],
+					"display": false,
+					"style": "regular",
+					"action": "automaticSplitter",
+					"sizingX": "grow",
+					"sizingY": "move"
+				},
+				"airbag2": {
+					"type": "button",
+					"text": "Button",
+					"top": 799,
+					"left": 1114,
+					"width": 9,
+					"height": 111,
+					"events": [],
+					"display": false,
+					"sizingY": "move",
+					"sizingX": "move",
+					"class": "dev",
+					"style": "flat"
 				}
 			}
 		},
@@ -1038,5 +1077,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2388
+	"geometryStamp": 2436
 }
