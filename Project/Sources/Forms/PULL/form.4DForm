@@ -40,11 +40,11 @@
 					"width": 365,
 					"height": 16,
 					"fontTheme": "main",
-					"text": "Pull"
+					"text": ":xliff:pull"
 				},
 				"ok": {
 					"type": "button",
-					"text": "Pull",
+					"text": ":xliff:pull",
 					"top": 198,
 					"left": 389,
 					"width": 78,
@@ -62,7 +62,7 @@
 				},
 				"additional": {
 					"type": "text",
-					"text": "Pull remote changes and merges them into your local branch",
+					"text": ":xliff:pullRemoteChanges",
 					"top": 94,
 					"left": 108,
 					"width": 365,
@@ -80,7 +80,7 @@
 				},
 				"cancel": {
 					"type": "button",
-					"text": "Cancel",
+					"text": ":xliff:bCancel",
 					"top": 198,
 					"left": 291,
 					"width": 78,
@@ -97,7 +97,7 @@
 				},
 				"rebase": {
 					"type": "checkbox",
-					"text": "Rebase instead of merge",
+					"text": ":xliff:rebaseInsteadOfMerge",
 					"top": 127,
 					"left": 157,
 					"width": 234,
@@ -111,7 +111,7 @@
 				},
 				"stash": {
 					"type": "checkbox",
-					"text": "Stash and reapply local changes",
+					"text": ":xliff:stashAndReapply",
 					"top": 155,
 					"left": 157,
 					"width": 234,
@@ -123,7 +123,13 @@
 					"dataSource": "Form:C1466.stash",
 					"dataSourceTypeHint": "boolean"
 				}
-			}
+			},
+			"entryOrder": [
+				"rebase",
+				"stash",
+				"cancel",
+				"ok"
+			]
 		}
 	],
 	"geometryStamp": 136,

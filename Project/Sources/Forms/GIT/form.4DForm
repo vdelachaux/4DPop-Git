@@ -151,6 +151,57 @@
 					"sizingX": "grow",
 					"sizingY": "move",
 					"class": ""
+				},
+				"fetch": {
+					"type": "button",
+					"text": ":xliff:fetch",
+					"top": 0,
+					"left": 861,
+					"width": 60,
+					"height": 60,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/Main/fetch.svg",
+					"textPlacement": "bottom",
+					"iconFrames": 1,
+					"class": "mini",
+					"sizingX": "move"
+				},
+				"pull": {
+					"type": "button",
+					"text": ":xliff:pull",
+					"top": 0,
+					"left": 922,
+					"width": 60,
+					"height": 60,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/Main/pull.svg",
+					"textPlacement": "bottom",
+					"iconFrames": 1,
+					"class": "mini",
+					"sizingX": "move"
+				},
+				"push": {
+					"type": "button",
+					"text": ":xliff:push",
+					"top": 0,
+					"left": 983,
+					"width": 60,
+					"height": 60,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/Main/push.svg",
+					"textPlacement": "bottom",
+					"iconFrames": 1,
+					"class": "mini",
+					"sizingX": "move"
 				}
 			}
 		},
@@ -189,21 +240,17 @@
 						"onDoubleClick",
 						"onSelectionChange"
 					],
-					"showHeaders": false,
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.staged",
-					"verticalLineStroke": "transparent",
 					"sizingY": "grow",
-					"borderStyle": "none",
 					"visibility": "visible",
 					"sizingX": "grow",
 					"currentItemSource": "formGetInstance.staged.item",
 					"currentItemPositionSource": "formGetInstance.staged.itemPosition",
 					"selectedItemsSource": "formGetInstance.staged.items",
-					"metaSource": "formGetInstance.meta(This:C1470)",
 					"bottom": 872,
 					"selectionMode": "multiple",
-					"fill": "transparent",
+					"class": "flat",
 					"columns": [
 						{
 							"header": {
@@ -378,19 +425,15 @@
 						"onDoubleClick",
 						"onSelectionChange"
 					],
-					"showHeaders": false,
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.unstaged",
-					"verticalLineStroke": "transparent",
 					"sizingY": "grow",
 					"visibility": "visible",
 					"currentItemSource": "formGetInstance.unstaged.item",
 					"currentItemPositionSource": "formGetInstance.unstaged.itemPosition",
 					"selectedItemsSource": "formGetInstance.unstaged.items",
 					"sizingX": "grow",
-					"metaSource": "formGetInstance.meta(This:C1470)",
 					"rowHeight": "1em",
-					"borderStyle": "none",
 					"class": "flat",
 					"selectionMode": "multiple",
 					"fill": "transparent",
@@ -616,6 +659,18 @@
 		},
 		{
 			"objects": {
+				"noCommitSelected": {
+					"type": "text",
+					"text": "Select a commit to view details",
+					"top": 605,
+					"left": 43,
+					"width": 366,
+					"height": 22,
+					"textAlign": "center",
+					"stroke": "#c0c0c0",
+					"sizingX": "grow",
+					"fontSize": 18
+				},
 				"detail_list": {
 					"type": "listbox",
 					"left": 0,
@@ -627,18 +682,13 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commitDetail",
-					"showHeaders": false,
-					"borderStyle": "none",
 					"sizingY": "grow",
 					"sizingX": "grow",
 					"visibility": "hidden",
-					"metaSource": "formGetInstance.meta(This:C1470)",
 					"currentItemSource": "formGetInstance.detailCommit.item",
 					"currentItemPositionSource": "formGetInstance.detailCommit.itemPosition",
 					"selectedItemsSource": "formGetInstance.detailCommit.items",
 					"class": "flat",
-					"verticalLineStroke": "transparent",
-					"fill": "transparent",
 					"columns": [
 						{
 							"header": {
@@ -779,19 +829,16 @@
 				},
 				"title": {
 					"type": "input",
-					"left": -1,
+					"left": 3,
 					"top": 632,
-					"width": 478,
+					"width": 474,
 					"height": 17,
 					"dataSource": "formGetInstance.commits.item.title",
-					"enterable": false,
-					"contextMenu": "none",
-					"focusable": false,
 					"visibility": "hidden",
-					"textAlign": "center",
 					"sizingX": "grow",
-					"class": "title infos",
-					"styledText": true
+					"class": "title infos flat",
+					"contextMenu": "none",
+					"focusable": false
 				},
 				"titleTop": {
 					"type": "line",
@@ -831,57 +878,6 @@
 					"visibility": "hidden",
 					"class": "infos"
 				},
-				"fetch": {
-					"type": "button",
-					"text": ":xliff:fetch",
-					"top": 0,
-					"left": 881,
-					"width": 60,
-					"height": 60,
-					"events": [
-						"onClick"
-					],
-					"style": "toolbar",
-					"icon": "/RESOURCES/Images/Main/fetch.svg",
-					"textPlacement": "bottom",
-					"iconFrames": 1,
-					"class": "mini",
-					"sizingX": "move"
-				},
-				"pull": {
-					"type": "button",
-					"text": ":xliff:pull",
-					"top": 0,
-					"left": 942,
-					"width": 60,
-					"height": 60,
-					"events": [
-						"onClick"
-					],
-					"style": "toolbar",
-					"icon": "/RESOURCES/Images/Main/pull.svg",
-					"textPlacement": "bottom",
-					"iconFrames": 1,
-					"class": "mini",
-					"sizingX": "move"
-				},
-				"push": {
-					"type": "button",
-					"text": ":xliff:push",
-					"top": 0,
-					"left": 1003,
-					"width": 60,
-					"height": 60,
-					"events": [
-						"onClick"
-					],
-					"style": "toolbar",
-					"icon": "/RESOURCES/Images/Main/push.svg",
-					"textPlacement": "bottom",
-					"iconFrames": 1,
-					"class": "mini",
-					"sizingX": "move"
-				},
 				"commits": {
 					"type": "listbox",
 					"left": 0,
@@ -893,21 +889,16 @@
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commits",
-					"borderStyle": "none",
 					"currentItemSource": "formGetInstance.commits.item",
 					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
 					"selectedItemsSource": "formGetInstance.commits.items",
-					"showHeaders": false,
 					"rowHeight": "23px",
 					"class": "flat",
-					"metaSource": "formGetInstance.metaCommits(This:C1470)",
-					"hideSystemHighlight": true,
 					"right": 1123,
 					"sizingY": "grow",
-					"alternateFill": "automatic",
-					"resizingMode": "rightToLeft",
 					"sizingX": "grow",
-					"verticalLineStroke": "transparent",
+					"hideSystemHighlight": true,
+					"metaSource": "formGetInstance.metaCommits(This:C1470)",
 					"columns": [
 						{
 							"header": {
@@ -1034,18 +1025,6 @@
 					"right": 479,
 					"bottom": 910,
 					"sizingY": "grow"
-				},
-				"noCommitSelected": {
-					"type": "text",
-					"text": "Select a commit to view details",
-					"top": 605,
-					"left": 43,
-					"width": 366,
-					"height": 22,
-					"textAlign": "center",
-					"stroke": "#c0c0c0",
-					"sizingX": "grow",
-					"fontSize": 18
 				}
 			}
 		}
@@ -1061,5 +1040,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2347
+	"geometryStamp": 2380
 }

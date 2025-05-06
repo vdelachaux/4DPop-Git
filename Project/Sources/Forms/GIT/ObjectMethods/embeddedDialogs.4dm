@@ -2,7 +2,7 @@ var $e:=FORM Event:C1606
 
 If ($e.code<0)
 	
-	var $this : Object:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
+	var $data : Object:=OBJECT Get value:C1743(OBJECT Get name:C1087).me.instance.data
 	
 	// MARK:-Specific actions
 	var $form : cs:C1710._GIT_Controller:=formGetInstance
@@ -11,24 +11,20 @@ If ($e.code<0)
 	Case of 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: ($this.CANCELLED)
+		: ($data.CANCELLED)
 			
 			// <NOTHING MORE TO DO>
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($this.push))
+		: (Bool:C1537($data.push))
 			
-			If ($git.remotes.length=0)
+			If ($git.remotes.length=0)  // Create
 				
 				var $gh:=cs:C1710.gh.me
 				
 				If (Not:C34($gh.available))
 					
 					$form.onDialogAlert({\
-						title: $gh.lastError; \
-						additional: "Installation instructions can be found at:\n\nhttps://github.com/cli/cli#installation"})
-					
-					//$form.alertDialog.show({\
 						title: $gh.lastError; \
 						additional: "Installation instructions can be found at:\n\nhttps://github.com/cli/cli#installation"})
 					
@@ -55,7 +51,7 @@ If ($e.code<0)
 				
 			Else 
 				
-				If ($this.force)
+				If ($data.force)
 					
 					$git.forcePush()
 					
@@ -74,30 +70,30 @@ If ($e.code<0)
 				
 				$form.onDialogAlert({\
 					title: "Error"; \
-					additional: $git.error})
+					additional: $git.error || "Unknown error"})
 				
 				return   // 📌 Avoid executing code that follows
 				
 			End if 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($this.pull))
+		: (Bool:C1537($data.pull))
 			
-			Form:C1466.stash:=Bool:C1537($this.stash)
+			Form:C1466.stash:=Bool:C1537($data.stash)
 			
-			$git.pull(Bool:C1537($this.rebase); Bool:C1537($this.stash))
+			$git.pull(Bool:C1537($data.rebase); Bool:C1537($data.stash))
 			
 			RELOAD PROJECT:C1739
 			
 			$form.onActivate()
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($this.checkout))
+		: (Bool:C1537($data.checkout))
 			
 			$form.checkout:={\
-				noChange: $this.noChange; \
-				stash: $this.stash; \
-				discard: $this.discard}
+				noChange: $data.noChange; \
+				stash: $data.stash; \
+				discard: $data.discard}
 			
 			Case of 
 					
@@ -105,7 +101,7 @@ If ($e.code<0)
 				: ($form.checkout.noChange)
 					
 					$git.stash("save"; "4DPop autostash "+String:C10(Current date:C33; Internal date long:K1:5)+" at "+String:C10(Current time:C178; HH MM:K7:2))
-					var $success:=$git.checkout($this.branch).success
+					var $success:=$git.checkout($data.branch).success
 					
 					// ______________________________________________________
 				: ($form.checkout.stash)
@@ -113,14 +109,14 @@ If ($e.code<0)
 					$form.autostash:=True:C214
 					
 					$git.stash("save")
-					$success:=$git.checkout($this.branch).success
+					$success:=$git.checkout($data.branch).success
 					$git.stash("pop")
 					
 					// ______________________________________________________
 				: ($form.checkout.discard)
 					
 					$form.Discard(Form:C1466.unstaged)
-					$success:=$git.checkout($this.branch).success
+					$success:=$git.checkout($data.branch).success
 					
 					// ______________________________________________________
 			End case 
@@ -136,12 +132,12 @@ If ($e.code<0)
 			End if 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($this.newBranch))
+		: (Bool:C1537($data.newBranch))
 			
 			Case of 
 					
 					// ______________________________________________________
-				: (Length:C16(String:C10($this.branch))=0)
+				: (Length:C16(String:C10($data.branch))=0)
 					
 					BEEP:C151
 					
@@ -149,7 +145,7 @@ If ($e.code<0)
 				: ($form.checkout.noChange)
 					
 					$git.stash("save"; "4DPop autostash "+String:C10(Current date:C33; Internal date long:K1:5)+" at "+String:C10(Current time:C178; HH MM:K7:2))
-					$success:=$git.branch($this.checkout ? "createAndUse" : "create"; $this.branch).success
+					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch).success
 					
 					// ______________________________________________________
 				: ($form.checkout.stash)
@@ -157,14 +153,14 @@ If ($e.code<0)
 					$form.autostash:=True:C214
 					
 					$git.stash("save")
-					$success:=$git.branch($this.checkout ? "createAndUse" : "create"; $this.branch).success
+					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch).success
 					$git.stash("pop")
 					
 					// ______________________________________________________
 				: ($form.checkout.discard)
 					
 					$form.Discard(Form:C1466.unstaged)
-					$success:=$git.branch($this.checkout ? "createAndUse" : "create"; $this.branch).success
+					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch).success
 					
 					// ______________________________________________________
 			End case 
@@ -183,7 +179,7 @@ If ($e.code<0)
 	End case 
 	
 	// MARK:-Standard actions
-	$this.me.hide()
+	$data.me.hide()
 	
 	return 
 	

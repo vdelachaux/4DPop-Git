@@ -497,8 +497,11 @@ Function _doBranchMenu()
 Function _doMoreMenu()
 	
 	var $git : cs:C1710.Git:=This:C1470.Git.branch()
-	var $available : Boolean:=$git.branches.length>0
 	
+	var $hasRemote:=$git.execute("config --get remote.origin.url")
+	$hasRemote:=$hasRemote ? Position:C15("github.com"; String:C10($git.result))>0 : $hasRemote
+	
+	var $available : Boolean:=$git.branches.length>0
 	
 	var $menu:=cs:C1710.menu.new({embedded: True:C214})\
 		.append(":xliff:repoManager"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
@@ -508,7 +511,7 @@ Function _doMoreMenu()
 		.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
-		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($available)\
+		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
 		.line()\
 		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
 	

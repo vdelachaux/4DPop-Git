@@ -1,7 +1,8 @@
 Class extends scrollable
 
-property source : Collection
+property source : Collection  //  collection/entity selection
 
+// Predefined container for collection or selection listboxes
 property item : Object
 property itemPosition : Integer:=0
 property items : Collection
@@ -22,14 +23,6 @@ Class constructor($name : Text; $parent : Object)
 	Super:C1705($name; $parent)
 	
 	ASSERT:C1129(This:C1470.type=Object type listbox:K79:8)
-	
-	This:C1470.source:=Null:C1517  //  collection/entity selection
-	This:C1470.data:=Null:C1517
-	
-	// Predefined container for collection or selection listboxes
-	This:C1470.item:=Null:C1517
-	This:C1470.itemPosition:=0
-	This:C1470.items:=Null:C1517
 	
 	This:C1470.updateDefinition()
 	

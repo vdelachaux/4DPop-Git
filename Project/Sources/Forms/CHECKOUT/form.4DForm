@@ -40,11 +40,11 @@
 					"width": 365,
 					"height": 16,
 					"fontTheme": "main",
-					"text": "Checkout"
+					"text": ":xliff:checkout"
 				},
 				"ok": {
 					"type": "button",
-					"text": "Checkout",
+					"text": ":xliff:checkout",
 					"top": 218,
 					"left": 389,
 					"width": 78,
@@ -71,7 +71,7 @@
 				},
 				"cancel": {
 					"type": "button",
-					"text": "Cancel",
+					"text": ":xliff:bCancel",
 					"top": 218,
 					"left": 291,
 					"width": 78,
@@ -88,7 +88,7 @@
 				},
 				"additional1": {
 					"type": "text",
-					"text": "Switch to:",
+					"text": ":xliff:switchTo",
 					"top": 97,
 					"left": 108,
 					"width": 93,
@@ -116,7 +116,7 @@
 				},
 				"Group Box1": {
 					"type": "groupBox",
-					"text": "Local changes",
+					"text": ":xliff:localChanges",
 					"top": 120,
 					"left": 108,
 					"width": 359,
@@ -124,7 +124,7 @@
 				},
 				"Radio Button": {
 					"type": "radio",
-					"text": "Don't change",
+					"text": ":xliff:noChange",
 					"top": 139,
 					"left": 207,
 					"width": 136,
@@ -138,7 +138,7 @@
 				},
 				"Radio Button1": {
 					"type": "radio",
-					"text": "Stash and reaply",
+					"text": ":xliff:stashAndReaply",
 					"top": 162,
 					"left": 207,
 					"width": 136,
@@ -152,7 +152,7 @@
 				},
 				"Radio Button2": {
 					"type": "radio",
-					"text": "Discard",
+					"text": ":xliff:discard",
 					"top": 185,
 					"left": 207,
 					"width": 136,
@@ -164,7 +164,15 @@
 					"dataSource": "Form:C1466.discard",
 					"dataSourceTypeHint": "boolean"
 				}
-			}
+			},
+			"entryOrder": [
+				"Input",
+				"Radio Button",
+				"Radio Button1",
+				"Radio Button2",
+				"cancel",
+				"ok"
+			]
 		}
 	],
 	"geometryStamp": 267,
