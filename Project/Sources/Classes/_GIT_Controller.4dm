@@ -1682,8 +1682,23 @@ Function updateCommits()
 		
 		var $date:=Date:C102($c[3])
 		
-		$commits.push({\
-			title: $c[0]; \
+		var $desc:=Split string:C1554($c[0]; "\r"; sk ignore empty strings:K86:1)
+		var $title : Text:=$desc[0]
+		
+		If ($desc.length>1)
+			
+			$desc.shift()
+			var $description:=$desc.join("\r")
+			
+		Else 
+			
+			$description:=""
+			
+		End if 
+		
+		Try($commits.push({\
+			title: $title; \
+			description: $description; \
 			label: $normal; \
 			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
 			stamp: ($date=$today ? Localized string:C991("today") : $date=$yesterday ? Localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
@@ -1693,9 +1708,9 @@ Function updateCommits()
 			origin: $i=($notPushed+1); \
 			branch: $branch; \
 			date: $date; \
-			time: Time:C179($c[3]); \
+			time: $c[3]; \
 			_: {normal: $normal; selected: $selected}\
-			})
+			}))
 		
 	End for each 
 	

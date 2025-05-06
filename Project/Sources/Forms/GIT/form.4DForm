@@ -938,6 +938,7 @@
 					"sizingX": "grow",
 					"hideSystemHighlight": true,
 					"metaSource": "formGetInstance.metaCommits(This:C1470)",
+					"resizingMode": "rightToLeft",
 					"columns": [
 						{
 							"header": {
@@ -1079,5 +1080,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2441
+	"geometryStamp": 2443
 }
