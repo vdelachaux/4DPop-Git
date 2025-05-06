@@ -1692,13 +1692,16 @@ Function updateCommits()
 			notPushed: $i<=$notPushed; \
 			origin: $i=($notPushed+1); \
 			branch: $branch; \
-			sort: (Date:C102($c[3])-!1970-01-01!)+Num:C11($c[3]); \
+			date: $date; \
+			time: Time:C179($c[3]); \
 			_: {normal: $normal; selected: $selected}\
 			})
 		
 	End for each 
 	
-	Form:C1466.commits:=$commits.orderBy("sort desc")
+	Form:C1466.commits:=$commits.orderBy([\
+		{propertyPath: "date"; descending: True:C214}; \
+		{propertyPath: "time"; descending: True:C214}])
 	
 	// Restore selection, if any
 	If (This:C1470.commits.item#Null:C1517)
