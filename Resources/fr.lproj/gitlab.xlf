@@ -338,6 +338,14 @@ avec 4D "{version}"</target>
           <source>Cancel</source>
           <target>Annuler</target>
         </trans-unit>
+        <trans-unit id="gVcJpE+u8wOVY1r9jv8dGw" resname="gitEncounteredAnError">
+          <source>Git encountered an error</source>
+          <target>Git a rencontré une erreur</target>
+        </trans-unit>
+        <trans-unit id="bm4iLNLCXLS6HyzxFL_vwQ" resname="unknownError">
+          <source>Unknown error</source>
+          <target>Erreur inconnue</target>
+        </trans-unit>
       </group>
       <group resname="GitHub">
         <trans-unit id="V8K672oPrhbaPX2ZGutoFw" resname="thisCodeHasBeenPlacedOnTheClipboard">
@@ -345,8 +353,67 @@ avec 4D "{version}"</target>
           <target>Ce code a été placé dans le presse-papiers, afin que vous puissiez le coller lorsque vous en aurez besoin.</target>
         </trans-unit>
       </group>
+      <group resname="PUSH">
+        <trans-unit id="lh6qwJ+YNIwgGh8dd_HjWw" resname="pushLocalChanges">
+          <source>Push local changes to remote repository</source>
+          <target>Push les changements locaux vers le dépôt distant</target>
+        </trans-unit>
+        <trans-unit id="BTukIWrae295u1uLZ6tvFg" resname="pushAllTags">
+          <source>Push all tags</source>
+          <target>Push tous les tags</target>
+        </trans-unit>
+        <trans-unit id="O4pQwuWUqr0+hEWq4u4G2A" resname="forcePush">
+          <source>Force push</source>
+          <target>Force push</target>
+        </trans-unit>
+        
+      </group>
+      <group resname="PULL">
+        
+        <trans-unit id="7__vg3xUC5RtwI_hhK41zg" resname="pullRemoteChanges">
+          <source>Pull remote changes and merges them into your local branch</source>
+          <target>Pull les changements distants et les fusionner dans ta branche locale</target>
+        </trans-unit>
+        <trans-unit id="J0gtbaHApRAWiPRot7XMyg" resname="rebaseInsteadOfMerge">
+          <source>Rebase instead of merge</source>
+          <target>Rebase au lieu de merge</target>
+        </trans-unit>
+        <trans-unit id="432PWJP0HWBSbo2kvWQnEw" resname="stashAndReapply">
+          <source>Stash and reapply local changes</source>
+          <target>Stash et réappliquer les changements locaux</target>
+        </trans-unit>
+      </group>
+      <group resname="CHECKOUT">
+        <trans-unit id="iIfDWAKuqx186mALOdY8rw" resname="autostash">
+          <source>autostash {date} at {time}</source>
+          <target>autostash {date} à {time}</target>
+        </trans-unit>
+        <trans-unit id="6xIH8saXocVGDDSnMD7mew" resname="checkout">
+          <source>Checkout</source>
+          <target>Checkout</target>
+        </trans-unit>
+        <trans-unit id="Dtq8jDJtL3cjHA3cEAFnYA" resname="localChanges">
+          <source>Local changes</source>
+          <target>Changements locaux</target>
+        </trans-unit>
+        <trans-unit id="fFsR89OvBBd+VcYk9MDwqg" resname="noChange">
+          <source>Don't change</source>
+          <target>Ne pas changer</target>
+        </trans-unit>
+        <trans-unit id="u1qa_R2epVi5o2tra6bxow" resname="stashAndReaply">
+          <source>Stash and reaply</source>
+          <target>Stash et réappliquer</target>
+        </trans-unit>
+        <trans-unit id="C_rExiWw4PVrlSQTWVctOw" resname="switchTo">
+          <source>Switch to:</source>
+          <target>Passer à :</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
+
+
 
 
 

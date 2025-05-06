@@ -40,11 +40,11 @@
 					"width": 365,
 					"height": 16,
 					"fontTheme": "main",
-					"text": "Push"
+					"text": ":xliff:push"
 				},
 				"ok": {
 					"type": "button",
-					"text": "Push",
+					"text": ":xliff:push",
 					"top": 198,
 					"left": 389,
 					"width": 78,
@@ -61,7 +61,7 @@
 				},
 				"additional": {
 					"type": "text",
-					"text": "Push your local changes to remote repository",
+					"text": ":xliff:pushLocalChanges",
 					"top": 94,
 					"left": 108,
 					"width": 365,
@@ -79,7 +79,7 @@
 				},
 				"cancel": {
 					"type": "button",
-					"text": "Cancel",
+					"text": ":xliff:bCancel",
 					"top": 198,
 					"left": 291,
 					"width": 78,
@@ -96,7 +96,7 @@
 				},
 				"force": {
 					"type": "checkbox",
-					"text": "Force push",
+					"text": ":xliff:forcePush",
 					"top": 149,
 					"left": 161,
 					"width": 234,
@@ -110,7 +110,7 @@
 				},
 				"force1": {
 					"type": "checkbox",
-					"text": "Push all tags",
+					"text": ":xliff:pushAllTags",
 					"top": 121,
 					"left": 161,
 					"width": 234,

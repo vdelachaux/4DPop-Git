@@ -339,6 +339,14 @@ with 4D "{version}"</target>
           <source>Cancel</source>
           <target>Cancel</target>
         </trans-unit>
+        <trans-unit id="gVcJpE+u8wOVY1r9jv8dGw" resname="gitEncounteredAnError">
+          <source>Git encountered an error</source>
+          <target>Git encountered an error</target>
+        </trans-unit>
+        <trans-unit id="bm4iLNLCXLS6HyzxFL_vwQ" resname="unknownError">
+          <source>Unknown error</source>
+          <target>Unknown error</target>
+        </trans-unit>
       </group>
       <group resname="GitHub">
         <trans-unit id="V8K672oPrhbaPX2ZGutoFw" resname="thisCodeHasBeenPlacedOnTheClipboard">
@@ -346,8 +354,67 @@ with 4D "{version}"</target>
           <target>This code has been placed on the clipboard, so you can paste it when you need it</target>
         </trans-unit>
       </group>
+      <group resname="PUSH">
+        <trans-unit id="lh6qwJ+YNIwgGh8dd_HjWw" resname="pushLocalChanges">
+          <source>Push local changes to remote repository</source>
+          <target>Push local changes to remote repository</target>
+        </trans-unit>
+        <trans-unit id="BTukIWrae295u1uLZ6tvFg" resname="pushAllTags">
+          <source>Push all tags</source>
+          <target>Push all tags</target>
+        </trans-unit>
+        <trans-unit id="O4pQwuWUqr0+hEWq4u4G2A" resname="forcePush">
+          <source>Force push</source>
+          <target>Force push</target>
+        </trans-unit>
+        
+      </group>
+      <group resname="PULL">
+        
+        <trans-unit id="7__vg3xUC5RtwI_hhK41zg" resname="pullRemoteChanges">
+          <source>Pull remote changes and merges them into your local branch</source>
+          <target>Pull remote changes and merges them into your local branch</target>
+        </trans-unit>
+        <trans-unit id="J0gtbaHApRAWiPRot7XMyg" resname="rebaseInsteadOfMerge">
+          <source>Rebase instead of merge</source>
+          <target>Rebase instead of merge</target>
+        </trans-unit>
+        <trans-unit id="432PWJP0HWBSbo2kvWQnEw" resname="stashAndReapply">
+          <source>Stash and reapply local changes</source>
+          <target>Stash and reapply local changes</target>
+        </trans-unit>
+      </group>
+      <group resname="CHECKOUT">
+        <trans-unit id="iIfDWAKuqx186mALOdY8rw" resname="autostash">
+          <source>autostash {date} at {time}</source>
+          <target>autostash {date} at {time}</target>
+        </trans-unit>
+        <trans-unit id="6xIH8saXocVGDDSnMD7mew" resname="checkout">
+          <source>Checkout</source>
+          <target>Checkout</target>
+        </trans-unit>
+        <trans-unit id="Dtq8jDJtL3cjHA3cEAFnYA" resname="localChanges">
+          <source>Local changes</source>
+          <target>Local changes</target>
+        </trans-unit>
+        <trans-unit id="fFsR89OvBBd+VcYk9MDwqg" resname="noChange">
+          <source>Don't change</source>
+          <target>Don't change</target>
+        </trans-unit>
+        <trans-unit id="u1qa_R2epVi5o2tra6bxow" resname="stashAndReaply">
+          <source>Stash and reaply</source>
+          <target>Stash and reaply</target>
+        </trans-unit>
+        <trans-unit id="C_rExiWw4PVrlSQTWVctOw" resname="switchTo">
+          <source>Switch to:</source>
+          <target>Switch to:</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
+
+
 
 
 

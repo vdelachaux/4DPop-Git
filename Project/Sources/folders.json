@@ -84,15 +84,11 @@
 		]
 	},
 	"📦 MAIN": {
-		"groups": [
-			"Embedded",
-			"GIT",
-			"PATTERN",
-			"SETTINGS"
-		],
 		"methods": [
+			"GIT MENU",
 			"GIT SETTINGS",
-			"GIT UPDATE"
+			"GIT UPDATE",
+			"openWith"
 		],
 		"forms": [
 			"_TEMPLATE",
@@ -172,12 +168,8 @@
 	"trash": {
 		"groups": [
 			"(Embedded)",
-			"(Embedded)",
-			"(GIT)",
 			"(GIT)",
 			"(PATTERN)",
-			"(PATTERN)",
-			"(SETTINGS)",
 			"(SETTINGS)"
 		]
 	}

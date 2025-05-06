@@ -82,7 +82,7 @@ Function getStatus() : Object
 	/// Authenticate with a GitHub host.
 Function login() : Boolean
 	
-	If (This:C1470.authorized)
+	If (This:C1470.authorized) || (This:C1470.exe=Null:C1517)
 		
 		return True:C214
 		
@@ -100,6 +100,12 @@ Function login() : Boolean
 	/// Remove authentication for a GitHub host.
 Function logout()
 	
+	If (This:C1470.exe=Null:C1517)
+		
+		return 
+		
+	End if 
+	
 	var $worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth logout -h "+(This:C1470.status.host || "github.com"); This:C1470).wait()
 	
 	If (This:C1470.success)
@@ -114,6 +120,12 @@ Function logout()
 Function checkToken() : Boolean
 	
 	var $cmd; $error; $in; $out : Text
+	
+	If (This:C1470.exe=Null:C1517)
+		
+		return 
+		
+	End if 
 	
 	$cmd:=This:C1470.exe+" auth token"
 	LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
@@ -301,7 +313,15 @@ Function _exe() : Boolean
 		
 		var $cmd:="find /usr -type f -name gh"
 		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
-		This:C1470.success:=Bool:C1537(OK)
+		
+		If (Length:C16($out)=0)
+			
+			$cmd:="which gh"
+			LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
+			
+		End if 
+		
+		This:C1470.success:=(Bool:C1537(OK)) && (Length:C16($out)>0)
 		
 		If (This:C1470.success)
 			
