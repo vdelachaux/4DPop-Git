@@ -655,28 +655,30 @@
 					"bottom": 910,
 					"sizingY": "grow"
 				},
-				"localBottomSeparatorLine1": {
+				"diffBottomSeparatorLine": {
 					"type": "line",
 					"top": 798,
 					"left": 521,
-					"width": 620,
+					"width": 604,
 					"height": 1,
 					"sizingX": "grow",
 					"stroke": "automatic",
-					"sizingY": "move"
+					"sizingY": "move",
+					"right": 1125
 				},
-				"localBottomSeparator1": {
+				"diffBottomSeparator": {
 					"type": "button",
 					"top": 798,
 					"left": 521,
-					"width": 620,
+					"width": 604,
 					"height": 1,
 					"events": [],
 					"display": false,
 					"style": "regular",
 					"action": "automaticSplitter",
 					"sizingX": "grow",
-					"sizingY": "move"
+					"sizingY": "move",
+					"right": 1125
 				},
 				"airbag2": {
 					"type": "button",
@@ -1077,5 +1079,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2436
+	"geometryStamp": 2440
 }

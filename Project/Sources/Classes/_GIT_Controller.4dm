@@ -356,7 +356,15 @@ Function handleEvents($e : cs:C1710.evt)
 			//==============================================
 		: (This:C1470.commit.catch($e; On Clicked:K2:4))
 			
-			$git.commit(This:C1470.subject.getValue(); Form:C1466.amend)
+			var $message : Text:=This:C1470.subject.getValue()
+			
+			If (Length:C16(This:C1470.description.value)>0)
+				
+				$message+="\n"+This:C1470.description.value
+				
+			End if 
+			
+			$git.commit($message; Form:C1466.amend)
 			
 			This:C1470.subject.clear()
 			This:C1470.description.clear()
