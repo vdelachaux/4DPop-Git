@@ -108,6 +108,13 @@ listbox {
 	selectionMode: "single";
 }
 
+listbox.flat {
+	alternateFill: automatic;
+	borderStyle: none;
+	verticalLineStroke: transparent;
+	showHeaders: false;
+}
+
 header {
 	fontWeight: bold;
 }
