@@ -18,6 +18,8 @@ If ($e.code<0)
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 		: (Bool:C1537($data.push))
 			
+			$git.updateRemotes()
+			
 			If ($git.remotes.length=0)  // Create
 				
 				var $gh:=cs:C1710.gh.me
@@ -70,7 +72,7 @@ If ($e.code<0)
 				
 				$form.onDialogAlert({\
 					title: "Error"; \
-					additional: $git.error || "Unknown error"})
+					additional: $git.error || Localized string:C991("unknownError")})
 				
 				return   // 📌 Avoid executing code that follows
 				
@@ -100,7 +102,8 @@ If ($e.code<0)
 					// ______________________________________________________
 				: ($form.checkout.noChange)
 					
-					$git.stash("save"; "4DPop autostash "+String:C10(Current date:C33; Internal date long:K1:5)+" at "+String:C10(Current time:C178; HH MM:K7:2))
+					var $t:=Replace string:C233(Localized string:C991("autostash"); "{date}"; String:C10(Current date:C33; Internal date long:K1:5))
+					$git.stash("save"; Replace string:C233($t; "{time}"; String:C10(Current time:C178; HH MM:K7:2)))
 					var $success:=$git.checkout($data.branch).success
 					
 					// ______________________________________________________
@@ -127,7 +130,7 @@ If ($e.code<0)
 			
 			If (Not:C34($success))
 				
-				$form.onDialogAlert({main: "Git encountered an error"; additional: $git.error})
+				$form.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})
 				
 			End if 
 			
@@ -144,7 +147,8 @@ If ($e.code<0)
 					// ______________________________________________________
 				: ($form.checkout.noChange)
 					
-					$git.stash("save"; "4DPop autostash "+String:C10(Current date:C33; Internal date long:K1:5)+" at "+String:C10(Current time:C178; HH MM:K7:2))
+					$t:=Replace string:C233(Localized string:C991("autostash"); "{date}"; String:C10(Current date:C33; Internal date long:K1:5))
+					$git.stash("save"; Replace string:C233($t; "{time}"; String:C10(Current time:C178; HH MM:K7:2)))
 					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch).success
 					
 					// ______________________________________________________
@@ -171,7 +175,7 @@ If ($e.code<0)
 			
 			If (Not:C34($success))
 				
-				$form.onDialogAlert({main: "Git encountered an error"; additional: $git.error})
+				$form.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})
 				
 			End if 
 			
