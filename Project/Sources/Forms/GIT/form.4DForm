@@ -360,7 +360,7 @@
 					"type": "button",
 					"text": ":xliff:commit",
 					"top": 880,
-					"left": 997,
+					"left": 999,
 					"width": 111,
 					"height": 22,
 					"events": [
@@ -1079,5 +1079,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2440
+	"geometryStamp": 2441
 }
