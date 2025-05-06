@@ -145,8 +145,6 @@ Function init()
 	// -> The fetch/pull/push buttons must remain centred on the background.
 	//This.form.constraints.new(This.toolbarButtons).centerHorizontally.with("_background")
 	
-	This:C1470._loadScheme()
-	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.evt)
 	
@@ -445,6 +443,8 @@ Function onLoad()
 	Form:C1466.commitSubject:=""
 	Form:C1466.commitDescription:=""
 	
+	Form:C1466.darkScheme:=This:C1470.form.darkScheme
+	
 	Case of 
 			
 			//________________________________________________________________________________
@@ -481,6 +481,8 @@ Function onLoad()
 	This:C1470.newBranchDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "NEW BRANCH")
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
 	
+	This:C1470._loadScheme()
+	
 	This:C1470.GoToPage(This:C1470.pages.local)
 	
 	This:C1470.form.refresh()
@@ -497,24 +499,26 @@ Function update()
 		
 	End if 
 	
+	This:C1470._updateScheme()
+	
 	// MARK: Toolbar buttons
 	var $branch : Text:=$git.branches.query("current = true").first().name
 	
 	This:C1470.fetch.title:=Localized string:C991("fetch")
 	
-	var $fetchNumber:=$git.branchFetchNumber($branch)
-	If ($fetchNumber>0)
+	var $number:=$git.branchFetchNumber($branch)
+	If ($number>0)
 		
-		This:C1470.fetch.title+=" ("+String:C10($fetchNumber)+")"
+		This:C1470.fetch.title+=" ("+String:C10($number)+")"
 		
 	End if 
 	
 	This:C1470.push.title:=Localized string:C991("push")
 	
-	var $pushNumber:=$git.branchPushNumber($branch)
-	If ($pushNumber>0)
+	$number:=$git.branchPushNumber($branch)
+	If ($number>0)
 		
-		This:C1470.push.title+=" ("+String:C10($pushNumber)+")"
+		This:C1470.push.title+=" ("+String:C10($number)+")"
 		
 	End if 
 	
@@ -700,24 +704,20 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onActivate()
 	
+	var $git:=This:C1470.Git
+	
 	// Toolbar
 	This:C1470.windowFrame.refresh()
-	cs:C1710.static.new("context").title:=Replace string:C233(Localized string:C991("commitingAs"); "{name}"; This:C1470.Git.userName())
-	Form:C1466.windowTitle:=This:C1470.form.window.title+" on branch "+This:C1470.Git.currentBranch
+	Form:C1466.commiter:=Replace string:C233(Localized string:C991("commitingAs"); "{name}"; $git.userName())
+	Form:C1466.windowTitle:=This:C1470.form.window.title+" on branch "+$git.currentBranch
 	
-	If (This:C1470.form.isSchemeModified())
-		
-		This:C1470._loadScheme()
-		
-	End if 
+	This:C1470._updateScheme()
 	
 	If (This:C1470.form.page=This:C1470.pages.history)
 		
 		This:C1470.updateCommits()
 		
 	End if 
-	
-	var $git:=This:C1470.Git
 	
 	If ($git.status()>0)
 		
@@ -734,6 +734,7 @@ Function onActivate()
 	
 	This:C1470.form.refresh()
 	
+	//
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _pageManager($e : cs:C1710.evt; $page : Integer)
@@ -771,93 +772,16 @@ Function _openManager()
 	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
-		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)
+		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
+		.line()
 	
-	$menu.line()
+	openWith($menu)
 	
-	If (Is macOS:C1572)
+	If ($menu.popup(This:C1470.open).selected)
 		
-		If (File:C1566("/usr/local/bin/fork").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
-			
-		End if 
+		GIT MENU($menu)
 		
-		If (File:C1566("/usr/local/bin/github").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
-			
-		End if 
-		
-	Else 
-		
-		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
-			
-		End if 
-		
-		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
-			
-		End if 
 	End if 
-	
-	Case of 
-			
-			//———————————————————————————————————————
-		: (Not:C34($menu.popup().selected))
-			
-			// Too bad ;-)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="terminal")
-			
-			This:C1470.Git.open($menu.choice)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="show")
-			
-			This:C1470.Git.open($menu.choice)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="github")
-			
-			OPEN URL:C673(Replace string:C233(This:C1470.Git.result; "\n"; ""))
-			
-			//———————————————————————————————————————
-		: ($menu.choice="fork")
-			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.workspace.platformPath)
-			
-			If (Is macOS:C1572)
-				
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
-				
-			Else 
-				
-				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").platformPath)
-				
-			End if 
-			
-			//———————————————————————————————————————
-		: ($menu.choice="githubDesktop")
-			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.workspace.platformPath)
-			
-			If (Is macOS:C1572)
-				
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+This:C1470.Git.workspace.path+"\"")
-				
-			Else 
-				
-				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").platformPath+" "+This:C1470.Git.workspace.platformPath)
-				
-			End if 
-			
-			//———————————————————————————————————————
-	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _stageUnstageManager($e : cs:C1710.evt)
@@ -1205,11 +1129,13 @@ Function DoDiff($item : Object)
 			
 			If (Length:C16($code)>0)
 				
+				
+				
 				$code:=Replace string:C233($code; "<"; "&lt;")
 				$code:=Replace string:C233($code; ">"; "&gt;")
 				
 				ST SET TEXT:C1115($diff; $code; ST Start text:K78:15; ST End text:K78:16)
-				ST SET ATTRIBUTES:C1093($diff; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "green")
+				ST SET ATTRIBUTES:C1093($diff; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; Form:C1466.darkScheme ? "lawngreen" : "green")
 				
 			End if 
 			
@@ -1246,6 +1172,7 @@ Function DoDiff($item : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function GetStyledDiffText($item : Object) : Text
 	
+	var $dark : Boolean:=Form:C1466.darkScheme
 	var $line; $styled : Text
 	var $len; $pos : Integer
 	
@@ -1267,7 +1194,10 @@ Function GetStyledDiffText($item : Object) : Text
 		
 	End if 
 	
-	var $c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1)
+	// MARK: Remove tokens
+	var $code:=cs:C1710.regex.new($git.result; "(?m-si):[CK]:?\\d+(?::\\d+)?").substitute("")
+	
+	var $c:=Split string:C1554($code; "\n"; sk ignore empty strings:K86:1)
 	
 	// Delete the initial lines
 	While ($c.length>0)
@@ -1292,7 +1222,7 @@ Function GetStyledDiffText($item : Object) : Text
 	If ($item.added)
 		
 		ST SET TEXT:C1115($styled; $c.join("\n"); ST Start text:K78:15; ST End text:K78:16)
-		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "green")
+		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; $dark ? "lawngreen" : "green")
 		
 		return $styled
 		
@@ -1301,7 +1231,7 @@ Function GetStyledDiffText($item : Object) : Text
 	If ($item.deleted)
 		
 		ST SET TEXT:C1115($styled; $c.join("\n"); ST Start text:K78:15; ST End text:K78:16)
-		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "red")
+		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; $dark ? "fuchsia" : "red")
 		
 		return $styled
 		
@@ -1313,19 +1243,19 @@ Function GetStyledDiffText($item : Object) : Text
 		
 		If (Length:C16($line)>0)
 			
-			var $color:="gray"
+			var $color:=$dark ? "gold" : "gray"
 			
 			Case of 
 					
 					//…………………………………………………………………………………………………
 				: ($line[[1]]="-")
 					
-					$color:="red"
+					$color:=$dark ? "fuchsia" : "red"
 					
 					//…………………………………………………………………………………………………
 				: ($line[[1]]="+")
 					
-					$color:="green"
+					$color:=$dark ? "lawngreen" : "green"
 					
 					//…………………………………………………………………………………………………
 				: (Character code:C91($line[[1]])=Character code:C91("@"))
@@ -1403,7 +1333,8 @@ Function Stage($items : Collection)
 		
 	End for each 
 	
-	This:C1470.unstaged.items:=[]
+	This:C1470.unstaged.unselect()
+	Form:C1466.current:=Null:C1517
 	
 	This:C1470.DoDiff()
 	This:C1470.onActivate()
@@ -1427,7 +1358,8 @@ Function Unstage($items : Collection)
 		
 	End for each 
 	
-	This:C1470.staged.items:=[]
+	This:C1470.staged.unselect()
+	Form:C1466.current:=Null:C1517
 	
 	This:C1470.DoDiff()
 	This:C1470.onActivate()
@@ -1563,9 +1495,7 @@ Function updateCommits()
 	
 	var $o:={\
 		colors: ["orange"; "green"; "blue"; "red"]; \
-		stashes: []; \
-		nodes: []; \
-		level: 0\
+		stashes: []\
 		}
 	
 	var $git:=This:C1470.Git
@@ -1599,9 +1529,6 @@ Function updateCommits()
 		var $c:=Split string:C1554($line; "|")
 		
 		If (Match regex:C1019("index\\son\\s"; $line; 1; *))
-			
-			var $node:=True:C214
-			$o.level-=1
 			
 			continue
 			
@@ -1691,8 +1618,6 @@ Function updateCommits()
 						
 						$branch:=$stash.ref
 						
-						$o.level+=1
-						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="origin/@")  // Origin branch
 						
@@ -1731,8 +1656,6 @@ Function updateCommits()
 		// Mark:Create label
 		var $label:=$empty
 		var $item
-		
-		$node:=False:C215
 		
 		For each ($item; $tags)
 			
@@ -1786,6 +1709,7 @@ Function updateCommits()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
+	var $dark : Boolean:=Form:C1466.darkScheme
 	var $svg:=cs:C1710.svg.new()
 	
 	Case of 
@@ -1811,7 +1735,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				
 			Else 
 				
-				$svg.color($style.main ? (This:C1470.form.darkScheme ? "white" : "black") : (This:C1470.form.darkScheme ? "silver" : "darkgray"))
+				$svg.color($style.main ? ($dark ? "white" : "black") : ($dark ? "silver" : "darkgray"))
 				
 			End if 
 			
@@ -1822,9 +1746,9 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)*1.2; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("red").fill("lightpink").opacity(0.3)
+				.stroke($dark ? "lightpink" : "red").fill($dark ? "deeppink" : "lightpink").opacity($dark ? 0.8 : 0.3)
 			
-			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color(This:C1470.form.darkScheme ? "white" : "black")
+			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -1835,9 +1759,9 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)+10; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("red").fill("lightpink").opacity(0.3)
+				.stroke($dark ? "lightpink" : "red").fill($dark ? "deeppink" : "lightpink").opacity($dark ? 0.8 : 0.3)
 			
-			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color(This:C1470.form.darkScheme ? "white" : "black")
+			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -1850,11 +1774,11 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				
 				$svg.rect($svg.getTextWidth($text)+28; 20)\
 					.radius(4).position(0.5; 0.5)\
-					.stroke("limegreen").fill("palegreen").opacity(0.3)
+					.stroke("limegreen").fill($dark ? "seagreen" : "limegreen").opacity($dark ? 0.8 : 0.3)
 				
 				$svg.line(21; 0; 21; 20).stroke("limegreen").opacity(0.3)
 				
-				$svg.text($text).position(25; 15).color(This:C1470.form.darkScheme ? "white" : "black")
+				$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 				
 			Else 
 				
@@ -1873,13 +1797,13 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)+28; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("blue").fill("lavender").opacity(0.5)
+				.stroke("blue").fill($dark ? "fuchsia" : "lavender").opacity($dark ? 0.8 : 0.3)
 			
 			$svg.image(This:C1470.icons.tag)
 			
 			$svg.line(21; 0; 21; 20).stroke("blue").opacity(0.5)
 			
-			$svg.text($text).position(25; 15).color(This:C1470.form.darkScheme ? "white" : "black")
+			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -1888,13 +1812,13 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)+28; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("grey").fill("lightgray").opacity(0.5)
+				.stroke("grey").fill($dark ? "darkgray" : "lightgray").opacity($dark ? 0.8 : 0.3)
 			
 			$svg.image(This:C1470.icons.stash)
 			
 			$svg.line(21; 0; 21; 20).stroke("grey").opacity(0.5)
 			
-			$svg.text($text).position(25; 15).color(This:C1470.form.darkScheme ? "white" : "black")
+			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -2161,6 +2085,17 @@ Function metaCommits($item : Object) : Object
 			return This:C1470.form.lightScheme ? {fill: "#DCDCDC"; stroke: "white"} : {fill: "#464646"; stroke: "white"}
 			
 		End if 
+	End if 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _updateScheme()
+	
+	If (This:C1470.form.isSchemeModified() || Shift down:C543)
+		
+		Form:C1466.darkScheme:=This:C1470.form.darkScheme
+		
+		This:C1470._loadScheme()
+		
 	End if 
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***

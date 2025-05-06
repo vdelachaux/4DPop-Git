@@ -748,7 +748,7 @@ Function unselect($row : Integer) : cs:C1710.listbox
 			
 			This:C1470.item:=Null:C1517
 			This:C1470.itemPosition:=0
-			This:C1470.items:=Null:C1517
+			This:C1470.items:=[]
 			
 		End if 
 		

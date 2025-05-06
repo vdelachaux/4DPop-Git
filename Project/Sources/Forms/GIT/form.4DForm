@@ -37,6 +37,16 @@
 					"class": "title infos",
 					"focusable": false
 				},
+				"commiter": {
+					"type": "input",
+					"left": 228,
+					"top": 33,
+					"width": 397,
+					"height": 17,
+					"dataSource": "Form:C1466.commiter",
+					"class": "infos",
+					"fontStyle": "italic"
+				},
 				"_background": {
 					"type": "rectangle",
 					"top": 59,
@@ -85,22 +95,6 @@
 					"hideFocusRing": true,
 					"focusable": false
 				},
-				"open": {
-					"type": "button",
-					"top": 0,
-					"left": 1050,
-					"width": 60,
-					"height": 60,
-					"events": [
-						"onClick"
-					],
-					"style": "toolbar",
-					"icon": "/RESOURCES/Images/Main/openIn.svg",
-					"sizingX": "move",
-					"text": ":xliff:open",
-					"class": "mini",
-					"iconFrames": 1
-				},
 				"changes": {
 					"type": "radio",
 					"top": 10,
@@ -140,17 +134,21 @@
 					"focusable": true,
 					"tooltip": ":xliff:historyView"
 				},
-				"context": {
-					"type": "text",
-					"text": "xxx",
-					"top": 33,
-					"left": 228,
-					"width": 397,
-					"height": 16,
-					"fontStyle": "italic",
-					"sizingX": "grow",
-					"sizingY": "move",
-					"class": ""
+				"open": {
+					"type": "button",
+					"top": 0,
+					"left": 1050,
+					"width": 60,
+					"height": 60,
+					"events": [
+						"onClick"
+					],
+					"style": "toolbar",
+					"icon": "/RESOURCES/Images/Main/openIn.svg",
+					"sizingX": "move",
+					"text": ":xliff:open",
+					"class": "mini",
+					"iconFrames": 1
 				},
 				"fetch": {
 					"type": "button",
@@ -1040,5 +1038,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2380
+	"geometryStamp": 2388
 }

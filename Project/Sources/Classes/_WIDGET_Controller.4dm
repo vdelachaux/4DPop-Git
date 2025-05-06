@@ -516,119 +516,16 @@ Function _doMoreMenu()
 		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
 	
 	$menu.line()\
-		.append("Settings"; "settings")
+		.append("Settings"; "settings")\
+		.line()
 	
-	$menu.line()
+	openWith($menu)
 	
-	If (Is macOS:C1572)
+	If ($menu.popup(This:C1470.more).selected)
 		
-		If (File:C1566("/usr/local/bin/fork").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png").enable($available)
-			
-		End if 
+		GIT MENU($menu)
 		
-		If (File:C1566("/usr/local/bin/github").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png").enable($available)
-			
-		End if 
-		
-	Else 
-		
-		// TODO:On Windows
-		
-		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png").enable($available)
-			
-		End if 
-		
-		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/bin/github").exists)
-			
-			$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png").enable($available)
-			
-		End if 
 	End if 
-	
-	Case of 
-			
-			//———————————————————————————————————————
-		: (Not:C34($menu.popup(This:C1470.more).selected))
-			
-			// It's your choice
-			
-			//———————————————————————————————————————
-		: ($menu.choice="fork")
-			
-			If (Is macOS:C1572)
-				
-				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; $git.workspace.platformPath)
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
-				
-			Else 
-				
-				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").platformPath+" "+$git.workspace.platformPath)
-				
-			End if 
-			
-			//———————————————————————————————————————
-		: ($menu.choice="githubDesktop")
-			
-			If (Is macOS:C1572)
-				
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+$git.workspace.path+"\"")
-				
-			Else 
-				
-				LAUNCH EXTERNAL PROCESS:C811("github \""+$git.workspace.platformPath+"\"")
-				
-			End if 
-			
-			//———————————————————————————————————————
-		: ($menu.choice="tool")
-			
-			4DPop Git
-			
-			This:C1470.form.setTimer(100)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="terminal")\
-			 | ($menu.choice="show")
-			
-			$git.open($menu.choice)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="github")
-			
-			OPEN URL:C673(Replace string:C233($git.result; "\n"; ""))
-			
-			//———————————————————————————————————————
-		: ($menu.choice="refresh")
-			
-			This:C1470.form.refresh()
-			
-			//———————————————————————————————————————
-		: ($menu.choice="snapshot")
-			
-			var $t : Text
-			$t:=Request:C163(Localized string:C991("name(optional)"); ""; Localized string:C991("saveSnapshot"))
-			
-			If (OK=0)
-				
-				return 
-				
-			End if 
-			
-			$git.stash("snapshot"; $t)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="settings")
-			
-			GIT SETTINGS
-			
-			//______________________________________________________
-	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doTagMenu($tag : Text)
