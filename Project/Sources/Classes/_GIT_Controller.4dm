@@ -318,13 +318,22 @@ Function handleEvents($e : cs:C1710.evt)
 			//==============================================
 		: (This:C1470.push.catch($e; On Clicked:K2:4))
 			
-			$git.execute("config push.followTags")
-			
-			This:C1470.pushDialog.show({\
-				tags: $git.result#"false"; \
-				force: False:C215; \
-				branch: $git.workingBranch.name\
-				})
+			If ($git.branchFetchNumber($git.workingBranch.name)=0)
+				
+				This:C1470.onDialogAlert({\
+					main: Localized string:C991("nothingToCommit")})
+				
+			Else 
+				
+				$git.execute("config push.followTags")
+				
+				This:C1470.pushDialog.show({\
+					tags: $git.result#"false"; \
+					force: False:C215; \
+					branch: $git.workingBranch.name\
+					})
+				
+			End if 
 			
 			//==============================================
 		: (This:C1470.open.catch($e; On Clicked:K2:4))
@@ -511,11 +520,9 @@ Function update()
 	This:C1470._updateScheme()
 	
 	// MARK: Toolbar buttons
-	var $branch : Text:=$git.branches.query("current = true").first().name
-	
 	This:C1470.fetch.title:=Localized string:C991("fetch")
 	
-	var $number:=$git.branchFetchNumber($branch)
+	var $number:=$git.branchFetchNumber($git.workingBranch.name)
 	If ($number>0)
 		
 		This:C1470.fetch.title+=" ("+String:C10($number)+")"
@@ -524,7 +531,7 @@ Function update()
 	
 	This:C1470.push.title:=Localized string:C991("push")
 	
-	$number:=$git.branchPushNumber($branch)
+	$number:=$git.branchPushNumber($git.workingBranch.name)
 	If ($number>0)
 		
 		This:C1470.push.title+=" ("+String:C10($number)+")"
@@ -955,7 +962,7 @@ Function _stageUnstageButtonUpdate()
 		
 	End if 
 	
-	This:C1470.stage.enable((Form:C1466.unstaged#Null:C1517) && (Form:C1466.unstaged.length>0))
+	This:C1470.stage.setShortcut("s"; (0 ?+ Command key bit:K16:2)).enable((Form:C1466.unstaged#Null:C1517) && (Form:C1466.unstaged.length>0))
 	
 	If (This:C1470.staged.items=Null:C1517) || (This:C1470.staged.items.length=0)
 		
@@ -967,7 +974,7 @@ Function _stageUnstageButtonUpdate()
 		
 	End if 
 	
-	This:C1470.unstage.enable((Form:C1466.staged#Null:C1517) && (Form:C1466.staged.length>0))
+	This:C1470.unstage.setShortcut("u"; (0 ?+ Command key bit:K16:2)).enable((Form:C1466.staged#Null:C1517) && (Form:C1466.staged.length>0))
 	
 	This:C1470.emptyIndex.show((Form:C1466.staged=Null:C1517) || (Form:C1466.staged.length=0))
 	

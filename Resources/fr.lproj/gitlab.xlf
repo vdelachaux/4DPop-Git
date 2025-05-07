@@ -368,6 +368,10 @@ avec 4D "{version}"</target>
           <source>Branch:</source>
           <target>Branch:</target>
         </trans-unit>
+        <trans-unit id="GZSH+nx8uP2FGJo7xnzeTg" resname="nothingToCommit">
+          <source>Nothing to commit on the current working branch</source>
+          <target>Rien à livrer sur la branche courante</target>
+        </trans-unit>
       </group>
       <group resname="PULL">
         
@@ -412,6 +416,7 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
 
 
 
