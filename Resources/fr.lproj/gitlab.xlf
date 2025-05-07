@@ -358,15 +358,16 @@ avec 4D "{version}"</target>
           <source>Push local changes to remote repository</source>
           <target>Push les changements locaux vers le dépôt distant</target>
         </trans-unit>
-        <trans-unit id="BTukIWrae295u1uLZ6tvFg" resname="pushAllTags">
-          <source>Push all tags</source>
-          <target>Push tous les tags</target>
-        </trans-unit>
+        
         <trans-unit id="O4pQwuWUqr0+hEWq4u4G2A" resname="forcePush">
           <source>Force push</source>
           <target>Force push</target>
         </trans-unit>
         
+        <trans-unit id="f7v9QzkGytFc1f2eB73VQg" resname="branch:">
+          <source>Branch:</source>
+          <target>Branch:</target>
+        </trans-unit>
       </group>
       <group resname="PULL">
         
@@ -411,6 +412,7 @@ avec 4D "{version}"</target>
       </group>
     </body>
   </file>
+
 
 
 

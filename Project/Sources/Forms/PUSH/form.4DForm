@@ -97,10 +97,10 @@
 				"force": {
 					"type": "checkbox",
 					"text": ":xliff:forcePush",
-					"top": 149,
-					"left": 161,
+					"top": 148,
+					"left": 192,
 					"width": 234,
-					"height": 24,
+					"height": 22,
 					"events": [
 						"onClick"
 					],
@@ -108,30 +108,43 @@
 					"dataSource": "Form:C1466.force",
 					"dataSourceTypeHint": "boolean"
 				},
-				"force1": {
-					"type": "checkbox",
-					"text": ":xliff:pushAllTags",
-					"top": 121,
-					"left": 161,
-					"width": 234,
-					"height": 24,
-					"events": [
-						"onClick"
-					],
-					"fontWeight": "normal",
-					"dataSource": "Form:C1466.tags",
-					"dataSourceTypeHint": "boolean"
+				"Text": {
+					"type": "text",
+					"text": ":xliff:branch:",
+					"top": 124,
+					"left": 111,
+					"width": 72,
+					"height": 16,
+					"textAlign": "right"
+				},
+				"Input": {
+					"type": "input",
+					"left": 212,
+					"top": 124,
+					"width": 255,
+					"height": 17,
+					"dataSource": "Form:C1466.branch",
+					"class": "infos"
+				},
+				"Static Picture2": {
+					"type": "picture",
+					"top": 122,
+					"left": 187,
+					"width": 22,
+					"height": 21,
+					"picture": "/RESOURCES/Images/Main/branch.png",
+					"pictureFormat": "scaled"
 				}
 			},
 			"entryOrder": [
-				"force1",
 				"force",
 				"cancel",
-				"ok"
+				"ok",
+				"Input"
 			]
 		}
 	],
-	"geometryStamp": 146,
+	"geometryStamp": 178,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
