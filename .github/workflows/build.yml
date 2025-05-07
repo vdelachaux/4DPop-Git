@@ -16,6 +16,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Check out NetKit
+      uses: actions/checkout@v4
+      with:
+        repository: 4d/4D-NetKit
+        path: Components/4D NetKit.4dbase
     - name: Build
       uses: 4d/build4d-action@main
       with:
