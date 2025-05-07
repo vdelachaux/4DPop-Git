@@ -42,6 +42,7 @@
 	},
 	"👩‍💻 UI": {
 		"methods": [
+			"_error",
 			"dropableWidgetMethod",
 			"form_spreadToSubforms",
 			"formCallBack",
