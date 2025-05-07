@@ -65,7 +65,7 @@
 					"top": 94,
 					"left": 108,
 					"width": 365,
-					"height": 26,
+					"height": 13,
 					"fontTheme": "additional"
 				},
 				"Static Picture1": {
@@ -115,7 +115,8 @@
 					"left": 111,
 					"width": 72,
 					"height": 16,
-					"textAlign": "right"
+					"textAlign": "right",
+					"class": "mini"
 				},
 				"Input": {
 					"type": "input",
@@ -132,8 +133,7 @@
 					"left": 187,
 					"width": 22,
 					"height": 21,
-					"picture": "/RESOURCES/Images/Main/branch.png",
-					"pictureFormat": "scaled"
+					"picture": "/RESOURCES/Images/Widget/branch.png"
 				}
 			},
 			"entryOrder": [
@@ -144,7 +144,7 @@
 			]
 		}
 	],
-	"geometryStamp": 178,
+	"geometryStamp": 182,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
