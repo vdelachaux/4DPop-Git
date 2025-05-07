@@ -322,7 +322,8 @@ Function handleEvents($e : cs:C1710.evt)
 			
 			This:C1470.pushDialog.show({\
 				tags: $git.result#"false"; \
-				force: False:C215\
+				force: False:C215; \
+				branch: $git.workingBranch.name\
 				})
 			
 			//==============================================
