@@ -318,7 +318,7 @@ Function handleEvents($e : cs:C1710.evt)
 			//==============================================
 		: (This:C1470.push.catch($e; On Clicked:K2:4))
 			
-			If ($git.branchFetchNumber($git.workingBranch.name)=0)
+			If ($git.branchPushNumber($git.workingBranch.name)=0)
 				
 				This:C1470.onDialogAlert({\
 					main: Localized string:C991("nothingToCommit")})
