@@ -1680,7 +1680,7 @@ Function updateCommits()
 		var $normal:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
 		var $selected:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; selected: True:C214})
 		
-		var $date:=Date:C102($c[3])
+		var $date:=Try(Date:C102($c[3]))
 		
 		var $desc:=Split string:C1554($c[0]; "\r"; sk ignore empty strings:K86:1)
 		var $title : Text:=$desc[0]
