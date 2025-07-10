@@ -20,10 +20,6 @@
 		<data>
 		yabhx2yBQwFbbMyIMKLlbiCuyL4=
 		</data>
-		<key>Resources/Images/Main/added.svg</key>
-		<data>
-		Zgi7FEOHO5SZN2c62RTip0K32J0=
-		</data>
 		<key>Resources/Images/Main/branch.png</key>
 		<data>
 		NXrXMD9ZGTHWQgwz04cp1vB1o/A=
@@ -31,10 +27,6 @@
 		<key>Resources/Images/Main/branch_dark.png</key>
 		<data>
 		EboGhwVbbHHYeFM96e0p32akq2I=
-		</data>
-		<key>Resources/Images/Main/deleted.svg</key>
-		<data>
-		qByswhw7apA6jAcLXSsc9JYFIyA=
 		</data>
 		<key>Resources/Images/Main/fetch.svg</key>
 		<data>
@@ -64,10 +56,6 @@
 		<data>
 		POmhZY85k/BtWcPVgU5FtXPfvSY=
 		</data>
-		<key>Resources/Images/Main/modified.svg</key>
-		<data>
-		mJkNBErjco1rpMOYFGFIK/s9lBA=
-		</data>
 		<key>Resources/Images/Main/more.png</key>
 		<data>
 		fx8ZTHaM2aFKxPdV43vJIcpO6wg=
@@ -83,10 +71,6 @@
 		<key>Resources/Images/Main/more_dark.png</key>
 		<data>
 		bCvmTBJI3ylOVOm+0a5M2rRFzo4=
-		</data>
-		<key>Resources/Images/Main/moved.svg</key>
-		<data>
-		QGnd1D8nbBGHslh3KL6qdO1V9W0=
 		</data>
 		<key>Resources/Images/Main/openIn.svg</key>
 		<data>
@@ -119,22 +103,6 @@
 		<key>Resources/Images/Main/remote_dark.png</key>
 		<data>
 		L81QNpXMPbV3IdYcItvG4m5REso=
-		</data>
-		<key>Resources/Images/Main/stageAll.png</key>
-		<data>
-		rrVXDAYPJr2C8ffq1cWzacRA/co=
-		</data>
-		<key>Resources/Images/Main/stageAll@x2.png</key>
-		<data>
-		vTXt08FxAcJEcmYvLManlYBHsqs=
-		</data>
-		<key>Resources/Images/Main/stageAll@x2_dark.png</key>
-		<data>
-		UFHpwoNXp5qH5cfNqs/nUHcCcgs=
-		</data>
-		<key>Resources/Images/Main/stageAll_dark.png</key>
-		<data>
-		FGDc8FPDurMow2gZSDKbc6+a9F8=
 		</data>
 		<key>Resources/Images/Main/stash.png</key>
 		<data>
@@ -174,7 +142,7 @@
 		</data>
 		<key>Resources/Images/Menus/fork.png</key>
 		<data>
-		ztKXgeEB7Sh0pI9tYFyocgWgIz0=
+		SNsNfRRnUKbb3BLANHO7ZqC/nTI=
 		</data>
 		<key>Resources/Images/Menus/git.png</key>
 		<data>
@@ -208,6 +176,10 @@
 		<data>
 		Pgr7z0SDrL4VGxIAVBlN/LBO+04=
 		</data>
+		<key>Resources/Images/Menus/stree.png</key>
+		<data>
+		WJyMuSe1M+3wm4r6Nh+71RAVBnI=
+		</data>
 		<key>Resources/Images/Menus/terminal.png</key>
 		<data>
 		hoEPSdFfMAx5UCkjAvYa3llmC38=
@@ -219,6 +191,50 @@
 		<key>Resources/Images/Server.png</key>
 		<data>
 		OZU+ly8O6UmGlcfWc+ozJo4D48c=
+		</data>
+		<key>Resources/Images/Status/Add.png</key>
+		<data>
+		H0XHHkPmAEgQqmdJKWqVJ6izGxk=
+		</data>
+		<key>Resources/Images/Status/Add_dark.png</key>
+		<data>
+		H0XHHkPmAEgQqmdJKWqVJ6izGxk=
+		</data>
+		<key>Resources/Images/Status/Copy.png</key>
+		<data>
+		gbUhOGEmXPaEwnvI5H3ObGjciXc=
+		</data>
+		<key>Resources/Images/Status/Copy_dark.png</key>
+		<data>
+		rocuasXa6KOuLFuZ2DfUL4z4fpI=
+		</data>
+		<key>Resources/Images/Status/Edit.png</key>
+		<data>
+		/AXSrDbFjyWe31TeEnWeLWrw+iM=
+		</data>
+		<key>Resources/Images/Status/Edit_dark.png</key>
+		<data>
+		/AXSrDbFjyWe31TeEnWeLWrw+iM=
+		</data>
+		<key>Resources/Images/Status/Remove.png</key>
+		<data>
+		SorseB4GPTpOXv8UJnRDEy4rBBM=
+		</data>
+		<key>Resources/Images/Status/Remove_dark.png</key>
+		<data>
+		SorseB4GPTpOXv8UJnRDEy4rBBM=
+		</data>
+		<key>Resources/Images/Status/Rename.png</key>
+		<data>
+		qwhIInlbb1ubKl4GJZ4NcAFyNx0=
+		</data>
+		<key>Resources/Images/Status/Rename_dark.png</key>
+		<data>
+		qwhIInlbb1ubKl4GJZ4NcAFyNx0=
+		</data>
+		<key>Resources/Images/Status/TypeChanged.png</key>
+		<data>
+		MVJvZSCVwGO4gJJNstNBHqLHZ1I=
 		</data>
 		<key>Resources/Images/Widget/branch.png</key>
 		<data>
@@ -346,11 +362,11 @@
 		</data>
 		<key>Resources/InfoPlist.strings</key>
 		<data>
-		PcQsfBLm84Cip/Yy6yInmfnH0pE=
+		X20rs2VzEqq5/Ci9+62i17TL7IY=
 		</data>
 		<key>Resources/bin/gh</key>
 		<data>
-		Ij5Fv2l3+HHEbITCLAmTDqKcnD8=
+		rUB6TvA/rnZWF0qgcXRjNxgla7g=
 		</data>
 		<key>Resources/bin/gh.exe</key>
 		<data>
@@ -360,7 +376,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			YnxqJ9DLmHUYCfpNNJzZuExQvOs=
+			p5BKRXEvTsScS2qbr/fcsqLaTAs=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -369,7 +385,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			WU5vRIbqAhj8qQ3+iJ6Bf/6k+tU=
+			ace/A+wdeIwt9pjZuJnfM0VeaNc=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -381,6 +397,10 @@
 		<key>Resources/git/templates/gitignore.txt</key>
 		<data>
 		u98up+uS1LrupwyeNfZFDGiR3eg=
+		</data>
+		<key>Resources/php.ini</key>
+		<data>
+		mzIVgDcTm3FXX+JCz+HOScp9z1w=
 		</data>
 		<key>Resources/resources.json</key>
 		<data>
@@ -397,7 +417,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			KtVp3MuafSqddshZPZPdHKweSds=
+			3LvYFiWGJwV6zw8Cqa8Iw39Wuf0=
 			</data>
 			<key>requirement</key>
 			<string>identifier "4DPop Git.4DZ" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = DYRKW64QA9</string>
@@ -450,11 +470,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			o9sfE5DDOrgeajpx6EF90SLtgsk=
+			Z9NcJkfcl7eQ8bKHE1A+PEWAEmk=
 			</data>
 			<key>hash2</key>
 			<data>
-			O3+k9lqqEytm7FyQhjMg+Xx2rvC0Z40hcsrlrUFz17g=
+			g0KsmrsPM54HZwRmRAXfgm0qK7FGGILZh9Q23VCRZ+Q=
 			</data>
 		</dict>
 		<key>Resources/4DPop.json</key>
@@ -501,17 +521,6 @@
 			dZ3DCV5A9g0bT+8b2XmNVdidTqCnNZq5gI26qoaGurU=
 			</data>
 		</dict>
-		<key>Resources/Images/Main/added.svg</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Zgi7FEOHO5SZN2c62RTip0K32J0=
-			</data>
-			<key>hash2</key>
-			<data>
-			kGabjJopGz1qK1ReAtbl9ER3qrVdeqkkeidphd4sWhg=
-			</data>
-		</dict>
 		<key>Resources/Images/Main/branch.png</key>
 		<dict>
 			<key>hash</key>
@@ -532,17 +541,6 @@
 			<key>hash2</key>
 			<data>
 			ArmYu0HrFvbT5EOUk/KQ2cNg8gVXjFkX/fZltHw7/ZM=
-			</data>
-		</dict>
-		<key>Resources/Images/Main/deleted.svg</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			qByswhw7apA6jAcLXSsc9JYFIyA=
-			</data>
-			<key>hash2</key>
-			<data>
-			dxUWntt1pj5jPjhNtwFkdGvcPjudJBTLkk8BzLY5Z8Q=
 			</data>
 		</dict>
 		<key>Resources/Images/Main/fetch.svg</key>
@@ -622,17 +620,6 @@
 			4BWodNrKZwiLjFUx1/V6MTbuDn1QJsLVRP/6PKujQBo=
 			</data>
 		</dict>
-		<key>Resources/Images/Main/modified.svg</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			mJkNBErjco1rpMOYFGFIK/s9lBA=
-			</data>
-			<key>hash2</key>
-			<data>
-			7E5jIu9I6bR0lD7wbOSmb01uB8Vs2UoZzPyz8P6rj0I=
-			</data>
-		</dict>
 		<key>Resources/Images/Main/more.png</key>
 		<dict>
 			<key>hash</key>
@@ -675,17 +662,6 @@
 			<key>hash2</key>
 			<data>
 			dSNuVlwcLRVXR6kMVVtu8rJb7xoAeeTfeZ8oaj7utb4=
-			</data>
-		</dict>
-		<key>Resources/Images/Main/moved.svg</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			QGnd1D8nbBGHslh3KL6qdO1V9W0=
-			</data>
-			<key>hash2</key>
-			<data>
-			q9g7dD05FK3Rjitb4TNzj/0or5Dtc74fjP1jRXhTHwI=
 			</data>
 		</dict>
 		<key>Resources/Images/Main/openIn.svg</key>
@@ -774,50 +750,6 @@
 			<key>hash2</key>
 			<data>
 			7oaexDMnJPIMCl2ulO9/8z6Va9VLiZ1pbY98JQ2Kwyg=
-			</data>
-		</dict>
-		<key>Resources/Images/Main/stageAll.png</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			rrVXDAYPJr2C8ffq1cWzacRA/co=
-			</data>
-			<key>hash2</key>
-			<data>
-			ZIBP/MTX4YsKxmao5zBznt4Yhk1RODPQoDlyzRlWVuc=
-			</data>
-		</dict>
-		<key>Resources/Images/Main/stageAll@x2.png</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			vTXt08FxAcJEcmYvLManlYBHsqs=
-			</data>
-			<key>hash2</key>
-			<data>
-			PSImS1xROkt07IxXGyPDD4tVqzUPUX+GT/2/BgzBYng=
-			</data>
-		</dict>
-		<key>Resources/Images/Main/stageAll@x2_dark.png</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			UFHpwoNXp5qH5cfNqs/nUHcCcgs=
-			</data>
-			<key>hash2</key>
-			<data>
-			5vKX3oGGjzZCkp7rkq8nfOOgq3KJbo/ceNa1kKn3sUo=
-			</data>
-		</dict>
-		<key>Resources/Images/Main/stageAll_dark.png</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			FGDc8FPDurMow2gZSDKbc6+a9F8=
-			</data>
-			<key>hash2</key>
-			<data>
-			ZUOYaEjwAL5LPk8ZVzUnHE7ulEOxIKBgFiSxLA99c8k=
 			</data>
 		</dict>
 		<key>Resources/Images/Main/stash.png</key>
@@ -923,11 +855,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ztKXgeEB7Sh0pI9tYFyocgWgIz0=
+			SNsNfRRnUKbb3BLANHO7ZqC/nTI=
 			</data>
 			<key>hash2</key>
 			<data>
-			UoB5ci/yz4CqusOWptHsH5HYuCVB7hlY7n8wahB4ot4=
+			widJIU6biT8ah5FX+NzD2eSDPKfX7CIa/0Ci69wDdsc=
 			</data>
 		</dict>
 		<key>Resources/Images/Menus/git.png</key>
@@ -1018,6 +950,17 @@
 			anEGJmcCJflocdOV2lMKrj5FMrKeSOv6/0vAVf4Z5X0=
 			</data>
 		</dict>
+		<key>Resources/Images/Menus/stree.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			WJyMuSe1M+3wm4r6Nh+71RAVBnI=
+			</data>
+			<key>hash2</key>
+			<data>
+			XJ2nXXntCBWDD67D6Vox2oZLSuPsnS3rwSE/mBwQcII=
+			</data>
+		</dict>
 		<key>Resources/Images/Menus/terminal.png</key>
 		<dict>
 			<key>hash</key>
@@ -1049,6 +992,127 @@
 			<key>hash2</key>
 			<data>
 			9jwQODq0Wp4N3S4BjbNwSNQOlFBLJzErCie6gfNSJnU=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Add.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			H0XHHkPmAEgQqmdJKWqVJ6izGxk=
+			</data>
+			<key>hash2</key>
+			<data>
+			vweonP3WD4T3gM6McHPj4CyBUhJWa1z7lXegm0XHRrQ=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Add_dark.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			H0XHHkPmAEgQqmdJKWqVJ6izGxk=
+			</data>
+			<key>hash2</key>
+			<data>
+			vweonP3WD4T3gM6McHPj4CyBUhJWa1z7lXegm0XHRrQ=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Copy.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			gbUhOGEmXPaEwnvI5H3ObGjciXc=
+			</data>
+			<key>hash2</key>
+			<data>
+			P2c5FqJlkqoYa+/Arwp07ja/n0XhRkM0Wr3Y0Oi0lPE=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Copy_dark.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			rocuasXa6KOuLFuZ2DfUL4z4fpI=
+			</data>
+			<key>hash2</key>
+			<data>
+			F2szTaVG5eTmL6WB/X7KBE0qXToGSovXmCMHih1fSao=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Edit.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			/AXSrDbFjyWe31TeEnWeLWrw+iM=
+			</data>
+			<key>hash2</key>
+			<data>
+			5cNgzkrtKzmxAyu+Ugd/Zp2YwhpEFalUXcF3e7sKaVM=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Edit_dark.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			/AXSrDbFjyWe31TeEnWeLWrw+iM=
+			</data>
+			<key>hash2</key>
+			<data>
+			5cNgzkrtKzmxAyu+Ugd/Zp2YwhpEFalUXcF3e7sKaVM=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Remove.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			SorseB4GPTpOXv8UJnRDEy4rBBM=
+			</data>
+			<key>hash2</key>
+			<data>
+			B8CgjbSQVDrFHB2GVzjziJJnVhDiNkM/2o9baIdHNM0=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Remove_dark.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			SorseB4GPTpOXv8UJnRDEy4rBBM=
+			</data>
+			<key>hash2</key>
+			<data>
+			B8CgjbSQVDrFHB2GVzjziJJnVhDiNkM/2o9baIdHNM0=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Rename.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			qwhIInlbb1ubKl4GJZ4NcAFyNx0=
+			</data>
+			<key>hash2</key>
+			<data>
+			HsQPFr6YPI6RuL3Xobq6dE/aGgda0ZEgGsgdc8x/h58=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/Rename_dark.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			qwhIInlbb1ubKl4GJZ4NcAFyNx0=
+			</data>
+			<key>hash2</key>
+			<data>
+			HsQPFr6YPI6RuL3Xobq6dE/aGgda0ZEgGsgdc8x/h58=
+			</data>
+		</dict>
+		<key>Resources/Images/Status/TypeChanged.png</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			MVJvZSCVwGO4gJJNstNBHqLHZ1I=
+			</data>
+			<key>hash2</key>
+			<data>
+			CPwjaKtTDWFDQgdMwfIuDbPeh5xflF1pwrXPxDrf0yw=
 			</data>
 		</dict>
 		<key>Resources/Images/Widget/branch.png</key>
@@ -1396,22 +1460,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			PcQsfBLm84Cip/Yy6yInmfnH0pE=
+			X20rs2VzEqq5/Ci9+62i17TL7IY=
 			</data>
 			<key>hash2</key>
 			<data>
-			SkVfMnO6nOINbo7jpkhnDpB7iKdv7mLSVe7KKVujqsw=
+			KvvmGPOlQVbFQhFTJ5GpKelAf95X0j+v5yGIJSgvViw=
 			</data>
 		</dict>
 		<key>Resources/bin/gh</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Ij5Fv2l3+HHEbITCLAmTDqKcnD8=
+			rUB6TvA/rnZWF0qgcXRjNxgla7g=
 			</data>
 			<key>hash2</key>
 			<data>
-			Iqe0O7m9AC7ixqsa/SSb1Jbf+q46Mruwq0qAVlMQCE8=
+			mqWugr1GHjRSCG7Qu4VgiQ9j+OTzIoW/SwW94ly1nq8=
 			</data>
 		</dict>
 		<key>Resources/bin/gh.exe</key>
@@ -1429,11 +1493,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			YnxqJ9DLmHUYCfpNNJzZuExQvOs=
+			p5BKRXEvTsScS2qbr/fcsqLaTAs=
 			</data>
 			<key>hash2</key>
 			<data>
-			NN3Fbz9bWKLYOxzeAqmf6ydgVlBcdwmhj8/cdX5YfLc=
+			BHkpekv1CHWp2GwlchCKm2KxxwOqsVNfS68zXmYA0gg=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -1442,11 +1506,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			WU5vRIbqAhj8qQ3+iJ6Bf/6k+tU=
+			ace/A+wdeIwt9pjZuJnfM0VeaNc=
 			</data>
 			<key>hash2</key>
 			<data>
-			KQAttZTgOz6BQL7b6mPxmWOOiRErIcktXwEC1wuGfU8=
+			DRMC08R4SFT9R0IWSMP8o62FX8GrVFOqNI4gTvRfL8I=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -1471,6 +1535,17 @@
 			<key>hash2</key>
 			<data>
 			5lTIEETaDY4Sxb5Lib3Qx9r7hsiDooe2SjaBip+itjs=
+			</data>
+		</dict>
+		<key>Resources/php.ini</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			mzIVgDcTm3FXX+JCz+HOScp9z1w=
+			</data>
+			<key>hash2</key>
+			<data>
+			x08pJaj7w4MA7IDoQrutpHUD8j1R1Zap+anJildkiOY=
 			</data>
 		</dict>
 		<key>Resources/resources.json</key>

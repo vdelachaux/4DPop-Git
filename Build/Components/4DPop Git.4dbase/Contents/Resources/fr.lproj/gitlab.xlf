@@ -10,8 +10,8 @@
     <body>
       <group resname="dialog">
         <trans-unit id="dMFxr5Xj0AH1qBl3qia+dQ" resname="workspace">
-          <source>WORKSPACE</source>
-          <target>ESPACE DE TRAVAIL</target>
+          <source>WORKING DIRECTORY</source>
+          <target>RÉPERTOIRE DE TRAVAIL</target>
         </trans-unit>
         <trans-unit id="ZqzIky_4T6wr9uni1_5qTQ" resname="index">
           <source>INDEX</source>
@@ -49,8 +49,8 @@
           <source>Open in…</source>
           <target>Ouvrir dans…</target>
         </trans-unit>
-        <trans-unit id="epR84MCiFWzBS5y1JmovAg" resname="changes">
-          <source>Changes</source>
+        <trans-unit id="epR84MCiFWzBS5y1JmovAg" resname="changesView">
+          <source>Changes View</source>
           <target>Modifications</target>
         </trans-unit>
         <trans-unit id="oPUK6zDP1HgG1_zUvx1KQQ" resname="stageAll">
@@ -151,6 +151,19 @@ Voulez-vous télécharger l'installateur ?</target>
         <trans-unit id="TnqtftaBecYGx68P3zexgQ" resname="local">
           <source>Local</source>
           <target>Local</target>
+        </trans-unit>
+        <trans-unit id="tDodA6Cy1x7Q0b4AEacrBw" resname="stageFile">
+          <source>Stage File</source>
+          <target>Indexer le fichier</target>
+        </trans-unit>
+        
+        <trans-unit id="f3xIjlStjoeRrYxiBD8FQQ" resname="historyView">
+          <source>History View</source>
+          <target>Historique</target>
+        </trans-unit>
+        <trans-unit id="YGZwePvO5qhfd7h48e4DyA" resname="commitingAs">
+          <source>Committing as {name}</source>
+          <target>Committing en tant que {name}</target>
         </trans-unit>
       </group>
       <group resname="pattern">
@@ -274,6 +287,14 @@ avec 4D "{version}"</target>
           <source>4DPop Git Viewer…</source>
           <target>4DPop Git Viewer…</target>
         </trans-unit>
+        <trans-unit id="u2Mq8hBMWZjPSf+J1YxBXg" resname="edit">
+          <source>Edit</source>
+          <target>Éditer</target>
+        </trans-unit>
+        <trans-unit id="jWXm6hveJNjEmpgjoA4MxA" resname="settings">
+          <source>Settings</source>
+          <target>Paramètres</target>
+        </trans-unit>
       </group>
       <group resname="File">
         <trans-unit id="RtkC6IdKC4I7IQD0yDnxUQ" resname="modifiedFile">
@@ -317,6 +338,14 @@ avec 4D "{version}"</target>
           <source>Cancel</source>
           <target>Annuler</target>
         </trans-unit>
+        <trans-unit id="gVcJpE+u8wOVY1r9jv8dGw" resname="gitEncounteredAnError">
+          <source>Git encountered an error</source>
+          <target>Git a rencontré une erreur</target>
+        </trans-unit>
+        <trans-unit id="bm4iLNLCXLS6HyzxFL_vwQ" resname="unknownError">
+          <source>Unknown error</source>
+          <target>Erreur inconnue</target>
+        </trans-unit>
       </group>
       <group resname="GitHub">
         <trans-unit id="V8K672oPrhbaPX2ZGutoFw" resname="thisCodeHasBeenPlacedOnTheClipboard">
@@ -324,8 +353,79 @@ avec 4D "{version}"</target>
           <target>Ce code a été placé dans le presse-papiers, afin que vous puissiez le coller lorsque vous en aurez besoin.</target>
         </trans-unit>
       </group>
+      <group resname="PUSH">
+        <trans-unit id="lh6qwJ+YNIwgGh8dd_HjWw" resname="pushLocalChanges">
+          <source>Push local changes to remote repository</source>
+          <target>Push les changements locaux vers le dépôt distant</target>
+        </trans-unit>
+        
+        <trans-unit id="O4pQwuWUqr0+hEWq4u4G2A" resname="forcePush">
+          <source>Force push</source>
+          <target>Force push</target>
+        </trans-unit>
+        
+        <trans-unit id="f7v9QzkGytFc1f2eB73VQg" resname="branch:">
+          <source>Branch:</source>
+          <target>Branch:</target>
+        </trans-unit>
+        <trans-unit id="GZSH+nx8uP2FGJo7xnzeTg" resname="nothingToCommit">
+          <source>Nothing to commit on the current working branch</source>
+          <target>Rien à livrer sur la branche courante</target>
+        </trans-unit>
+      </group>
+      <group resname="PULL">
+        
+        <trans-unit id="7__vg3xUC5RtwI_hhK41zg" resname="pullRemoteChanges">
+          <source>Pull remote changes and merges them into your local branch</source>
+          <target>Pull les changements distants et les fusionner dans ta branche locale</target>
+        </trans-unit>
+        <trans-unit id="J0gtbaHApRAWiPRot7XMyg" resname="rebaseInsteadOfMerge">
+          <source>Rebase instead of merge</source>
+          <target>Rebase au lieu de merge</target>
+        </trans-unit>
+        <trans-unit id="432PWJP0HWBSbo2kvWQnEw" resname="stashAndReapply">
+          <source>Stash and reapply local changes</source>
+          <target>Stash et réappliquer les changements locaux</target>
+        </trans-unit>
+      </group>
+      <group resname="CHECKOUT">
+        <trans-unit id="iIfDWAKuqx186mALOdY8rw" resname="autostash">
+          <source>autostash {date} at {time}</source>
+          <target>autostash {date} à {time}</target>
+        </trans-unit>
+        <trans-unit id="6xIH8saXocVGDDSnMD7mew" resname="checkout">
+          <source>Checkout</source>
+          <target>Checkout</target>
+        </trans-unit>
+        <trans-unit id="Dtq8jDJtL3cjHA3cEAFnYA" resname="localChanges">
+          <source>Local changes</source>
+          <target>Changements locaux</target>
+        </trans-unit>
+        <trans-unit id="fFsR89OvBBd+VcYk9MDwqg" resname="noChange">
+          <source>Don't change</source>
+          <target>Ne pas changer</target>
+        </trans-unit>
+        <trans-unit id="u1qa_R2epVi5o2tra6bxow" resname="stashAndReaply">
+          <source>Stash and reaply</source>
+          <target>Stash et réappliquer</target>
+        </trans-unit>
+        <trans-unit id="C_rExiWw4PVrlSQTWVctOw" resname="switchTo">
+          <source>Switch to:</source>
+          <target>Passer à :</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
+
+
+
+
+
+
+
+
+
+
 
 
 
