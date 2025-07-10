@@ -152,5 +152,12 @@
 			"_WIDGET_Controller"
 		]
 	},
-	"trash": {}
+	"trash": {
+		"groups": [
+			"(Embedded)",
+			"(GIT)",
+			"(PATTERN)",
+			"(SETTINGS)"
+		]
+	}
 }
