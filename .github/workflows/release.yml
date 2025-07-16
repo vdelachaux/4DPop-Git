@@ -8,26 +8,11 @@ jobs:
     runs-on: macos-latest
     env:
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      DEV_ID: "${{ secrets.DEV_ID }}"
     permissions:
       contents: write # for asset upload
     steps:
-      - name: Checkout
+      - name: ⬇️ Checkout
         uses: actions/checkout@v4
-      - name: Checkout NetKit
-        uses: actions/checkout@v4
-        with:
-          repository: 4d/4D-NetKit
-          path: Components/4D NetKit.4dbase
-      - name: BuildAndPackage
-        uses: 4d/build4d-action@main
-        with:
-            product-line: vcs
-            version: vcs
-            build: official
-            token: ${{ secrets.DLTK }}
-            actions: "build,pack,sign,archive"
-            sign-certificate: DEV_ID
       - name: Upload
         run: |
-          gh release upload ${{github.event.release.tag_name}} build/4DPop-Git.zip
+          gh release upload ${{github.event.release.tag_name}} build/${{github.event.repository.name}}.zip
