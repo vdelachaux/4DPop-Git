@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true,"shared":true}
+//%attributes = {"invisible":true}
 #DECLARE($data : Object; $function : Text)
 
 var $instance : 4D:C1709.Class

@@ -60,7 +60,7 @@ property icons : Object
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.form:=cs:C1710.form.new(This:C1470)
+	This:C1470.form:=cs:C1710.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -1108,7 +1108,7 @@ Function DoDiff($item : Object)
 								//————————————————————————————————————
 							Else 
 								
-								$code:=$tgt.getText()
+								$code:=Try($tgt.getText())
 								
 								//————————————————————————————————————
 						End case 

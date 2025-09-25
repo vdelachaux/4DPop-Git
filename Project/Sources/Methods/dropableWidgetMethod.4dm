@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true,"shared":true}
+//%attributes = {"invisible":true}
 #DECLARE() : Integer
 
 var $manager : Text

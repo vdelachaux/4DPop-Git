@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true,"shared":true}
+//%attributes = {"invisible":true}
 var $manager : Text
 var $instance : 4D:C1709.Class
 

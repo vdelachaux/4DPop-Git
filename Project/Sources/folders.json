@@ -135,7 +135,6 @@
 	},
 	"env": {
 		"methods": [
-			"COMPILER_env",
 			"envScreens"
 		],
 		"classes": [
