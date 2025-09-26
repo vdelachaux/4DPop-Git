@@ -346,7 +346,7 @@
 					"hideFocusRing": true,
 					"type": "input",
 					"left": 534,
-					"top": 829,
+					"top": 834,
 					"width": 559,
 					"height": 17,
 					"dataSource": "Form:C1466.commitDescription",
@@ -375,7 +375,7 @@
 					"type": "checkbox",
 					"text": ":xliff:amend",
 					"top": 856,
-					"left": 949,
+					"left": 534,
 					"width": 161,
 					"height": 16,
 					"events": [
@@ -383,8 +383,7 @@
 					],
 					"dataSource": "Form:C1466.amend",
 					"dataSourceTypeHint": "boolean",
-					"sizingY": "move",
-					"sizingX": "move"
+					"sizingY": "move"
 				},
 				"titleIndex": {
 					"type": "text",
@@ -1080,5 +1079,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2443
+	"geometryStamp": 2455
 }
