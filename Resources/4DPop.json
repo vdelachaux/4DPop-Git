@@ -1,6 +1,6 @@
 {
   "name": "Git",
-  "media": "4DPop.png",
+  "media": "logo.svg",
   "handler": "_4DPopGit",
   "widget": {
     "name": "WIDGET",
