@@ -13,9 +13,9 @@ jobs:
       contents: write # for asset upload
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout NetKit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: 4d/4D-NetKit
           path: Components/4D NetKit.4dbase
