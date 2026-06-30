@@ -1,0 +1,32 @@
+name: Lint
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.xlf'
+      - '**.4DSettings'
+      - '**.4DCatalog'
+      - '**.svg'
+
+  pull_request:
+    paths:
+      - '**.xlf'
+      - '**.4DSettings'
+      - '**.4DCatalog'
+      - '**.svg'
+jobs:
+  run-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Lint XML
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxml2-utils
+          # shellcheck disable=2046
+          find . \( -name "*.xlf" -o -name '*.4DCatalog' -o -name "*.4DSettings" -o -name "*.svg" \) -type f -exec xmllint --noout '{}' +
