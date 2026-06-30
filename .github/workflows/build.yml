@@ -16,15 +16,73 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v6
-    - name: Check out NetKit
-      uses: actions/checkout@v6
-      with:
-        repository: 4d/4D-NetKit
-        path: Components/4D NetKit.4dbase
+
+    - name: Load dependencies from dependencies.json (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        set -euo pipefail
+        deps_file="Project/Sources/dependencies.json"
+        if [ ! -f "$deps_file" ]; then
+          exit 0
+        fi
+        mkdir -p Components
+        jq -r '.dependencies // {} | to_entries[] | [.key, .value.github] | @tsv' "$deps_file" | while IFS=$'\t' read -r dep_name github; do
+          if [ -z "$github" ]; then
+            continue
+          fi
+          repo="${github##*/}"
+          zip="${repo}.zip"
+          curl -fL "https://github.com/${github}/raw/main/BUILD/${zip}" -o "${zip}"
+          if [ "$dep_name" = "4DPop" ]; then
+            rm -rf "Components/4DPop.4dbase"
+            mkdir -p "Components/4DPop.4dbase"
+            unzip -o "${zip}" -d "Components/4DPop.4dbase"
+          else
+            rm -rf "Components/${dep_name}.4dbase"
+            unzip -o "${zip}" -d Components
+          fi
+          rm -f "${zip}"
+        done
+        rm -rf "Components/__MACOSX"
+
+    - name: Load dependencies from dependencies.json (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $depsFile = "Project/Sources/dependencies.json"
+        if (!(Test-Path $depsFile)) {
+          exit 0
+        }
+        New-Item -ItemType Directory -Path Components -Force | Out-Null
+        $depsObj = Get-Content $depsFile -Raw | ConvertFrom-Json
+        if ($null -eq $depsObj.dependencies) {
+          exit 0
+        }
+        foreach ($dep in $depsObj.dependencies.PSObject.Properties) {
+          $depName = $dep.Name
+          $github = $dep.Value.github
+          if ([string]::IsNullOrWhiteSpace($github)) {
+            continue
+          }
+          $repo = $github.Split("/")[-1]
+          $zip = "$repo.zip"
+          $url = "https://github.com/$github/raw/main/BUILD/$zip"
+          Invoke-WebRequest -Uri $url -OutFile $zip
+          if ($depName -eq "4DPop") {
+            Remove-Item -Recurse -Force "Components/4DPop.4dbase" -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Path "Components/4DPop.4dbase" -Force | Out-Null
+            Expand-Archive -Path $zip -DestinationPath "Components/4DPop.4dbase" -Force
+          } else {
+            Remove-Item -Recurse -Force "Components/$depName.4dbase" -ErrorAction SilentlyContinue
+            Expand-Archive -Path $zip -DestinationPath "Components" -Force
+          }
+          Remove-Item -Path $zip -Force -ErrorAction SilentlyContinue
+        }
     - name: Build
       uses: 4d/build4d-action@main
       with:
         product-line: vcs
         version: vcs
-        build: official
+        build: latest
         token: ${{ secrets.DLTK }}
