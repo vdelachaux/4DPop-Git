@@ -101,7 +101,8 @@ Function set pageNumber($page : Integer)
 	
 	If (This:C1470.isChoiceList)
 		
-		SELECT LIST ITEMS BY REFERENCE:C630(This:C1470.dataSource; $page+1)
+		var $listRef : Integer:=Num:C11(This:C1470.dataSource)
+		SELECT LIST ITEMS BY REFERENCE:C630($listRef; $page+1)
 		
 	End if 
 	
@@ -144,8 +145,13 @@ Function goToPage()
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get isChoiceList() : Boolean
 	
-	return ((Value type:C1509(This:C1470.dataSource)=Is longint:K8:6) || (Value type:C1509(This:C1470.dataSource)=Is real:K8:4))\
-		 && (Is a list:C621(This:C1470.dataSource))
+	var $sourceType : Integer:=Value type:C1509(This:C1470.dataSource)
+	If (($sourceType=Is longint:K8:6) || ($sourceType=Is real:K8:4))
+		var $listRef : Integer:=Num:C11(This:C1470.dataSource)
+		return Is a list:C621($listRef)
+	End if 
+	
+	return False:C215
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get isObject() : Boolean
@@ -157,6 +163,7 @@ Function clearList()
 	
 	If (This:C1470.isChoiceList)
 		
-		CLEAR LIST:C377(This:C1470.dataSource; *)
+		var $listRef : Integer:=Num:C11(This:C1470.dataSource)
+		CLEAR LIST:C377($listRef; *)
 		
 	End if 
