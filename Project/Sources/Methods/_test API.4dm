@@ -1,6 +1,5 @@
 //%attributes = {}
 var $zen : Text
-var $gh : cs:C1710.GithubAPI
 
 /*
 
@@ -14,35 +13,59 @@ git push -u origin main
 
 */
 
-$gh:=cs:C1710.GithubAPI.new()
-var $token : Object:=$gh.getAppToken()
+//var $gh:=cs.GithubAPI.new()
+//var $token : Object:=$gh.getAppToken()
 
-//$gh.AuthorizeApp()
+var $gh:=cs:C1710.gh.me
 
+//If (Not($gh.authorized))
+//$gh.logIn()
+//End if 
+//If ($gh.authorized)
+//$gh.logout()
+//End if 
+//ASSERT($gh.authorized)
+
+
+//$gh.getUser($gh.token)
+////$gh.AuthorizeApp()
 //$gh._getToken()
-
 //$zen:=$gh.zen()
 
-//// Try creating a repository
-//$gh.CreateRepos("TEST REPO")
 
-//// Try delete a repository
-//$gh.DeleteRepos("test-repo")
+// Try creating a repository
+var $repo:="TEST REPO"
+var $remote:=$gh.createRepo($repo)
 
+If ($gh.success)
+	
 /*
-
+	
 // Create readme
 File("~repo/README.md").setText("# "+$name)
 git add README.md
 git commit -m "first commit"
-
+	
 // Add the origin to to the repository
 git remote add origin + $remoteURL
-
+	
 // Create the main branch
 git branch -M main
-
+	
 // Push
 git push -u origin main
-
+	
 */
+	
+End if 
+
+//If (Length($remote)>0)
+
+
+//// Try delete a repository
+//$gh.deleteRepo("test-repo")
+
+
+//End if 
+
+

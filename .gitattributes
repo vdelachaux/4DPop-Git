@@ -1,6 +1,5 @@
-﻿# ====================================================================
-# Basic .gitattributes for a 4D repo.
 # ====================================================================
+# Basic .gitattributes for a 4D repo.
 * text=auto
 # The above will handle all files NOT found below
 # These files are text and should be normalized (Convert crlf => lf)

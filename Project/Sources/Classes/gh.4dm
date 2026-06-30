@@ -2,30 +2,28 @@
 
 GitHub CLI, or gh, is a command-line interface to GitHub for use in your terminal or your scripts.
 
-*/
+https://cli.github.com/manual/
 
-property dataType; data; dataError : Text
-property success; available; authorized : Boolean
-property timeout : Integer
-property errors; history : Collection
+*/
+property dataType:="text"
+property data:=""
+property dataError:=""
+
+property timeout:=60
+
+property success:=True:C214
+property available:=False:C215
+property authorized:=False:C215
+
+property errors:=[]
+property history:=[]
+
+property exe; remote : Text
 property status : Object
 
-Class constructor
+singleton Class constructor
 	
-	This:C1470.dataType:="text"
-	This:C1470.data:=""
-	This:C1470.dataError:=""
-	
-	This:C1470.timeout:=60
-	
-	This:C1470.success:=True:C214
-	This:C1470.available:=False:C215
-	This:C1470.authorized:=False:C215
-	
-	This:C1470.errors:=[]
-	This:C1470.history:=[]
-	
-	This:C1470.available:=This:C1470.getExe()
+	This:C1470.available:=This:C1470._exe()
 	
 	If (This:C1470.available)
 		
@@ -42,45 +40,12 @@ Function get lastError() : Text
 	
 	return This:C1470.errors.length>0 ? This:C1470.errors[0] : ""
 	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	/// Locates the exe to use
-Function getExe() : Boolean
-	
-	var $cmd; $error; $in; $out : Text
-	
-	If (Is macOS:C1572)
-		
-		$cmd:="find /usr -type f -name gh"
-		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
-		This:C1470.success:=Bool:C1537(OK)
-		
-		If (This:C1470.success)
-			
-			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
-			
-		Else 
-			
-			// Use embedded binary
-			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh")).path
-			
-		End if 
-		
-	Else 
-		
-		// Use embedded binary
-		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/Bin/gh.exe")).path
-		
-	End if 
-	
-	return True:C214
-	
 	// MARK:- [auth]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Verifies and returns information about the authentication state.
 Function getStatus() : Object
 	
 	var $cmd; $error; $in; $out : Text
-	var $c : Collection
 	
 	ARRAY LONGINT:C221($len; 0)
 	ARRAY LONGINT:C221($pos; 0)
@@ -97,7 +62,7 @@ Function getStatus() : Object
 	
 	If (This:C1470.success)
 		
-		$c:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1)
+		var $c:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1)
 		This:C1470.success:=Match regex:C1019("(?mi-s)Logged in to "+Replace string:C233($c[0]; "."; "\\.")+" as ([^\\s]*)"; $c[1]; 1; $pos; $len)
 		
 		If (This:C1470.success)
@@ -105,7 +70,7 @@ Function getStatus() : Object
 			return {\
 				host: $c[0]; \
 				user: Substring:C12($c[1]; $pos{1}; $len{1}); \
-				scope: Split string:C1554(Substring:C12($c[4]; Position:C15(":"; $c[4])+1); ","; 2)\
+				scope: Split string:C1554(Substring:C12($c[4]; Position:C15(":"; $c[4])+1); ","; sk trim spaces:K86:2)\
 				}
 			
 		End if 
@@ -115,17 +80,15 @@ Function getStatus() : Object
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Authenticate with a GitHub host.
-Function logIn() : Boolean
+Function login() : Boolean
 	
-	var $worker : 4D:C1709.SystemWorker
-	
-	If (This:C1470.authorized)
+	If (This:C1470.authorized) || (This:C1470.exe=Null:C1517)
 		
 		return True:C214
 		
 	End if 
 	
-	$worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth login -h github.com -p HTTPS -s repo"; This:C1470).wait()
+	var $worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth login -h github.com -p HTTPS -s repo"; This:C1470).wait()
 	
 	If (This:C1470.success)
 		
@@ -137,9 +100,13 @@ Function logIn() : Boolean
 	/// Remove authentication for a GitHub host.
 Function logout()
 	
-	var $worker : 4D:C1709.SystemWorker
+	If (This:C1470.exe=Null:C1517)
+		
+		return 
+		
+	End if 
 	
-	$worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth logout -h "+(This:C1470.status.host || "github.com"); This:C1470).wait()
+	var $worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth logout -h "+(This:C1470.status.host || "github.com"); This:C1470).wait()
 	
 	If (This:C1470.success)
 		
@@ -153,6 +120,12 @@ Function logout()
 Function checkToken() : Boolean
 	
 	var $cmd; $error; $in; $out : Text
+	
+	If (This:C1470.exe=Null:C1517)
+		
+		return 
+		
+	End if 
 	
 	$cmd:=This:C1470.exe+" auth token"
 	LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
@@ -177,17 +150,19 @@ Function checkToken() : Boolean
 	/// Create a new GitHub repository.
 Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	
-	var $cmd : Text
-	var $worker : 4D:C1709.SystemWorker
-	
-	This:C1470.logIn()
+	This:C1470.login()
 	
 	If (This:C1470.authorized)
 		
-		$cmd:=This:C1470.exe+" repo create "
-		$cmd+=This:C1470._compliantRepositoryName($name)
-		$cmd+=$private ? " --private" : " --public"
-		$worker:=4D:C1709.SystemWorker.new($cmd; This:C1470).wait()
+		var $c:=[\
+			This:C1470.exe; \
+			"repo"; \
+			"create"; \
+			This:C1470._compliantRepositoryName($name); \
+			$private ? "--private" : "--public"\
+			]
+		
+		var $worker:=4D:C1709.SystemWorker.new($c.join(" "); This:C1470).wait()
 		
 		If (This:C1470.success)
 			
@@ -200,38 +175,41 @@ Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	/// Delete a GitHub repository.
 Function deleteRepo($name : Text) : Boolean
 	
-	var $cmd : Text
-	var $worker : 4D:C1709.SystemWorker
-	
-	This:C1470.logIn()
+	This:C1470.login()
 	
 	This:C1470.status:=This:C1470.status || This:C1470.getStatus()
 	
 	If (This:C1470.status.scope.includes("delete_repo"))
 		
-		$cmd:=This:C1470.exe+" repo delete "
-		$cmd+=This:C1470._compliantRepositoryName($name)
-		$cmd+=" --yes"
-		$worker:=4D:C1709.SystemWorker.new($cmd; This:C1470).wait()
+		var $c:=[\
+			This:C1470.exe; \
+			"repo"; \
+			"delete"; \
+			This:C1470._compliantRepositoryName($name); \
+			"--yes"\
+			]
+		
+		var $worker:=4D:C1709.SystemWorker.new($c.join(" "); This:C1470).wait()
 		
 		return This:C1470.success
 		
 	Else 
 		
 		// Try to refresh
-		$cmd:=This:C1470.exe+"  auth refresh -h github.com -s delete_repo"
+		var $cmd:=This:C1470.exe+"  auth refresh -h github.com -s delete_repo"
 		$worker:=4D:C1709.SystemWorker.new($cmd; This:C1470).wait()
 		
 		If (This:C1470.success)
 			
 			This:C1470.getStatus()
+			
 			return This:C1470.deleteRepo($name)
 			
 		End if 
 	End if 
 	
 	//MARK:- [System worker callbacks]
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§
 Function onDataError($worker : 4D:C1709.SystemWorker; $info : Object)
 	
 	//⚠️ The answers are all in the error stream
@@ -241,15 +219,10 @@ Function onDataError($worker : 4D:C1709.SystemWorker; $info : Object)
 	
 	If (Match regex:C1019("(?mi-s)([[:xdigit:]]{4}-[[:xdigit:]]{4}).*"; $info.data; 1; $pos; $len))
 		
-		var $winRef : Integer
-		$winRef:=Open form window:C675("DEVICE ACTIVATION"; Movable form dialog box:K39:8; Horizontally centered:K39:1; At the top:K39:5)
+		var $winRef:=Open form window:C675("DEVICE ACTIVATION"; Movable form dialog box:K39:8; Horizontally centered:K39:1; At the top:K39:5)
+		var $menubar:=cs:C1710.menuBar.new().defaultMinimalMenuBar().set()
 		
-		var $menubar : cs:C1710.menuBar
-		$menubar:=cs:C1710.menuBar.new().defaultMinimalMenuBar()
-		$menubar.set()
-		
-		var $otc : Text
-		$otc:=Substring:C12($info.data; $pos{1}; $len{1})
+		var $otc:=Substring:C12($info.data; $pos{1}; $len{1})
 		SET TEXT TO PASTEBOARD:C523($otc)
 		
 		DIALOG:C40("DEVICE ACTIVATION"; {otc: $otc; url: "https://github.com/login/device/"})
@@ -257,7 +230,7 @@ Function onDataError($worker : 4D:C1709.SystemWorker; $info : Object)
 		
 	End if 
 	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§ §§§
 Function onTerminate($worker : 4D:C1709.SystemWorker)
 	
 	This:C1470.history.insert(0; {\
@@ -329,7 +302,47 @@ Function onTerminate($worker : 4D:C1709.SystemWorker)
 		
 	End if 
 	
-	//MARK:-
+	// MARK:- Private
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	/// Locates the exe to use
+Function _exe() : Boolean
+	
+	var $error; $in; $out : Text
+	
+	If (Is macOS:C1572)
+		
+		var $cmd:="find /usr -type f -name gh"
+		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
+		
+		If (Length:C16($out)=0)
+			
+			$cmd:="which gh"
+			LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
+			
+		End if 
+		
+		This:C1470.success:=(Bool:C1537(OK)) && (Length:C16($out)>0)
+		
+		If (This:C1470.success)
+			
+			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
+			
+		Else 
+			
+			// Use embedded binary
+			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/bin/gh")).path
+			
+		End if 
+		
+	Else 
+		
+		// Use embedded binary
+		This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/bin/gh.exe")).path
+		
+	End if 
+	
+	return (Length:C16(This:C1470.exe)>0) && File:C1566(This:C1470.exe).exists
+	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _unsanboxed($target : Object) : Object
 	
@@ -355,24 +368,21 @@ Function _unsanboxed($target : Object) : Object
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _record($name : Text; $worker : 4D:C1709.SystemWorker)
 	
-	var $o : Object
-	
-	$o:={\
+	var $o:={\
 		commandLine: $worker.commandLine; \
 		response: $worker.response; \
 		responseError: $worker.responseError\
 		}
 	
-	File:C1566("/RESOURCES/"+$name+".json"; *).setText(JSON Stringify:C1217($o; *))
+	File:C1566("/LOGS/GitHub CLI "+$name+".json"; *).setText(JSON Stringify:C1217($o; *))
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _compliantRepositoryName($name : Text) : Text
 	
 	var $len; $pos : Integer
-	var $c : Collection
 	
 	$name:=Lowercase:C14($name)
-	$c:=[]
+	var $c:=[]
 	
 	While (Match regex:C1019("(?mi-s)([^[:alnum:]]+)"; $name; 1; $pos; $len))
 		

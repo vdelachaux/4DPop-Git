@@ -1,4 +1,4 @@
-﻿# Ignore invisible files/folders except .gitignore
+# Ignore invisible files/folders except .gitignore
 .*
 !.gitignore
 !.github/
@@ -80,3 +80,4 @@ _Macros v2
 Resources/Images/Fork
 Resources/Images/_removed
 Resources/onTerminate.json
+/Components

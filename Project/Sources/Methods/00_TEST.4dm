@@ -1,21 +1,52 @@
 //%attributes = {}
-C_BOOLEAN:C305($bRelative)
-C_DATE:C307($dateGMT)
-C_LONGINT:C283($lError; $lIAT)
-C_TIME:C306($time; $timeGMT)
-C_TEXT:C284($t; $tContents; $tPrivate; $tResponse; $tToken; $tURL)
-C_TEXT:C284($tVersion)
-C_OBJECT:C1216($file; $git; $o; $oJWT; $oPayload)
-C_COLLECTION:C1488($c)
+var $bRelative : Boolean
+var $dateGMT : Date
+var $lError; $lIAT : Integer
+var $time; $timeGMT : Time
+var $t; $tContents; $tPrivate; $tResponse; $tToken; $tURL : Text
 
+var $o; $oJWT; $oPayload : Object
+
+var $git:=cs:C1710.Git.me
+var $gh:=cs:C1710.gh.me
 
 Case of 
 		
 		//______________________________________________________
 	: (True:C214)
 		
-		$git:=cs:C1710.Git.new()
-		$tVersion:=$git.version("short")
+		$gh.deleteRepo("test-git")
+		ASSERT:C1129($gh.success)
+		BEEP:C151
+		
+		//______________________________________________________
+	: (True:C214)
+		
+		var $number:=$git.branchFetchNumber("refactor")
+		
+		
+		//______________________________________________________
+	: (True:C214)
+		
+		
+		var $version:=$git.getVersion("short")
+		$version:=$git.getVersion()
+		
+/*
+var $path:=Folder(Folder(fk database folder).platformPath; fk platform path).file("Project/Sources/Methods/GIT.4dm").path
+$git.diff($path)
+//ASSERT($git.error="Git.diff('/Users/vdl/GITHUB/4DPop/4DPop-Family/4DPop-Git/Project/Sources/Methods/GIT.4dm'): File not found")
+		
+$path:=Folder(Folder(fk database folder).platformPath; fk platform path).file("Project/Sources/Methods/GIT SETTINGS.4dm").path
+$git.diff($path)
+*/
+		
+		var $c:=$git.FETCH_HEAD("tag")
+		$c:=$git.FETCH_HEAD("branch")
+		
+		var $config:=$git.getConfig()
+		
+		
 		
 		$git.status()
 		$git.branch()
@@ -26,8 +57,7 @@ Case of
 		$git.updateRemotes()
 		$git.updateTags()
 		
-		$file:=Folder:C1567(Folder:C1567(fk database folder:K87:14).platformPath; fk platform path:K87:2).file("Project/Sources/Methods/GIT.4dm")
-		$git.diff($file)
+		
 		
 		$git.diffTool("Project/Sources/Methods/GIT.4dm")
 		
@@ -70,7 +100,7 @@ Case of
 		//______________________________________________________
 	: (False:C215)
 		
-		$o:=cs:C1710.Git.new()
+		$o:=cs:C1710.Git.me
 		
 		$o.execute("log --abbrev-commit --oneline")
 		$o.execute("log --abbrev-commit --format=%s,%an,%h,%aD")

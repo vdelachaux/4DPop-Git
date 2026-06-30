@@ -1,7 +1,15 @@
 {
+	"(Embedded)": {},
+	"(GIT)": {},
+	"(PATTERN)": {},
+	"(SETTINGS)": {},
 	"# 🚧 DEV": {
 		"methods": [
+			"_test API",
 			"00_TEST"
+		],
+		"classes": [
+			"GithubAPI"
 		]
 	},
 	"♻️ LIBRAIRIES": {
@@ -14,16 +22,13 @@
 			"noError"
 		],
 		"classes": [
-			"_classCore",
-			"colour",
-			"coord",
-			"dim",
-			"evt",
+			"color",
+			"error",
+			"feature",
 			"http",
-			"menu",
-			"menuBar",
 			"motor",
-			"onBoard",
+			"os",
+			"regex",
 			"svg",
 			"xml"
 		]
@@ -32,13 +37,12 @@
 	"👥 NAMESPACE": {
 		"classes": [
 			"gh",
-			"Git",
-			"GithubAPI"
+			"Git"
 		]
 	},
 	"👩‍💻 UI": {
 		"methods": [
-			"COMPILER_UI",
+			"_error",
 			"dropableWidgetMethod",
 			"form_spreadToSubforms",
 			"formCallBack",
@@ -48,44 +52,68 @@
 			"subformWidgetMethod"
 		],
 		"classes": [
-			"buttonDelegate",
-			"comboBoxDelegate",
-			"constraintsDelegate",
-			"dropDownDelegate",
-			"formDelegate",
-			"groupDelegate",
-			"hListDelegate",
-			"inputDelegate",
-			"listboxDelegate",
-			"pictureDelegate",
-			"scrollableDelegate",
-			"selectorDelegate",
-			"staticDelegate",
-			"stepperDelegate",
-			"subformDelegate",
-			"thermometerDelegate",
-			"webAreaDelegate",
-			"widgetDelegate",
-			"windowDelegate"
+			"button",
+			"colors",
+			"colour",
+			"comboBox",
+			"constraints",
+			"coordinates",
+			"dropDown",
+			"evt",
+			"form",
+			"group",
+			"hierList",
+			"hList",
+			"input",
+			"listbox",
+			"menu",
+			"menuBar",
+			"onBoard",
+			"picture",
+			"rect",
+			"scrollable",
+			"selector",
+			"static",
+			"stepper",
+			"subform",
+			"tabControl",
+			"thermometer",
+			"tips",
+			"webArea",
+			"widget",
+			"window"
 		]
 	},
 	"📦 MAIN": {
-		"groups": [
-			"Embedded",
-			"GIT",
-			"PATTERN",
-			"SETTINGS"
-		],
 		"methods": [
+			"GIT MENU",
 			"GIT SETTINGS",
-			"GIT UPDATE"
+			"GIT UPDATE",
+			"openWith"
 		],
 		"forms": [
 			"_TEMPLATE",
-			"DEVICE ACTIVATION"
+			"ALERT",
+			"CHECKOUT",
+			"DEVICE ACTIVATION",
+			"EMBEDDED BACK",
+			"GIT",
+			"NEW BRANCH",
+			"PATTERN",
+			"PULL",
+			"PUSH",
+			"SETTINGS"
 		],
 		"classes": [
-			"_gravatarRequest"
+			"_GIT_Controller",
+			"_gravatarRequest",
+			"_PATTERN_Controller"
+		]
+	},
+	"📦 Widgets": {
+		"groups": [
+			"MESSAGE",
+			"WINDOW_FRAME"
 		]
 	},
 	"4️⃣ 4DPop": {
@@ -99,49 +127,26 @@
 	},
 	"database": {
 		"methods": [
-			"COMPILER_database",
-			"databaseNonThreadSafe"
+			"getProject"
 		],
 		"classes": [
 			"database"
 		]
 	},
-	"Embedded": {
-		"forms": [
-			"ALERT",
-			"EMBEDDED BACK",
-			"PULL",
-			"PUSH"
-		]
-	},
 	"env": {
 		"methods": [
-			"COMPILER_env",
 			"envScreens"
 		],
 		"classes": [
 			"env"
 		]
 	},
-	"GIT": {
-		"forms": [
-			"GIT"
+	"MESSAGE": {
+		"methods": [
+			"HDI_MESSAGE"
 		],
-		"classes": [
-			"_GIT_Controller"
-		]
-	},
-	"PATTERN": {
 		"forms": [
-			"PATTERN"
-		],
-		"classes": [
-			"_PATTERN_Controller"
-		]
-	},
-	"SETTINGS": {
-		"forms": [
-			"SETTINGS"
+			"MESSAGE"
 		]
 	},
 	"WIDGET": {
@@ -150,6 +155,14 @@
 		],
 		"classes": [
 			"_WIDGET_Controller"
+		]
+	},
+	"WINDOW_FRAME": {
+		"forms": [
+			"WINDOW_FRAME"
+		],
+		"classes": [
+			"_WINDOW_FRAME_Controller"
 		]
 	},
 	"trash": {

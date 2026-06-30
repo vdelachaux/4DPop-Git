@@ -1,21 +1,24 @@
-property success : Boolean
-property method : Text
+property success:=True:C214
+property method; URL : Text
 property headers : Object
-property errors; METHODS; warnings : Collection
+property errors:=[]
+property warnings:=[]
+property body  // Note that "body" is a variant!
+
+property DEV:=Structure file:C489=Structure file:C489(*)
 
 Class constructor($url : Text; $method : Text; $headers : Object; $body)
 	
-	This:C1470.success:=True:C214
 	This:C1470.URL:=$url
 	
 	This:C1470[""]:={\
 		METHODS: ["HEAD"; "GET"; "POST"; "PATCH"; "PUSH"; "DELETE"]\
 		}
 	
-	This:C1470.errors:=[]
-	This:C1470.warnings:=[]
+	This:C1470.method:=Length:C16($method)=0 ? "GET" : $method  // GET is the default method 
 	
-	This:C1470.method:=Length:C16($method)=0 ? "GET" : $method  // GET is the default method
+	This:C1470.headers:=$headers || {}  // Empty object if not provided
+	This:C1470.body:=$body
 	
 	If (Not:C34(This:C1470[""].METHODS.includes(This:C1470.method)))
 		
@@ -23,11 +26,6 @@ Class constructor($url : Text; $method : Text; $headers : Object; $body)
 		return 
 		
 	End if 
-	
-	This:C1470.headers:=$headers || {}  // Empty object if not provided
-	This:C1470.body:=$body  // Note that "body" is a variant!
-	
-	This:C1470.dev:=(Structure file:C489=Structure file:C489(*))
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get error() : Text
@@ -57,4 +55,3 @@ Function _pushError($message : Text)
 Function _pushWarning($message : Text)
 	
 	This:C1470.warnings.push($message)
-	

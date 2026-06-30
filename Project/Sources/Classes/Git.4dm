@@ -1,139 +1,95 @@
-property success; local; debug : Boolean
-property command; error; HEAD; result; warning : Text
-property BrancUnpulledCommit : Integer
-property user; workingBranch : Object
-property errors; warnings; branches; changes; history; remotes; stashes; tags : Collection
-property cwd; root : 4D:C1709.Folder
+property command : Text
+property workspace; root : 4D:C1709.Folder
 property gitignore; gitattributes : 4D:C1709.File
 
 property _version : Text
 
-Class constructor($folder : 4D:C1709.Folder)
+property success:=True:C214
+property local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
+property result:=""
+property error:=""
+property errors:=[]
+property warning:=""
+property warnings:=[]
+property user:={name: ""; email: ""}
+property workingBranch:={}
+property branches:=[]
+property changes:=[]
+property history:=[]
+property remotes:=[]
+property stashes:=[]
+property tags:=[]
+property HEAD:=""
+property _token:=""
+
+// MARK: Constants 🧰
+property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
+property SOURCES:=Folder:C1567("/SOURCES/"; *)
+property DEBUG:=Structure file:C489=Structure file:C489(*)
+
+shared singleton Class constructor($folder : 4D:C1709.Folder)
 	
-	This:C1470.success:=True:C214
+	This:C1470._updateWorkspace($folder)
 	
-	This:C1470.error:=""
-	This:C1470.errors:=[]
-	
-	This:C1470.warning:=""
-	This:C1470.warnings:=[]
-	
-	This:C1470.user:={}
-	This:C1470.workingBranch:={}
-	This:C1470.branches:=[]
-	This:C1470.changes:=[]
-	This:C1470.history:=[]
-	This:C1470.remotes:=[]
-	This:C1470.stashes:=[]
-	This:C1470.tags:=[]
-	
-	This:C1470.HEAD:=""
-	
-	// Current workspace
-	$folder:=$folder || Folder:C1567("/PACKAGE"; *)
-	$folder:=Folder:C1567($folder.platformPath; fk platform path:K87:2)  // Unsandboxed
-	This:C1470.cwd:=$folder
-	
-	// Search for .git folder
-	While ($folder#Null:C1517)\
-		 && (Not:C34($folder.folder(".git").exists))
-		
-		$folder:=$folder.parent
-		
-		Case of 
-				
-				//_________________________________
-			: ($folder=Null:C1517)
-				
-				break
-				
-				//_________________________________
-			: ($folder.folder(".git").exists)
-				
-				This:C1470.cwd:=$folder
-				
-				break
-				
-				//_________________________________
-		End case 
-	End while 
-	
-	This:C1470.root:=This:C1470.cwd.folder(".git")
-	
-	This:C1470.gitignore:=This:C1470.cwd.file(".gitignore")
-	This:C1470.gitattributes:=This:C1470.cwd.file(".gitattributes")
-	
-	This:C1470.local:=Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215
-	
-	var $exe : 4D:C1709.File
-	
-	Case of 
-			
-			//______________________________________________________
-		: (Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215)
-			
-			This:C1470.command:="/usr/local/bin/git "
-			
-			//______________________________________________________
-		: (Is Windows:C1573)
-			
-			$exe:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
-			
-			If ($exe.exists)
-				
-				This:C1470.command:=$exe.path+" "
-				
-			Else 
-				
-				This:C1470._pushError("Git not installed")
-				
-			End if 
-			
-			//______________________________________________________
-		Else 
-			
-			This:C1470.command:="git "
-			
-			//______________________________________________________
-	End case 
-	
-	This:C1470.result:=""
-	
-	This:C1470.debug:=(Structure file:C489=Structure file:C489(*))
+	This:C1470.command:=This:C1470._command()
 	
 	If (This:C1470.root#Null:C1517)\
 		 & (This:C1470.root.exists)
 		
 		This:C1470.update()
 		
+	End if 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+shared Function _updateWorkspace($folder : 4D:C1709.Folder)
+	
+	This:C1470.workspace:=This:C1470._workspace($folder)
+	
+	If (This:C1470.workspace#Null:C1517)
+		
+		This:C1470.root:=This:C1470.workspace.folder(".git")
+		This:C1470.gitignore:=This:C1470.workspace.file(".gitignore")
+		This:C1470.gitattributes:=This:C1470.workspace.file(".gitattributes")
+		
 	Else 
 		
-		This:C1470.init()
+		OB REMOVE:C1226(This:C1470; "root")
 		
 	End if 
 	
-	If (This:C1470.execute("version"))
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	// Obtain user token (same as dependency manager token)
+shared Function get token() : Text
+	
+	If (Length:C16(This:C1470._token)>0)
 		
-		This:C1470._version:=This:C1470.result
+		return This:C1470._token
 		
-		var $len; $pos : Integer
-		
-		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
-			
-			This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
-			
-		Else 
-			
-			// Store full result
-			This:C1470._version:=This:C1470.result
-			
-		End if 
 	End if 
 	
-	This:C1470.BrancUnpulledCommit:=0
+	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
+	
+	If ($file.exists)
+		
+		This:C1470._token:=String:C10(JSON Parse:C1218($file.getText()).token)
+		
+	End if 
+	
+	return This:C1470._token
+	
+	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
+	// Store the user token (same as dependency manager token)
+shared Function set token($token : Text)
+	
+	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
+	var $o : Object:=$file.exists ? JSON Parse:C1218($file.getText()) : {}
+	$o.token:=$token
+	$file.setText(JSON Stringify:C1217($o; *))
+	
+	This:C1470._token:=$token
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function execute($command : Text; $inputStream : Text) : Boolean
+shared Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	var $errorStream; $outputStream : Text
 	
@@ -142,6 +98,8 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 		return 
 		
 	End if 
+	
+	This:C1470.result:=""
 	
 	If (Length:C16($command)=0)
 		
@@ -152,9 +110,9 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
 	
-	If (This:C1470.cwd#Null:C1517)
+	If (This:C1470.workspace#Null:C1517)
 		
-		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
+		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workspace.platformPath))
 		
 	End if 
 	
@@ -163,14 +121,31 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 	LAUNCH EXTERNAL PROCESS:C811($command; $inputStream; $outputStream; $errorStream)
 	This:C1470.success:=Bool:C1537(OK) & (Length:C16($errorStream)=0)
 	
-	This:C1470.history.insert(0; {\
+	Case of 
+			
+			// ——————————————————————
+		: (This:C1470.success)
+			
+			// <NOTHING MORE TO DO>
+			
+			// —————————————————————— ⚠️ In some cases, the result can be found in the error stream
+		: ($command="@checkout@")
+			
+			This:C1470.success:=(($errorStream="Switched to branch @") && ($outputStream="Your branch is up to date with @"))\
+				 || ($errorStream="@switched to branch@")\
+				 || ($errorStream="Already on @")
+			
+			// ——————————————————————
+	End case 
+	
+	This:C1470.history.insert(0; OB Copy:C1225({\
 		cmd: "$ "+$command; \
 		success: This:C1470.success; \
-		out: $outputStream; \
-		error: $errorStream\
-		})
+		out: This:C1470._normalize($outputStream); \
+		error: This:C1470._normalize($errorStream)\
+		}; ck shared:K85:29; This:C1470))
 	
-	If (Not:C34(Bool:C1537(This:C1470.debug)))\
+	If (Not:C34(Bool:C1537(This:C1470.DEBUG)))\
 		 && (This:C1470.history.length>20)
 		
 		This:C1470.history.resize(20)
@@ -184,14 +159,12 @@ Function execute($command : Text; $inputStream : Text) : Boolean
 			
 			This:C1470.error:=""
 			This:C1470.warning:=""
-			
-			// Delete the last line break, if any
-			This:C1470.result:=Split string:C1554(This:C1470._normalizeLF($outputStream); "\n"; sk ignore empty strings:K86:1).join("\n")
+			This:C1470.result:=This:C1470.history[0].out
 			
 			//——————————————————————
 		: (Length:C16($errorStream)>0)
 			
-			This:C1470._pushError(This:C1470.history[0].cmd+" - "+Split string:C1554($errorStream; "\n"; sk ignore empty strings:K86:1).join("\n"))
+			This:C1470._pushError(This:C1470.history[0].cmd+" - "+This:C1470.history[0].error)
 			
 			//——————————————————————
 	End case 
@@ -205,6 +178,14 @@ Function getConfig($what : Text) : Text
 When reading, the values are read from the system, global
 and repository local configuration files by default
 */
+	
+	If (Length:C16($what)=0)
+		
+		This:C1470._pushError(Current method name:C684+" Missing \"what\" parameter")
+		return 
+		
+	End if 
+	
 	This:C1470.execute("config --get "+$what)
 	
 	If (This:C1470.success)
@@ -213,8 +194,19 @@ and repository local configuration files by default
 		
 	End if 
 	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
-Function get version() : Text
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getVersion($type : Text) : Text
+	
+	var $len; $pos : Integer
+	
+	If ($type="short")
+		
+		If (Match regex:C1019("(?m-si)\\s\\d+(?:\\.\\d+){0,2}"; This:C1470.result; 1; $pos; $len))
+			
+			return Substring:C12(This:C1470.result; $pos+1; $len-1)
+			
+		End if 
+	End if 
 	
 	return This:C1470._version
 	
@@ -223,7 +215,7 @@ Function get currentBranch() : Text
 	
 	If (Length:C16(String:C10(This:C1470.HEAD))>0)
 		
-		return Split string:C1554(Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/"); "\r")[0]
+		return Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/")
 		
 	Else 
 		
@@ -234,11 +226,7 @@ Function get currentBranch() : Text
 	
 	//mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function init()
-	
-	//If (This.execute("config --get --default master init.defaultBranch")#"development")
-	//This.execute("config --local init.defaultBranch development")
-	//End if 
+shared Function init()
 	
 	// Creates an empty Git repository
 	This:C1470.execute("init")
@@ -246,46 +234,57 @@ Function init()
 	// Create default gitignore
 	If (Not:C34(This:C1470.gitignore.exists))
 		
-		This:C1470.gitignore.setText(File:C1566("/RESOURCES/gitignore.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
+		This:C1470.gitignore.setText(File:C1566("/RESOURCES/git/templates/gitignore.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
 		
 	End if 
 	
 	// Create default gitattributes
 	If (Not:C34(This:C1470.gitattributes.exists))
 		
-		This:C1470.gitattributes.setText(File:C1566("/RESOURCES/gitattributes.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
+		This:C1470.gitattributes.setText(File:C1566("/RESOURCES/git/templates/gitattributes.txt").getText("UTF-8"; Document with CR:K24:21); "UTF-8"; Document with LF:K24:22)
 		
 	End if 
+	
+	This:C1470.user.name:=This:C1470.userName()
+	This:C1470.user.email:=This:C1470.userMail()
 	
 	// Ignore file permission
 	This:C1470.execute("config core.filemode false")
 	
+	This:C1470._updateWorkspace()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function userName() : Text
+	
 	If (This:C1470.execute("config --get user.name"))
 		
-		This:C1470.user.name:=This:C1470.result
+		return This:C1470._normalize(This:C1470.history[0].out)
 		
 	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function userMail() : Text
 	
 	If (This:C1470.execute("config --get user.email"))
 		
-		This:C1470.user.email:=This:C1470.result
+		return This:C1470._normalize(This:C1470.history[0].out)
 		
 	End if 
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function version() : Text
+	
+	var $len; $pos : Integer
+	
 	If (This:C1470.execute("version"))
 		
-		This:C1470._version:=This:C1470.result
-		
-		var $len; $pos : Integer
-		
-		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?"; This:C1470.result; 1; $pos; $len))
+		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+)?(?:\\.\\d+)?(?:\\s\\([^)]*\\))"; This:C1470.result; 1; $pos; $len))
 			
-			This:C1470._version:=Substring:C12(This:C1470.result; $pos; $len)
+			return Substring:C12(This:C1470.result; $pos; $len)
 			
 		Else 
 			
-			// Store full result
-			This:C1470._version:=This:C1470.result
+			return This:C1470.result
 			
 		End if 
 	End if 
@@ -306,28 +305,31 @@ Function get lfs() : Boolean
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function update()
+shared Function update()
 	
-	This:C1470.HEAD:=Split string:C1554(This:C1470._normalizeLF(This:C1470.root.file("HEAD").getText()); "\n"; sk ignore empty strings:K86:1)[0]
+	This:C1470.HEAD:=This:C1470._normalize(This:C1470.root.file("HEAD").getText())
+	This:C1470.user.name:=This:C1470.userName()
+	This:C1470.user.email:=This:C1470.userMail()
+	This:C1470._version:=This:C1470.version()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function status($short : Boolean) : Integer
-	
-	var $cmd; $t : Text
+	// Updates the collection of changes and returns their number
+shared Function status($short : Boolean) : Integer
 	
 	$short:=Count parameters:C259>=1 ? $short : True:C214  // Default is True
 	
 	This:C1470.changes.clear()
 	
-	$cmd:="status"+($short ? " -s" : "")+" -uall --porcelain"
+	var $cmd:="status"+($short ? " -s" : "")+" -uall --porcelain"
 	
 	If (This:C1470.execute($cmd))
 		
+		var $t : Text
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
-			This:C1470.changes.push({\
+			This:C1470.changes.push(OB Copy:C1225({\
 				status: $t[[1]]+$t[[2]]; \
-				path: Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")})
+				path: Replace string:C233(Delete string:C232($t; 1; 3); "\""; "")}; ck shared:K85:29; This:C1470))
 			
 		End for each 
 	End if 
@@ -366,7 +368,6 @@ Function add($what)
 		: (Value type:C1509($what)=Is collection:K8:32)
 			
 			var $item
-			
 			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)
@@ -432,25 +433,34 @@ Function unstage($what)
 			//_____________________________
 		: (Value type:C1509($what)=Is text:K8:3)
 			
-			var $c : Collection
-			$c:=Split string:C1554($what; " -> ")
-			
-			If ($c.length>1)  // Moved
-				
-				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[0]))
-				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[1]))
-				
-			Else 
-				
-				This:C1470.execute("reset HEAD "+This:C1470._quoted($what))
-				
-			End if 
+			Case of 
+					
+					//——————————————————————
+				: ($what="all")  // Unstage all stagged files
+					
+					This:C1470.execute("reset")
+					
+					//——————————————————————
+				Else 
+					
+					var $c:=Split string:C1554($what; " -> ")
+					
+					If ($c.length>1)  // Moved
+						
+						This:C1470.execute("reset HEAD "+This:C1470._quoted($c[0]))
+						This:C1470.execute("reset HEAD "+This:C1470._quoted($c[1]))
+						
+					Else 
+						
+						This:C1470.execute("reset HEAD "+This:C1470._quoted($what))
+						
+					End if 
+			End case 
 			
 			//_____________________________
 		: (Value type:C1509($what)=Is collection:K8:32)
 			
 			var $item
-			
 			For each ($item; $what)
 				
 				If (Value type:C1509($item)=Is text:K8:3)
@@ -533,15 +543,18 @@ Function pull($rebase : Boolean; $stash : Boolean) : Boolean
 	
 	$c.push("origin -q")
 	
-	//return This.execute("pull --rebase --autostash origin -q")
 	This:C1470.execute($c.join(" "))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function push($origin : Text; $branch : Text) : Boolean
+Function push($origin : Text; $branch : Text; $force : Boolean) : Boolean
 	
-	var $c : Collection
+	If ($force)
+		
+		return This:C1470.forcePush($origin; $branch)
+		
+	End if 
 	
-	$c:=["push"]
+	var $c:=["push"]
 	
 	If (Count parameters:C259>=2)
 		
@@ -550,8 +563,7 @@ Function push($origin : Text; $branch : Text) : Boolean
 		
 	Else 
 		
-		// FIXME:What if "master" is not the main branch?
-		$c.push("origin master")
+		$c.push("origin "+This:C1470.currentBranch)
 		
 	End if 
 	
@@ -563,9 +575,7 @@ Function push($origin : Text; $branch : Text) : Boolean
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function forcePush($origin : Text; $branch : Text) : Boolean
 	
-	var $c : Collection
-	
-	$c:=["push"]
+	var $c:=["push"]
 	
 	If (Count parameters:C259>=2)
 		
@@ -575,7 +585,7 @@ Function forcePush($origin : Text; $branch : Text) : Boolean
 	Else 
 		
 		// FIXME:What if "master" is not the main branch?
-		$c.push("origin master")
+		$c.push("origin "+This:C1470.currentBranch)
 		
 	End if 
 	
@@ -587,11 +597,9 @@ Function forcePush($origin : Text; $branch : Text) : Boolean
 	
 	//MARK:-branch
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function branch($whatToDo : Text; $name : Text; $newName : Text)
+shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C1710.Git
 	
 	var $t : Text
-	var $o : Object
-	var $c : Collection
 	
 	Case of 
 			
@@ -599,22 +607,22 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 		: (Length:C16($whatToDo)=0)\
 			 | ($whatToDo="list")  // Update branch list
 			
-			This:C1470.branches:=[]
+			This:C1470.branches:=New shared collection:C1527
 			
 			If (This:C1470.execute("branch --list -v"))
 				
 				For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					
-					$c:=Split string:C1554($t; " "; sk ignore empty strings:K86:1)
+					var $c:=Split string:C1554($t; " "; sk ignore empty strings:K86:1)
 					
 					If ($c[0]="*")  // Current branch
 						
-						$o:={\
+						var $o:={\
 							name: $c[1]; \
 							ref: $c[2]; \
 							current: True:C214}
 						
-						This:C1470.workingBranch:=$o
+						This:C1470.workingBranch:=OB Copy:C1225($o; ck shared:K85:29; This:C1470)
 						
 					Else 
 						
@@ -625,13 +633,13 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 						
 					End if 
 					
-					This:C1470.branches.push($o)
+					This:C1470.branches.push(OB Copy:C1225($o; ck shared:K85:29; This:C1470))
 					
 				End for each 
 			End if 
 			
 			//———————————————————————————————————
-		: ($whatToDo="master") | ($whatToDo="main")  // Return on the main branch
+		: ($whatToDo="master") || ($whatToDo="main")  // Return on the main branch
 			
 			If (This:C1470.execute("checkout master"))
 				
@@ -720,8 +728,10 @@ Function branch($whatToDo : Text; $name : Text; $newName : Text)
 			//———————————————————————————————————
 	End case 
 	
+	return This:C1470
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function checkout($what)
+Function checkout($what) : cs:C1710.Git
 	
 	var $item
 	
@@ -730,7 +740,7 @@ Function checkout($what)
 			//_____________________________
 		: (Value type:C1509($what)=Is text:K8:3)
 			
-			This:C1470.execute("checkout -- "+This:C1470._quoted($what))
+			This:C1470.execute("checkout "+$what)
 			
 			//_____________________________
 		: (Value type:C1509($what)=Is collection:K8:32)
@@ -756,36 +766,17 @@ Function checkout($what)
 			//_____________________________
 	End case 
 	
+	return This:C1470
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchFetchNumber($branch : Text) : Integer
 	
-	var $local; $remote; $t : Text
+	var $t : Text
 	var $i : Integer
-	var $file : 4D:C1709.File
 	
 	If (Length:C16($branch)>0)
 		
-		$file:=This:C1470.root.folder("refs/heads").file($branch)
-		
-		If (Not:C34($file.exists))
-			
-			return 
-			
-		End if 
-		
-		$local:=Substring:C12($file.getText(); 1; 7)
-		
-		$file:=This:C1470.root.folder("refs/remotes/origin").file($branch)
-		
-		If (Not:C34($file.exists))
-			
-			return 
-			
-		End if 
-		
-		$remote:=Substring:C12($file.getText(); 1; 7)
-		
-		This:C1470.execute("log "+$local+".."+$remote)
+		This:C1470.execute("log "+This:C1470._refs($branch; "local")+".."+This:C1470._refs($branch; "remote"))
 		
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
@@ -809,9 +800,7 @@ Function branchFetchNumber($branch : Text) : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchPushNumber($branch : Text) : Integer
 	
-	var $c : Collection
-	
-	$c:=["rev-list"]
+	var $c:=["rev-list"]
 	
 	$c.push(Length:C16($branch)>0\
 		 ? "origin/"+$branch+".."+$branch\
@@ -827,9 +816,14 @@ Function branchPushNumber($branch : Text) : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function diff($pathname : Text; $option : Text)
 	
-	var $c : Collection
+	If (Not:C34(This:C1470.workspace.file($pathname).exists))
+		
+		This:C1470._pushError(Current method name:C684+"('"+$pathname+"'): File not found")
+		return 
+		
+	End if 
 	
-	$c:=["diff -w"]
+	var $c:=["diff -w"]
 	
 	If (Count parameters:C259>=2)
 		
@@ -845,7 +839,7 @@ Function diff($pathname : Text; $option : Text)
 Function diffList($parent : Text; $current : Text) : Boolean
 	
 	// Empty tree id
-	$parent:=Length:C16($parent)=0 ? "4b825dc642cb6eb9a060e54bf8d69288fbee4904" : $parent
+	$parent:=$parent || "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 	
 	return This:C1470.execute("diff --name-status "+$parent+" "+$current)
 	
@@ -858,38 +852,46 @@ Function diffTool($pathname : Text)
 	
 	//MARK:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateRemotes()
+shared Function updateRemotes() : cs:C1710.Git
 	
 	var $t : Text
-	var $c : Collection
 	
 	This:C1470.remotes.clear()
+	
+	// TODO: Use~/.git/refs/remotes/origin
 	
 	If (This:C1470.execute("remote -v"))
 		
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
-			$c:=Split string:C1554($t; "\t"; sk ignore empty strings:K86:1)
+			var $c:=Split string:C1554($t; "\t"; sk ignore empty strings:K86:1)
 			
 			If (This:C1470.remotes.query("name=:1"; $c[0]).length=0)
 				
-				This:C1470.remotes.push({\
+				This:C1470.remotes.push(OB Copy:C1225({\
 					name: $c[0]; \
 					url: Substring:C12($c[1]; 1; Position:C15(" ("; $c[1])-1)\
-					})
+					}; ck shared:K85:29; This:C1470))
 				
 			End if 
 		End for each 
 	End if 
 	
+	return This:C1470
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateTags()
+shared Function addRemote($name : Text; $url : Text)
+	
+	This:C1470.remotes.push(OB Copy:C1225({name: $name; url: $url}; ck shared:K85:29))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+shared Function updateTags() : cs:C1710.Git
+	
+	var $t : Text
 	
 	This:C1470.tags.clear()
 	
 	If (This:C1470.execute("tag"))
-		
-		var $t : Text
 		
 		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 			
@@ -898,37 +900,97 @@ Function updateTags()
 		End for each 
 	End if 
 	
+	return This:C1470
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function open($whatToDo : Text)
+Function FETCH_HEAD($type : Text) : Collection
+	
+	var $file : 4D:C1709.File:=This:C1470.root.file("FETCH_HEAD")
+	
+	If (Not:C34($file.exists))
+		
+		return 
+		
+	End if 
+	
+	var $rgx:=cs:C1710.regex.new($file.getText(); "(?m-si)^([[:xdigit:]]*)\\s[^\\s]+\\s"+$type+"\\s'([^']+)")
+	
+	var $c:=[]
+	var $i:=-1
+	var $t:=""
+	
+	For each ($t; $rgx.extract("1 2"))
+		
+		$i+=1
+		
+		If ($i%2=0)
+			
+			var $o:={ref: $t}
+			continue
+			
+		End if 
+		
+		$o[$type]:=$t
+		$c.push($o)
+		
+	End for each 
+	
+	return $c
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function REMOTE_ORIGIN() : Collection
+	
+	var $folder : 4D:C1709.Folder:=This:C1470.root.folder("refs/remotes/origin")
+	var $file : 4D:C1709.File
+	var $c:=[]
+	
+	For each ($file; $folder.files())
+		
+		If ($file.name="HEAD")
+			
+			continue
+			
+		End if 
+		
+		var $o:={name: $file.name; ref: Split string:C1554($file.getText(); "\n")[0]}
+		
+		$c.push($o)
+		
+	End for each 
+	
+	return $c
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+shared Function open($what : Text)
 	
 	var $errorStream; $outputStream; $inputStream : Text
 	
 	Case of 
 			
 			//——————————————————————
-		: ($whatToDo="terminal")  // Open terminal in the working directory
+		: ($what="terminal")  // Open terminal in the working directory
 			
 			If (Is macOS:C1572)
 				
-				LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+This:C1470.cwd.path+"'"; $inputStream; $outputStream; $errorStream)
+				LAUNCH EXTERNAL PROCESS:C811("open -a terminal '"+String:C10(This:C1470.workspace.path)+"'"; $inputStream; $outputStream; $errorStream)
 				
 			Else 
 				
-				LAUNCH EXTERNAL PROCESS:C811("wt -d \""+String:C10(This:C1470.cwd.path)+"\""; $inputStream; $outputStream; $errorStream)
+				LAUNCH EXTERNAL PROCESS:C811("wt -d \""+String:C10(This:C1470.workspace.path)+"\""; $inputStream; $outputStream; $errorStream)
 				
 			End if 
 			
 			//——————————————————————
-		: ($whatToDo="show")  // Open on disk the current directory
+		: ($what="show")  // Open on disk the current directory
 			
 			If (Is macOS:C1572)
 				
-				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.cwd.platformPath))
+				SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workspace.platformPath))
 				LAUNCH EXTERNAL PROCESS:C811("open ."; $inputStream; $outputStream; $errorStream)
 				
 			Else 
 				
-				SHOW ON DISK:C922(This:C1470.cwd.platformPath; *)
+				SHOW ON DISK:C922(This:C1470.workspace.platformPath; *)
 				
 			End if 
 			
@@ -953,74 +1015,74 @@ Function open($whatToDo : Text)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function stash($name : Text)
+shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 	
 	var $line : Text
-	
-	ARRAY LONGINT:C221($pos; 0x0000)
-	ARRAY LONGINT:C221($len; 0x0000)
+	var $i : Integer
 	
 	Case of 
 			
 			//———————————————————————————————————
-		: (Length:C16($name)=0)\
-			 | ($name="list")  // Update list
+		: (Length:C16($action)=0)\
+			 | ($action="list")  // Update list
 			
-			This:C1470.stashes:=[]
+			This:C1470.stashes.clear()
 			
 			If (This:C1470.execute("stash list"))
 				
+				var $rgx:=cs:C1710.regex.new(""; "(?m-si)^([^:]*):\\s([^:]*):\\s([^$]*)$")
+				
 				For each ($line; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					
-					If (Match regex:C1019("(?mi-s)^([^:]*):\\s([^:]*)([^$]*)$"; $line; 1; $pos; $len))
+					var $c:=$rgx.setTarget($line).extract("1 2 3")
+					
+					For ($i; 0; $c.length-1; 3)
 						
-						// FIXME:regex
-						This:C1470.stashes.push({\
-							name: Substring:C12($line; $pos{1}; $len{1}); \
-							message: Substring:C12($line; $pos{3}; $len{3})\
-							})
+						This:C1470.stashes.push(OB Copy:C1225({name: $c[0]; branch: $c[1]; message: $c[2]}; ck shared:K85:29; This:C1470))
 						
-					End if 
+					End for 
 				End for each 
 			End if 
+			
+			//———————————————————————————————————
+		: ($action="snapshot")
+			
+			This:C1470.execute("stash -u"+(Length:C16($name)>0 ? " -m "+$name : "")+" --keep-index")
+			This:C1470.execute("stash apply refs/stash")
+			
+			//———————————————————————————————————
+		: ($action="save")
+			
+/*This.execute("stash -u"+(Length($name)>0 ? " -m "+$name : ""))*/
+			
+			If (Length:C16($name)>0)
+				
+				This:C1470.execute("stash --all --include-untracked -m "+$name)
+				
+			Else 
+				
+				This:C1470.execute("stash push --all --include-untracked")
+				
+			End if 
+			
+			
+			//———————————————————————————————————
+		: ($action="pop")
+			
+			This:C1470.execute("stash pop --quiet")
 			
 			//________________________________________
 		Else 
 			
-			This:C1470._pushError("Unmanaged entrypoint for stash method: "+$name)
+			This:C1470._pushError("Unmanaged entrypoint for stash method: "+$action)
 			
 			//________________________________________
 	End case 
 	
-	//MARK:-[PRIVATE]
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _pushError($message : Text)
+	return This:C1470
 	
-	This:C1470.success:=False:C215
-	This:C1470.error:=$message
-	This:C1470.errors.push($message)
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _pushWarning($message : Text)
-	
-	This:C1470.warning:=$message
-	This:C1470.warnings.push($message)
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _quoted($string : Text) : Text
-	
-	return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _normalizeLF($text : Text) : Text
-	
-	$text:=Replace string:C233($text; "\r\n"; "\n")
-	$text:=Replace string:C233($text; "\r"; "\n")
-	
-	return $text
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
 	
 	$root:=$root || Folder:C1567(fk database folder:K87:14; *)
 	$path:=Replace string:C233($path; "\""; "")
@@ -1065,7 +1127,7 @@ Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
 					If ($path="@/ObjectMethods/@")  // Object method
 						
 						$path:=Replace string:C233($path; "Project/Sources/Forms/"; "")
-						$path:=Replace string:C233($path; "ObjectMethods"; "")
+						$path:=Replace string:C233($path; "ObjectMethods/"; "")
 						return "[projectForm]/"+$path
 						
 					Else   // Form method
@@ -1109,5 +1171,126 @@ Function getPath($path : Text; $root : 4D:C1709.Folder) : Variant
 			//———————————————————————————————————————————
 	End case 
 	
+	//MARK:-[PRIVATE]
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	// Search for the .git folder in the package or in a parent directory 
+Function _workspace($folder : 4D:C1709.Folder) : 4D:C1709.Folder
 	
+	$folder:=$folder#Null:C1517 ? $folder : This:C1470.PACKAGE
 	
+	While ($folder#Null:C1517)\
+		 && (Not:C34($folder.folder(".git").exists))
+		
+		$folder:=$folder.parent
+		
+		Case of 
+				
+				//_________________________________
+			: ($folder=Null:C1517)
+				
+				$folder:=This:C1470.PACKAGE
+				
+				break
+				
+				//_________________________________
+			: ($folder.folder(".git").exists)
+				
+				break
+				
+				//_________________________________
+		End case 
+	End while 
+	
+	return $folder
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	// Search for git exe 
+Function _command() : Text
+	
+	Case of 
+			
+			//______________________________________________________
+		: (Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215)
+			
+			return "/usr/local/bin/git "
+			
+			//______________________________________________________
+		: (Is Windows:C1573)
+			
+			var $exe : 4D:C1709.File:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
+			
+			If ($exe.exists)
+				
+				return $exe.path+" "
+				
+			Else 
+				
+				// TODO: Provide a git exe in resources ?
+				This:C1470._pushError("Git not installed")
+				
+			End if 
+			
+			//______________________________________________________
+		Else 
+			
+			return "git "
+			
+			//______________________________________________________
+	End case 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+shared Function _pushError($message : Text)
+	
+	This:C1470.success:=False:C215
+	This:C1470.error:=$message
+	This:C1470.errors.push($message)
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+shared Function _pushWarning($message : Text)
+	
+	This:C1470.warning:=$message
+	This:C1470.warnings.push($message)
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _quoted($string : Text) : Text
+	
+	return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _normalize($text : Text) : Text
+	
+	$text:=Replace string:C233($text; "\r\n"; "\n")
+	$text:=Replace string:C233($text; "\r"; "\n")
+	
+	return Split string:C1554($text; "\n"; sk ignore empty strings:K86:1).join("\n")
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _refs($branch : Text; $type : Text) : Text
+	
+	Case of 
+			
+			// ______________________________________________________
+		: ($type="local")
+			
+			var $file:=This:C1470.root.folder("refs/heads").file($branch)
+			
+			// ______________________________________________________
+		: ($type="remote")
+			
+			$file:=This:C1470.root.folder("refs/remotes/origin").file($branch)
+			
+			// ______________________________________________________
+		Else 
+			
+			// A "Case of" statement should never omit "Else"
+			
+			// ______________________________________________________
+	End case 
+	
+	If (Not:C34($file.exists))
+		
+		return 
+		
+	End if 
+	
+	return Substring:C12($file.getText(); 1; 7)

@@ -1,68 +1,66 @@
-property form : cs:C1710.formDelegate
+property _unstaged; _staged; _commits; _commitDetail : Collection
 
-property fetch; \
-pull; \
-push; \
-open; \
-stage; \
-stageAll; \
-unstage; \
-diffTool; \
-commit; \
-amend : cs:C1710.buttonDelegate
+property isSubform:=False:C215
+property toBeInitialized:=False:C215
 
-property menu; \
-unstaged; \
-staged; \
-commits; \
-detailCommit : cs:C1710.listboxDelegate
+property autostash:=False:C215
 
-property diff; \
-subject; \
-description : cs:C1710.inputDelegate
+property darkMode : Boolean
 
-property selector : cs:C1710.hListDelegate
+property pages:={local: 1; history: 2}
 
-property toolbarLeft; \
-commitment; \
-detail : cs:C1710.groupDelegate
+property helptip:=cs:C1710.tips.new()
 
-property Git : cs:C1710.Git
+property checkout:={\
+stash: True:C214; \
+noChange: False:C215; \
+discard: False:C215}
 
-property _unstaged; \
-_staged; \
-_commits; \
-_commitDetail; \
-STAGED_STATUS; \
-UNSTAGED_STATUS : Collection
+// MARK: Constants 🧰
+// FIXME:Manage all cases 🐞
+property UNSTAGED_STATUS:=["??"; " M"; " D"; " R"; " C"]  //; "MD"; "AM"; "AD"]
+property STAGED_STATUS:=["A "; "D "; "M "; "MM"; "R "; "C "]
 
-property alertDialog; \
-pullDialog; \
-pushDialog : cs:C1710.onBoard
+property MOVED_FILE:=Localized string:C991("fileMoved")
+property NEW_FILE:=Localized string:C991("newFile")
+property MODIFIED_FILE:=Localized string:C991("modifiedFile")
+property DELETED_FILE:=Localized string:C991("fileRemoved")
+property BINARY_FILE:=Localized string:C991("binaryFile")
+
+// MARK: FEATURES
+property _FEATURES:={\
+displayStashInCommitList: True:C214\
+}
+
+// MARK:Delegates 📦
+property form : cs:C1710.form
+property Git:=cs:C1710.Git.me
+
+// MARK: UI 🖥️
+property toolbarButtons; commitment; detail; groupDiff : cs:C1710.group
+
+property pullDialog; pushDialog; checkoutDialog; newBranchDialog : cs:C1710.onBoard
+
+property changes; history; fetch; pull; push; open; \
+stage; unstage; diffTool; commit; amend; fileStage; fileMore : cs:C1710.button
+
+property menu; unstaged; staged; commits; detailCommit : cs:C1710.listbox
+
+property diff; subject; description; parent; detailDiff; currentPath : cs:C1710.input
+
+property authorLabel; authorName; authorMail; stamp; shaLabe; sha; shaLabel; \
+parentLabel; titleTop; title; titleBottom; emptyIndex; noCommitSelected : cs:C1710.static
+
+property authorAvatar : cs:C1710.picture
+
+property windowFrame : cs:C1710.subform
+
+property icons : Object
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.isSubform:=False:C215
-	This:C1470.toBeInitialized:=False:C215
-	
-	This:C1470.pages:={changes: 1; commits: 2}
-	
-	// MARK:-Delegates 📦
-	This:C1470.form:=cs:C1710.formDelegate.new(This:C1470)
-	This:C1470.Git:=cs:C1710.Git.new()
-	
-	// Mark:Constants
-	// FIXME:Manage all cases 🐞
-	This:C1470.UNSTAGED_STATUS:=["??"; " M"; " D"; " R"; " C"]  //; "MD"; "AM"; "AD"]
-	This:C1470.STAGED_STATUS:=["A "; "D "; "M "; "R "; "C "]
-	
-	This:C1470.MOVED_FILE:=Get localized string:C991("fileMoved")
-	This:C1470.NEW_FILE:=Get localized string:C991("newFile")
-	This:C1470.MODIFIED_FILE:=Get localized string:C991("modifiedFile")
-	This:C1470.DELETED_FILE:=Get localized string:C991("fileRemoved")
-	This:C1470.BINARY_FILE:=Get localized string:C991("binaryFile")
-	
+	This:C1470.form:=cs:C1710.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -73,83 +71,87 @@ Function init()
 	var $menuHandle : Text
 	$menuHandle:=Formula:C1597(formMenuHandle).source
 	
-	var $menuFile : cs:C1710.menu
-	$menuFile:=cs:C1710.menu.new().file()  // Get a standard file menu
+	var $menuFile:=cs:C1710.menu.new().file()  // Get a standard file menu
 	
-	// Insert custom
-	$menuFile.append(".Close"; "close"; 0).shortcut("W").method($menuHandle)
+	// Enrich with custom items
 	$menuFile.line(1)
 	$menuFile.append("Diff"; "diff"; 2).shortcut("D").method($menuHandle)
 	$menuFile.line(3)
-	$menuFile.append("Settings"; "settings"; 4).method($menuHandle)
+	$menuFile.append(":xliff:settings"; "settings"; 4).method($menuHandle)
 	
-	var $menuEdit : cs:C1710.menu
-	$menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
+	var $menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
 	
-	This:C1470.menuBar:=cs:C1710.menuBar.new([\
+	cs:C1710.menuBar.new([\
 		":xliff:CommonMenuFile"; $menuFile; \
 		":xliff:CommonMenuEdit"; $menuEdit]).set()
 	
 	// Mark:Page 0️⃣ Toolbar
-	This:C1470.toolbarLeft:=This:C1470.form.group.new()
-	This:C1470.fetch:=This:C1470.form.button.new("fetch").addToGroup(This:C1470.toolbarLeft)
-	This:C1470.pull:=This:C1470.form.button.new("pull").addToGroup(This:C1470.toolbarLeft)
-	This:C1470.push:=This:C1470.form.button.new("push").addToGroup(This:C1470.toolbarLeft)
+	This:C1470.windowFrame:=This:C1470.form.Subform("windowFrame")
 	
-	This:C1470.changes:=This:C1470.form.button.new("changes")
-	This:C1470.history:=This:C1470.form.button.new("history")
+	This:C1470.changes:=This:C1470.form.Button("changes")
+	This:C1470.history:=This:C1470.form.Button("history")
 	
-	This:C1470.open:=This:C1470.form.button.new("open")
-	
-	// Mark:Page 0️⃣ Left pannel
-	This:C1470.selector:=This:C1470.form.hList.new("selector")
+	This:C1470.toolbarButtons:=This:C1470.form.Group()
+	This:C1470.open:=This:C1470.form.Button("open").addToGroup(This:C1470.toolbarButtons)
+	This:C1470.push:=This:C1470.form.Button("push").addToGroup(This:C1470.toolbarButtons)
+	This:C1470.pull:=This:C1470.form.Button("pull").addToGroup(This:C1470.toolbarButtons)
+	This:C1470.fetch:=This:C1470.form.Button("fetch").addToGroup(This:C1470.toolbarButtons)
 	
 	// Mark:Page 1️⃣ Changes
-	This:C1470.unstaged:=This:C1470.form.listbox.new("unstaged")
-	This:C1470.stage:=This:C1470.form.button.new("stage")
-	This:C1470.stageAll:=This:C1470.form.button.new("stageAll")
+	This:C1470.unstaged:=This:C1470.form.Listbox("unstaged")
+	This:C1470.stage:=This:C1470.form.Button("stage")
 	
-	This:C1470.staged:=This:C1470.form.listbox.new("staged")
-	This:C1470.unstage:=This:C1470.form.button.new("unstage")
+	This:C1470.staged:=This:C1470.form.Listbox("staged")
+	This:C1470.unstage:=This:C1470.form.Button("unstage")
+	This:C1470.emptyIndex:=This:C1470.form.Static("noChangesInIndex")
 	
 	// Mark:Page 1️⃣ Diff pannel
-	This:C1470.diff:=This:C1470.form.input.new("diff")
+	This:C1470.groupDiff:=This:C1470.form.Group()
+	This:C1470.currentPath:=This:C1470.form.Input("currentPath").addToGroup(This:C1470.groupDiff)
+	This:C1470.fileStage:=This:C1470.form.Button("stageFile").addToGroup(This:C1470.groupDiff)
+	This:C1470.fileMore:=This:C1470.form.Button("moreFile").addToGroup(This:C1470.groupDiff)
+	This:C1470.diff:=This:C1470.form.Input("diff").addToGroup(This:C1470.groupDiff)
 	
 	// Mark:Page 1️⃣ Commit panel
-	This:C1470.commitment:=This:C1470.form.group.new()
-	This:C1470.subject:=This:C1470.form.input.new("subject").addToGroup(This:C1470.commitment)
-	This:C1470.description:=This:C1470.form.input.new("description").addToGroup(This:C1470.commitment)
-	This:C1470.amend:=This:C1470.form.button.new("amend").addToGroup(This:C1470.commitment)
-	This:C1470.commit:=This:C1470.form.button.new("commit").addToGroup(This:C1470.commitment)
+	This:C1470.commitment:=This:C1470.form.Group()
+	This:C1470.subject:=This:C1470.form.Input("subject").addToGroup(This:C1470.commitment)
+	This:C1470.description:=This:C1470.form.Input("description").addToGroup(This:C1470.commitment)
+	This:C1470.amend:=This:C1470.form.Button("amend").addToGroup(This:C1470.commitment)
+	This:C1470.commit:=This:C1470.form.Button("commit").addToGroup(This:C1470.commitment)
 	
 	// Mark:Page 2️⃣ Commits
-	This:C1470.commits:=This:C1470.form.listbox.new("commits")
+	This:C1470.commits:=This:C1470.form.Listbox("commits")
 	
 	// Mark:Page 2️⃣ Commit
-	This:C1470.detail:=This:C1470.form.group.new()
-	This:C1470.detailCommit:=This:C1470.form.listbox.new("detail_list").addToGroup(This:C1470.detail)
-	This:C1470.authorLabel:=This:C1470.form.static.new("authorLabel").addToGroup(This:C1470.detail)
-	This:C1470.authorAvatar:=This:C1470.form.picture.new("authorAvatar").addToGroup(This:C1470.detail)
-	This:C1470.authorName:=This:C1470.form.static.new("authorName").addToGroup(This:C1470.detail)
-	This:C1470.authorMail:=This:C1470.form.static.new("authorMail").addToGroup(This:C1470.detail)
-	This:C1470.stamp:=This:C1470.form.static.new("stamp").addToGroup(This:C1470.detail)
-	This:C1470.shaLabel:=This:C1470.form.static.new("shaLabel").addToGroup(This:C1470.detail)
-	This:C1470.sha:=This:C1470.form.static.new("sha").addToGroup(This:C1470.detail)
-	This:C1470.parentLabel:=This:C1470.form.static.new("parentLabel").addToGroup(This:C1470.detail)
-	This:C1470.parent:=This:C1470.form.input.new("parent").addToGroup(This:C1470.detail)
-	This:C1470.titleTop:=This:C1470.form.static.new("titleTop").addToGroup(This:C1470.detail)
-	This:C1470.title:=This:C1470.form.static.new("title").addToGroup(This:C1470.detail)
-	This:C1470.titleBottom:=This:C1470.form.static.new("titleBottom").addToGroup(This:C1470.detail)
-	This:C1470.detailSplitter:=This:C1470.form.static.new("detailSplitter").addToGroup(This:C1470.detail)
-	This:C1470.detailSeparator:=This:C1470.form.static.new("detailSeparator").addToGroup(This:C1470.detail)
-	This:C1470.detailDiff:=This:C1470.form.input.new("detailDiff").addToGroup(This:C1470.detail)
+	This:C1470.detail:=This:C1470.form.Group()
+	This:C1470.detailCommit:=This:C1470.form.Listbox("detail_list").addToGroup(This:C1470.detail)
+	This:C1470.authorLabel:=This:C1470.form.Static("authorLabel").addToGroup(This:C1470.detail)
+	This:C1470.authorAvatar:=This:C1470.form.Picture("authorAvatar").addToGroup(This:C1470.detail)
+	This:C1470.authorName:=This:C1470.form.Static("authorName").addToGroup(This:C1470.detail)
+	This:C1470.authorMail:=This:C1470.form.Static("authorMail").addToGroup(This:C1470.detail)
+	This:C1470.stamp:=This:C1470.form.Static("stamp").addToGroup(This:C1470.detail)
+	This:C1470.shaLabel:=This:C1470.form.Static("shaLabel").addToGroup(This:C1470.detail)
+	This:C1470.sha:=This:C1470.form.Static("sha").addToGroup(This:C1470.detail)
+	This:C1470.parentLabel:=This:C1470.form.Static("parentLabel").addToGroup(This:C1470.detail)
+	This:C1470.parent:=This:C1470.form.Input("parent").addToGroup(This:C1470.detail)
+	This:C1470.titleTop:=This:C1470.form.Static("titleTop").addToGroup(This:C1470.detail)
+	This:C1470.title:=This:C1470.form.Static("title").addToGroup(This:C1470.detail)
+	This:C1470.titleBottom:=This:C1470.form.Static("titleBottom").addToGroup(This:C1470.detail)
+	This:C1470.detailDiff:=This:C1470.form.Input("detailDiff").addToGroup(This:C1470.detail)
+	
+	This:C1470.noCommitSelected:=This:C1470.form.Static("noCommitSelected")
+	
+	// MARK:- [Constraints]
+	// -> The fetch/pull/push buttons must remain centred on the background.
+	//This.form.constraints.new(This.toolbarButtons).centerHorizontally.with("_background")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.evt)
 	
 	$e:=$e || cs:C1710.evt.new()
 	
-	If ($e.form)  // <== FORM METHOD
+	// MARK: Form method
+	If ($e.form)
 		
 		Case of 
 				
@@ -166,9 +168,17 @@ Function handleEvents($e : cs:C1710.evt)
 				//______________________________________________________
 			: ($e.pageChange)
 				
-				If (This:C1470.form.page=This:C1470.pages.commits)
+				If (This:C1470.form.page=This:C1470.pages.history)
 					
-					This:C1470.updateCommitList()
+					If (Form:C1466.page2Inited=Null:C1517)
+						
+						// FIXME: TURN AROUND - Force 4D to compute column widths
+						LISTBOX SET COLUMN WIDTH:C833(*; This:C1470.commits.getColumnName(1); This:C1470.form.window.width-550)
+						Form:C1466.page2Inited:=True:C214
+						
+					End if 
+					
+					This:C1470.updateCommits()
 					
 				End if 
 				
@@ -178,161 +188,236 @@ Function handleEvents($e : cs:C1710.evt)
 				This:C1470.onActivate()
 				
 				//______________________________________________________
+			: ($e.deactivate)
+				
+				This:C1470.windowFrame.refresh()
+				
+				//______________________________________________________
+			: ($e.resize)
+				
+				This:C1470.form.constraints.apply()
+				
+				//______________________________________________________
 			: ($e.unload)
 				
-				CLEAR LIST:C377(Form:C1466.selector; *)
+				//This.selector.clear()
 				
 				//______________________________________________________
 		End case 
 		
-	Else   // <== WIDGETS METHOD
+		return 
 		
-		var $git : cs:C1710.Git
-		$git:=This:C1470.Git
-		
-		Case of 
+	End if 
+	
+	// MARK: Widgets method
+	var $git:=This:C1470.Git
+	
+	Case of 
+			
+			//==============================================
+		: (This:C1470.changes.catch($e))
+			
+			This:C1470._pageManager($e; This:C1470.pages.local)
+			
+			//==============================================
+		: (This:C1470.history.catch($e))
+			
+			This:C1470._pageManager($e; This:C1470.pages.history)
+			
+			//==============================================
+		: (This:C1470.unstaged.catch($e))\
+			 || (This:C1470.staged.catch($e))
+			
+			This:C1470._stageUnstageManager($e)
+			
+			//==============================================
+		: (This:C1470.stage.catch($e; On Clicked:K2:4))
+			
+			If (This:C1470.unstaged.items.length>0)
 				
-				//==============================================
-			: (This:C1470.changes.catch($e; On Clicked:K2:4))
+				This:C1470.Stage(This:C1470.unstaged.items)
 				
-				This:C1470.goToPage(This:C1470.pages.changes)
+			Else 
 				
-				//==============================================
-			: (This:C1470.history.catch($e; On Clicked:K2:4))
+				This:C1470.StageAll()
 				
-				This:C1470.goToPage(This:C1470.pages.commits)
+			End if 
+			
+			//==============================================
+		: (This:C1470.unstage.catch($e; On Clicked:K2:4))
+			
+			If (This:C1470.staged.items.length>0)
 				
-				//==============================================
-			: (This:C1470.fetch.catch($e; On Clicked:K2:4))
+				This:C1470.Unstage(This:C1470.staged.items)
 				
-				$git.fetch()
-				This:C1470.onActivate()
+			Else 
 				
-				//==============================================
-			: (This:C1470.pull.catch($e; On Clicked:K2:4))
+				This:C1470.UnstageAll()
 				
-				If (Not:C34(Bool:C1537(This:C1470.autostash)))
-					
-					$git.execute("config rebase.autoStash")
-					
-				End if 
+			End if 
+			
+			//==============================================
+		: (This:C1470.fileStage.catch($e; On Clicked:K2:4))
+			
+			If (This:C1470.isInIndex)
 				
-				$git.execute("config pull.rebase")
-				This:C1470.pullDialog.show({\
-					rebase: $git.result="true"; \
-					stash: Form:C1466.stash\
-					})
+				This:C1470.Unstage(This:C1470.staged.items)
 				
-				//==============================================
-			: (This:C1470.push.catch($e; On Clicked:K2:4))
+			Else 
+				
+				This:C1470.Stage(This:C1470.unstaged.items)
+				
+			End if 
+			
+			//==============================================
+		: (This:C1470.fileMore.catch($e; On Clicked:K2:4))
+			
+			var $menu:=cs:C1710.menu.new()
+			
+			$menu.append(":xliff:edit"; "open")
+			$menu.append(":xliff:showInFinder"; "show")
+			
+			If (Not:C34(This:C1470.isInIndex))
+				
+				$menu.line()\
+					.append(":xliff:discardChanges"; "discard")\
+					.append(":xliff:deleteLocalFile"; "delete")
+				
+			End if 
+			
+			If (Not:C34($menu.popup().selected))
+				
+				return 
+				
+			End if 
+			
+			This:C1470.handleMenus($menu.choice; This:C1470.isInIndex ? This:C1470.staged.item : This:C1470.unstaged.item)
+			
+			//==============================================
+		: (This:C1470.fetch.catch($e; On Clicked:K2:4))
+			
+			$git.fetch()
+			This:C1470.onActivate()
+			
+			//==============================================
+		: (This:C1470.pull.catch($e; On Clicked:K2:4))
+			
+			If (Not:C34(This:C1470.autostash))
+				
+				$git.execute("config rebase.autoStash")
+				This:C1470.autostash:=$git.success
+				
+			End if 
+			
+			$git.execute("config pull.rebase")
+			This:C1470.pullDialog.show({\
+				rebase: $git.success; \
+				stash: This:C1470.autostash\
+				})
+			
+			//==============================================
+		: (This:C1470.push.catch($e; On Clicked:K2:4))
+			
+			If ($git.branchPushNumber($git.workingBranch.name)=0)
+				
+				This:C1470.onDialogAlert({\
+					main: Localized string:C991("nothingToCommit")})
+				
+			Else 
 				
 				$git.execute("config push.followTags")
 				
 				This:C1470.pushDialog.show({\
 					tags: $git.result#"false"; \
-					force: False:C215\
+					force: False:C215; \
+					branch: $git.workingBranch.name\
 					})
 				
-				//==============================================
-			: (This:C1470.open.catch($e; On Clicked:K2:4))
+			End if 
+			
+			//==============================================
+		: (This:C1470.open.catch($e; On Clicked:K2:4))
+			
+			This:C1470._openManager()
+			
+			//==============================================
+		: (This:C1470.subject.catch($e; On After Edit:K2:43))
+			
+			//TODO: Use value length
+			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Get edited text:C655)))
+			
+			//==============================================
+		: (This:C1470.amend.catch($e; On Clicked:K2:4))
+			
+			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
+			
+			If (Form:C1466.amend)
 				
-				This:C1470._openManager()
+				$git.execute("log --abbrev-commit --format=%s")
+				This:C1470.subject.setValue(String:C10(Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).shift()))
+				This:C1470.description.hide()
 				
-				//==============================================
-			: (This:C1470.selector.catch($e))
+			Else 
 				
-				This:C1470._selectorManager($e)
+				This:C1470.description.show()
 				
-				//==============================================
-			: (This:C1470.stage.catch($e; On Clicked:K2:4))
+			End if 
+			
+			//==============================================
+		: (This:C1470.commit.catch($e; On Clicked:K2:4))
+			
+			var $message : Text:=This:C1470.subject.getValue()
+			
+			If (Length:C16(This:C1470.description.value)>0)
 				
-				This:C1470.Stage(This:C1470.unstaged.items)
+				$message+="\n"+This:C1470.description.value
 				
-				//==============================================
-			: (This:C1470.stageAll.catch($e; On Clicked:K2:4))
+			End if 
+			
+			$git.commit($message; Form:C1466.amend)
+			
+			This:C1470.subject.clear()
+			This:C1470.description.clear()
+			This:C1470.amend.clear()
+			
+			This:C1470.onActivate()
+			
+			//==============================================
+		: (This:C1470.commits.catch($e; On Selection Change:K2:29))
+			
+			This:C1470._commitsManager()
+			
+			//==============================================
+		: (This:C1470.parent.catch($e; On Clicked:K2:4))
+			
+			var $c : Collection
+			$c:=Form:C1466.commits.indices("fingerprint.short = :1"; This:C1470.commits.item.parent.short)
+			
+			If ($c.length>0) && ($c[0]#-1)
 				
-				This:C1470.StageAll()
-				
-				//==============================================
-			: (This:C1470.unstage.catch($e; On Clicked:K2:4))
-				
-				This:C1470.Unstage(This:C1470.staged.items)
-				
-				//==============================================
-			: (This:C1470.unstaged.catch($e)) | (This:C1470.staged.catch($e))
-				
-				This:C1470._stageUnstageManager($e)
-				
-				//==============================================
-			: (This:C1470.subject.catch($e; On After Edit:K2:43))
-				
-				This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Get edited text:C655)))
-				
-				//==============================================
-			: (This:C1470.amend.catch($e; On Clicked:K2:4))
-				
-				This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
-				
-				If (Form:C1466.amend)
-					
-					$git.execute("log --abbrev-commit --format=%s")
-					This:C1470.subject.setValue(String:C10(Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1).shift()))
-					This:C1470.description.hide()
-					
-				Else 
-					
-					This:C1470.description.show()
-					
-				End if 
-				
-				//==============================================
-			: (This:C1470.commit.catch($e; On Clicked:K2:4))
-				
-				$git.commit(This:C1470.subject.getValue(); Form:C1466.amend)
-				
-				This:C1470.subject.clear()
-				This:C1470.description.clear()
-				This:C1470.amend.clear()
-				
-				This:C1470.onActivate()
-				
-				//==============================================
-			: (This:C1470.commits.catch($e; On Selection Change:K2:29))
+				This:C1470.commits.reveal($c[0]+1)
+				This:C1470.commits.focus()
 				
 				This:C1470._commitsManager()
 				
-				//==============================================
-			: (This:C1470.parent.catch($e; On Clicked:K2:4))
-				
-				var $c : Collection
-				$c:=Form:C1466.commits.indices("fingerprint.short = :1"; This:C1470.commits.item.parent.short)
-				
-				If ($c.length>0) && ($c[0]#-1)
-					
-					This:C1470.commits.reveal($c[0]+1)
-					This:C1470.commits.focus()
-					
-					This:C1470._commitsManager()
-					
-				End if 
-				
-				//==============================================
-			: (This:C1470.detailCommit.catch($e; On Selection Change:K2:29))
-				
-				This:C1470.update()
-				
-				//==============================================
-		End case 
-	End if 
+			End if 
+			
+			//==============================================
+		: (This:C1470.detailCommit.catch($e; On Selection Change:K2:29))
+			
+			This:C1470.update()
+			
+			//==============================================
+	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onLoad()
 	
-	This:C1470.darkMode:=FORM Get color scheme:C1761="dark"
+	// The title bar fills the entire width of the window
+	This:C1470.windowFrame.left:=0
+	This:C1470.windowFrame.width:=This:C1470.form.rect.width
 	
-	This:C1470.toolbarLeft.distributeLeftToRight({\
-		minWidth: 50; \
-		spacing: 10})
+	This:C1470.form.window.title:=File:C1566(Structure file:C489; fk platform path:K87:2).name+" - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
 	
 	This:C1470.changes.show()
 	This:C1470.history.show()
@@ -343,48 +428,55 @@ Function onLoad()
 	This:C1470.commits.setVerticalScrollbar(2)
 	This:C1470.detailCommit.setVerticalScrollbar(2)
 	
-	This:C1470.stage.bestSize(Align right:K42:4).disable()
-	This:C1470.unstage.bestSize(Align right:K42:4).disable()
+	This:C1470.stage.bestSize().disable()
+	This:C1470.unstage.bestSize().disable()
 	This:C1470.commit.bestSize(Align right:K42:4).disable()
 	This:C1470.open.bestSize(Align right:K42:4)
 	
-	// TODO:Could be preferences
+	// Applying constraints
+	This:C1470.form.constraints.apply()
+	
+	// TODO: Could be preferences
 	This:C1470.diff.font:="Courier"
 	This:C1470.diff.fontSize:=14
 	
-	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
+	This:C1470.form.appendEvents(On Alternative Click:K2:36)
 	
-	Form:C1466.version:=This:C1470.Git.version
+	// May have been hidden when the dialog geometry was saved
+	This:C1470.emptyIndex.show()
+	This:C1470.noCommitSelected.show()
+	
+	// Form values
+	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
+	Form:C1466.windowTitle:=This:C1470.form.window.title
+	
+	Form:C1466.version:=This:C1470.Git.getVersion("short")
 	
 	Form:C1466.unstaged:=[]
 	Form:C1466.staged:=[]
 	Form:C1466.commits:=[]
 	Form:C1466.commitDetail:=[]
 	
-	Form:C1466.icons:={}
-	
-	// Mark:Selector definition
-	Form:C1466.selector:=New list:C375
-	APPEND TO LIST:C376(Form:C1466.selector; "Branches"; -21; New list:C375; True:C214)
-	APPEND TO LIST:C376(Form:C1466.selector; "Remotes"; -22; New list:C375; True:C214)
-	APPEND TO LIST:C376(Form:C1466.selector; "Tags"; -23; New list:C375; True:C214)
-	APPEND TO LIST:C376(Form:C1466.selector; "stashes"; -24; New list:C375; True:C214)
-	SET LIST PROPERTIES:C387(Form:C1466.selector; 0; 0; 25)
-	
 	Form:C1466.amend:=False:C215
 	Form:C1466.commitSubject:=""
 	Form:C1466.commitDescription:=""
 	
+	Form:C1466.darkScheme:=This:C1470.form.darkScheme
+	
 	Case of 
+			
+			//________________________________________________________________________________
 		: (This:C1470.Git.success)
 			
-			//all is OK
+			// All is OK
 			
+			//________________________________________________________________________________
 		: (This:C1470.Git.error="Git not installed")
 			
-			CONFIRM:C162(Get localized string:C991("gitNotInstalled"))
+			var $data:={main: Localized string:C991("gitNotInstalled")}
+			This:C1470.onDialogConfirm($data)
 			
-			If (Bool:C1537(OK))
+			If (Bool:C1537($data.action))
 				
 				OPEN URL:C673("https://git-scm.com/download/win")
 				
@@ -392,10 +484,8 @@ Function onLoad()
 			
 			CANCEL:C270
 			
+			//________________________________________________________________________________
 	End case 
-	
-	This:C1470.alertDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "ALERT")
-	This:C1470.alertDialog.me:=This:C1470.alertDialog
 	
 	This:C1470.pullDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PULL")
 	This:C1470.pullDialog.me:=This:C1470.pullDialog
@@ -403,36 +493,68 @@ Function onLoad()
 	This:C1470.pushDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PUSH")
 	This:C1470.pushDialog.me:=This:C1470.pushDialog
 	
-	This:C1470.goToPage(This:C1470.pages.changes)
+	This:C1470.checkoutDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "CHECKOUT")
+	This:C1470.checkoutDialog.me:=This:C1470.pushDialog
+	
+	This:C1470.newBranchDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "NEW BRANCH")
+	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
+	
+	This:C1470._loadScheme()
+	
+	This:C1470.GoToPage(This:C1470.pages.local)
 	
 	This:C1470.form.refresh()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function update()
 	
-	var $t : Text
+	var $git:=This:C1470.Git
 	var $indx : Integer
-	var $commit; $detail; $o : Object
-	var $c : Collection
-	var $git : cs:C1710.Git
 	
-	$git:=This:C1470.Git
+	If ($git.branches.length=0)
+		
+		$git.branch()
+		
+	End if 
+	
+	This:C1470._updateScheme()
+	
+	// MARK: Toolbar buttons
+	This:C1470.fetch.title:=Localized string:C991("fetch")
+	
+	var $number:=$git.branchFetchNumber($git.workingBranch.name)
+	If ($number>0)
+		
+		This:C1470.fetch.title+=" ("+String:C10($number)+")"
+		
+	End if 
+	
+	This:C1470.push.title:=Localized string:C991("push")
+	
+	$number:=$git.branchPushNumber($git.workingBranch.name)
+	If ($number>0)
+		
+		This:C1470.push.title+=" ("+String:C10($number)+")"
+		
+	End if 
+	
+	This:C1470.toolbarButtons.distributeRigthToLeft({\
+		minWidth: 60; \
+		spacing: 5})
 	
 	Case of 
 			
 			//______________________________________________________
-		: (This:C1470.form.page=This:C1470.pages.changes)
+		: (This:C1470.form.page=This:C1470.pages.local)
 			
 			If ($git.status()=0)
 				
 				Form:C1466.staged.clear()
-				This:C1470.stage.disable()
-				
-				This:C1470.stage.disable()
-				This:C1470.unstage.disable()
 				
 				This:C1470.commitment.disable()
 				This:C1470.commit.disable()
+				
+				This:C1470._stageUnstageButtonUpdate()
 				
 				return 
 				
@@ -441,34 +563,41 @@ Function update()
 			// Mark:Update file lists
 			Form:C1466.unstaged:=$git.changes.query("status IN :1"; This:C1470.UNSTAGED_STATUS).orderBy("path")
 			
+			var $o : Object
 			For each ($o; Form:C1466.unstaged)
 				
-				$o.added:=$o.status="??"
-				$o.modified:=$o.status="@M@"
-				$o.deleted:=$o.status="@D@"
-				
-				$o.icon:=$o.modified ? Form:C1466.iconModified\
-					 : $o.deleted ? Form:C1466.iconDeleted\
-					 : $o.added ? Form:C1466.iconAdded\
-					 : Null:C1517
-				
+				Use ($o)
+					
+					$o.added:=$o.status="??"
+					$o.modified:=$o.status="@M@"
+					$o.deleted:=$o.status="@D@"
+					
+					$o.icon:=$o.modified ? This:C1470.icons.edit\
+						 : $o.deleted ? This:C1470.icons.remove\
+						 : $o.added ? This:C1470.icons.add\
+						 : Null:C1517
+					
+				End use 
 			End for each 
 			
 			Form:C1466.staged:=$git.changes.query("status IN :1"; This:C1470.STAGED_STATUS).orderBy("path")
 			
 			For each ($o; Form:C1466.staged)
 				
-				$o.added:=$o.status="@A@"
-				$o.modified:=$o.status="@M@"
-				$o.deleted:=$o.status="@D@"
-				$o.moved:=$o.status="@R@"
-				
-				$o.icon:=$o.modified ? Form:C1466.iconModified\
-					 : $o.deleted ? Form:C1466.iconDeleted\
-					 : $o.moved ? Form:C1466.iconMoved\
-					 : $o.added ? Form:C1466.iconAdded\
-					 : Null:C1517
-				
+				Use ($o)
+					
+					$o.added:=$o.status="@A@"
+					$o.modified:=$o.status="@M@"
+					$o.deleted:=$o.status="@D@"
+					$o.moved:=$o.status="@R@"
+					
+					$o.icon:=$o.modified ? This:C1470.icons.edit\
+						 : $o.deleted ? This:C1470.icons.remove\
+						 : $o.moved ? This:C1470.icons.rename\
+						 : $o.added ? This:C1470.icons.add\
+						 : Null:C1517
+					
+				End use 
 			End for each 
 			
 			// Mark:Restore selections
@@ -482,12 +611,10 @@ Function update()
 				If ($indx=-1)
 					
 					This:C1470.unstaged.unselect()
-					This:C1470.stage.disable()
 					
 				Else 
 					
 					This:C1470.unstaged.reveal($indx+1)
-					This:C1470.stage.enable()
 					
 				End if 
 			End if 
@@ -502,12 +629,10 @@ Function update()
 				If ($indx=-1)
 					
 					This:C1470.staged.unselect()
-					This:C1470.unstage.disable()
 					
 				Else 
 					
 					This:C1470.staged.reveal($indx+1)
-					This:C1470.unstage.enable()
 					
 				End if 
 			End if 
@@ -516,11 +641,13 @@ Function update()
 			This:C1470.commitment.enable(Form:C1466.staged.length>0)
 			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
 			
-			//______________________________________________________
-		: (This:C1470.form.page=This:C1470.pages.commits)
+			This:C1470._stageUnstageButtonUpdate()
 			
-			$commit:=This:C1470.commits.item
-			$detail:=This:C1470.detailCommit.item
+			//______________________________________________________
+		: (This:C1470.form.page=This:C1470.pages.history)
+			
+			var $commit:=This:C1470.commits.item
+			var $detail:=This:C1470.detailCommit.item
 			
 			If ($commit=Null:C1517) || ($detail=Null:C1517)
 				
@@ -533,7 +660,7 @@ Function update()
 			
 			This:C1470.detailDiff.show()
 			
-			$c:=Split string:C1554($detail.label; " -> "; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+			var $c:=Split string:C1554($detail.label; " -> "; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 			
 			If ($c.length=2)
 				
@@ -553,13 +680,14 @@ Function update()
 				Else 
 					
 					$c:=Split string:C1554($commit.parent.short; " ")
-					$git.diff($detail.path; $c.length>1 ? $c[1] : $c[0]+" "+$commit.fingerprint.short)
+					$git.diff(This:C1470.Git.workspace.file($detail.path).path; $c.length>1 ? $c[1] : $c[0]+" "+$commit.fingerprint.short)
 					
 					//______________________________________________________
 			End case 
 			
 			$c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 			
+			var $t : Text
 			For each ($t; $c)
 				
 				If ($t="Binary file@")
@@ -592,370 +720,95 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onActivate()
 	
-	var $git : cs:C1710.Git
-	var $list : cs:C1710.Hlist
+	var $git:=This:C1470.Git
 	
-	If (Form:C1466.dark#This:C1470.form.darkScheme)
+	// Toolbar
+	This:C1470.windowFrame.refresh()
+	Form:C1466.commiter:=Replace string:C233(Localized string:C991("commitingAs"); "{name}"; $git.userName())
+	Form:C1466.windowTitle:=This:C1470.form.window.title+" on branch "+$git.currentBranch
+	
+	This:C1470._updateScheme()
+	
+	If (This:C1470.form.page=This:C1470.pages.history)
 		
-		This:C1470.loadIcons()
+		This:C1470.updateCommits()
 		
 	End if 
 	
-	If (This:C1470.form.page=This:C1470.pages.commits)
-		
-		This:C1470.updateCommitList()
-		
-	End if 
-	
-	$git:=This:C1470.Git
-	
-	// Mark:Update menu label
 	If ($git.status()>0)
 		
-		This:C1470.changes.title:=Get localized string:C991("local")+" ("+String:C10($git.changes.length)+")"
+		This:C1470.changes.helpTip:=Localized string:C991("changesView")+" ("+String:C10($git.changes.length)+")"
 		
 	Else 
 		
-		This:C1470.changes.title:=Get localized string:C991("local")
+		This:C1470.changes.helpTip:=Localized string:C991("changesView")
 		
 		Form:C1466.unstaged.clear()
 		Form:C1466.staged.clear()
 		
 	End if 
 	
-	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
-	$list.saveSelection()
-	
-	This:C1470.branchList($list)
-	This:C1470.remoteList($list)
-	This:C1470.tagList($list)
-	This:C1470.stachList($list)
-	
-	$list.restoreSelection()
-	
 	This:C1470.form.refresh()
 	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function stachList($list : cs:C1710.Hlist)
-	
-	var $o : Object
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
-	
-	$git:=This:C1470.Git
-	
-	$git.stash()
-	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-24).sublist).Empty()
-	
-	If ($git.stashes.length>0)
-		
-		For each ($o; $git.stashes)
-			
-			$o.type:="stash"
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-				.SetIcon({icon: Form:C1466.icons.stash})
-			
-		End for each 
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function tagList($list : cs:C1710.Hlist)
-	
-	var $t : Text
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
-	
-	$git:=This:C1470.Git
-	
-	$git.updateTags()
-	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-23).sublist).Empty()
-	
-	If ($git.tags.length>0)
-		
-		For each ($t; $git.tags)
-			
-			$sublist.Append($t)\
-				.SetParameter({key: "tag"; value: $t})\
-				.SetIcon({icon: Form:C1466.icons.tag})
-			
-		End for each 
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function remoteList($list : cs:C1710.Hlist)
-	
-	var $o : Object
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
-	
-	$git:=This:C1470.Git
-	
-	$git.updateRemotes()
-	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-22).sublist).Empty()
-	
-	If ($git.remotes.length>0)
-		
-		For each ($o; $git.remotes)
-			
-			$o.type:="remote"
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})\
-				.SetIcon({icon: Form:C1466.icons[(Position:C15("github.com"; $o.url)>0 ? "github" : "gitlab")]})
-			
-		End for each 
-	End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function branchList($list : cs:C1710.Hlist)
-	
-	var $notPulled; $notPushed : Integer
-	var $o : Object
-	var $git : cs:C1710.Git
-	var $sublist : cs:C1710.Hlist
-	
-	$git:=This:C1470.Git
-	
-	$git.branch()
-	
-	$sublist:=cs:C1710.Hlist.new($list.GetItemByReference(-21).sublist).Empty()
-	
-	If ($git.branches.length>0)
-		
-		For each ($o; $git.branches)
-			
-			$o.type:="branch"
-			
-			// TODO: hieararchical branches
-			// Var $c : Collection
-			// $c:=Split string($o.name; "/")
-			
-			$sublist.Append($o.name)\
-				.SetParameter({key: "data"; value: JSON Stringify:C1217($o)})
-			
-			If ($o.current)
-				
-				$sublist.SetIcon({icon: Form:C1466.icons.master})\
-					.SetItemStyle(Bold:K14:2)
-				
-			Else 
-				
-				$sublist.SetIcon({icon: Form:C1466.icons.branch})
-				
-			End if 
-			
-			$notPushed:=$git.branchPushNumber($o.name)
-			$notPulled:=$git.branchFetchNumber($o.name)
-			
-			Case of 
-					//______________________________________________________
-				: ($notPulled>0) & ($notPushed>0)
-					
-					$sublist.SetAdditionalText(String:C10($notPushed)+"↑↓"+String:C10($notPulled)+" ")
-					
-					//______________________________________________________
-				: ($notPushed>0)
-					
-					$sublist.SetAdditionalText(String:C10($notPushed)+"↑ ")
-					
-					//______________________________________________________
-				: ($notPulled>0)
-					
-					$sublist.SetAdditionalText("↓"+String:C10($notPulled)+" ")
-					
-					//______________________________________________________
-			End case 
-		End for each 
-	End if 
-	
+	//
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _selectorManager($e : cs:C1710.evt)
-	
-	$e:=$e || cs:C1710.evt.new()
-	
-	var $list : cs:C1710.Hlist
-	$list:=cs:C1710.Hlist.new(This:C1470.selector.getValue())
-	
-	var $o : Object
-	$o:=$list.GetParameter({key: "data"; type: Is object:K8:27})
+Function _pageManager($e : cs:C1710.evt; $page : Integer)
 	
 	Case of 
 			
-			//______________________________________________________
-		: ($o=Null:C1517)
+			// ______________________________________________________
+		: ($e.mouseEnter)
 			
-			return 
+			This:C1470.helptip.instantly()
+			This:C1470.helptip.duration:=720*2
 			
-			//______________________________________________________
-		: ($e.doubleClick)
+			// ______________________________________________________
+		: ($e.mouseLeave)
 			
-			If ($o.ref#Null:C1517) && (Not:C34(Bool:C1537($o.current)))
-				
-				TRACE:C157  //This.Switch($o)
-				
-			End if 
+			This:C1470.helptip.restore()
 			
-			//______________________________________________________
+			// ______________________________________________________
 		: ($e.click)
 			
-			If (Contextual click:C713)
-				
-				// TODO:Contextual menu
-				
-			End if 
+			This:C1470.GoToPage($page)
 			
-			//______________________________________________________
-		: ($e.selectionChange)
-			
-			If (This:C1470.form.page=This:C1470.pages.commits)
-				
-				This:C1470.commits.unselect()
-				
-				var $c : Collection
-				$c:=Form:C1466.commits.indices("fingerprint.short = :1"; String:C10($o.ref))
-				
-				If ($c.length>0) && ($c[0]#-1)
-					
-					This:C1470.commits.reveal($c[0]+1)
-					This:C1470.commits.focus()
-					
-				End if 
-				
-			Else 
-				
-				This:C1470.goToPage(This:C1470.pages.commits)
-				
-			End if 
-			
-			This:C1470._commitsManager()
-			
-			//----------------------------------------
+			// ______________________________________________________
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _openManager()
 	
-	var $menu : cs:C1710.menu
+	var $git:=This:C1470.Git
+	var $hasRemote:=$git.execute("config --get remote.origin.url")
+	$hasRemote:=$hasRemote ? Position:C15("github.com"; String:C10($git.result))>0 : $hasRemote
 	
-	$menu:=cs:C1710.menu.new()
+	var $menu:=cs:C1710.menu.new({embedded: True:C214})
 	
 	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
-		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable(This:C1470.Git.execute("config --get remote.origin.url"))
+		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
+		.line()
 	
-	$menu.line()
+	openWith($menu)
 	
-	If (Is macOS:C1572)
+	If ($menu.popup(This:C1470.open).selected)
 		
-		If (File:C1566("/usr/local/bin/fork").exists)
-			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
-			
-		End if 
+		GIT MENU($menu)
 		
-		If (File:C1566("/usr/local/bin/github").exists)
-			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
-			
-		End if 
-		
-	Else 
-		
-		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
-			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Fork"); "fork").icon("/RESOURCES/Images/Menus/fork.png")
-			
-		End if 
-		
-		If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").exists)
-			
-			$menu.append(Replace string:C233(Get localized string:C991("openWith"); "{app}"; "Github Desktop"); "githubDesktop").icon("/RESOURCES/Images/Menus/githubDesktop.png")
-			
-		End if 
 	End if 
-	
-	Case of 
-			
-			//———————————————————————————————————————
-		: (Not:C34($menu.popup().selected))
-			
-			// Too bad ;-)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="terminal")
-			
-			This:C1470.Git.open($menu.choice)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="show")
-			
-			This:C1470.Git.open($menu.choice)
-			
-			//———————————————————————————————————————
-		: ($menu.choice="github")
-			
-			OPEN URL:C673(Replace string:C233(This:C1470.Git.result; "\n"; ""))
-			
-			//———————————————————————————————————————
-		: ($menu.choice="fork")
-			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.cwd.platformPath)
-			
-			If (Is macOS:C1572)
-				
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/fork open")
-				
-			Else 
-				
-				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").platformPath)
-				
-			End if 
-			
-			//———————————————————————————————————————
-		: ($menu.choice="githubDesktop")
-			
-			SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; This:C1470.Git.cwd.platformPath)
-			
-			If (Is macOS:C1572)
-				
-				LAUNCH EXTERNAL PROCESS:C811("/usr/local/bin/github \""+This:C1470.Git.cwd.path+"\"")
-				
-			Else 
-				
-				LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/GitHubDesktop.exe").platformPath+" "+This:C1470.Git.cwd.platformPath)
-				
-			End if 
-			
-			//———————————————————————————————————————
-	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _stageUnstageManager($e : cs:C1710.evt)
 	
-	var $staged : Boolean
-	var $current : Object
-	var $sel : Collection
-	var $file : 4D:C1709.File
-	var $menu : cs:C1710.menu
-	
 	$e:=$e || cs:C1710.evt.new()
 	
-	$staged:=$e.objectName="staged"
-	$current:=$staged ? This:C1470.staged.item : This:C1470.unstaged.item
-	$sel:=$staged ? This:C1470.staged.items : This:C1470.unstaged.items
+	var $staged:=This:C1470.isInIndex
+	var $current:=$staged ? This:C1470.staged.item : This:C1470.unstaged.item
+	var $sel:=$staged ? This:C1470.staged.items : This:C1470.unstaged.items
 	
-	If ($sel.length<=1)
-		
-		Form:C1466.current:=$current
-		
-	End if 
+	Form:C1466.current:=$current
 	
 	Case of 
 			
@@ -985,16 +838,6 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 			
 			If ($current=Null:C1517)
 				
-				If ($staged)
-					
-					This:C1470.unstage.disable()
-					
-				Else 
-					
-					This:C1470.stage.disable()
-					
-				End if 
-				
 				return 
 				
 			End if 
@@ -1017,15 +860,15 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 			End if 
 			
-			$menu:=cs:C1710.menu.new()
+			var $menu:=cs:C1710.menu.new()
 			
 			If ($sel.length=1)
 				
-				$menu.append("Open"; "open")
+				$menu.append(":xliff:edit"; "open")
 				
 				If (["??"; " D"; "A "].indexOf($current.status)=-1)
 					
-					$menu.append("externalDiff"; "diffTool").shortcut("D")
+					$menu.append(":xliff:externalDiff"; "diffTool").shortcut("D")
 					
 				End if 
 				
@@ -1033,12 +876,12 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 				If ([" D"].indexOf($current.status)=-1)
 					
-					$menu.append("showInFinder"; "show")
-					$menu.append("deleteLocalFile"; "delete")
+					$menu.append(":xliff:showInFinder"; "show")
+					$menu.append(":xliff:deleteLocalFile"; "delete")
 					
 				End if 
 				
-				$menu.append("copyPath"; "copy")
+				$menu.append(":xliff:copyPath"; "copy")
 				
 				$menu.line()
 				
@@ -1048,12 +891,12 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 				If ($staged)
 					
-					$menu.append("unstage"; "unstage").shortcut("S"; 512)
+					$menu.append(":xliff:unstage"; "unstage").shortcut("S"; 512)
 					
 				Else 
 					
-					$menu.append("stage"; "stage").shortcut("S"; 512)
-					$menu.append("discardChanges"; "discard")
+					$menu.append(":xliff:stage"; "stage").shortcut("S"; 512)
+					$menu.append(":xliff:discardChanges"; "discard")
 					
 				End if 
 				
@@ -1067,26 +910,26 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				: ($staged)\
 					 & (Form:C1466.staged.length>0)
 					
-					$menu.append("unstageAll"; "unStageAll").shortcut("S"; 512+2048)
+					$menu.append(":xliff:unstageAll"; "unStageAll").shortcut("S"; 512+2048)
 					
 					//———————————————————————————————————————
 				: (Form:C1466.unstaged.length>0)
 					
-					$menu.append("stageAll"; "stageAll").shortcut("S"; 512+2048)
+					$menu.append(":xliff:stageAll"; "stageAll").shortcut("S"; 512+2048)
 					
 					//———————————————————————————————————————
 			End case 
 			
 			If ($current#Null:C1517)
 				
-				$file:=File:C1566($current.path)
+				var $file : 4D:C1709.File:=This:C1470.Git.workspace.file($current.path)
 				
 				$menu.line()\
-					.append("ignore"; cs:C1710.menu.new()\
-					.append(Replace string:C233(Get localized string:C991("ignoreFile"); "{file}"; $file.fullName); "ignoreFile")\
-					.append(Replace string:C233(Get localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $file.extension); "ignoreExtension")\
+					.append(":xliff:ignore"; cs:C1710.menu.new()\
+					.append(Replace string:C233(Localized string:C991("ignoreFile"); "{file}"; $file.fullName); "ignoreFile")\
+					.append(Replace string:C233(Localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $file.extension); "ignoreExtension")\
 					.line()\
-					.append("customPattern"; "ignoreCustom"))
+					.append(":xliff:customPattern"; "ignoreCustom"))
 				
 			End if 
 			
@@ -1101,48 +944,74 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 			//______________________________________________________
 		: ($e.code=On Selection Change:K2:29)
 			
-			If ($staged)
-				
-				This:C1470.unstage.enable()
-				
-			Else 
-				
-				This:C1470.stage.enable()
-				
-			End if 
-			
 			This:C1470.DoDiff(Form:C1466.current)
 			
 			//______________________________________________________
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function _stageUnstageButtonUpdate()
+	
+	If (This:C1470.unstaged.item=Null:C1517) || (This:C1470.unstaged.item.length=0)
+		
+		This:C1470.stage.title:=Localized string:C991("stageAll")
+		
+	Else 
+		
+		This:C1470.stage.title:=Localized string:C991("stage")
+		
+	End if 
+	
+	This:C1470.stage.setShortcut("s"; (0 ?+ Command key bit:K16:2)).enable((Form:C1466.unstaged#Null:C1517) && (Form:C1466.unstaged.length>0))
+	
+	If (This:C1470.staged.items=Null:C1517) || (This:C1470.staged.items.length=0)
+		
+		This:C1470.unstage.title:=Localized string:C991("unstageAll")
+		
+	Else 
+		
+		This:C1470.unstage.title:=Localized string:C991("unstage")
+		
+	End if 
+	
+	This:C1470.unstage.setShortcut("u"; (0 ?+ Command key bit:K16:2)).enable((Form:C1466.staged#Null:C1517) && (Form:C1466.staged.length>0))
+	
+	This:C1470.emptyIndex.show((Form:C1466.staged=Null:C1517) || (Form:C1466.staged.length=0))
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _commitsManager()
 	
 	var $t : Text
-	var $p : Picture
-	var $x : Blob
-	var $commit; $o : Object
-	var $c : Collection
 	
 	This:C1470.detailCommit.unselect()
+	
 	Form:C1466.commitDetail.clear()
-	This:C1470.selector.unselect()
 	Form:C1466.diff:=""
 	
-	$commit:=This:C1470.commits.item
+	If (Form:C1466.currentCommit#Null:C1517)
+		
+		Form:C1466.currentCommit.label:=Form:C1466.currentCommit._.normal
+		
+	End if 
+	
+	var $commit:=This:C1470.commits.item
+	Form:C1466.currentCommit:=$commit
 	
 	If ($commit=Null:C1517)
 		
+		This:C1470.noCommitSelected.show()
 		This:C1470.detail.hide()
 		
 		return 
 		
 	End if 
 	
+	$commit.label:=$commit._.selected
+	
+	This:C1470.noCommitSelected.hide()
 	This:C1470.detail.show()
 	
-	$c:=Split string:C1554($commit.parent.short; " ")
+	var $c:=Split string:C1554($commit.parent.short; " ")
 	
 	If (This:C1470.Git.diffList($c.length=0 ? "" : $c.length>1 ? $c[1] : $c[0]; $commit.fingerprint.short))
 		
@@ -1150,7 +1019,7 @@ Function _commitsManager()
 			
 			$c:=Split string:C1554($t; "\t"; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
 			
-			$o:={\
+			var $o:={\
 				status: $c[0]; \
 				path: $c[1]; \
 				label: $c[1]; \
@@ -1160,10 +1029,10 @@ Function _commitsManager()
 				moved: $c.length>=3\
 				}
 			
-			$o.icon:=$o.modified ? Form:C1466.iconModified\
-				 : $o.deleted ? Form:C1466.iconDeleted\
-				 : $o.added ? Form:C1466.iconAdded\
-				 : $o.moved ? Form:C1466.iconMoved\
+			$o.icon:=$o.modified ? This:C1470.icons.edit\
+				 : $o.deleted ? This:C1470.icons.remove\
+				 : $o.moved ? This:C1470.icons.rename\
+				 : $o.added ? This:C1470.icons.add\
 				 : Null:C1517
 			
 			If ($c.length>=3)  // Renamed
@@ -1184,35 +1053,43 @@ Function _commitsManager()
 		
 	End if 
 	
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== 
+Function get isInIndex() : Boolean
+	
+	return This:C1470.form.focused=This:C1470.staged.name
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function DoDiff($item : Object)
 	
-	var $code; $t : Text
-	var $tgt
+	This:C1470._stageUnstageButtonUpdate()
 	
 	If ($item=Null:C1517)
 		
-		This:C1470.diff.hide()
-		This:C1470.stage.disable()
-		This:C1470.unstage.disable()
+		This:C1470.groupDiff.hide()
 		
 		return 
 		
 	End if 
 	
-	This:C1470.diff.show()
+	var $diff : Text
+	
+	This:C1470.groupDiff.show()
+	
+	This:C1470.fileStage.title:=Localized string:C991(This:C1470.isInIndex ? "unstage" : "stage")
+	This:C1470.fileStage.bestSize(Align right:K42:4)
 	
 	Case of 
 			
 			//––––––––––––––––––––––––––––––––––––––––––––––––
 		: ($item.added)
 			
-			$tgt:=This:C1470.Git.getPath($item.path)
+			var $tgt : Variant:=This:C1470.Git.getTarget($item.path)
 			
 			Case of 
 					
 					//______________________________________________________
-				: (Value type:C1509($tgt)=Is object:K8:27)  // File
+				: (Value type:C1509($tgt)=Is object:K8:27)\
+					 && (OB Instance of:C1731($tgt; 4D:C1709.File))
 					
 					If (Bool:C1537($tgt.exists))
 						
@@ -1221,7 +1098,7 @@ Function DoDiff($item : Object)
 								//————————————————————————————————————
 							: ($tgt.extension=".svg")  // Treat svg as text file
 								
-								$code:=$tgt.getText()
+								var $code : Text:=$tgt.getText()
 								
 								//————————————————————————————————————
 							: (Is picture file:C1113($tgt.platformPath))
@@ -1231,7 +1108,7 @@ Function DoDiff($item : Object)
 								//————————————————————————————————————
 							Else 
 								
-								$code:=$tgt.getText()
+								$code:=Try($tgt.getText())
 								
 								//————————————————————————————————————
 						End case 
@@ -1264,20 +1141,17 @@ Function DoDiff($item : Object)
 					End if 
 					
 					//______________________________________________________
-				Else 
-					
-					//
-					
-					//______________________________________________________
 			End case 
 			
 			If (Length:C16($code)>0)
 				
+				
+				
 				$code:=Replace string:C233($code; "<"; "&lt;")
 				$code:=Replace string:C233($code; ">"; "&gt;")
 				
-				ST SET TEXT:C1115($t; $code; ST Start text:K78:15; ST End text:K78:16)
-				ST SET ATTRIBUTES:C1093($t; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "green")
+				ST SET TEXT:C1115($diff; $code; ST Start text:K78:15; ST End text:K78:16)
+				ST SET ATTRIBUTES:C1093($diff; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; Form:C1466.darkScheme ? "lawngreen" : "green")
 				
 			End if 
 			
@@ -1304,28 +1178,25 @@ Function DoDiff($item : Object)
 					//______________________________________________________
 			End case 
 			
-			$t:=This:C1470.GetStyledDiffText($item)
+			$diff:=This:C1470.GetStyledDiffText($item)
 			
 			//––––––––––––––––––––––––––––––––––––––––––––––––
 	End case 
 	
-	Form:C1466.diff:=$t
+	Form:C1466.diff:=$diff
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function GetStyledDiffText($item : Object) : Text
 	
-	var $color; $line; $styled : Text
-	var $continue : Boolean
-	var $indx; $len; $pos : Integer
-	var $o : Object
-	var $c : Collection
-	var $git : cs:C1710.Git
+	var $dark : Boolean:=Form:C1466.darkScheme
+	var $line; $styled : Text
+	var $len; $pos : Integer
 	
-	$git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
 	If (Not:C34($git.success))
 		
-		$o:=$git.history.pop()
+		var $o : Object:=$git.history.pop()
 		ST SET TEXT:C1115($styled; String:C10($o.cmd)+"\r\r"+String:C10($o.error); ST Start text:K78:15; ST End text:K78:16)
 		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "red")
 		
@@ -1339,7 +1210,10 @@ Function GetStyledDiffText($item : Object) : Text
 		
 	End if 
 	
-	$c:=Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1)
+	// MARK: Remove tokens
+	var $code:=cs:C1710.regex.new($git.result; "(?m-si):[CK]:?\\d+(?::\\d+)?").substitute("")
+	
+	var $c:=Split string:C1554($code; "\n"; sk ignore empty strings:K86:1)
 	
 	// Delete the initial lines
 	While ($c.length>0)
@@ -1364,7 +1238,7 @@ Function GetStyledDiffText($item : Object) : Text
 	If ($item.added)
 		
 		ST SET TEXT:C1115($styled; $c.join("\n"); ST Start text:K78:15; ST End text:K78:16)
-		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "green")
+		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; $dark ? "lawngreen" : "green")
 		
 		return $styled
 		
@@ -1373,29 +1247,31 @@ Function GetStyledDiffText($item : Object) : Text
 	If ($item.deleted)
 		
 		ST SET TEXT:C1115($styled; $c.join("\n"); ST Start text:K78:15; ST End text:K78:16)
-		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; "red")
+		ST SET ATTRIBUTES:C1093($styled; ST Start text:K78:15; ST End text:K78:16; Attribute text color:K65:7; $dark ? "fuchsia" : "red")
 		
 		return $styled
 		
 	End if 
 	
+	var $indx:=0
+	
 	For each ($line; $c)
 		
 		If (Length:C16($line)>0)
 			
-			$color:="gray"
+			var $color:=$dark ? "gold" : "gray"
 			
 			Case of 
 					
 					//…………………………………………………………………………………………………
 				: ($line[[1]]="-")
 					
-					$color:="red"
+					$color:=$dark ? "fuchsia" : "red"
 					
 					//…………………………………………………………………………………………………
 				: ($line[[1]]="+")
 					
-					$color:="green"
+					$color:=$dark ? "lawngreen" : "green"
 					
 					//…………………………………………………………………………………………………
 				: (Character code:C91($line[[1]])=Character code:C91("@"))
@@ -1425,9 +1301,9 @@ Function GetStyledDiffText($item : Object) : Text
 	$styled:=Replace string:C233($styled; "<br/>"; "")
 	
 	// Separate blocks
-	$indx:=1
+	var $start:=1
 	
-	While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$"; $styled; $indx; $pos; $len))
+	While (Match regex:C1019("(?mi-s)^(<[^>]*>@@[^$]*)$"; $styled; $start; $pos; $len))
 		
 		If ($pos>1)
 			
@@ -1435,7 +1311,7 @@ Function GetStyledDiffText($item : Object) : Text
 			
 		End if 
 		
-		$indx+=$len
+		$start+=$len
 		
 	End while 
 	
@@ -1456,7 +1332,7 @@ Function GetStyledDiffText($item : Object) : Text
 	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function goToPage($page : Integer)
+Function GoToPage($page : Integer)
 	
 	This:C1470.changes.value:=Num:C11($page=1)
 	This:C1470.history.value:=Num:C11($page=2)
@@ -1472,6 +1348,9 @@ Function Stage($items : Collection)
 		This:C1470.Git.add($o.path)
 		
 	End for each 
+	
+	This:C1470.unstaged.unselect()
+	Form:C1466.current:=Null:C1517
 	
 	This:C1470.DoDiff()
 	This:C1470.onActivate()
@@ -1495,89 +1374,96 @@ Function Unstage($items : Collection)
 		
 	End for each 
 	
+	This:C1470.staged.unselect()
+	Form:C1466.current:=Null:C1517
+	
+	This:C1470.DoDiff()
+	This:C1470.onActivate()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function UnstageAll()
+	
+	This:C1470.Git.unstage("all")
+	
 	This:C1470.DoDiff()
 	This:C1470.onActivate()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Discard($items : Collection)
 	
-	var $tgt
-	var $o : Object
-	var $git : cs:C1710.Git
+	var $o:={\
+		main: Localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); \
+		buttons: {okTitle: Localized string:C991("discard")}}
 	
-	CONFIRM:C162(Get localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"); Get localized string:C991("discard"))
+	This:C1470.onDialogConfirm($o)
 	
-	If (Bool:C1537(OK))
+	If (Not:C34(Bool:C1537($o.action)))
 		
-		$git:=This:C1470.Git
-		
-		For each ($o; $items)
-			
-			If ($o.status="??")
-				
-				$tgt:=This:C1470.Git.getPath($o.path)
-				
-				Case of 
-						
-						//——————————————————————————————————
-					: (Value type:C1509($tgt)=Is text:K8:3)  // Method
-						
-						// Warning: No update if 4D App don't be unactivated/activated
-						$tgt:=File:C1566(Form:C1466.project.parent.parent.path+$o.path)
-						
-						//——————————————————————————————————
-					: (Value type:C1509($tgt)=Is object:K8:27)  // File
-						
-						// <NOTHING MORE TO DO>
-						
-						//——————————————————————————————————
-				End case 
-				
-				If (Bool:C1537($tgt.exists))
-					
-					$tgt.delete()
-					
-				Else 
-					
-					TRACE:C157
-					
-				End if 
-				
-			Else 
-				
-				$git.checkout($o.path)
-				
-			End if 
-		End for each 
-		
-		RELOAD PROJECT:C1739
-		
-		This:C1470.DoDiff()
-		This:C1470.onActivate()
+		return 
 		
 	End if 
 	
+	var $git:=This:C1470.Git
+	
+	For each ($o; $items)
+		
+		If ($o.status="??")
+			
+			var $tgt:=This:C1470.Git.getTarget($o.path)
+			
+			Case of 
+					
+					//——————————————————————————————————
+				: (Value type:C1509($tgt)=Is text:K8:3)  // Method
+					
+					// Warning: No update if 4D App don't be unactivated/activated
+					$tgt:=File:C1566(Form:C1466.project.parent.parent.path+$o.path)
+					
+					//——————————————————————————————————
+				: (Value type:C1509($tgt)=Is object:K8:27)  // File
+					
+					// <NOTHING MORE TO DO>
+					
+					//——————————————————————————————————
+			End case 
+			
+			If (Bool:C1537($tgt.exists))
+				
+				$tgt.delete()
+				
+			Else 
+				
+				TRACE:C157
+				
+			End if 
+			
+		Else 
+			
+			$git.checkout($o.path)
+			
+		End if 
+	End for each 
+	
+	RELOAD PROJECT:C1739
+	
+	This:C1470.DoDiff()
+	This:C1470.onActivate()
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function Switch($branch : Object)
+Function Checkout($branch : Object)
 	
 	This:C1470.Git.branch("use"; $branch.name)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function CreateGithubRepository()
 	
-	var $remote : Text
-	var $private : Boolean
-	var $file : 4D:C1709.File
-	var $gh : cs:C1710.gh
-	var $git : cs:C1710.Git
-	
-	$git:=This:C1470.Git
-	$gh:=cs:C1710.gh.new()
+	var $git:=This:C1470.Git
+	var $gh:=cs:C1710.gh.me
 	
 	If ($gh.authorized)
 		
-		$private:=True:C214
-		$remote:=$gh.createRepo(Form:C1466.project; $private)
+		var $private:=True:C214
+		var $remote:=$gh.createRepo(Form:C1466.project; $private)
 		
 		If (Length:C16($remote)>0)
 			
@@ -1588,7 +1474,7 @@ Function CreateGithubRepository()
 				If ($git.execute("git remote set-url --add "+$remote))
 					
 					// Create readme
-					$file:=File:C1566("/PACKAGE/README.md"; *)
+					var $file:=File:C1566("/PACKAGE/README.md"; *)
 					
 					If (Not:C34($file.exists))
 						
@@ -1614,81 +1500,26 @@ Function CreateGithubRepository()
 	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function loadIcons()
+Function updateCommits()
 	
-	var $key : Text
-	var $icon : Picture
+	ARRAY LONGINT:C221($len; 0)
+	ARRAY LONGINT:C221($pos; 0)
 	
-	Form:C1466.dark:=This:C1470.form.darkScheme
-	
-	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
-		
-		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".png")).platformPath; $icon)
-		CREATE THUMBNAIL:C679($icon; $icon; 20; 20)
-		Form:C1466.icons[Lowercase:C14($key)]:=$icon
-		
-	End for each 
-	
-	$icon:=Form:C1466.icons.branch
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -21; $icon)
-	$icon:=Form:C1466.icons.remote
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -22; $icon)
-	$icon:=Form:C1466.icons.tag
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -23; $icon)
-	$icon:=Form:C1466.icons.stash
-	SET LIST ITEM ICON:C950(Form:C1466.selector; -24; $icon)
-	
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/logo.png").platformPath; $icon)
-	Form:C1466.logo:=$icon
-	
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/added.svg").platformPath; $icon)
-	Form:C1466.iconAdded:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/deleted.svg").platformPath; $icon)
-	Form:C1466.iconDeleted:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/modified.svg").platformPath; $icon)
-	Form:C1466.iconModified:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/moved.svg").platformPath; $icon)
-	Form:C1466.iconMoved:=$icon
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function updateCommitList()
-	
-	var $branch; $line; $main; $meta; $style : Text
-	var $empty; $label; $separator : Picture
-	var $i; $notPushed : Integer
-	var $item
-	var $commit : Object
-	var $c; $commits; $metas; $tags : Collection
-	var $git : cs:C1710.Git
-	
-	$commit:={}
-	$commits:=[]
-	
+	var $empty; $separator : Picture
 	CREATE THUMBNAIL:C679($separator; $separator; 5)
 	CREATE THUMBNAIL:C679($empty; $empty; 5)
 	
-	
-	var $o : Object
-	$o:={\
+	var $o:={\
 		colors: ["orange"; "green"; "blue"; "red"]; \
-		stashes: []; \
-		nodes: []; \
-		level: 0\
+		stashes: []\
 		}
 	
-	var $graphMain : Picture
-	$graphMain:=This:C1470.getLabelTag("graph"; $o.colors[0])
+	var $git:=This:C1470.Git
+	var $notPushed : Integer:=$git.branchPushNumber($git.currentBranch)
 	
-	$git:=This:C1470.Git
+	var $today:=Current date:C33
+	var $yesterday : Date:=$today-1
 	
-	// $notPushed:=$git.branchPushNumber()
-	$notPushed:=$git.branchPushNumber($git.currentBranch)
-	
-	var $date; $today; $yesterday : Date
-	$today:=Current date:C33
-	$yesterday:=$today-1
-	
-	//$git.execute("log --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	$git.execute("log --all --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
 	
 /*
@@ -1698,35 +1529,36 @@ Function updateCommitList()
 3 = time stamp
 4 = sha
 5 = parent short sha
-6 = parent sh
+6 = parent sha
 7 = author mail
 8 = shortened reflog
 9 = ref names
 */
 	
-	ARRAY LONGINT:C221($pos; 0)
-	ARRAY LONGINT:C221($len; 0)
-	
-	
 	// One commit per line
+	var $commits:=[]
+	var $line; $style : Text
+	var $i : Integer
+	
 	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
 		
-		$c:=Split string:C1554($line; "|")
-		
-		//ASSERT($c[0]#"wip Windows")
+		var $c:=Split string:C1554($line; "|")
 		
 		If (Match regex:C1019("index\\son\\s"; $line; 1; *))
 			
-			var $node : Boolean
-			$node:=True:C214
-			$o.level-=1
+			continue
+			
+		End if 
+		
+		If (Match regex:C1019("^untracked files"; $line; 1; *))
+			
 			continue
 			
 		End if 
 		
 		CLEAR VARIABLE:C89($style)
 		
-		$tags:=[Null:C1517; Null:C1517; Null:C1517]
+		var $tags:=[Null:C1517; Null:C1517; Null:C1517]
 		
 		$i+=1
 		
@@ -1736,10 +1568,11 @@ Function updateCommitList()
 			
 		End if 
 		
-		$metas:=Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2)
+		var $metas:=$c.length>=10 ? Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2) : []
 		
 		If ($metas.length>0)
 			
+			var $meta : Text
 			For each ($meta; $metas)
 				
 				Case of 
@@ -1757,8 +1590,8 @@ Function updateCommitList()
 						
 						$tags[1]:=This:C1470.getLabelTag("current branch"; Replace string:C233($meta; "HEAD ->"; ""))
 						
-						$branch:=$git.workingBranch.name
-						$main:=$branch
+						var $branch : Text:=$git.workingBranch.name
+						var $main:=$branch
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="tag: @")  // Tag
@@ -1781,8 +1614,13 @@ Function updateCommitList()
 					: ($meta="refs/stash")\
 						 && (Match regex:C1019("(?mi-s)On\\s([^:]*):\\s(.*)"; $c[0]; 1; $pos; $len; *))
 						
-						var $stash : Object
-						$stash:={\
+						If (Not:C34(Bool:C1537(This:C1470._FEATURES.displayStashInCommitList)))
+							
+							continue
+							
+						End if 
+						
+						var $stash:={\
 							on: Substring:C12($c[0]; $pos{1}; $len{1}); \
 							index: Split string:C1554($c[5]; " ")[1]; \
 							ref: "stash@{"+String:C10($o.stashes.length)+"}"\
@@ -1795,8 +1633,6 @@ Function updateCommitList()
 						$c[0]:=Substring:C12($c[0]; $pos{2}; $len{2})
 						
 						$branch:=$stash.ref
-						
-						$o.level+=1
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="origin/@")  // Origin branch
@@ -1817,8 +1653,6 @@ Function updateCommitList()
 							
 						End if 
 						
-						
-						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					Else   // Branch
 						
@@ -1836,34 +1670,8 @@ Function updateCommitList()
 		End if 
 		
 		// Mark:Create label
-		var $offset; $x : Integer
-		$offset:=20
-		
-		If ($o.level=0)
-			
-			$label:=$graphMain+$separator
-			
-		Else 
-			
-			var $svg : cs:C1710.svg
-			$svg:=cs:C1710.svg.new()
-			
-			$svg.width($offset*($o.level+1)).height(30)
-			
-			For ($i; 0; $o.level; 1)
-				
-				$x:=5+($offset*$i)
-				$svg.line($x; 0; $x; 24).color($o.colors[$i]).stroke(2)
-				
-			End for 
-			
-			$svg.circle(3; $x; 10).color($o.colors[$i-1])
-			
-			$label:=$svg.picture()+$separator
-			
-		End if 
-		
-		$node:=False:C215
+		var $label:=$empty
+		var $item
 		
 		For each ($item; $tags)
 			
@@ -1877,35 +1685,57 @@ Function updateCommitList()
 			
 		End for each 
 		
-		$label+=This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
+		var $normal:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
+		var $selected:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; selected: True:C214})
 		
-		$date:=Date:C102($c[3])
+		var $date:=Try(Date:C102($c[3]))
 		
-		$commit:={\
-			label: $label; \
+		var $desc:=Split string:C1554($c[0]; "\r"; sk ignore empty strings:K86:1)
+		var $title : Text:=$desc[0]
+		
+		If ($desc.length>1)
+			
+			$desc.shift()
+			var $description:=$desc.join("\r")
+			
+		Else 
+			
+			$description:=""
+			
+		End if 
+		
+		Try($commits.push({\
+			title: $title; \
+			description: $description; \
+			label: $normal; \
 			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
-			stamp: ($date=$today ? Get localized string:C991("today") : $date=$yesterday ? Get localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
+			stamp: ($date=$today ? Localized string:C991("today") : $date=$yesterday ? Localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
 			fingerprint: {short: $c[2]; long: $c[4]}; \
 			parent: {short: $c[5]; long: $c[6]}; \
 			notPushed: $i<=$notPushed; \
 			origin: $i=($notPushed+1); \
 			branch: $branch; \
-			sort: (Date:C102($c[3])-!1970-01-01!)+Num:C11($c[3])\
-			}
-		
-		$commits.push($commit)
+			date: $date; \
+			time: $c[3]; \
+			_: {normal: $normal; selected: $selected}\
+			}))
 		
 	End for each 
 	
-	Form:C1466.commits:=$commits.orderBy("sort desc")
+	Form:C1466.commits:=$commits.orderBy([\
+		{propertyPath: "date"; descending: True:C214}; \
+		{propertyPath: "time"; descending: True:C214}])
 	
 	// Restore selection, if any
 	If (This:C1470.commits.item#Null:C1517)
 		
-		var $indx : Integer
-		$indx:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)[0]
-		This:C1470.commits.select($indx+1)
+		$c:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)
 		
+		If ($c.length>0)
+			
+			This:C1470.commits.select($c[0]+1)
+			
+		End if 
 	End if 
 	
 	This:C1470.form.update()
@@ -1913,9 +1743,8 @@ Function updateCommitList()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
-	var $icon : Picture
-	var $svg : cs:C1710.svg
-	$svg:=cs:C1710.svg.new()
+	var $dark : Boolean:=Form:C1466.darkScheme
+	var $svg:=cs:C1710.svg.new()
 	
 	Case of 
 			
@@ -1932,8 +1761,17 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 		: ($what="title")
 			
 			$svg.text($text).position(2; 15)\
-				.fontStyle($style.bold ? Bold:K14:2 : Plain:K14:1)\
-				.color($style.main ? (Form:C1466.dark ? "white" : "black") : (Form:C1466.dark ? "silver" : "darkgray"))
+				.fontStyle($style.bold ? Bold:K14:2 : Plain:K14:1)
+			
+			If (Bool:C1537($style.selected))
+				
+				$svg.color("white")
+				
+			Else 
+				
+				$svg.color($style.main ? ($dark ? "white" : "black") : ($dark ? "silver" : "darkgray"))
+				
+			End if 
 			
 			return $svg.picture()
 			
@@ -1942,9 +1780,9 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)*1.2; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("red").fill("lightpink").opacity(0.3)
+				.stroke($dark ? "lightpink" : "red").fill($dark ? "deeppink" : "lightpink").opacity($dark ? 0.8 : 0.3)
 			
-			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2)
+			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -1955,9 +1793,9 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)+10; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("red").fill("lightpink").opacity(0.3)
+				.stroke($dark ? "lightpink" : "red").fill($dark ? "deeppink" : "lightpink").opacity($dark ? 0.8 : 0.3)
 			
-			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2)
+			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -1970,11 +1808,11 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				
 				$svg.rect($svg.getTextWidth($text)+28; 20)\
 					.radius(4).position(0.5; 0.5)\
-					.stroke("limegreen").fill("palegreen").opacity(0.3)
+					.stroke("limegreen").fill($dark ? "seagreen" : "limegreen").opacity($dark ? 0.8 : 0.3)
 				
 				$svg.line(21; 0; 21; 20).stroke("limegreen").opacity(0.3)
 				
-				$svg.text($text).position(25; 15)
+				$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 				
 			Else 
 				
@@ -1984,7 +1822,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 				
 			End if 
 			
-			$svg.image(Form:C1466.icons.github).position(0.6; 0.6)
+			$svg.image(This:C1470.icons.github)
 			
 			return $svg.picture()
 			
@@ -1993,13 +1831,13 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)+28; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("blue").fill("lavender").opacity(0.5)
+				.stroke("blue").fill($dark ? "fuchsia" : "lavender").opacity($dark ? 0.8 : 0.3)
 			
-			$svg.image(Form:C1466.icons.tag).position(1; 1)
+			$svg.image(This:C1470.icons.tag)
 			
 			$svg.line(21; 0; 21; 20).stroke("blue").opacity(0.5)
 			
-			$svg.text($text).position(25; 15)
+			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -2008,13 +1846,13 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			
 			$svg.rect($svg.getTextWidth($text)+28; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke("grey").fill("lightgray").opacity(0.5)
+				.stroke("grey").fill($dark ? "darkgray" : "lightgray").opacity($dark ? 0.8 : 0.3)
 			
-			$svg.image(Form:C1466.icons.stash).position(1; 1)
+			$svg.image(This:C1470.icons.stash)
 			
 			$svg.line(21; 0; 21; 20).stroke("grey").opacity(0.5)
 			
-			$svg.text($text).position(25; 15)
+			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 			
 			return $svg.picture()
 			
@@ -2032,16 +1870,10 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	$svg.close()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function handleMenus($what : Text; $current : Object)
-	
-	var $ignore : Text
-	var $tgt
-	var $data : Object
-	var $file; $gitignore : 4D:C1709.File
-	var $git : cs:C1710.Git
+Function handleMenus($what : Text; $data : Object)
 	
 	$what:=$what || Get selected menu item parameter:C1005
-	$git:=This:C1470.Git
+	var $git:=This:C1470.Git
 	
 	Case of 
 			
@@ -2062,7 +1894,12 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="copy")
 			
-			SET TEXT TO PASTEBOARD:C523($current.path)
+			SET TEXT TO PASTEBOARD:C523($data.path)
+			
+			//______________________________________________________
+		: ($what="copyName")
+			
+			SET TEXT TO PASTEBOARD:C523($data.name || $data.tag)
 			
 			//______________________________________________________
 		: ($what="discard")
@@ -2072,12 +1909,14 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="delete")
 			
-			$file:=File:C1566(Convert path POSIX to system:C1107($current.path); fk platform path:K87:2)
-			CONFIRM:C162(Replace string:C233(Get localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName))
+			var $file:=File:C1566(Convert path POSIX to system:C1107($data.path); fk platform path:K87:2)
+			var $o:={main: Replace string:C233(Localized string:C991("areYouSureYouWantToDeleteTheFile"); "{name}"; $file.fullName)}
 			
-			If (Bool:C1537(OK))
+			This:C1470.onDialogConfirm($o)
+			
+			If (Bool:C1537($o.action))
 				
-				File:C1566(Form:C1466.project.parent.parent.path+$current.path).delete()
+				File:C1566(Form:C1466.project.parent.parent.path+$data.path).delete()
 				
 				RELOAD PROJECT:C1739
 				
@@ -2090,7 +1929,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="open")
 			
-			$tgt:=This:C1470.Git.getPath($current.path)
+			var $tgt : Variant:=This:C1470.Git.getTarget($data.path)
 			
 			Case of 
 					
@@ -2126,7 +1965,7 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="show")
 			
-			SHOW ON DISK:C922(File:C1566("/PACKAGE/"+$current.path; *).platformPath)
+			SHOW ON DISK:C922(File:C1566("/PACKAGE/"+$data.path; *).platformPath)
 			
 			//______________________________________________________
 		: ($what="stage")
@@ -2146,38 +1985,37 @@ Function handleMenus($what : Text; $current : Object)
 			//______________________________________________________
 		: ($what="ignore@")
 			
-			$file:=File:C1566($current.path)
+			$file:=This:C1470.Git.workspace.file($data.path)
 			
-			$gitignore:=$git.cwd.file(".gitignore")
-			$ignore:=$gitignore.getText("UTF-8"; Document with CR:K24:21)
+			var $ignore : Text:=$git.gitignore.getText("UTF-8"; Document with CR:K24:21)
 			
 			Case of 
 					
 					//____________________________
 				: ($what="ignoreFile")
 					
-					If ($current.status#"??")
+					If ($data.status#"??")
 						
-						$git.untrack($current.path)
+						$git.untrack($data.path)
 						
 					End if 
 					
-					$ignore+="\r"+$current.path
+					$ignore+="\r"+$data.path
 					
 					//____________________________
 				: ($what="ignoreExtension")
 					
-					// #TO_DO: Must unstack all indexed files with this extension
+					// TODO: Must unstack all indexed files with this extension
 					
 					$ignore+="\r*"+$file.extension
 					
 					//____________________________
 				: ($what="ignoreCustom")
 					
-					$data:=New object:C1471(\
-						"window"; Open form window:C675("PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
-						"pattern"; $current.path; \
-						"files"; $git.changes)
+					$data:={\
+						window: Open form window:C675("PATTERN"; Plain form window:K39:10; Horizontally centered:K39:1; Vertically centered:K39:4; *); \
+						pattern: $data.path; \
+						files: $git.changes}
 					
 					DIALOG:C40("PATTERN"; $data)
 					CLOSE WINDOW:C154
@@ -2196,16 +2034,56 @@ Function handleMenus($what : Text; $current : Object)
 					//____________________________
 			End case 
 			
-			$gitignore.setText($ignore; "UTF-8"; Document with LF:K24:22)
+			$git.gitignore.setText($ignore; "UTF-8"; Document with LF:K24:22)
 			
 			$git.status()
 			
 			This:C1470.form.refresh()
 			
 			//______________________________________________________
+		: ($what="checkout")
+			
+			If ($data.name#Form:C1466.currentBranch)
+				
+				Form:C1466.currentBranch:=$data.name
+				
+				If ($git.status()>0)
+					
+					This:C1470.checkoutDialog.show({\
+						branch: $data.name; \
+						stash: This:C1470.checkout.stash; \
+						noChange: This:C1470.checkout.noChange; \
+						discard: This:C1470.checkout.discard\
+						})
+					
+					return 
+					
+				End if 
+				
+				This:C1470.Git.checkout($data.name)
+				
+				RELOAD PROJECT:C1739
+				
+				This:C1470.form.refresh()
+				
+			End if 
+			//______________________________________________________
+		: ($what="newBranch")
+			
+			This:C1470.newBranchDialog.show({\
+				at: $data.ref; \
+				label: $data.name; \
+				branch: ""; \
+				checkout: True:C214; \
+				stash: This:C1470.checkout.stash; \
+				noChange: This:C1470.checkout.noChange; \
+				discard: This:C1470.checkout.discard\
+				})
+			
+			//______________________________________________________
 		Else 
 			
-			ALERT:C41("Unmanaged tool: \""+$what+"\"…\r\rWe are going tout doux ;-)")
+			ALERT:C41("Unmanaged tool: \""+$what+"\"…\r\rWe are going tout doux 🤒")
 			
 			//———————————————————————————————————————
 	End case 
@@ -2213,14 +2091,11 @@ Function handleMenus($what : Text; $current : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getAvatar($mail : Text) : Picture
 	
-	var $t : Text
-	
-	$t:=Generate digest:C1147($mail; MD5 digest:K66:1)
+	var $t:=Generate digest:C1147($mail; MD5 digest:K66:1)
 	
 	If (Form:C1466[$t]=Null:C1517)
 		
-		var $callback : cs:C1710._gravatarRequest
-		$callback:=cs:C1710._gravatarRequest.new({user: $t})
+		var $callback:=cs:C1710._gravatarRequest.new({user: $t})
 		
 		var $request : 4D:C1709.HTTPRequest
 		$request:=4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$t; $callback)
@@ -2233,47 +2108,103 @@ Function getAvatar($mail : Text) : Picture
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function metaCommits($item : Object) : Object
 	
-	return {}
-	
-	//If ($item.branch=This.Git.workingBranch.name)
-	//return {}
-	//Else 
-	//return {cell: {commitTitle: {fontStyle: "italic"; stroke: "grey"}}}
-	//End if 
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function meta($item : Object) : Object
-	
-	//FIXME: Colors according to scheme
-	
-	return {}
-	
-	Case of 
+	If ($item=This:C1470.commits.item)  // Selected
+		
+		If (This:C1470.form.window.isFrontmost())
 			
-			//______________________________________________________
-		: ($item.added)  // New (staged or not)
+			return This:C1470.form.lightScheme ? {fill: "#0064E1"; stroke: "white"} : Null:C1517
 			
-			return {fill: "green"}
-			
-			//______________________________________________________
-		: ($item.deleted)  // Deleted (staged or not)
-			
-			return {fill: "red"}
-			
-			//______________________________________________________
-		: ($item.moved)  // Moved
-			
-			return {fill: "black"}
-			
-			//______________________________________________________
-		: ($item.modified)  // Modified
-			
-			return {fill: "orange"}
-			
-			//______________________________________________________
 		Else 
 			
-			return {}
+			return This:C1470.form.lightScheme ? {fill: "#DCDCDC"; stroke: "white"} : {fill: "#464646"; stroke: "white"}
 			
-			//______________________________________________________
-	End case 
+		End if 
+	End if 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _updateScheme()
+	
+	If (This:C1470.form.isSchemeModified() || Shift down:C543)
+		
+		Form:C1466.darkScheme:=This:C1470.form.darkScheme
+		
+		This:C1470._loadScheme()
+		
+	End if 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+Function _loadScheme()
+	
+	This:C1470.commits.selectionHighlight:=This:C1470.form.lightScheme
+	
+	This:C1470.icons:={}
+	
+	var $key : Text
+	var $icon : Picture
+	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
+		
+		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".png")).platformPath; $icon)
+		CREATE THUMBNAIL:C679($icon; $icon; 22; 22)
+		This:C1470.icons[Lowercase:C14($key)]:=$icon
+		
+	End for each 
+	
+	For each ($key; ["Add"; "Remove"; "Edit"; "Rename"])
+		
+		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Status/"+$key+".png")).platformPath; $icon)
+		This:C1470.icons[Lowercase:C14($key)]:=$icon
+		
+	End for each 
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Display an alert dialog horizontally centered & at the top 1/3
+Function onDialogAlert($data : Object)
+	
+	$data.type:="alert"
+	This:C1470._onDialogMessage($data)
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Display a confirmation dialog horizontally centered & at the top 1/3
+Function onDialogConfirm($data : Object)
+	
+	$data.type:="confirm"
+	$data.buttons:=$data.buttons || {}
+	$data.buttons.cancel:=True:C214
+	This:C1470._onDialogMessage($data)
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Position the window horizontally centered & at the top 1/3
+Function _onDialogMessage($data : Object)
+	
+	var $bottom; $height; $left; $right; $top; $width : Integer
+	
+	FORM GET PROPERTIES:C674("MESSAGE"; $width; $height)
+	GET WINDOW RECT:C443($left; $top; $right; $bottom)
+	
+	$left+=((($right-$left)-$width)\2)
+	$top+=(($bottom-$top)\3)
+	
+	$data:=$data || {}
+	$data._winRef:=Open form window:C675("MESSAGE"; Movable form dialog box:K39:8+0x00080000; $left; $top)
+	
+	DIALOG:C40("MESSAGE"; $data)
+	CLOSE WINDOW:C154($data._winRef)
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Display a request dialog horizontally centered & at the top 1/3
+Function onDialogRequest($data : Object)
+	
+	var $bottom; $height; $left; $right; $top; $width : Integer
+	
+	FORM GET PROPERTIES:C674("REQUEST"; $width; $height)
+	GET WINDOW RECT:C443($left; $top; $right; $bottom)
+	
+	$left+=((($right-$left)-$width)\2)
+	$top+=(($bottom-$top)\3)
+	
+	$data:=$data || {}
+	$data._winRef:=Open form window:C675("REQUEST"; Movable form dialog box:K39:8+0x00080000; $left; $top)
+	
+	DIALOG:C40("REQUEST"; $data)
+	CLOSE WINDOW:C154($data._winRef)
+	

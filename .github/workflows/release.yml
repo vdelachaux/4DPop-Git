@@ -11,22 +11,8 @@ jobs:
     permissions:
       contents: write # for asset upload
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Checkout NetKit
-        uses: actions/checkout@v6
-        with:
-          repository: 4d/4D-NetKit
-          path: Components/4D NetKit.4dbase
-      - name: BuildAndPackage
-        uses: 4d/build4d-action@main
-        with:
-            product-line: vcs
-            version: vcs
-            build: official
-            token: ${{ secrets.DLTK }}
-            actions: "build,pack,sign,archive"
-            sign-certificate: DEV_ID
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v4
       - name: Upload
         run: |
-          gh release upload ${{github.event.release.tag_name}} BUILD/${{github.event.repository.name}}.zip
+          gh release upload ${{github.event.release.tag_name}} build/${{github.event.repository.name}}.zip
