@@ -35,7 +35,20 @@ jobs:
           fi
           repo="${github##*/}"
           zip="${repo}.zip"
-          curl -fL "https://github.com/${github}/raw/main/BUILD/${zip}" -o "${zip}"
+          downloaded=0
+          for url in \
+            "https://github.com/${github}/raw/main/BUILD/${zip}" \
+            "https://github.com/${github}/raw/main/Build/${zip}" \
+            "https://github.com/${github}/releases/latest/download/${zip}"; do
+            if curl -fL "$url" -o "${zip}"; then
+              downloaded=1
+              break
+            fi
+          done
+          if [ "$downloaded" -ne 1 ]; then
+            echo "Unable to download dependency archive for ${dep_name} (${github})" >&2
+            exit 1
+          fi
           if [ "$dep_name" = "4DPop" ]; then
             rm -rf "Components/4DPop.4dbase"
             mkdir -p "Components/4DPop.4dbase"
@@ -69,8 +82,24 @@ jobs:
           }
           $repo = $github.Split("/")[-1]
           $zip = "$repo.zip"
-          $url = "https://github.com/$github/raw/main/BUILD/$zip"
-          Invoke-WebRequest -Uri $url -OutFile $zip
+          $urls = @(
+            "https://github.com/$github/raw/main/BUILD/$zip",
+            "https://github.com/$github/raw/main/Build/$zip",
+            "https://github.com/$github/releases/latest/download/$zip"
+          )
+          $downloaded = $false
+          foreach ($url in $urls) {
+            try {
+              Invoke-WebRequest -Uri $url -OutFile $zip -ErrorAction Stop
+              $downloaded = $true
+              break
+            }
+            catch {
+            }
+          }
+          if (-not $downloaded) {
+            throw "Unable to download dependency archive for $depName ($github)"
+          }
           if ($depName -eq "4DPop") {
             Remove-Item -Recurse -Force "Components/4DPop.4dbase" -ErrorAction SilentlyContinue
             New-Item -ItemType Directory -Path "Components/4DPop.4dbase" -Force | Out-Null
