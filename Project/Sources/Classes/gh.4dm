@@ -342,6 +342,9 @@ Function _exe() : Boolean
 			// Use embedded binary
 			This:C1470.exe:=This:C1470._unsanboxed(File:C1566("/RESOURCES/bin/gh")).path
 			
+			// Ensure the embedded binary is executable (defensive: the exec bit may be lost)
+			LAUNCH EXTERNAL PROCESS:C811("chmod +x "+Char:C90(34)+This:C1470.exe+Char:C90(34))
+			
 		End if 
 		
 	Else 
