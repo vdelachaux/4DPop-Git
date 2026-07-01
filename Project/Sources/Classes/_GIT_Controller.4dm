@@ -58,6 +58,13 @@ property windowFrame : cs:C1710.ui.subform
 property icons : Object
 
 property _tagCache : Object
+property _commitsVersion : Integer
+
+property _worker:="_gitLogRefresh"
+
+// Commit-list auto-refresh interval while on the history page, in seconds
+// (0 = disabled). Meant to become a per-repo setting later.
+property _delay : Integer:=30
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
@@ -70,10 +77,10 @@ Class constructor
 Function init()
 	
 	// MARK: Menu bar
-	var $menuHandle : Text
-	$menuHandle:=Formula:C1597(formMenuHandle).source
+	var $menuHandle:=Formula:C1597(formMenuHandle).source
 	
-	var $menuFile:=cs:C1710.ui.menu.new().file()  // Get a standard file menu
+	// Get a standard file menu
+	var $menuFile:=cs:C1710.ui.menu.new().file()
 	
 	// Enrich with custom items
 	$menuFile.line(1)
@@ -81,11 +88,9 @@ Function init()
 	$menuFile.line(3)
 	$menuFile.append(Localized string:C991("settings"); "settings"; 4).method($menuHandle)
 	
-	var $menuEdit:=cs:C1710.ui.menu.new().edit()  // Get a standard edit menu
-	
 	cs:C1710.ui.menuBar.new([\
 		":xliff:CommonMenuFile"; $menuFile; \
-		":xliff:CommonMenuEdit"; $menuEdit]).set()
+		":xliff:CommonMenuEdit"; cs:C1710.ui.menu.new().edit()]).set()
 	
 	// Mark:Page 0️⃣ Toolbar
 	This:C1470.windowFrame:=This:C1470.form.Subform("windowFrame")
@@ -167,6 +172,13 @@ Function handleEvents($e : cs:C1710.ui.evt)
 				
 				This:C1470.form.update()
 				
+				If (This:C1470.form.page=This:C1470.pages.history)
+					
+					This:C1470._kickCommitsRefresh()
+					This:C1470._scheduleCommitsRefresh()
+					
+				End if 
+				
 				//______________________________________________________
 			: ($e.pageChange)
 				
@@ -181,6 +193,7 @@ Function handleEvents($e : cs:C1710.ui.evt)
 					End if 
 					
 					This:C1470.updateCommits()
+					This:C1470._scheduleCommitsRefresh()
 					
 				End if 
 				
@@ -502,6 +515,7 @@ Function onLoad()
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
 	
 	This:C1470._loadScheme()
+	This:C1470.updateCommits()
 	
 	This:C1470.GoToPage(This:C1470.pages.local)
 	
@@ -734,6 +748,7 @@ Function onActivate()
 	If (This:C1470.form.page=This:C1470.pages.history)
 		
 		This:C1470.updateCommits()
+		This:C1470._scheduleCommitsRefresh()
 		
 	End if 
 	
@@ -1502,7 +1517,63 @@ Function CreateGithubRepository()
 	
 	// Mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Show the cached commit list instantly, then refresh it in the background
+	// (git log runs in a worker, so the UI never freezes). See _gitLogRefresh.
 Function updateCommits()
+	
+	var $cache:=cs:C1710._commitsCache.me
+	
+	If ($cache.version>0)
+		
+		This:C1470._buildCommits($cache.raw)
+		This:C1470._commitsVersion:=$cache.version
+		
+	End if 
+	
+	This:C1470._kickCommitsRefresh()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Launch the background git log worker (unless one is already running)
+Function _kickCommitsRefresh()
+	
+	var $cache:=cs:C1710._commitsCache.me
+	
+	If ($cache.loading)
+		
+		return 
+		
+	End if 
+	
+	$cache.setLoading()
+	CALL WORKER:C1389(This:C1470._worker; Formula:C1597(_gitLogRefresh); Current form window:C827)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// (Re)arm the periodic auto-refresh while on the history page (self-re-arming
+	// one-shot timer; _delay is in seconds, 0 disables it)
+Function _scheduleCommitsRefresh()
+	
+	If (This:C1470._delay>0)
+		
+		This:C1470.form.setTimer(-(This:C1470._delay*60))
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Called (via CALL FORM) once the background git log has refreshed the cache
+Function onCommitsRefreshed()
+	
+	var $cache:=cs:C1710._commitsCache.me
+	
+	If ($cache.version>This:C1470._commitsVersion)
+		
+		This:C1470._buildCommits($cache.raw)
+		This:C1470._commitsVersion:=$cache.version
+		
+	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Build the commit list (and update the UI) from a raw `git log` output
+Function _buildCommits($raw : Text)
 	
 	ARRAY LONGINT:C221($len; 0)
 	ARRAY LONGINT:C221($pos; 0)
@@ -1522,8 +1593,6 @@ Function updateCommits()
 	var $today:=Current date:C33
 	var $yesterday : Date:=$today-1
 	
-	$git.execute("log --all --format=%s|%an|%h|%aI|%H|%p|%P|%ae|%gd|%D")
-	
 /*
 0 = message
 1 = author name
@@ -1539,14 +1608,14 @@ Function updateCommits()
 	
 	// Preload author avatars in parallel: fire all gravatar requests, then a
 	// single blocking wait instead of one synchronous round-trip per author
-	This:C1470._preloadAvatars($git.result)
+	This:C1470._preloadAvatars($raw)
 	
 	// One commit per line
 	var $commits:=[]
 	var $line; $style : Text
 	var $i : Integer
 	
-	For each ($line; Split string:C1554($git.result; "\n"; sk ignore empty strings:K86:1))
+	For each ($line; Split string:C1554($raw; "\n"; sk ignore empty strings:K86:1))
 		
 		var $c:=Split string:C1554($line; "|")
 		
@@ -1677,8 +1746,8 @@ Function updateCommits()
 		
 		// Mark:Create label
 		var $label:=$empty
-		var $item
 		
+		var $item
 		For each ($item; $tags)
 			
 			If ($item=Null:C1517)
@@ -1691,13 +1760,8 @@ Function updateCommits()
 			
 		End for each 
 		
-		var $normal:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; main: $branch=$main})
-		var $selected:=$label+This:C1470.getLabelTag("title"; $c[0]; {bold: $style="bold"; selected: True:C214})
-		
 		var $date:=Try(Date:C102($c[3]))
-		
 		var $desc:=Split string:C1554($c[0]; "\r"; sk ignore empty strings:K86:1)
-		var $title : Text:=$desc[0]
 		
 		If ($desc.length>1)
 			
@@ -1709,6 +1773,12 @@ Function updateCommits()
 			$description:=""
 			
 		End if 
+		
+		// The label shows only the subject (first line); passing the full
+		// multi-line message would make svgx render several lines in the row
+		var $title : Text:=$desc[0]
+		var $normal:=$label+This:C1470.getLabelTag("title"; $title; {bold: $style="bold"; main: $branch=$main})
+		var $selected:=$label+This:C1470.getLabelTag("title"; $title; {bold: $style="bold"; selected: True:C214})
 		
 		Try($commits.push({\
 			title: $title; \
