@@ -52,7 +52,7 @@ Thumbs.db
 Resources/php.ini
 
 Components/
-!Build/Components
+!BUILD/Components
 
 Project/Sources/Methods/Method*.4dm
 Project/Sources/Methods/00_*.4dm
@@ -72,9 +72,9 @@ DEV/
 Resources/response.json
 Resources/test
 
-Build/Components/4DPop Git.4dbase/Resources/test
-Build/Components/4DPop Git.4dbase/Resources/response.json
-Build/Components/4DPop Git.4dbase/Documentation/*.png
+BUILD/Components/4DPop Git.4dbase/Resources/test
+BUILD/Components/4DPop Git.4dbase/Resources/response.json
+BUILD/Components/4DPop Git.4dbase/Documentation/*.png
 _Macros v2
 4DPop Git.bbprojectd
 Resources/Images/Fork
