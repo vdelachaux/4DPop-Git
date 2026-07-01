@@ -8,6 +8,22 @@
 		"4D NetKit": {
 			"github": "4d/4D-NetKit",
 			"version": "4d"
+		},
+		"UI with Classes": {
+			"github": "vdelachaux/UI-with-Classes",
+			"version": "latest"
+		},
+		"SVG with Classes": {
+			"github": "vdelachaux/SVG-with-Classes",
+			"version": "latest"
+		},
+		"Regex with Classes": {
+			"github": "vdelachaux/Regex-with-Classes",
+			"version": "latest"
+		},
+		"Color with Classes": {
+			"github": "vdelachaux/Color-with-Classes",
+			"version": "latest"
 		}
 	}
 }

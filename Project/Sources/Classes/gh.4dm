@@ -220,7 +220,7 @@ Function onDataError($worker : 4D:C1709.SystemWorker; $info : Object)
 	If (Match regex:C1019("(?mi-s)([[:xdigit:]]{4}-[[:xdigit:]]{4}).*"; $info.data; 1; $pos; $len))
 		
 		var $winRef:=Open form window:C675("DEVICE ACTIVATION"; Movable form dialog box:K39:8; Horizontally centered:K39:1; At the top:K39:5)
-		var $menubar:=cs:C1710.menuBar.new().defaultMinimalMenuBar().set()
+		var $menubar:=cs:C1710.ui.menuBar.new().defaultMinimalMenuBar().set()
 		
 		var $otc:=Substring:C12($info.data; $pos{1}; $len{1})
 		SET TEXT TO PASTEBOARD:C523($otc)

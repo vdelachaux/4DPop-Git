@@ -21,20 +21,13 @@ Function onResponse($request : 4D:C1709.HTTPRequest; $event : Object)
 		
 	Else 
 		
-		If (Form:C1466#Null:C1517)
-			
-			Form:C1466[$request.headers.user]:=$p
-			
-		End if 
+		cs:C1710._gravatars.me.store($request.headers.user; $p)
+		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function onError($request : 4D:C1709.HTTPRequest; $event : Object)
 	
-	If (Form:C1466#Null:C1517)
-		
-		var $p : Picture
-		READ PICTURE FILE:C678(File:C1566("/.PRODUCT_RESOURCES/Internal Components/runtime.4dbase/Resources/images/toolbox/users_groups/904.png").platformPath; $p)
-		Form:C1466[$request.headers.user]:=$p
-		
-	End if 
+	var $p : Picture
+	READ PICTURE FILE:C678(File:C1566("/.PRODUCT_RESOURCES/Internal Components/runtime.4dbase/Resources/images/toolbox/users_groups/904.png").platformPath; $p)
+	cs:C1710._gravatars.me.store($request.headers.user; $p)

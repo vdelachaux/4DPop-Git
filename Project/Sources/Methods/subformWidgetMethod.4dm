@@ -4,7 +4,7 @@ var $manager : Text:="_"+$name+"Manager"
 var $instance : 4D:C1709.Class:=formGetInstance
 
 If (Not:C34(OB Instance of:C1731($instance[$manager]; 4D:C1709.Function)))\
- && Match regex:C1019("(?m-si)_\\d*$"; $name; 1)  // A cs.onBoard subform ?
+ && Match regex:C1019("(?m-si)_\\d*$"; $name; 1)  // A cs.ui.onBoard subform ?
 	
 	var $c : Collection:=Split string:C1554($name; "_")
 	$c.pop()  // Removes the last item

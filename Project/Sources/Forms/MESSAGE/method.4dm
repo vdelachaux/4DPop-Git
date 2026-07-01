@@ -211,7 +211,7 @@ Case of
 		If (Bool:C1537(Form:C1466.buttons.option))
 			
 			OBJECT SET TITLE:C194(*; "option"; String:C10(Form:C1466.buttons.optionTitle))
-			cs:C1710.button.new("option").bestSize(Align left:K42:2)
+			cs:C1710.ui.button.new("option").bestSize(Align left:K42:2)
 			
 			If ($isWindows)
 				
@@ -380,7 +380,7 @@ Case of
 		
 		FORM SET ENTRY ORDER:C1468($entryOrders)
 		
-		cs:C1710.group.new($c.reverse().join(",")).distributeRigthToLeft({spacing: 13; minWidth: $isWindows ? 69 : 80})
+		cs:C1710.ui.group.new($c.reverse().join(",")).distributeRigthToLeft({spacing: 13; minWidth: $isWindows ? 69 : 80})
 		
 		SET TIMER:C645(-1)
 		

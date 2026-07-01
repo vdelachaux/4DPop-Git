@@ -2,16 +2,16 @@ property isSubform:=False:C215
 property toBeInitialized:=False:C215
 
 // MARK:Delegates 📦
-property form : cs:C1710.form
-property pattern : cs:C1710.input
-property preview : cs:C1710.listbox
-property _footer : cs:C1710.group
-property done; cancel; help : cs:C1710.button
+property form : cs:C1710.ui.form
+property pattern : cs:C1710.ui.input
+property preview : cs:C1710.ui.listbox
+property _footer : cs:C1710.ui.group
+property done; cancel; help : cs:C1710.ui.button
 
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.form:=cs:C1710.form.new(This:C1470)
+	This:C1470.form:=cs:C1710.ui.form.new(This:C1470)
 	This:C1470.form.init()
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
@@ -27,9 +27,9 @@ Function init()
 	This:C1470.cancel:=This:C1470.form.Button("cancel").addToGroup(This:C1470._footer)
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
-Function handleEvents($e : cs:C1710.evt)
+Function handleEvents($e : cs:C1710.ui.evt)
 	
-	$e:=$e || cs:C1710.evt.new()
+	$e:=$e || cs:C1710.ui.evt.new()
 	
 	If ($e.form)  // <== FORM METHOD
 		

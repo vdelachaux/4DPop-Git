@@ -18,19 +18,12 @@
 			"database",
 			"env"
 		],
-		"methods": [
-			"noError"
-		],
 		"classes": [
-			"color",
 			"error",
 			"feature",
 			"http",
 			"motor",
-			"os",
-			"regex",
-			"svg",
-			"xml"
+			"os"
 		]
 	},
 	"⚙️ MACROS": {},
@@ -52,36 +45,8 @@
 			"subformWidgetMethod"
 		],
 		"classes": [
-			"button",
-			"colors",
 			"colour",
-			"comboBox",
-			"constraints",
-			"coordinates",
-			"dropDown",
-			"evt",
-			"form",
-			"group",
-			"hierList",
-			"hList",
-			"input",
-			"listbox",
-			"menu",
-			"menuBar",
-			"onBoard",
-			"picture",
-			"rect",
-			"scrollable",
-			"selector",
-			"static",
-			"stepper",
-			"subform",
-			"tabControl",
-			"thermometer",
-			"tips",
-			"webArea",
-			"widget",
-			"window"
+			"hierList"
 		]
 	},
 	"📦 MAIN": {
@@ -107,6 +72,7 @@
 		"classes": [
 			"_GIT_Controller",
 			"_gravatarRequest",
+			"_gravatars",
 			"_PATTERN_Controller"
 		]
 	},

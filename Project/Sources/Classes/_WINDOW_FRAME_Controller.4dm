@@ -1,8 +1,8 @@
-property form : cs:C1710.form
+property form : cs:C1710.ui.form
 property isSubform:=True:C214
 property toBeInitialized:=False:C215
 
-property drag; reduce; zoom; close : cs:C1710.button
+property drag; reduce; zoom; close : cs:C1710.ui.button
 property isModal : Boolean
 property options : Integer
 property actionOnDoubleClick : Text
@@ -10,7 +10,7 @@ property actionOnDoubleClick : Text
 Class constructor
 	
 	// MARK:-Delegates 📦
-	This:C1470.form:=cs:C1710.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
+	This:C1470.form:=cs:C1710.ui.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
 	
 	This:C1470.isModal:=This:C1470.form.window.type=Modal dialog:K27:2
 	This:C1470.options:=0
@@ -65,9 +65,9 @@ Function init()
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === ===
-Function handleEvents($e : cs:C1710.evt)
+Function handleEvents($e : cs:C1710.ui.evt)
 	
-	$e:=$e || cs:C1710.evt.new()
+	$e:=$e || cs:C1710.ui.evt.new()
 	
 	// MARK:Form Method
 	If ($e.objectName=Null:C1517)

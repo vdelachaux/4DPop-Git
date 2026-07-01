@@ -9,7 +9,7 @@ property darkMode : Boolean
 
 property pages:={local: 1; history: 2}
 
-property helptip:=cs:C1710.tips.new()
+property helptip:=cs:C1710.ui.tips.new()
 
 property checkout:={\
 stash: True:C214; \
@@ -33,34 +33,36 @@ displayStashInCommitList: True:C214\
 }
 
 // MARK:Delegates 📦
-property form : cs:C1710.form
+property form : cs:C1710.ui.form
 property Git:=cs:C1710.Git.me
 
 // MARK: UI 🖥️
-property toolbarButtons; commitment; detail; groupDiff : cs:C1710.group
+property toolbarButtons; commitment; detail; groupDiff : cs:C1710.ui.group
 
-property pullDialog; pushDialog; checkoutDialog; newBranchDialog : cs:C1710.onBoard
+property pullDialog; pushDialog; checkoutDialog; newBranchDialog : cs:C1710.ui.onBoard
 
 property changes; history; fetch; pull; push; open; \
-stage; unstage; diffTool; commit; amend; fileStage; fileMore : cs:C1710.button
+stage; unstage; diffTool; commit; amend; fileStage; fileMore : cs:C1710.ui.button
 
-property menu; unstaged; staged; commits; detailCommit : cs:C1710.listbox
+property menu; unstaged; staged; commits; detailCommit : cs:C1710.ui.listbox
 
-property diff; subject; description; parent; detailDiff; currentPath : cs:C1710.input
+property diff; subject; description; parent; detailDiff; currentPath : cs:C1710.ui.input
 
 property authorLabel; authorName; authorMail; stamp; shaLabe; sha; shaLabel; \
-parentLabel; titleTop; title; titleBottom; emptyIndex; noCommitSelected : cs:C1710.static
+parentLabel; titleTop; title; titleBottom; emptyIndex; noCommitSelected : cs:C1710.ui.static
 
-property authorAvatar : cs:C1710.picture
+property authorAvatar : cs:C1710.ui.picture
 
-property windowFrame : cs:C1710.subform
+property windowFrame : cs:C1710.ui.subform
 
 property icons : Object
+
+property _tagCache : Object
 
 // === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.form:=cs:C1710.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
+	This:C1470.form:=cs:C1710.ui.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -71,17 +73,17 @@ Function init()
 	var $menuHandle : Text
 	$menuHandle:=Formula:C1597(formMenuHandle).source
 	
-	var $menuFile:=cs:C1710.menu.new().file()  // Get a standard file menu
+	var $menuFile:=cs:C1710.ui.menu.new().file()  // Get a standard file menu
 	
 	// Enrich with custom items
 	$menuFile.line(1)
 	$menuFile.append("Diff"; "diff"; 2).shortcut("D").method($menuHandle)
 	$menuFile.line(3)
-	$menuFile.append(":xliff:settings"; "settings"; 4).method($menuHandle)
+	$menuFile.append(Localized string:C991("settings"); "settings"; 4).method($menuHandle)
 	
-	var $menuEdit:=cs:C1710.menu.new().edit()  // Get a standard edit menu
+	var $menuEdit:=cs:C1710.ui.menu.new().edit()  // Get a standard edit menu
 	
-	cs:C1710.menuBar.new([\
+	cs:C1710.ui.menuBar.new([\
 		":xliff:CommonMenuFile"; $menuFile; \
 		":xliff:CommonMenuEdit"; $menuEdit]).set()
 	
@@ -146,9 +148,9 @@ Function init()
 	//This.form.constraints.new(This.toolbarButtons).centerHorizontally.with("_background")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function handleEvents($e : cs:C1710.evt)
+Function handleEvents($e : cs:C1710.ui.evt)
 	
-	$e:=$e || cs:C1710.evt.new()
+	$e:=$e || cs:C1710.ui.evt.new()
 	
 	// MARK: Form method
 	If ($e.form)
@@ -272,7 +274,7 @@ Function handleEvents($e : cs:C1710.evt)
 			//==============================================
 		: (This:C1470.fileMore.catch($e; On Clicked:K2:4))
 			
-			var $menu:=cs:C1710.menu.new()
+			var $menu:=cs:C1710.ui.menu.new()
 			
 			$menu.append(":xliff:edit"; "open")
 			$menu.append(":xliff:showInFinder"; "show")
@@ -291,7 +293,7 @@ Function handleEvents($e : cs:C1710.evt)
 				
 			End if 
 			
-			This:C1470.handleMenus($menu.choice; This:C1470.isInIndex ? This:C1470.staged.item : This:C1470.unstaged.item)
+			This:C1470._handleMenus($menu.choice; This:C1470.isInIndex ? This:C1470.staged.item : This:C1470.unstaged.item)
 			
 			//==============================================
 		: (This:C1470.fetch.catch($e; On Clicked:K2:4))
@@ -487,16 +489,16 @@ Function onLoad()
 			//________________________________________________________________________________
 	End case 
 	
-	This:C1470.pullDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PULL")
+	This:C1470.pullDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "PULL")
 	This:C1470.pullDialog.me:=This:C1470.pullDialog
 	
-	This:C1470.pushDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "PUSH")
+	This:C1470.pushDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "PUSH")
 	This:C1470.pushDialog.me:=This:C1470.pushDialog
 	
-	This:C1470.checkoutDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "CHECKOUT")
+	This:C1470.checkoutDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "CHECKOUT")
 	This:C1470.checkoutDialog.me:=This:C1470.pushDialog
 	
-	This:C1470.newBranchDialog:=cs:C1710.onBoard.new("embeddedDialogs"; "NEW BRANCH")
+	This:C1470.newBranchDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "NEW BRANCH")
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
 	
 	This:C1470._loadScheme()
@@ -753,7 +755,7 @@ Function onActivate()
 	//
 	//Mark:-Managers
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _pageManager($e : cs:C1710.evt; $page : Integer)
+Function _pageManager($e : cs:C1710.ui.evt; $page : Integer)
 	
 	Case of 
 			
@@ -783,7 +785,7 @@ Function _openManager()
 	var $hasRemote:=$git.execute("config --get remote.origin.url")
 	$hasRemote:=$hasRemote ? Position:C15("github.com"; String:C10($git.result))>0 : $hasRemote
 	
-	var $menu:=cs:C1710.menu.new({embedded: True:C214})
+	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
 	
 	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
 		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
@@ -800,9 +802,9 @@ Function _openManager()
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _stageUnstageManager($e : cs:C1710.evt)
+Function _stageUnstageManager($e : cs:C1710.ui.evt)
 	
-	$e:=$e || cs:C1710.evt.new()
+	$e:=$e || cs:C1710.ui.evt.new()
 	
 	var $staged:=This:C1470.isInIndex
 	var $current:=$staged ? This:C1470.staged.item : This:C1470.unstaged.item
@@ -860,7 +862,7 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 			End if 
 			
-			var $menu:=cs:C1710.menu.new()
+			var $menu:=cs:C1710.ui.menu.new()
 			
 			If ($sel.length=1)
 				
@@ -925,7 +927,7 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				var $file : 4D:C1709.File:=This:C1470.Git.workspace.file($current.path)
 				
 				$menu.line()\
-					.append(":xliff:ignore"; cs:C1710.menu.new()\
+					.append(":xliff:ignore"; cs:C1710.ui.menu.new()\
 					.append(Replace string:C233(Localized string:C991("ignoreFile"); "{file}"; $file.fullName); "ignoreFile")\
 					.append(Replace string:C233(Localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $file.extension); "ignoreExtension")\
 					.line()\
@@ -939,7 +941,7 @@ Function _stageUnstageManager($e : cs:C1710.evt)
 				
 			End if 
 			
-			This:C1470.handleMenus($menu.choice; $current)
+			This:C1470._handleMenus($menu.choice; $current)
 			
 			//______________________________________________________
 		: ($e.code=On Selection Change:K2:29)
@@ -1211,7 +1213,7 @@ Function GetStyledDiffText($item : Object) : Text
 	End if 
 	
 	// MARK: Remove tokens
-	var $code:=cs:C1710.regex.new($git.result; "(?m-si):[CK]:?\\d+(?::\\d+)?").substitute("")
+	var $code:=cs:C1710.rgx.regex.new($git.result; "(?m-si):[CK]:?\\d+(?::\\d+)?").substitute("")
 	
 	var $c:=Split string:C1554($code; "\n"; sk ignore empty strings:K86:1)
 	
@@ -1535,6 +1537,10 @@ Function updateCommits()
 9 = ref names
 */
 	
+	// Preload author avatars in parallel: fire all gravatar requests, then a
+	// single blocking wait instead of one synchronous round-trip per author
+	This:C1470._preloadAvatars($git.result)
+	
 	// One commit per line
 	var $commits:=[]
 	var $line; $style : Text
@@ -1743,8 +1749,25 @@ Function updateCommits()
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
+	This:C1470._tagCache:=This:C1470._tagCache || {}
+	
+	// "title" is unique per commit → not cached (avoids unbounded cache growth)
+	If ($what="title")
+		
+		return This:C1470._renderLabelTag($what; $text; $style)
+		
+	End if 
+	
+	var $key : Text:=$what+Char:C90(1)+String:C10($text)+Char:C90(1)+String:C10(Num:C11(Form:C1466.darkScheme))
+	This:C1470._tagCache[$key]:=This:C1470._tagCache[$key] || This:C1470._renderLabelTag($what; $text; $style)
+	
+	return This:C1470._tagCache[$key]
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function _renderLabelTag($what : Text; $text : Text; $style : Object) : Picture
+	
 	var $dark : Boolean:=Form:C1466.darkScheme
-	var $svg:=cs:C1710.svg.new()
+	var $svg:=cs:C1710.svgx.svg.new()
 	
 	Case of 
 			
@@ -1870,7 +1893,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	$svg.close()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function handleMenus($what : Text; $data : Object)
+Function _handleMenus($what : Text; $data : Object)
 	
 	$what:=$what || Get selected menu item parameter:C1005
 	var $git:=This:C1470.Git
@@ -2091,19 +2114,29 @@ Function handleMenus($what : Text; $data : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getAvatar($mail : Text) : Picture
 	
-	var $t:=Generate digest:C1147($mail; MD5 digest:K66:1)
+	return cs:C1710._gravatars.me.avatar($mail)
 	
-	If (Form:C1466[$t]=Null:C1517)
-		
-		var $callback:=cs:C1710._gravatarRequest.new({user: $t})
-		
-		var $request : 4D:C1709.HTTPRequest
-		$request:=4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$t; $callback)
-		$request.wait()
-		
-	End if 
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function _preloadAvatars($log : Text)
 	
-	return Form:C1466[$t]
+	// Extract author mails from the log and hand them to the shared gravatar
+	// cache, which fetches the missing ones in parallel (single blocking wait).
+	var $mails:=[]
+	
+	var $line : Text
+	For each ($line; Split string:C1554($log; "\n"; sk ignore empty strings:K86:1))
+		
+		var $c:=Split string:C1554($line; "|")
+		
+		If ($c.length>=8)
+			
+			$mails.push($c[7])
+			
+		End if 
+		
+	End for each 
+	
+	cs:C1710._gravatars.me.preload($mails)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function metaCommits($item : Object) : Object
@@ -2138,6 +2171,7 @@ Function _loadScheme()
 	This:C1470.commits.selectionHighlight:=This:C1470.form.lightScheme
 	
 	This:C1470.icons:={}
+	This:C1470._tagCache:={}
 	
 	var $key : Text
 	var $icon : Picture

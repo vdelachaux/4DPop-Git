@@ -6,15 +6,15 @@ Case of
 	: ($e.code=On Load:K2:1)
 		
 		Form:C1466.me.onLoad()
-		Form:C1466._buttons:=cs:C1710.group.new()
-		Form:C1466._ok:=cs:C1710.button.new("ok").addToGroup(Form:C1466._buttons)
-		cs:C1710.button.new("cancel").addToGroup(Form:C1466._buttons)
+		Form:C1466._buttons:=cs:C1710.ui.group.new()
+		Form:C1466._ok:=cs:C1710.ui.button.new("ok").addToGroup(Form:C1466._buttons)
+		cs:C1710.ui.button.new("cancel").addToGroup(Form:C1466._buttons)
 		
 		Form:C1466._buttons.distributeRigthToLeft()
 		
 		var $adjustGeometry:=True:C214
 		
-		cs:C1710.input.new("Input").focus()
+		cs:C1710.ui.input.new("Input").focus()
 		
 		// ______________________________________________________
 	: ($e.code=On Resize:K2:27)
@@ -58,8 +58,8 @@ If ($adjustGeometry)
 	
 	$adjustGeometry:=False:C215
 	
-	var $height : Integer:=cs:C1710.static.new("Group Box1").rect.height
-	var $group:=cs:C1710.group.new("Group Box1,Radio Button,Radio Button1,Radio Button2")
+	var $height : Integer:=cs:C1710.ui.static.new("Group Box1").rect.height
+	var $group:=cs:C1710.ui.group.new("Group Box1,Radio Button,Radio Button1,Radio Button2")
 	
 	If (Form:C1466.checkout)
 		
@@ -69,7 +69,7 @@ If ($adjustGeometry)
 		
 		If ($e.code=On Clicked:K2:4)
 			Form:C1466._buttons.moveVertically($height)
-			cs:C1710.static.new("main").resizeVertically($height)
+			cs:C1710.ui.static.new("main").resizeVertically($height)
 		End if 
 		
 	Else 
@@ -77,7 +77,7 @@ If ($adjustGeometry)
 		$group.hide()
 		Form:C1466._ok.title:="Create"
 		Form:C1466._buttons.distributeRigthToLeft().moveVertically(-$height)
-		cs:C1710.static.new("main").resizeVertically(-$height)
+		cs:C1710.ui.static.new("main").resizeVertically(-$height)
 		
 	End if 
 End if 

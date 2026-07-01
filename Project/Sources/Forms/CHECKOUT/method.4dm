@@ -7,7 +7,7 @@ Case of
 		
 		Form:C1466.me.onLoad()
 		
-		cs:C1710.group.new("ok,cancel").distributeRigthToLeft()
+		cs:C1710.ui.group.new("ok,cancel").distributeRigthToLeft()
 		
 		// ______________________________________________________
 	: ($e.code=On Resize:K2:27)

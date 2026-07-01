@@ -6,7 +6,7 @@ property release; lts; alpha : Boolean
 property major; minor; version : Text
 
 // MARK: Delegates 📦
-property form : cs:C1710.form
+property form : cs:C1710.ui.form
 property Git:=cs:C1710.Git.me
 
 // MARK: Constants 🧰
@@ -21,19 +21,19 @@ branch; \
 localChanges; \
 initRepository; \
 todo; \
-fixme : cs:C1710.button
+fixme : cs:C1710.ui.button
 
 property fetch; \
-push : cs:C1710.input
+push : cs:C1710.ui.input
 
-property swap : cs:C1710.static
+property swap : cs:C1710.ui.static
 
-property gitItems : cs:C1710.group
+property gitItems : cs:C1710.ui.group
 
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.form:=cs:C1710.form.new(This:C1470)
+	This:C1470.form:=cs:C1710.ui.form.new(This:C1470)
 	This:C1470.form.init()
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
@@ -74,9 +74,9 @@ Function init()
 	Form:C1466.pushNumber:=0
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
-Function handleEvents($e : cs:C1710.evt)
+Function handleEvents($e : cs:C1710.ui.evt)
 	
-	$e:=$e || cs:C1710.evt.new()
+	$e:=$e || cs:C1710.ui.evt.new()
 	
 	If ($e.form)  // <== FORM METHOD
 		
@@ -273,7 +273,7 @@ Function update()
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doChangesMenu()
 	
-	var $classes; $forms; $menu; $methods; $others : cs:C1710.menu
+	var $classes; $forms; $menu; $methods; $others : cs:C1710.ui.menu
 	var $git : cs:C1710.Git:=This:C1470.Git
 	
 	If ($git.status()=0)  // No change
@@ -298,13 +298,13 @@ Function _doChangesMenu()
 				//______________________________________________________
 			: ($c.indexOf("Classes")=2)
 				
-				$classes:=$classes || cs:C1710.menu.new({embedded: True:C214})
+				$classes:=$classes || cs:C1710.ui.menu.new({embedded: True:C214})
 				$classes.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			: ($c.indexOf("Forms")=2)
 				
-				$forms:=$forms || cs:C1710.menu.new({embedded: True:C214})
+				$forms:=$forms || cs:C1710.ui.menu.new({embedded: True:C214})
 				
 				Case of 
 						
@@ -329,20 +329,20 @@ Function _doChangesMenu()
 				//______________________________________________________
 			: ($c.indexOf("Methods")=2)
 				
-				$methods:=$methods || cs:C1710.menu.new({embedded: True:C214})
+				$methods:=$methods || cs:C1710.ui.menu.new({embedded: True:C214})
 				$methods.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			Else 
 				
-				$others:=$others || cs:C1710.menu.new({embedded: True:C214})
+				$others:=$others || cs:C1710.ui.menu.new({embedded: True:C214})
 				$others.append($c.join("/"); $o.path).icon($icon)
 				
 				//______________________________________________________
 		End case 
 	End for each 
 	
-	$menu:=cs:C1710.menu.new({embedded: True:C214})
+	$menu:=cs:C1710.ui.menu.new({embedded: True:C214})
 	
 	If ($classes#Null:C1517)
 		
@@ -470,7 +470,7 @@ Function _doBranchMenu()
 	
 	If ($git.branches.length>0)
 		
-		var $menu:=cs:C1710.menu.new()
+		var $menu:=cs:C1710.ui.menu.new()
 		var $o : Object
 		var $noChange : Boolean:=$git.status()=0
 		
@@ -503,17 +503,17 @@ Function _doMoreMenu()
 	
 	var $available : Boolean:=$git.branches.length>0
 	
-	var $menu:=cs:C1710.menu.new({embedded: True:C214})\
-		.append(":xliff:repoManager"; "tool").icon("/RESOURCES/Images/Menus/git.png")\
-		.line()\
-		.append(":xliff:saveSnapshot"; "snapshot").icon("/RESOURCES/Images/Menus/stash.png")\
-		.line()\
-		.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
-		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
-		.line()\
-		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
-		.line()\
-		.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
+	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
+	$menu.append(":xliff:repoManager"; "tool").icon("/RESOURCES/Images/Menus/git.png")
+	$menu.line()
+	$menu.append(":xliff:saveSnapshot"; "snapshot").icon("/RESOURCES/Images/Menus/stash.png")
+	$menu.line()
+	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")
+	$menu.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")
+	$menu.line()
+	$menu.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)
+	$menu.line()
+	$menu.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
 	
 	$menu.line()\
 		.append("Settings"; "settings")\
@@ -543,7 +543,7 @@ Function _doTagMenu($tag : Text)
 		End if 
 	End for each 
 	
-	var $menu:=cs:C1710.menu.new({localize: False:C215; embedded: True:C214})
+	var $menu:=cs:C1710.ui.menu.new({localize: False:C215; embedded: True:C214})
 	
 	For each ($file; $todo)
 		

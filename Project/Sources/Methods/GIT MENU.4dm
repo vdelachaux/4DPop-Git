@@ -1,5 +1,5 @@
 //%attributes = {}
-#DECLARE($menu : cs:C1710.menu)
+#DECLARE($menu : cs:C1710.ui.menu)
 
 var $git:=cs:C1710.Git.me
 

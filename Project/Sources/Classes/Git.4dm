@@ -913,7 +913,7 @@ Function FETCH_HEAD($type : Text) : Collection
 		
 	End if 
 	
-	var $rgx:=cs:C1710.regex.new($file.getText(); "(?m-si)^([[:xdigit:]]*)\\s[^\\s]+\\s"+$type+"\\s'([^']+)")
+	var $rgx:=cs:C1710.rgx.regex.new($file.getText(); "(?m-si)^([[:xdigit:]]*)\\s[^\\s]+\\s"+$type+"\\s'([^']+)")
 	
 	var $c:=[]
 	var $i:=-1
@@ -1030,7 +1030,7 @@ shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 			
 			If (This:C1470.execute("stash list"))
 				
-				var $rgx:=cs:C1710.regex.new(""; "(?m-si)^([^:]*):\\s([^:]*):\\s([^$]*)$")
+				var $rgx:=cs:C1710.rgx.regex.new(""; "(?m-si)^([^:]*):\\s([^:]*):\\s([^$]*)$")
 				
 				For each ($line; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
 					

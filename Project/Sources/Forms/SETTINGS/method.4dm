@@ -3,7 +3,7 @@
 // ID[23198BF4E9724DBD8142187751E18A42]
 // Created 19-3-2020 by Vincent de Lachaux
 // ----------------------------------------------------
-var $e:=cs:C1710.evt.new()
+var $e:=cs:C1710.ui.evt.new()
 
 Case of 
 		
@@ -19,12 +19,7 @@ Case of
 			name: Form:C1466.git.userName(); \
 			email: Form:C1466.git.userMail()}
 		
-		var $t:=Generate digest:C1147(Form:C1466.user.email; MD5 digest:K66:1)
-		var $callback:=cs:C1710._gravatarRequest.new({user: $t})
-		var $request : 4D:C1709.HTTPRequest
-		$request:=4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$t; $callback)
-		$request.wait()
-		Form:C1466.avatar:=Form:C1466[$t]
+		Form:C1466.avatar:=cs:C1710._gravatars.me.avatar(Form:C1466.user.email)
 		
 		var $name : Text:=Process info:C1843(Current process:C322).name
 		OBJECT SET VISIBLE:C603(*; "close"; $name#Formula:C1597(GIT SETTINGS).source)
