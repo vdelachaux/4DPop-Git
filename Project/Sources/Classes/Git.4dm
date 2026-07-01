@@ -201,9 +201,9 @@ Function getVersion($type : Text) : Text
 	
 	If ($type="short")
 		
-		If (Match regex:C1019("(?m-si)\\s\\d+(?:\\.\\d+){0,2}"; This:C1470.result; 1; $pos; $len))
+		If (Match regex:C1019("(?m-si)\\d+(?:\\.\\d+){0,2}"; This:C1470._version; 1; $pos; $len))
 			
-			return Substring:C12(This:C1470.result; $pos+1; $len-1)
+			return Substring:C12(This:C1470._version; $pos; $len)
 			
 		End if 
 	End if 
@@ -213,16 +213,28 @@ Function getVersion($type : Text) : Text
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get currentBranch() : Text
 	
-	If (Length:C16(String:C10(This:C1470.HEAD))>0)
-		
-		return Split string:C1554(This:C1470.HEAD; "/").remove(0; 2).join("/")
-		
-	Else 
-		
-		This:C1470.execute("config --get --default master init.defaultBranch")
-		return String:C10(This:C1470.result)
-		
-	End if 
+	var $head : Text:=String:C10(This:C1470.HEAD)
+	
+	Case of 
+			
+			//______________________________________________________
+		: (Length:C16($head)=0)  // HEAD not readable yet → configured default
+			
+			This:C1470.execute("config --get --default main init.defaultBranch")
+			return String:C10(This:C1470.result)
+			
+			//______________________________________________________
+		: ($head="ref: @")  // On a branch: "ref: refs/heads/<name>" (name may contain "/")
+			
+			return Replace string:C233($head; "ref: refs/heads/"; "")
+			
+			//______________________________________________________
+		Else   // Detached HEAD (raw SHA): no current branch
+			
+			return ""
+			
+			//______________________________________________________
+	End case 
 	
 	//mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -497,7 +509,9 @@ Function commit($message : Text; $amend : Boolean)
 			
 		Else 
 			
-			This:C1470.execute("commit -m "+This:C1470._quoted($message))
+			// Message passed via stdin (commit -F -) to avoid any quoting/escaping
+			// issue with quotes, spaces or line breaks in the message.
+			This:C1470.execute("commit -F -"; $message)
 			
 		End if 
 		
@@ -584,7 +598,6 @@ Function forcePush($origin : Text; $branch : Text) : Boolean
 		
 	Else 
 		
-		// FIXME:What if "master" is not the main branch?
 		$c.push("origin "+This:C1470.currentBranch)
 		
 	End if 
@@ -641,7 +654,10 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 			//———————————————————————————————————
 		: ($whatToDo="master") || ($whatToDo="main")  // Return on the main branch
 			
-			If (This:C1470.execute("checkout master"))
+			This:C1470.execute("branch --list main")
+			var $main : Text:=Length:C16(This:C1470.result)>0 ? "main" : "master"
+			
+			If (This:C1470.execute("checkout "+$main))
 				
 				This:C1470.branch()
 				
@@ -1047,7 +1063,7 @@ shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 			//———————————————————————————————————
 		: ($action="snapshot")
 			
-			This:C1470.execute("stash -u"+(Length:C16($name)>0 ? " -m "+$name : "")+" --keep-index")
+			This:C1470.execute("stash -u"+(Length:C16($name)>0 ? " -m "+This:C1470._quoted($name) : "")+" --keep-index")
 			This:C1470.execute("stash apply refs/stash")
 			
 			//———————————————————————————————————
@@ -1057,7 +1073,7 @@ shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 			
 			If (Length:C16($name)>0)
 				
-				This:C1470.execute("stash --all --include-untracked -m "+$name)
+				This:C1470.execute("stash --all --include-untracked -m "+This:C1470._quoted($name))
 				
 			Else 
 				
@@ -1153,13 +1169,6 @@ Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
 			 | ($path="/PROJECT/@")\
 			 | ($path="/DATA/@")\
 			 | ($path="/LOGS/@")
-			
-			$path:=Replace string:C233($path; "/RESOURCES/"; "/RESOURCES/")
-			$path:=Replace string:C233($path; "/PACKAGE/"; "/PACKAGE/")
-			$path:=Replace string:C233($path; "/SOURCES/"; "/SOURCES/")
-			$path:=Replace string:C233($path; "/PROJECT/"; "/PROJECT/")
-			$path:=Replace string:C233($path; "/DATA/"; "/DATA/")
-			$path:=Replace string:C233($path; "/LOGS/"; "/LOGS/")
 			
 			return ($path="@/" ? Folder:C1567($path; *) : File:C1566($path; *))
 			

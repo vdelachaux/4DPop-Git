@@ -29,7 +29,7 @@
       <ServerEmbedsProjectDirectoryFile>False</ServerEmbedsProjectDirectoryFile>
     </CS>
     <BuildApplicationName>4DPop Git</BuildApplicationName>
-    <BuildMacDestFolder>:Build:</BuildMacDestFolder>
+    <BuildMacDestFolder>:BUILD:</BuildMacDestFolder>
     <BuildWinDestFolder>..\\Builds/</BuildWinDestFolder>
     <ArrayExcludedPluginName>
       <ItemsCount>0</ItemsCount>

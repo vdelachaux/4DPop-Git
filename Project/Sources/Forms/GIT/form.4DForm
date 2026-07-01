@@ -359,10 +359,10 @@
 				"commit": {
 					"type": "button",
 					"text": ":xliff:commit",
-					"top": 880,
+					"top": 873,
 					"left": 999,
 					"width": 111,
-					"height": 22,
+					"height": 23,
 					"events": [
 						"onClick"
 					],
@@ -376,7 +376,7 @@
 					"text": ":xliff:amend",
 					"top": 856,
 					"left": 534,
-					"width": 161,
+					"width": 201,
 					"height": 16,
 					"events": [
 						"onClick"
@@ -400,7 +400,7 @@
 					"top": 880,
 					"left": 7,
 					"width": 106,
-					"height": 22,
+					"height": 20,
 					"events": [
 						"onClick"
 					],
@@ -501,10 +501,10 @@
 				"stageFile": {
 					"type": "button",
 					"text": ":xliff:stage",
-					"top": 64,
+					"top": 62,
 					"left": 1012,
 					"width": 81,
-					"height": 17,
+					"height": 20,
 					"events": [
 						"onClick"
 					],
@@ -547,10 +547,10 @@
 				"stage": {
 					"type": "button",
 					"text": ":xliff:stageAll",
-					"top": 434,
+					"top": 436,
 					"left": 7,
 					"width": 106,
-					"height": 22,
+					"height": 20,
 					"events": [
 						"onClick"
 					],
@@ -574,10 +574,10 @@
 				},
 				"gitVersion": {
 					"type": "input",
-					"left": 397,
+					"left": 476,
 					"top": 884,
-					"width": 117,
-					"height": 14,
+					"width": 38,
+					"height": 15,
 					"dataSource": "Form:C1466.version",
 					"sizingY": "move",
 					"class": "infos mini",
@@ -586,7 +586,7 @@
 				"gitLogo": {
 					"type": "picture",
 					"top": 883,
-					"left": 378,
+					"left": 453,
 					"width": 16,
 					"height": 16,
 					"picture": "/RESOURCES/Images/git.png",
@@ -1079,5 +1079,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2455
+	"geometryStamp": 2507
 }
