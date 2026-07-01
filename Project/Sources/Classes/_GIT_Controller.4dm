@@ -2293,7 +2293,7 @@ Function _loadScheme()
 	
 	For each ($key; ["Add"; "Remove"; "Edit"; "Rename"])
 		
-		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Status/"+$key+".png")).platformPath; $icon)
+		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Status/"+$key+".svg")).platformPath; $icon)
 		This:C1470.icons[Lowercase:C14($key)]:=$icon
 		
 	End for each 
