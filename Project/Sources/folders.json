@@ -7,9 +7,6 @@
 		"methods": [
 			"_test API",
 			"00_TEST"
-		],
-		"classes": [
-			"GithubAPI"
 		]
 	},
 	"♻️ LIBRAIRIES": {

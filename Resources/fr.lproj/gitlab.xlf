@@ -413,6 +413,26 @@ avec 4D "{version}"</target>
           <source>Switch to:</source>
           <target>Passer à :</target>
         </trans-unit>
+        <trans-unit id="ZDJxsA9HS5SYsmBbJEj_9Q" resname="githubCliNotAvailable">
+          <source>The GitHub command line interface (gh) is not available.</source>
+          <target>L'interface en ligne de commande GitHub (gh) n'est pas disponible.</target>
+        </trans-unit>
+        <trans-unit id="vQ50rY-BS_ia4gQPj2JIiQ" resname="createGithubRepoConfirm">
+          <source>The repository "{name}" is not on GitHub yet. Create a private repository and push it?</source>
+          <target>Le dépôt « {name} » n'existe pas encore sur GitHub. Créer un dépôt privé et le pousser ?</target>
+        </trans-unit>
+        <trans-unit id="aFa4dv2PTBelDAtM6nz3-A" resname="githubAuthorizationFailed">
+          <source>GitHub authorization failed.</source>
+          <target>L'autorisation GitHub a échoué.</target>
+        </trans-unit>
+        <trans-unit id="TWTB6dL1QuG1xNAtf1UOBg" resname="githubRepoCreationFailed">
+          <source>Failed to create the GitHub repository.</source>
+          <target>Échec de la création du dépôt GitHub.</target>
+        </trans-unit>
+        <trans-unit id="I5TGLV18RLqkRK_pP2eMHg" resname="pushFailed">
+          <source>Push failed.</source>
+          <target>Le push a échoué.</target>
+        </trans-unit>
       </group>
     </body>
   </file>

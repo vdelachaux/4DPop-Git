@@ -5,10 +5,6 @@
 			"github": "vdelachaux/4DPop",
 			"version": "4d"
 		},
-		"4D NetKit": {
-			"github": "4d/4D-NetKit",
-			"version": "4d"
-		},
 		"UI with Classes": {
 			"github": "vdelachaux/UI-with-Classes",
 			"version": "latest"

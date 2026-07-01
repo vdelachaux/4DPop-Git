@@ -333,20 +333,30 @@ Function handleEvents($e : cs:C1710.ui.evt)
 			//==============================================
 		: (This:C1470.push.catch($e; On Clicked:K2:4))
 			
-			If ($git.branchPushNumber($git.workingBranch.name)=0)
+			$git.execute("config --get remote.origin.url")
+			
+			If (Length:C16(String:C10($git.result))=0)  // No remote yet → offer to publish on GitHub
 				
-				This:C1470.onDialogAlert({\
-					main: Localized string:C991("nothingToCommit")})
+				This:C1470.CreateGithubRepository()
 				
 			Else 
 				
-				$git.execute("config push.followTags")
-				
-				This:C1470.pushDialog.show({\
-					tags: $git.result#"false"; \
-					force: False:C215; \
-					branch: $git.workingBranch.name\
-					})
+				If ($git.branchPushNumber($git.workingBranch.name)=0)
+					
+					This:C1470.onDialogAlert({\
+						main: Localized string:C991("nothingToCommit")})
+					
+				Else 
+					
+					$git.execute("config push.followTags")
+					
+					This:C1470.pushDialog.show({\
+						tags: $git.result#"false"; \
+						force: False:C215; \
+						branch: $git.workingBranch.name\
+						})
+					
+				End if 
 				
 			End if 
 			
@@ -1477,42 +1487,70 @@ Function CreateGithubRepository()
 	var $git:=This:C1470.Git
 	var $gh:=cs:C1710.gh.me
 	
-	If ($gh.authorized)
+	// The GitHub CLI (embedded) is required to create the repository
+	If (Not:C34($gh.available))
 		
-		var $private:=True:C214
-		var $remote:=$gh.createRepo(Form:C1466.project; $private)
+		This:C1470.onDialogAlert({main: Localized string:C991("githubCliNotAvailable")})
+		return 
 		
-		If (Length:C16($remote)>0)
-			
-			// Create the main branch
-			If ($git.execute("branch -M main"))
-				
-				// Add remote url
-				If ($git.execute("git remote set-url --add "+$remote))
-					
-					// Create readme
-					var $file:=File:C1566("/PACKAGE/README.md"; *)
-					
-					If (Not:C34($file.exists))
-						
-						$file.setText("# Welcome to "+Form:C1466.project)
-						
-					End if 
-					
-					$git.add("README.md")
-					$git.add(".gitignore")
-					$git.add(".gitattributes")
-					$git.commit()
-					
-					// Push
-					If ($git.execute("push -u origin main"))
-						
-						//
-						
-					End if 
-				End if 
-			End if 
-		End if 
+	End if 
+	
+	var $name : Text:=$git.workspace.name
+	
+	// Ask the user before creating anything on their GitHub account
+	var $confirm:={main: Replace string:C233(Localized string:C991("createGithubRepoConfirm"); "{name}"; $name)}
+	This:C1470.onDialogConfirm($confirm)
+	
+	If (Not:C34(Bool:C1537($confirm.action)))
+		
+		return 
+		
+	End if 
+	
+	// Request access (device-flow login) then create the private repository
+	If (Not:C34($gh.login()))
+		
+		This:C1470.onDialogAlert({main: $gh.lastError || Localized string:C991("githubAuthorizationFailed")})
+		return 
+		
+	End if 
+	
+	var $remote : Text:=$gh.createRepo($name; True:C214)  // private
+	
+	If (Length:C16($remote)=0)
+		
+		This:C1470.onDialogAlert({main: $gh.lastError || Localized string:C991("githubRepoCreationFailed")})
+		return 
+		
+	End if 
+	
+	// Make sure we are on a "main" branch and wire the created remote
+	$git.execute("branch -M main")
+	$git.execute("remote add origin "+$remote)
+	
+	// Ensure at least a README so the first push isn't empty
+	var $file:=File:C1566("/PACKAGE/README.md"; *)
+	
+	If (Not:C34($file.exists))
+		
+		$file.setText("# Welcome to "+$name)
+		
+	End if 
+	
+	$git.add("README.md")
+	$git.add(".gitignore")
+	$git.add(".gitattributes")
+	$git.commit()
+	
+	// Push and set the upstream
+	If ($git.execute("push -u origin main"))
+		
+		This:C1470.onActivate()
+		
+	Else 
+		
+		This:C1470.onDialogAlert({main: $git.error || Localized string:C991("pushFailed")})
+		
 	End if 
 	
 	// Mark:-
