@@ -14,13 +14,6 @@
 			"👩‍💻 UI",
 			"database",
 			"env"
-		],
-		"classes": [
-			"error",
-			"feature",
-			"http",
-			"motor",
-			"os"
 		]
 	},
 	"⚙️ MACROS": {},
@@ -40,9 +33,6 @@
 			"formMenuHandle",
 			"formMethod",
 			"subformWidgetMethod"
-		],
-		"classes": [
-			"colour"
 		]
 	},
 	"📦 MAIN": {
@@ -92,17 +82,11 @@
 	"database": {
 		"methods": [
 			"getProject"
-		],
-		"classes": [
-			"database"
 		]
 	},
 	"env": {
 		"methods": [
 			"envScreens"
-		],
-		"classes": [
-			"env"
 		]
 	},
 	"MESSAGE": {

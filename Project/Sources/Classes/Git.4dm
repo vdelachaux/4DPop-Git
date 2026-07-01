@@ -1,3 +1,8 @@
+/// **Git** — a thin wrapper around the local `git` command line.
+/// Shared singleton, reachable from host projects as `cs.git.Git.me`.
+/// Every command runs through `execute()`; the outcome is exposed via
+/// `.success` / `.result` / `.error`, and the parsed repository state via
+/// `.branches`, `.changes`, `.stashes`, `.remotes`, `.tags`, `.workingBranch`.
 property command : Text
 property workspace; root : 4D:C1709.Folder
 property gitignore; gitattributes : 4D:C1709.File
@@ -59,6 +64,7 @@ shared Function _updateWorkspace($folder : 4D:C1709.Folder)
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 	// Obtain user token (same as dependency manager token)
+	/// The GitHub token (shared with the dependency manager, stored in github.json).
 shared Function get token() : Text
 	
 	If (Length:C16(This:C1470._token)>0)
@@ -79,6 +85,7 @@ shared Function get token() : Text
 	
 	// ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==> ==>
 	// Store the user token (same as dependency manager token)
+	/// Stores the GitHub token (shared with the dependency manager).
 shared Function set token($token : Text)
 	
 	var $file:=Folder:C1567(fk user preferences folder:K87:10).file("github.json")
@@ -89,6 +96,7 @@ shared Function set token($token : Text)
 	This:C1470._token:=$token
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Runs a git command line; returns the success flag. Output goes to `.result`.
 shared Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	var $errorStream; $outputStream : Text
@@ -172,6 +180,7 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 	return This:C1470.success
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Reads a git config value (`git config --get <what>`).
 Function getConfig($what : Text) : Text
 	
 /* 
@@ -195,6 +204,7 @@ and repository local configuration files by default
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// The installed git version ("short" → the version number only).
 Function getVersion($type : Text) : Text
 	
 	var $len; $pos : Integer
@@ -211,6 +221,7 @@ Function getVersion($type : Text) : Text
 	return This:C1470._version
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The current branch name ("" when HEAD is detached).
 Function get currentBranch() : Text
 	
 	var $head : Text:=String:C10(This:C1470.HEAD)
@@ -237,6 +248,7 @@ Function get currentBranch() : Text
 	
 	//mark:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Initializes a git repository (with default .gitignore / .gitattributes).
 shared Function init()
 	
 	// Creates an empty Git repository
@@ -265,6 +277,7 @@ shared Function init()
 	This:C1470._updateWorkspace()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// The configured git user name.
 Function userName() : Text
 	
 	If (This:C1470.execute("config --get user.name"))
@@ -274,6 +287,7 @@ Function userName() : Text
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// The configured git user email.
 Function userMail() : Text
 	
 	If (This:C1470.execute("config --get user.email"))
@@ -283,6 +297,7 @@ Function userMail() : Text
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Runs `git version` and returns the version string.
 Function version() : Text
 	
 	var $len; $pos : Integer
@@ -301,11 +316,13 @@ Function version() : Text
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Installs Git LFS in the repository.
 Function installLFS() : Boolean
 	
 	return This:C1470.execute("lfs install")
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// True when Git LFS is enabled in the repository.
 Function get lfs() : Boolean
 	
 	If (This:C1470.root#Null:C1517)\
@@ -316,6 +333,7 @@ Function get lfs() : Boolean
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Refreshes HEAD, user and version from the repository.
 shared Function update()
 	
 	This:C1470.HEAD:=This:C1470._normalize(This:C1470.root.file("HEAD").getText())
@@ -325,6 +343,7 @@ shared Function update()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Updates the collection of changes and returns their number
+	/// Refreshes the `.changes` collection and returns its length.
 shared Function status($short : Boolean) : Integer
 	
 	$short:=Count parameters:C259>=1 ? $short : True:C214  // Default is True
@@ -348,6 +367,7 @@ shared Function status($short : Boolean) : Integer
 	return This:C1470.changes.length
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Stages file(s): a path, a collection of paths, "all" or "update".
 Function add($what)
 	
 	If (Value type:C1509($what)#Is text:K8:3)
@@ -378,11 +398,13 @@ Function add($what)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Removes file(s) from the index (`git rm --cached`), keeping them on disk.
 Function untrack($what)
 	
 	This:C1470._execPaths($what; "rm --cached")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Unstages file(s), a moved "old -> new" pair, or "all".
 Function unstage($what)
 	
 	If (Value type:C1509($what)#Is text:K8:3)
@@ -419,6 +441,7 @@ Function unstage($what)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Commits the staged changes (message via stdin; $amend to amend the last one).
 Function commit($message : Text; $amend : Boolean)
 	
 	This:C1470.status()
@@ -446,21 +469,25 @@ Function commit($message : Text; $amend : Boolean)
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Fetches origin only ($origin=True) or every remote.
 Function fetch($origin : Boolean) : Boolean
 	
 	return $origin ? This:C1470.fetchCurrent() : This:C1470.fetchAll()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Fetches all remotes (prune + tags).
 Function fetchAll() : Boolean
 	
 	return This:C1470.execute("fetch --prune --tags --all")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Fetches the origin remote (prune + tags).
 Function fetchCurrent() : Boolean
 	
 	return This:C1470.execute("fetch --prune --tags origin")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Pulls from origin (optional rebase / autostash).
 Function pull($rebase : Boolean; $stash : Boolean) : Boolean
 	
 	var $c : Collection
@@ -484,6 +511,7 @@ Function pull($rebase : Boolean; $stash : Boolean) : Boolean
 	This:C1470.execute($c.join(" "))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Pushes to origin (or $origin/$branch); $force uses --force-with-lease.
 Function push($origin : Text; $branch : Text; $force : Boolean) : Boolean
 	
 	If ($force)
@@ -495,6 +523,7 @@ Function push($origin : Text; $branch : Text; $force : Boolean) : Boolean
 	return This:C1470._push(Count parameters:C259>=2 ? $origin+" "+$branch : "origin "+This:C1470.currentBranch; "")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Force-pushes (with lease) to origin (or $origin/$branch).
 Function forcePush($origin : Text; $branch : Text) : Boolean
 	
 	return This:C1470._push(Count parameters:C259>=2 ? $origin+" "+$branch : "origin "+This:C1470.currentBranch; "--force-with-lease")
@@ -518,6 +547,8 @@ Function _push($target : Text; $flag : Text) : Boolean
 	
 	//MARK:-branch
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Branch operations: list / create / createAndUse / use / merge / rename /
+	/// delete(Force) / main. Refreshes `.branches` and returns This.
 shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C1710.Git
 	
 	var $t : Text
@@ -655,6 +686,7 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Checks out a branch/ref (Text) or discards local path(s) (Collection).
 Function checkout($what) : cs:C1710.Git
 	
 	If (Value type:C1509($what)=Is text:K8:3)
@@ -670,6 +702,7 @@ Function checkout($what) : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Number of commits available to fetch/pull on the given branch.
 Function branchFetchNumber($branch : Text) : Integer
 	
 	var $c:=["rev-list"]
@@ -685,6 +718,7 @@ Function branchFetchNumber($branch : Text) : Integer
 	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Number of local commits waiting to be pushed on the given branch.
 Function branchPushNumber($branch : Text) : Integer
 	
 	var $c:=["rev-list"]
@@ -701,6 +735,7 @@ Function branchPushNumber($branch : Text) : Integer
 	
 	//MARK:-diff
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Computes the diff of a file (result in `.result`).
 Function diff($pathname : Text; $option : Text)
 	
 	If (Not:C34(This:C1470.workspace.file($pathname).exists))
@@ -723,6 +758,7 @@ Function diff($pathname : Text; $option : Text)
 	This:C1470.execute($c.join(" "))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Lists changed files between two commits (`git diff --name-status`).
 Function diffList($parent : Text; $current : Text) : Boolean
 	
 	// Empty tree id
@@ -731,6 +767,7 @@ Function diffList($parent : Text; $current : Text) : Boolean
 	return This:C1470.execute("diff --name-status "+$parent+" "+$current)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Opens the configured external diff tool for a file.
 Function diffTool($pathname : Text)
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_BLOCKING_EXTERNAL_PROCESS"; "false")
@@ -739,6 +776,7 @@ Function diffTool($pathname : Text)
 	
 	//MARK:-
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Refreshes the `.remotes` collection (`git remote -v`). Returns This.
 shared Function updateRemotes() : cs:C1710.Git
 	
 	var $t : Text
@@ -765,11 +803,13 @@ shared Function updateRemotes() : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Adds a remote to the `.remotes` collection (in memory).
 shared Function addRemote($name : Text; $url : Text)
 	
 	This:C1470.remotes.push(OB Copy:C1225({name: $name; url: $url}; ck shared:K85:29))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Refreshes the `.tags` collection (`git tag`). Returns This.
 shared Function updateTags() : cs:C1710.Git
 	
 	var $t : Text
@@ -788,6 +828,7 @@ shared Function updateTags() : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Parses .git/FETCH_HEAD for the given ref type (e.g. "branch").
 Function FETCH_HEAD($type : Text) : Collection
 	
 	var $file : 4D:C1709.File:=This:C1470.root.file("FETCH_HEAD")
@@ -823,6 +864,7 @@ Function FETCH_HEAD($type : Text) : Collection
 	return $c
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Reads the refs/remotes/origin refs from disk.
 Function REMOTE_ORIGIN() : Collection
 	
 	var $folder : 4D:C1709.Folder:=This:C1470.root.folder("refs/remotes/origin")
@@ -846,6 +888,7 @@ Function REMOTE_ORIGIN() : Collection
 	return $c
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Opens the working directory in the terminal ("terminal") or file browser ("show").
 shared Function open($what : Text)
 	
 	var $errorStream; $outputStream; $inputStream : Text
@@ -900,6 +943,7 @@ shared Function open($what : Text)
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Stash operations: list / save / snapshot / pop. Refreshes `.stashes`.
 shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 	
 	var $line : Text
@@ -967,6 +1011,7 @@ shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Resolves a repository-relative path to a 4D File/Folder or an object identifier.
 Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
 	
 	$root:=$root || Folder:C1567(fk database folder:K87:14; *)

@@ -1,3 +1,6 @@
+/// **gh** — wrapper around the GitHub CLI (`gh`), falling back to the embedded
+/// binary when none is installed. Singleton, reachable as `cs.git.gh.me`.
+/// Handles device-flow authentication (`login`) and repository create/delete.
 /* Github CLI 
 
 GitHub CLI, or gh, is a command-line interface to GitHub for use in your terminal or your scripts.
@@ -36,6 +39,7 @@ singleton Class constructor
 	End if 
 	
 	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
+	/// The most recent error message ("" when there is none).
 Function get lastError() : Text
 	
 	return This:C1470.errors.length>0 ? This:C1470.errors[0] : ""
@@ -82,7 +86,13 @@ Function getStatus() : Object
 	/// Authenticate with a GitHub host.
 Function login() : Boolean
 	
-	If (This:C1470.authorized) || (This:C1470.exe=Null:C1517)
+	If (This:C1470.exe=Null:C1517)
+		
+		return False:C215
+		
+	End if 
+	
+	If (This:C1470.authorized)
 		
 		return True:C214
 		
@@ -196,7 +206,7 @@ Function deleteRepo($name : Text) : Boolean
 	Else 
 		
 		// Try to refresh
-		var $cmd:=This:C1470.exe+"  auth refresh -h github.com -s delete_repo"
+		var $cmd:=This:C1470.exe+" auth refresh -h github.com -s delete_repo"
 		$worker:=4D:C1709.SystemWorker.new($cmd; This:C1470).wait()
 		
 		If (This:C1470.success)
@@ -217,7 +227,7 @@ Function onDataError($worker : 4D:C1709.SystemWorker; $info : Object)
 	ARRAY LONGINT:C221($pos; 0)
 	ARRAY LONGINT:C221($len; 0)
 	
-	If (Match regex:C1019("(?mi-s)([[:xdigit:]]{4}-[[:xdigit:]]{4}).*"; $info.data; 1; $pos; $len))
+	If (Match regex:C1019("(?mi-s)([[:alnum:]]{4}-[[:alnum:]]{4}).*"; $info.data; 1; $pos; $len))
 		
 		var $winRef:=Open form window:C675("DEVICE ACTIVATION"; Movable form dialog box:K39:8; Horizontally centered:K39:1; At the top:K39:5)
 		var $menubar:=cs:C1710.ui.menuBar.new().defaultMinimalMenuBar().set()
@@ -311,12 +321,12 @@ Function _exe() : Boolean
 	
 	If (Is macOS:C1572)
 		
-		var $cmd:="find /usr -type f -name gh"
+		var $cmd:="which gh"
 		LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
 		
 		If (Length:C16($out)=0)
 			
-			$cmd:="which gh"
+			$cmd:="find /usr -type f -name gh"
 			LAUNCH EXTERNAL PROCESS:C811($cmd; $in; $out; $error)
 			
 		End if 
