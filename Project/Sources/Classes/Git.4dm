@@ -218,10 +218,9 @@ Function get currentBranch() : Text
 	Case of 
 			
 			//______________________________________________________
-		: (Length:C16($head)=0)  // HEAD not readable yet → configured default
+		: (Length:C16($head)=0)  // No readable HEAD → assume the default branch
 			
-			This:C1470.execute("config --get --default main init.defaultBranch")
-			return String:C10(This:C1470.result)
+			return "main"
 			
 			//______________________________________________________
 		: ($head="ref: @")  // On a branch: "ref: refs/heads/<name>" (name may contain "/")
@@ -351,147 +350,72 @@ shared Function status($short : Boolean) : Integer
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function add($what)
 	
+	If (Value type:C1509($what)#Is text:K8:3)
+		
+		This:C1470._execPaths($what; "add")  // Collection (or invalid type)
+		return 
+		
+	End if 
+	
 	Case of 
 			
-			//_____________________________
-		: (Value type:C1509($what)=Is text:K8:3)
+			//——————————————————————
+		: ($what="all")  // Update the index and adds new files
 			
-			Case of 
-					
-					//——————————————————————
-				: ($what="all")  // Update the index and adds new files
-					
-					This:C1470.execute("add -A")
-					
-					//——————————————————————
-				: ($what="update")  // Update the index, but adds no new files
-					
-					This:C1470.execute("add -u")
-					
-					//——————————————————————
-				Else   // Add the given file
-					
-					This:C1470.execute("add "+This:C1470._quoted($what))
-					
-					//——————————————————————
-			End case 
+			This:C1470.execute("add -A")
 			
-			//_____________________________
-		: (Value type:C1509($what)=Is collection:K8:32)
+			//——————————————————————
+		: ($what="update")  // Update the index, but adds no new files
 			
-			var $item
-			For each ($item; $what)
-				
-				If (Value type:C1509($item)=Is text:K8:3)
-					
-					This:C1470.execute("add "+This:C1470._quoted($item))
-					
-				Else 
-					
-					This:C1470._pushError("Wrong type of argument")
-					
-				End if 
-			End for each 
+			This:C1470.execute("add -u")
 			
-			//_____________________________
-		Else 
+			//——————————————————————
+		Else   // Add the given file
 			
-			This:C1470._pushError("Wrong type of argument")
+			This:C1470.execute("add "+This:C1470._quoted($what))
 			
-			//_____________________________
+			//——————————————————————
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function untrack($what)
 	
-	Case of 
-			
-			//_____________________________
-		: (Value type:C1509($what)=Is text:K8:3)
-			
-			This:C1470.execute("rm --cached "+This:C1470._quoted($what))
-			
-			//_____________________________
-		: (Value type:C1509($what)=Is collection:K8:32)
-			
-			var $item
-			
-			For each ($item; $what)
-				
-				If (Value type:C1509($item)=Is text:K8:3)
-					
-					This:C1470.execute("rm --cached "+This:C1470._quoted($item))
-					
-				Else 
-					
-					This:C1470._pushError("Wrong type of argument")
-					
-				End if 
-			End for each 
-			
-			//_____________________________
-		Else 
-			
-			This:C1470._pushError("Wrong type of argument")
-			
-			//_____________________________
-	End case 
+	This:C1470._execPaths($what; "rm --cached")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function unstage($what)
 	
+	If (Value type:C1509($what)#Is text:K8:3)
+		
+		This:C1470._execPaths($what; "reset HEAD")  // Collection (or invalid type)
+		return 
+		
+	End if 
+	
 	Case of 
 			
-			//_____________________________
-		: (Value type:C1509($what)=Is text:K8:3)
+			//——————————————————————
+		: ($what="all")  // Unstage all stagged files
 			
-			Case of 
-					
-					//——————————————————————
-				: ($what="all")  // Unstage all stagged files
-					
-					This:C1470.execute("reset")
-					
-					//——————————————————————
-				Else 
-					
-					var $c:=Split string:C1554($what; " -> ")
-					
-					If ($c.length>1)  // Moved
-						
-						This:C1470.execute("reset HEAD "+This:C1470._quoted($c[0]))
-						This:C1470.execute("reset HEAD "+This:C1470._quoted($c[1]))
-						
-					Else 
-						
-						This:C1470.execute("reset HEAD "+This:C1470._quoted($what))
-						
-					End if 
-			End case 
+			This:C1470.execute("reset")
 			
-			//_____________________________
-		: (Value type:C1509($what)=Is collection:K8:32)
-			
-			var $item
-			For each ($item; $what)
-				
-				If (Value type:C1509($item)=Is text:K8:3)
-					
-					This:C1470.execute("reset HEAD "+This:C1470._quoted($item))
-					
-				Else 
-					
-					This:C1470._pushError("Wrong type of argument")
-					
-				End if 
-			End for each 
-			
-			//_____________________________
+			//——————————————————————
 		Else 
 			
-			This:C1470._pushError("Wrong type of argument")
+			var $c:=Split string:C1554($what; " -> ")
 			
-			//_____________________________
+			If ($c.length>1)  // Moved
+				
+				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[0]))
+				This:C1470.execute("reset HEAD "+This:C1470._quoted($c[1]))
+				
+			Else 
+				
+				This:C1470.execute("reset HEAD "+This:C1470._quoted($what))
+				
+			End if 
+			
+			//——————————————————————
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -568,41 +492,25 @@ Function push($origin : Text; $branch : Text; $force : Boolean) : Boolean
 		
 	End if 
 	
-	var $c:=["push"]
-	
-	If (Count parameters:C259>=2)
-		
-		$c.push($origin)
-		$c.push($branch)
-		
-	Else 
-		
-		$c.push("origin "+This:C1470.currentBranch)
-		
-	End if 
-	
-	$c.push("--tags")
-	$c.push("--quiet")
-	
-	return This:C1470.execute($c.join(" "))
+	return This:C1470._push(Count parameters:C259>=2 ? $origin+" "+$branch : "origin "+This:C1470.currentBranch; "")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function forcePush($origin : Text; $branch : Text) : Boolean
 	
-	var $c:=["push"]
+	return This:C1470._push(Count parameters:C259>=2 ? $origin+" "+$branch : "origin "+This:C1470.currentBranch; "--force-with-lease")
 	
-	If (Count parameters:C259>=2)
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Build and run a `git push <target> [flag] --tags --quiet` command
+Function _push($target : Text; $flag : Text) : Boolean
+	
+	var $c:=["push"; $target]
+	
+	If (Length:C16($flag)>0)
 		
-		$c.push($origin)
-		$c.push($branch)
-		
-	Else 
-		
-		$c.push("origin "+This:C1470.currentBranch)
+		$c.push($flag)
 		
 	End if 
 	
-	$c.push("--force-with-lease")
 	$c.push("--tags")
 	$c.push("--quiet")
 	
@@ -749,69 +657,32 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function checkout($what) : cs:C1710.Git
 	
-	var $item
-	
-	Case of 
-			
-			//_____________________________
-		: (Value type:C1509($what)=Is text:K8:3)
-			
-			This:C1470.execute("checkout "+$what)
-			
-			//_____________________________
-		: (Value type:C1509($what)=Is collection:K8:32)
-			
-			For each ($item; $what)
-				
-				If (Value type:C1509($item)=Is text:K8:3)
-					
-					This:C1470.execute("checkout -- "+This:C1470._quoted($item))
-					
-				Else 
-					
-					This:C1470._pushError("Wrong type of argument")
-					
-				End if 
-			End for each 
-			
-			//_____________________________
-		Else 
-			
-			This:C1470._pushError("Wrong type of argument")
-			
-			//_____________________________
-	End case 
+	If (Value type:C1509($what)=Is text:K8:3)
+		
+		This:C1470.execute("checkout "+$what)  // Branch/ref (git refnames need no quoting)
+		
+	Else 
+		
+		This:C1470._execPaths($what; "checkout --")  // Collection of paths (or invalid type)
+		
+	End if 
 	
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchFetchNumber($branch : Text) : Integer
 	
-	var $t : Text
-	var $i : Integer
+	var $c:=["rev-list"]
 	
-	If (Length:C16($branch)>0)
-		
-		This:C1470.execute("log "+This:C1470._refs($branch; "local")+".."+This:C1470._refs($branch; "remote"))
-		
-		For each ($t; Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1))
-			
-			$i+=Num:C11(Position:C15("commit "; $t)=1)
-			
-		End for each 
-		
-		return $i
-		
-	End if 
+	$c.push(Length:C16($branch)>0\
+		 ? $branch+"..origin/"+$branch\
+		 : "HEAD..origin")
 	
-	// FIXME:To test
-	This:C1470.execute("log origin..")
+	$c.push("--single-worktree")
 	
-	If (Match regex:C1019("(?m-si)^[[:xdigit:]]{5,}"; This:C1470.result; 1; *))
-		
-		return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length-1
-		
-	End if 
+	This:C1470.execute($c.join(" "))
+	
+	return Split string:C1554(This:C1470.result; "\n"; sk ignore empty strings:K86:1).length
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function branchPushNumber($branch : Text) : Integer
@@ -873,8 +744,6 @@ shared Function updateRemotes() : cs:C1710.Git
 	var $t : Text
 	
 	This:C1470.remotes.clear()
-	
-	// TODO: Use~/.git/refs/remotes/origin
 	
 	If (This:C1470.execute("remote -v"))
 		
@@ -1234,7 +1103,10 @@ Function _command() : Text
 				
 			Else 
 				
-				// TODO: Provide a git exe in resources ?
+				// NOTE: We deliberately do NOT bundle git for Windows. MinGit (~50 MB
+				// unzipped, GPLv2 + maintenance) would bloat the distributed component.
+				// Instead the UI reports "Git not installed" and offers the download
+				// (git-scm.com) — a `winget install Git.Git` shortcut could be added.
 				This:C1470._pushError("Git not installed")
 				
 			End if 
@@ -1266,40 +1138,45 @@ Function _quoted($string : Text) : Text
 	return Char:C90(Double quote:K15:41)+$string+Char:C90(Double quote:K15:41)
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	// Run a git verb on a path (Text) or a collection of paths, each double-quoted
+Function _execPaths($what; $verb : Text)
+	
+	Case of 
+			
+			//_____________________________
+		: (Value type:C1509($what)=Is text:K8:3)
+			
+			This:C1470.execute($verb+" "+This:C1470._quoted($what))
+			
+			//_____________________________
+		: (Value type:C1509($what)=Is collection:K8:32)
+			
+			var $item
+			For each ($item; $what)
+				
+				If (Value type:C1509($item)=Is text:K8:3)
+					
+					This:C1470.execute($verb+" "+This:C1470._quoted($item))
+					
+				Else 
+					
+					This:C1470._pushError("Wrong type of argument")
+					
+				End if 
+			End for each 
+			
+			//_____________________________
+		Else 
+			
+			This:C1470._pushError("Wrong type of argument")
+			
+			//_____________________________
+	End case 
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _normalize($text : Text) : Text
 	
 	$text:=Replace string:C233($text; "\r\n"; "\n")
 	$text:=Replace string:C233($text; "\r"; "\n")
 	
 	return Split string:C1554($text; "\n"; sk ignore empty strings:K86:1).join("\n")
-	
-	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-Function _refs($branch : Text; $type : Text) : Text
-	
-	Case of 
-			
-			// ______________________________________________________
-		: ($type="local")
-			
-			var $file:=This:C1470.root.folder("refs/heads").file($branch)
-			
-			// ______________________________________________________
-		: ($type="remote")
-			
-			$file:=This:C1470.root.folder("refs/remotes/origin").file($branch)
-			
-			// ______________________________________________________
-		Else 
-			
-			// A "Case of" statement should never omit "Else"
-			
-			// ______________________________________________________
-	End case 
-	
-	If (Not:C34($file.exists))
-		
-		return 
-		
-	End if 
-	
-	return Substring:C12($file.getText(); 1; 7)
