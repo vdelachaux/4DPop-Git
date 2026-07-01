@@ -289,14 +289,14 @@ Function handleEvents($e : cs:C1710.ui.evt)
 			
 			var $menu:=cs:C1710.ui.menu.new()
 			
-			$menu.append(":xliff:edit"; "open")
-			$menu.append(":xliff:showInFinder"; "show")
+			$menu.append(Localized string:C991("edit"); "open")
+			$menu.append(Localized string:C991("showInFinder"); "show")
 			
 			If (Not:C34(This:C1470.isInIndex))
 				
 				$menu.line()\
-					.append(":xliff:discardChanges"; "discard")\
-					.append(":xliff:deleteLocalFile"; "delete")
+					.append(Localized string:C991("discardChanges"); "discard")\
+					.append(Localized string:C991("deleteLocalFile"); "delete")
 				
 			End if 
 			
@@ -812,10 +812,10 @@ Function _openManager()
 	
 	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
 	
-	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
-		.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")\
+	$menu.append(Localized string:C991("openInTerminal"); "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
+		.append(Localized string:C991("showOnDisk"); "show").icon("/RESOURCES/Images/Menus/disk.png")\
 		.line()\
-		.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
+		.append(Localized string:C991("viewOnGithub"); "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
 		.line()
 	
 	openWith($menu)
@@ -891,11 +891,11 @@ Function _stageUnstageManager($e : cs:C1710.ui.evt)
 			
 			If ($sel.length=1)
 				
-				$menu.append(":xliff:edit"; "open")
+				$menu.append(Localized string:C991("edit"); "open")
 				
 				If (["??"; " D"; "A "].indexOf($current.status)=-1)
 					
-					$menu.append(":xliff:externalDiff"; "diffTool").shortcut("D")
+					$menu.append(Localized string:C991("externalDiff"); "diffTool").shortcut("D")
 					
 				End if 
 				
@@ -903,12 +903,12 @@ Function _stageUnstageManager($e : cs:C1710.ui.evt)
 				
 				If ([" D"].indexOf($current.status)=-1)
 					
-					$menu.append(":xliff:showInFinder"; "show")
-					$menu.append(":xliff:deleteLocalFile"; "delete")
+					$menu.append(Localized string:C991("showInFinder"); "show")
+					$menu.append(Localized string:C991("deleteLocalFile"); "delete")
 					
 				End if 
 				
-				$menu.append(":xliff:copyPath"; "copy")
+				$menu.append(Localized string:C991("copyPath"); "copy")
 				
 				$menu.line()
 				
@@ -918,12 +918,12 @@ Function _stageUnstageManager($e : cs:C1710.ui.evt)
 				
 				If ($staged)
 					
-					$menu.append(":xliff:unstage"; "unstage").shortcut("S"; 512)
+					$menu.append(Localized string:C991("unstage"); "unstage").shortcut("S"; 512)
 					
 				Else 
 					
-					$menu.append(":xliff:stage"; "stage").shortcut("S"; 512)
-					$menu.append(":xliff:discardChanges"; "discard")
+					$menu.append(Localized string:C991("stage"); "stage").shortcut("S"; 512)
+					$menu.append(Localized string:C991("discardChanges"); "discard")
 					
 				End if 
 				
@@ -937,12 +937,12 @@ Function _stageUnstageManager($e : cs:C1710.ui.evt)
 				: ($staged)\
 					 & (Form:C1466.staged.length>0)
 					
-					$menu.append(":xliff:unstageAll"; "unStageAll").shortcut("S"; 512+2048)
+					$menu.append(Localized string:C991("unstageAll"); "unStageAll").shortcut("S"; 512+2048)
 					
 					//———————————————————————————————————————
 				: (Form:C1466.unstaged.length>0)
 					
-					$menu.append(":xliff:stageAll"; "stageAll").shortcut("S"; 512+2048)
+					$menu.append(Localized string:C991("stageAll"); "stageAll").shortcut("S"; 512+2048)
 					
 					//———————————————————————————————————————
 			End case 
@@ -952,11 +952,11 @@ Function _stageUnstageManager($e : cs:C1710.ui.evt)
 				var $file : 4D:C1709.File:=This:C1470.Git.workspace.file($current.path)
 				
 				$menu.line()\
-					.append(":xliff:ignore"; cs:C1710.ui.menu.new()\
+					.append(Localized string:C991("ignore"); cs:C1710.ui.menu.new()\
 					.append(Replace string:C233(Localized string:C991("ignoreFile"); "{file}"; $file.fullName); "ignoreFile")\
 					.append(Replace string:C233(Localized string:C991("ignoreAllExtensionFiles"); "{extension}"; $file.extension); "ignoreExtension")\
 					.line()\
-					.append(":xliff:customPattern"; "ignoreCustom"))
+					.append(Localized string:C991("customPattern"); "ignoreCustom"))
 				
 			End if 
 			

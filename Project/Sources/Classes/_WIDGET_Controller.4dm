@@ -348,7 +348,7 @@ Function _doChangesMenu()
 		
 		If ($classes.itemCount()>0)
 			
-			$menu.append(":xliff:classes"; $classes)\
+			$menu.append(Localized string:C991("classes"); $classes)\
 				.icon("|Images/ObjectIcons/Icon_628.png")
 			
 		Else 
@@ -362,7 +362,7 @@ Function _doChangesMenu()
 		
 		If ($methods.itemCount()>0)
 			
-			$menu.append(":xliff:methods"; $methods)\
+			$menu.append(Localized string:C991("methods"); $methods)\
 				.icon("|Images/ObjectIcons/Icon_602.png")
 			
 		Else 
@@ -376,7 +376,7 @@ Function _doChangesMenu()
 		
 		If ($forms.itemCount()>0)
 			
-			$menu.append(":xliff:forms"; $forms)\
+			$menu.append(Localized string:C991("forms"); $forms)\
 				.icon("|Images/ObjectIcons/Icon_602.png")
 			
 		Else 
@@ -390,7 +390,7 @@ Function _doChangesMenu()
 		
 		If ($others.itemCount()>0)
 			
-			$menu.append(":xliff:others"; $others)\
+			$menu.append(Localized string:C991("others"); $others)\
 				.icon("|Images/ObjectIcons/Icon_459.png")
 			
 		Else 
@@ -504,16 +504,16 @@ Function _doMoreMenu()
 	var $available : Boolean:=$git.branches.length>0
 	
 	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
-	$menu.append(":xliff:repoManager"; "tool").icon("/RESOURCES/Images/Menus/git.png")
+	$menu.append(Localized string:C991("repoManager"); "tool").icon("/RESOURCES/Images/Menus/git.png")
 	$menu.line()
-	$menu.append(":xliff:saveSnapshot"; "snapshot").icon("/RESOURCES/Images/Menus/stash.png")
+	$menu.append(Localized string:C991("saveSnapshot"); "snapshot").icon("/RESOURCES/Images/Menus/stash.png")
 	$menu.line()
-	$menu.append(":xliff:openInTerminal"; "terminal").icon("/RESOURCES/Images/Menus/terminal.png")
-	$menu.append(":xliff:showOnDisk"; "show").icon("/RESOURCES/Images/Menus/disk.png")
+	$menu.append(Localized string:C991("openInTerminal"); "terminal").icon("/RESOURCES/Images/Menus/terminal.png")
+	$menu.append(Localized string:C991("showOnDisk"); "show").icon("/RESOURCES/Images/Menus/disk.png")
 	$menu.line()
-	$menu.append(":xliff:viewOnGithub"; "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)
+	$menu.append(Localized string:C991("viewOnGithub"); "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)
 	$menu.line()
-	$menu.append(":xliff:refresh"; "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
+	$menu.append(Localized string:C991("refresh"); "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
 	
 	$menu.line()\
 		.append("Settings"; "settings")\
