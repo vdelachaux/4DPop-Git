@@ -128,7 +128,7 @@
 					"left": 3,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/Images/git.png",
+					"picture": "/RESOURCES/Images/git.svg",
 					"pictureFormat": "scaled",
 					"sizingY": "move"
 				},

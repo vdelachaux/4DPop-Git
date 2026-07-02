@@ -29,7 +29,7 @@
 						"onClick"
 					],
 					"style": "toolbar",
-					"icon": "/RESOURCES/Images/git.png",
+					"icon": "/RESOURCES/Images/git.svg",
 					"iconFrames": 1,
 					"method": "ObjectMethods/page1.4dm"
 				},

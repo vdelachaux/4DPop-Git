@@ -304,7 +304,8 @@
 					"styledText": true,
 					"storeDefaultStyle": true,
 					"visibility": "hidden",
-					"class": "infos"
+					"class": "infos",
+					"hideFocusRing": true
 				},
 				"currentPath": {
 					"type": "input",
@@ -376,7 +377,7 @@
 					"text": ":xliff:amend",
 					"top": 856,
 					"left": 534,
-					"width": 201,
+					"width": 159,
 					"height": 16,
 					"events": [
 						"onClick"
@@ -589,7 +590,7 @@
 					"left": 453,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/Images/git.png",
+					"picture": "/RESOURCES/Images/git.svg",
 					"pictureFormat": "scaled",
 					"sizingY": "move",
 					"sizingX": "move"
@@ -773,7 +774,9 @@
 					"styledText": true,
 					"storeDefaultStyle": true,
 					"visibility": "hidden",
-					"class": "infos"
+					"class": "infos",
+					"focusable": true,
+					"hideFocusRing": true
 				},
 				"authorName": {
 					"type": "input",
@@ -1079,5 +1082,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2507
+	"geometryStamp": 2511
 }

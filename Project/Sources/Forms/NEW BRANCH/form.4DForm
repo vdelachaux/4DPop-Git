@@ -90,7 +90,7 @@
 					"left": 68,
 					"width": 32,
 					"height": 32,
-					"picture": "/RESOURCES/Images/git.png",
+					"picture": "/RESOURCES/Images/git.svg",
 					"pictureFormat": "scaled"
 				},
 				"cancel": {
