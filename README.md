@@ -32,6 +32,7 @@ It also exposes a scriptable API (the [`Git`](Documentation/Classes/Git.md) and 
 	- Stash: save, snapshot, pop
 	- Diff files with your external diff tool
 - Commit history with author avatars (Gravatar) and asynchronous, non-blocking loading.
+- **Fork-style commit graph**: colour-coded lanes for branches and merges, with reference labels — local branches, remotes (with their GitHub icon), tags and stashes — tinted to match their lane, in both light and dark mode.
 - **Publish to GitHub** in one step, using the GitHub CLI (`gh`) with device-flow authentication — no manual token handling.
 - Git LFS support.
 - A scriptable API available to host projects through the `git` namespace.
@@ -83,6 +84,12 @@ Open the 4DPop **Git** entry to display the main window for the current project'
 ### Commit history
 
 <img src="./Documentation/commits.png">
+
+### Commit graph
+
+A full branch graph is drawn next to the history, in the style of dedicated Git clients such as Fork: each branch and merge gets its own colour-coded lane, and reference labels (branches, remotes with their GitHub icon, tags and stashes) are tinted to match the lane they belong to.
+
+<img src="./Documentation/commitGraph.png" width="518">
 
 ### File menu
 
