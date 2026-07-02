@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="22px" height="22px" viewBox="0 0 16 16">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20px" height="20px" viewBox="-4 -4 24 24">
   <defs>
     <style>
     :root { color-scheme: light dark; }
-    .st0 { fill: #24292f; }
+    .st0 { fill: #3a3a3c; }
     @media (prefers-color-scheme: dark) {
-      .st0 { fill: #ffffff; }
+      .st0 { fill: #f5f5f5; }
     }
     </style>
   </defs>
