@@ -72,7 +72,7 @@
 					"top": 255,
 					"left": 309,
 					"width": 158,
-					"height": 22,
+					"height": 23,
 					"events": [
 						"onClick"
 					],
@@ -99,7 +99,7 @@
 					"top": 255,
 					"left": 211,
 					"width": 78,
-					"height": 22,
+					"height": 23,
 					"events": [
 						"onClick"
 					],
@@ -126,7 +126,7 @@
 					"left": 207,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/Images/Main/branch.png",
+					"picture": "/RESOURCES/Images/Main/branch.svg",
 					"pictureFormat": "scaled"
 				},
 				"Input": {
@@ -199,7 +199,7 @@
 					"left": 207,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/Images/Main/master.png",
+					"picture": "/RESOURCES/Images/Main/master.svg",
 					"pictureFormat": "scaled"
 				},
 				"Input1": {
@@ -248,7 +248,7 @@
 			]
 		}
 	],
-	"geometryStamp": 407,
+	"geometryStamp": 408,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

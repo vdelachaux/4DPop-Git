@@ -2283,10 +2283,9 @@ Function _loadScheme()
 	
 	var $key : Text
 	var $icon : Picture
-	For each ($key; ["checked"; "github"; "gitLab"; "branch"; "master"; "tag"; "fix"; "remote"; "stash"])
+	For each ($key; ["github"; "tag"; "stash"])
 		
-		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".png")).platformPath; $icon)
-		CREATE THUMBNAIL:C679($icon; $icon; 22; 22)
+		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".svg")).platformPath; $icon)
 		This:C1470.icons[Lowercase:C14($key)]:=$icon
 		
 	End for each 
