@@ -21,6 +21,12 @@ If (Is macOS:C1572)
 		
 	End if 
 	
+	If ((Folder:C1567("/Applications/Visual Studio Code.app").exists) | (Folder:C1567(fk home folder:K87:24).folder("Applications/Visual Studio Code.app").exists))
+		
+		$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Visual Studio Code"); "vscode").icon("/RESOURCES/Images/Menus/vscode.png")
+		
+	End if 
+	
 Else 
 	
 	If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Fork/Fork.exe").exists)
@@ -38,6 +44,12 @@ Else
 	If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/GitHubDesktop/Sourcetree.exe").exists)
 		
 		$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Sourcetree"); "sourcetree").icon("/RESOURCES/Images/Menus/stree.png")
+		
+	End if 
+	
+	If (Folder:C1567(fk home folder:K87:24).file("AppData/Local/Programs/Microsoft VS Code/Code.exe").exists)
+		
+		$menu.append(Replace string:C233(Localized string:C991("openWith"); "{app}"; "Visual Studio Code"); "vscode").icon("/RESOURCES/Images/Menus/vscode.png")
 		
 	End if 
 End if 

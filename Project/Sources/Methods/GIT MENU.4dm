@@ -81,6 +81,19 @@ Case of
 		End if 
 		
 		//———————————————————————————————————————
+	: ($menu.choice="vscode")
+		
+		If (Is macOS:C1572)
+			
+			LAUNCH EXTERNAL PROCESS:C811("open -a \"Visual Studio Code\" \""+$git.workspace.path+"\"")
+			
+		Else 
+			
+			LAUNCH EXTERNAL PROCESS:C811(Folder:C1567(fk home folder:K87:24).file("AppData/Local/Programs/Microsoft VS Code/Code.exe").platformPath+" \""+$git.workspace.platformPath+"\"")
+			
+		End if 
+		
+		//————————————————————————————————————————
 	: ($menu.choice="github")
 		
 		OPEN URL:C673(Replace string:C233($git.result; "\n"; ""))
