@@ -12,7 +12,7 @@ Function avatar($mail : Text) : Picture
 	
 	If (This:C1470[$t]=Null:C1517)
 		
-		This:C1470._request($t).wait()
+		This:C1470._request($t; $mail).wait()
 		
 	End if 
 	
@@ -39,7 +39,7 @@ Function preload($mails : Collection)
 		
 		$seen[$t]:=True:C214
 		
-		$requests.push(This:C1470._request($t))
+		$requests.push(This:C1470._request($t; $mail))
 		
 	End for each 
 	
@@ -58,9 +58,9 @@ shared Function store($hash : Text; $picture : Picture)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Build and start an async request that will cache its result by hash
-Function _request($hash : Text) : 4D:C1709.HTTPRequest
+Function _request($hash : Text; $mail : Text) : 4D:C1709.HTTPRequest
 	
-	var $callback:=cs:C1710._gravatarRequest.new({user: $hash})
+	var $callback:=cs:C1710._gravatarRequest.new({hash: $hash; mail: $mail})
 	
-	return 4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$hash; $callback)
+	return 4D:C1709.HTTPRequest.new("https://www.gravatar.com/avatar/"+$hash+"?d=404"; $callback)
 	

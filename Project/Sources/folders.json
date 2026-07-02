@@ -7,6 +7,9 @@
 		"methods": [
 			"_test API",
 			"00_TEST"
+		],
+		"forms": [
+			"GIT1"
 		]
 	},
 	"♻️ LIBRAIRIES": {
