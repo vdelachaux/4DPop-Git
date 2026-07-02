@@ -504,16 +504,16 @@ Function _doMoreMenu()
 	var $available : Boolean:=$git.branches.length>0
 	
 	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
-	$menu.append(Localized string:C991("repoManager"); "tool").icon("/RESOURCES/Images/Menus/git.png")
+	$menu.append(Localized string:C991("repoManager"); "tool").icon("/RESOURCES/Images/Menus/git.svg")
 	$menu.line()
-	$menu.append(Localized string:C991("saveSnapshot"); "snapshot").icon("/RESOURCES/Images/Menus/stash.png")
+	$menu.append(Localized string:C991("saveSnapshot"); "snapshot").icon("/RESOURCES/Images/Menus/stash.svg")
 	$menu.line()
-	$menu.append(Localized string:C991("openInTerminal"); "terminal").icon("/RESOURCES/Images/Menus/terminal.png")
-	$menu.append(Localized string:C991("showOnDisk"); "show").icon("/RESOURCES/Images/Menus/disk.png")
+	$menu.append(Localized string:C991("openInTerminal"); "terminal").icon("/RESOURCES/Images/Menus/terminal.svg")
+	$menu.append(Localized string:C991("showOnDisk"); "show").icon("/RESOURCES/Images/Menus/disk.svg")
 	$menu.line()
-	$menu.append(Localized string:C991("viewOnGithub"); "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)
+	$menu.append(Localized string:C991("viewOnGithub"); "github").icon("/RESOURCES/Images/Menus/gitHub.svg").enable($hasRemote)
 	$menu.line()
-	$menu.append(Localized string:C991("refresh"); "refresh").icon("/RESOURCES/Images/Menus/refresh.png")
+	$menu.append(Localized string:C991("refresh"); "refresh").icon("/RESOURCES/Images/Menus/refresh.svg")
 	
 	$menu.line()\
 		.append("Settings"; "settings")\

@@ -812,10 +812,10 @@ Function _openManager()
 	
 	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
 	
-	$menu.append(Localized string:C991("openInTerminal"); "terminal").icon("/RESOURCES/Images/Menus/terminal.png")\
-		.append(Localized string:C991("showOnDisk"); "show").icon("/RESOURCES/Images/Menus/disk.png")\
+	$menu.append(Localized string:C991("openInTerminal"); "terminal").icon("/RESOURCES/Images/Menus/terminal.svg")\
+		.append(Localized string:C991("showOnDisk"); "show").icon("/RESOURCES/Images/Menus/disk.svg")\
 		.line()\
-		.append(Localized string:C991("viewOnGithub"); "github").icon("/RESOURCES/Images/Menus/gitHub.png").enable($hasRemote)\
+		.append(Localized string:C991("viewOnGithub"); "github").icon("/RESOURCES/Images/Menus/gitHub.svg").enable($hasRemote)\
 		.line()
 	
 	openWith($menu)
