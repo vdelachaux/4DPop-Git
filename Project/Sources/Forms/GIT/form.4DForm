@@ -207,7 +207,6 @@
 			"objects": {
 				"airbag": {
 					"type": "button",
-					"text": "Button",
 					"top": 899,
 					"left": 0,
 					"width": 325,
@@ -597,7 +596,6 @@
 				},
 				"airbag1": {
 					"type": "button",
-					"text": "Button",
 					"top": 899,
 					"left": 798,
 					"width": 325,
@@ -682,7 +680,6 @@
 				},
 				"airbag2": {
 					"type": "button",
-					"text": "Button",
 					"top": 799,
 					"left": 1114,
 					"width": 9,
@@ -922,9 +919,9 @@
 				"commits": {
 					"type": "listbox",
 					"left": 0,
-					"top": 60,
+					"top": 62,
 					"width": 1123,
-					"height": 458,
+					"height": 456,
 					"events": [
 						"onSelectionChange"
 					],
@@ -1082,5 +1079,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2511
+	"geometryStamp": 2515
 }

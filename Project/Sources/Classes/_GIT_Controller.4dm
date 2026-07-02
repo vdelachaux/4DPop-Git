@@ -663,6 +663,8 @@ Function update()
 				End if 
 			End if 
 			
+			This:C1470.amend.bestSize()
+			
 			// Mark:Update commit panel
 			This:C1470.commitment.enable(Form:C1466.staged.length>0)
 			This:C1470.commit.enable(Bool:C1537(Form:C1466.amend) | Bool:C1537(Length:C16(Form:C1466.commitSubject)))
@@ -1677,7 +1679,7 @@ Function _buildCommits($raw : Text)
 		
 		If ($i<=$notPushed)
 			
-			$tags[0]:=This:C1470.getLabelTag("toPush")
+			$tags[0]:={what: "toPush"}
 			
 		End if 
 		
@@ -1697,11 +1699,11 @@ Function _buildCommits($raw : Text)
 						
 						If ($metas.includes("origin/HEAD"))
 							
-							$tags[0]:=This:C1470.getLabelTag("origin")
+							$tags[0]:={what: "origin"}
 							
 						End if 
 						
-						$tags[1]:=This:C1470.getLabelTag("current branch"; Replace string:C233($meta; "HEAD ->"; ""))
+						$tags[1]:={what: "current branch"; text: Replace string:C233($meta; "HEAD ->"; "")}
 						
 						var $branch : Text:=$git.workingBranch.name
 						var $main:=$branch
@@ -1709,7 +1711,7 @@ Function _buildCommits($raw : Text)
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="tag: @")  // Tag
 						
-						$tags[2]:=This:C1470.getLabelTag("tag"; Replace string:C233($meta; "tag: "; ""))
+						$tags[2]:={what: "tag"; text: Replace string:C233($meta; "tag: "; "")}
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="origin/HEAD")  // Checked out branch
@@ -1721,7 +1723,7 @@ Function _buildCommits($raw : Text)
 							
 						End if 
 						
-						$tags[0]:=This:C1470.getLabelTag("origin")
+						$tags[0]:={what: "origin"}
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="refs/stash")\
@@ -1739,7 +1741,7 @@ Function _buildCommits($raw : Text)
 							ref: "stash@{"+String:C10($o.stashes.length)+"}"\
 							}
 						
-						$tags[0]:=This:C1470.getLabelTag("stash"; $stash.ref)
+						$tags[0]:={what: "stash"; text: $stash.ref}
 						
 						$o.stashes.push($stash)
 						
@@ -1758,11 +1760,11 @@ Function _buildCommits($raw : Text)
 						
 						If ($metas.includes(Replace string:C233($meta; "origin/"; "")))
 							
-							$tags[0]:=This:C1470.getLabelTag("origin")
+							$tags[0]:={what: "origin"}
 							
 						Else 
 							
-							$tags[0]:=This:C1470.getLabelTag("origin"; Replace string:C233($meta; "origin/"; ""))
+							$tags[0]:={what: "origin"; text: Replace string:C233($meta; "origin/"; "")}
 							
 						End if 
 						
@@ -1770,7 +1772,7 @@ Function _buildCommits($raw : Text)
 					Else   // Branch
 						
 						$branch:=$meta
-						$tags[1]:=This:C1470.getLabelTag("branch"; $branch)
+						$tags[1]:={what: "branch"; text: $branch}
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 				End case 
@@ -1781,22 +1783,6 @@ Function _buildCommits($raw : Text)
 			$branch:=$main
 			
 		End if 
-		
-		// Mark:Create label
-		var $label:=$empty
-		
-		var $item
-		For each ($item; $tags)
-			
-			If ($item=Null:C1517)
-				
-				continue
-				
-			End if 
-			
-			$label+=$item+$separator
-			
-		End for each 
 		
 		var $date:=Try(Date:C102($c[3]))
 		var $desc:=Split string:C1554($c[0]; "\r"; sk ignore empty strings:K86:1)
@@ -1812,16 +1798,12 @@ Function _buildCommits($raw : Text)
 			
 		End if 
 		
-		// The label shows only the subject (first line); passing the full
-		// multi-line message would make svgx render several lines in the row
+		// The label shows only the subject (first line); rendered after the graph is known
 		var $title : Text:=$desc[0]
-		var $normal:=$label+This:C1470.getLabelTag("title"; $title; {bold: $style="bold"; main: $branch=$main})
-		var $selected:=$label+This:C1470.getLabelTag("title"; $title; {bold: $style="bold"; selected: True:C214})
 		
 		Try($commits.push({\
 			title: $title; \
 			description: $description; \
-			label: $normal; \
 			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
 			stamp: ($date=$today ? Localized string:C991("today") : $date=$yesterday ? Localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
 			fingerprint: {short: $c[2]; long: $c[4]}; \
@@ -1831,7 +1813,10 @@ Function _buildCommits($raw : Text)
 			branch: $branch; \
 			date: $date; \
 			time: $c[3]; \
-			_: {normal: $normal; selected: $selected}\
+			__tags: $tags; \
+			__title: $title; \
+			__bold: ($style="bold"); \
+			__main: ($branch=$main)\
 			}))
 		
 	End for each 
@@ -1839,6 +1824,26 @@ Function _buildCommits($raw : Text)
 	Form:C1466.commits:=$commits.orderBy([\
 		{propertyPath: "date"; descending: True:C214}; \
 		{propertyPath: "time"; descending: True:C214}])
+	
+	// Mark:Branch graph
+	// Assign lanes, then render each label (branch tags coloured to their lane) + graph
+	This:C1470._computeGraph(Form:C1466.commits)
+	var $gc; $spec : Object
+	var $graphPic; $lbl : Picture
+	For each ($gc; Form:C1466.commits)
+		
+		$lbl:=$empty
+		For each ($spec; $gc.__tags)
+			If ($spec#Null:C1517)
+				$lbl:=$lbl+This:C1470.getLabelTag($spec.what; String:C10($spec.text); {color: $gc.graph.color})+$separator
+			End if 
+		End for each 
+		
+		$graphPic:=This:C1470._graphPicture($gc.graph)
+		$gc._:={normal: ($graphPic+$lbl+This:C1470.getLabelTag("title"; $gc.__title; {bold: $gc.__bold; main: $gc.__main})); selected: ($graphPic+$lbl+This:C1470.getLabelTag("title"; $gc.__title; {bold: $gc.__bold; selected: True:C214}))}
+		$gc.label:=$gc._.normal
+		
+	End for each 
 	
 	// Restore selection, if any
 	If (This:C1470.commits.item#Null:C1517)
@@ -1855,6 +1860,195 @@ Function _buildCommits($raw : Text)
 	This:C1470.form.update()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Assign a lane (column) + colour to every commit so the list can draw a branch
+	// graph. Commits must be in display order (a parent always comes after its
+	// children). Fills each commit's `.graph` and returns the max number of lanes.
+Function _computeGraph($commits : Collection) : Integer
+	
+	var $palette:=["#E8710A"; "#1E8E3E"; "#1A73E8"; "#D93025"; "#9334E6"; "#12A4AF"; "#7CB342"; "#F439A0"]
+	var $lanes:=[]  // active lanes: {hash; color} (commit each lane routes to) or Null
+	var $colorIndex; $cols; $node; $k; $j; $free; $used; $m; $idx : Integer
+	var $color; $hash; $newColor : Text
+	var $commit; $pc : Object
+	var $parents; $above; $parentCols : Collection
+	$cols:=1
+	
+	For each ($commit; $commits)
+		
+		$hash:=String:C10($commit.fingerprint.long)
+		$parents:=Split string:C1554(String:C10($commit.parent.long); " "; sk ignore empty strings:K86:1)
+		$above:=$lanes.copy()
+		
+		// The node sits in the first lane already routing to it (else a new lane)
+		$node:=This:C1470._laneIndexOf($lanes; $hash)
+		
+		If ($node=-1)  // branch tip
+			
+			$node:=This:C1470._firstFreeLane($lanes)
+			$color:=$palette[$colorIndex%$palette.length]
+			$colorIndex+=1
+			
+		Else 
+			
+			$color:=$lanes[$node].color
+			
+		End if 
+		
+		// Close the other lanes that were routing to this commit (children merging in)
+		For ($k; 0; $lanes.length-1)
+			
+			If (($k#$node) && ($lanes[$k]#Null:C1517) && ($lanes[$k].hash=$hash))
+				
+				$lanes[$k]:=Null:C1517
+				
+			End if 
+		End for 
+		
+		// Route the parents downward and record the column each one lands in
+		$parentCols:=[]
+		If ($parents.length=0)  // root
+			
+			$lanes[$node]:=Null:C1517
+			
+		Else 
+			
+			$lanes[$node]:={hash: $parents[0]; color: $color}  // first parent continues the lane
+			$parentCols.push({col: $node; color: $color})
+			
+			For ($j; 1; $parents.length-1)  // extra parents (merge)
+				
+				$idx:=This:C1470._laneIndexOf($lanes; $parents[$j])
+				
+				If ($idx=-1)
+					
+					$free:=This:C1470._firstFreeLane($lanes)
+					$newColor:=$palette[$colorIndex%$palette.length]
+					$colorIndex+=1
+					$lanes[$free]:={hash: $parents[$j]; color: $newColor}
+					$parentCols.push({col: $free; color: $newColor})
+					
+				Else 
+					
+					$parentCols.push({col: $idx; color: $lanes[$idx].color})
+					
+				End if 
+			End for 
+			
+		End if 
+		
+		// Width actually used on this row (highest lane), for a tight layout
+		$used:=$node+1
+		For ($m; 0; $above.length-1)
+			If (($above[$m]#Null:C1517) && (($m+1)>$used))
+				$used:=$m+1
+			End if 
+		End for 
+		For each ($pc; $parentCols)
+			If (($pc.col+1)>$used)
+				$used:=$pc.col+1
+			End if 
+		End for each 
+		
+		If ($used>$cols)
+			$cols:=$used
+		End if 
+		
+		$commit.graph:={hash: $hash; col: $node; color: $color; width: $used; above: $above; parentCols: $parentCols}
+		
+	End for each 
+	
+	return $cols
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// First lane routing to $hash, or -1
+Function _laneIndexOf($lanes : Collection; $hash : Text) : Integer
+	
+	var $k : Integer
+	For ($k; 0; $lanes.length-1)
+		
+		If (($lanes[$k]#Null:C1517) && ($lanes[$k].hash=$hash))
+			
+			return $k
+			
+		End if 
+	End for 
+	
+	return -1
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// First free lane index (extends the collection if none)
+Function _firstFreeLane($lanes : Collection) : Integer
+	
+	var $k : Integer
+	For ($k; 0; $lanes.length-1)
+		
+		If ($lanes[$k]=Null:C1517)
+			
+			return $k
+			
+		End if 
+	End for 
+	
+	$lanes.push(Null:C1517)
+	
+	return $lanes.length-1
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Horizontal centre of a lane column
+Function _laneX($col : Integer; $w : Integer) : Real
+	
+	return ($col*$w)+($w/2)+1
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Render the branch-graph picture for one commit row
+Function _graphPicture($graph : Object) : Picture
+	
+	var $dark : Boolean:=Form:C1466.darkScheme
+	var $w; $h; $node; $k : Integer
+	var $mid; $r : Real
+	var $pc : Object
+	var $above : Collection
+	var $svg : cs:C1710.svgx.svg
+	$w:=12
+	$h:=23
+	$mid:=11.5
+	$r:=3
+	$svg:=cs:C1710.svgx.svg.new()
+	$svg.width(($graph.width*$w)+2).height($h)
+	$above:=$graph.above
+	$node:=$graph.col
+	
+	// Lines coming from the row above
+	For ($k; 0; $above.length-1)
+		
+		If ($above[$k]=Null:C1517)
+			continue
+		End if 
+		
+		If ($above[$k].hash=$graph.hash)  // a child converges into this node
+			
+			$svg.line(This:C1470._laneX($k; $w); 0; This:C1470._laneX($node; $w); $mid).stroke({color: $above[$k].color; width: 2})
+			
+		Else   // the lane passes straight through
+			
+			$svg.line(This:C1470._laneX($k; $w); 0; This:C1470._laneX($k; $w); $h).stroke({color: $above[$k].color; width: 2})
+			
+		End if 
+	End for 
+	
+	// Lines going down to the parents
+	For each ($pc; $graph.parentCols)
+		
+		$svg.line(This:C1470._laneX($node; $w); $mid; This:C1470._laneX($pc.col; $w); $h).stroke({color: $pc.color; width: 2})
+		
+	End for each 
+	
+	// Commit node
+	$svg.circle($r; This:C1470._laneX($node; $w); $mid).fill($graph.color).stroke({color: ($dark ? "black" : "white"); width: 1})
+	
+	return $svg.picture()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
 	This:C1470._tagCache:=This:C1470._tagCache || {}
@@ -1866,7 +2060,7 @@ Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
 		
 	End if 
 	
-	var $key : Text:=$what+Char:C90(1)+String:C10($text)+Char:C90(1)+String:C10(Num:C11(Form:C1466.darkScheme))
+	var $key : Text:=$what+Char:C90(1)+String:C10($text)+Char:C90(1)+String:C10($style.color)+Char:C90(1)+String:C10(Num:C11(Form:C1466.darkScheme))
 	This:C1470._tagCache[$key]:=This:C1470._tagCache[$key] || This:C1470._renderLabelTag($what; $text; $style)
 	
 	return This:C1470._tagCache[$key]
@@ -1876,6 +2070,11 @@ Function _renderLabelTag($what : Text; $text : Text; $style : Object) : Picture
 	
 	var $dark : Boolean:=Form:C1466.darkScheme
 	var $svg:=cs:C1710.svgx.svg.new()
+	var $col : Text:=String:C10($style.color)
+	var $w : Real
+	
+	// Every badge sets an explicit width & height (like _graphPicture) so the export
+	// viewport is fixed and the rounded rectangle's bottom border is never clipped.
 	
 	Case of 
 			
@@ -1909,9 +2108,12 @@ Function _renderLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="branch")
 			
-			$svg.rect($svg.getTextWidth($text)*1.2; 20)\
+			$w:=$svg.getTextWidth($text)*1.2
+			$svg.width($w+1).height(21)
+			
+			$svg.rect($w; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke($dark ? "lightpink" : "red").fill($dark ? "deeppink" : "lightpink").opacity($dark ? 0.8 : 0.3)
+				.stroke($col).fill($col).opacity($dark ? 0.8 : 0.3)
 			
 			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
 			
@@ -1921,10 +2123,12 @@ Function _renderLabelTag($what : Text; $text : Text; $style : Object) : Picture
 		: ($what="current branch")
 			
 			$text:="🚧 "+$text  //✔️
+			$w:=$svg.getTextWidth($text)+10
+			$svg.width($w+1).height(21)
 			
-			$svg.rect($svg.getTextWidth($text)+10; 20)\
+			$svg.rect($w; 20)\
 				.radius(4).position(0.5; 0.5)\
-				.stroke($dark ? "lightpink" : "red").fill($dark ? "deeppink" : "lightpink").opacity($dark ? 0.8 : 0.3)
+				.stroke($col).fill($col).opacity($dark ? 0.8 : 0.3)
 			
 			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
 			
@@ -1936,37 +2140,51 @@ Function _renderLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			If (Length:C16($text)>0)
 				
 				$text:="origin/"+$text
+				$w:=$svg.getTextWidth($text)+8
+				$svg.width($w+24).height(22)
 				
-				$svg.rect($svg.getTextWidth($text)+28; 20)\
+				// Leading solid chip for the GitHub icon (kept legible on any lane colour)
+				$svg.rect(21; 20)\
 					.radius(4).position(0.5; 0.5)\
-					.stroke("limegreen").fill($dark ? "seagreen" : "limegreen").opacity($dark ? 0.8 : 0.3)
+					.fill($dark ? "#2b2b30" : "white")
 				
-				$svg.line(21; 0; 21; 20).stroke("limegreen").opacity(0.3)
+				// Trailing coloured pill with the remote branch name (kept separate to avoid overlap)
+				$svg.group().translate(3)
+				$svg.rect($w; 20)\
+					.radius(4).position(23; 0.5)\
+					.stroke($col).fill($col).opacity($dark ? 0.8 : 0.3)
 				
-				$svg.text($text).position(25; 15).color($dark ? "white" : "black")
+				$svg.text($text).position(27; 15).color($dark ? "white" : "black")
+				$svg.goUp()
 				
 			Else 
 				
+				$svg.width(22).height(22)
+				
 				$svg.rect(21; 20)\
 					.radius(4).position(0.5; 0.5)\
-					.stroke("limegreen").fill("white").opacity(0.5)
+					.stroke($col).fill($dark ? "#2b2b30" : "white")
 				
 			End if 
 			
-			$svg.image(This:C1470.icons.github)
+			$svg.image($dark ? This:C1470.icons.githubDark : This:C1470.icons.github).attachTo("root")\
+				.position(2.5; 2).width(16).height(16)
 			
 			return $svg.picture()
 			
 			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="tag")
 			
-			$svg.rect($svg.getTextWidth($text)+28; 20)\
+			$w:=$svg.getTextWidth($text)+28
+			$svg.width($w+1).height(21)
+			
+			$svg.rect($w; 20)\
 				.radius(4).position(0.5; 0.5)\
 				.stroke("blue").fill($dark ? "fuchsia" : "lavender").opacity($dark ? 0.8 : 0.3)
 			
 			$svg.image(This:C1470.icons.tag)
 			
-			$svg.line(21; 0; 21; 20).stroke("blue").opacity(0.5)
+			$svg.line(21; 0.5; 21; 20.5).stroke("blue").opacity(0.5)
 			
 			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 			
@@ -1975,13 +2193,16 @@ Function _renderLabelTag($what : Text; $text : Text; $style : Object) : Picture
 			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		: ($what="stash")
 			
-			$svg.rect($svg.getTextWidth($text)+28; 20)\
+			$w:=$svg.getTextWidth($text)+28
+			$svg.width($w+1).height(22)
+			
+			$svg.rect($w; 20)\
 				.radius(4).position(0.5; 0.5)\
 				.stroke("grey").fill($dark ? "darkgray" : "lightgray").opacity($dark ? 0.8 : 0.3)
 			
 			$svg.image(This:C1470.icons.stash)
 			
-			$svg.line(21; 0; 21; 20).stroke("grey").opacity(0.5)
+			$svg.line(21; 0.5; 21; 20.5).stroke("grey").opacity(0.5)
 			
 			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
 			
@@ -2283,12 +2504,19 @@ Function _loadScheme()
 	
 	var $key : Text
 	var $icon : Picture
-	For each ($key; ["github"; "tag"; "stash"])
+	For each ($key; ["tag"; "stash"])
 		
 		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".svg")).platformPath; $icon)
 		This:C1470.icons[Lowercase:C14($key)]:=$icon
 		
 	End for each 
+	
+	// GitHub octocat: load both variants explicitly. Media queries are ignored when an
+	// SVG is rasterised via READ PICTURE FILE, so the renderer picks the right one by scheme.
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/github.svg").platformPath; $icon)
+	This:C1470.icons.github:=$icon
+	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/github_dark.svg").platformPath; $icon)
+	This:C1470.icons.githubDark:=$icon
 	
 	For each ($key; ["Add"; "Remove"; "Edit"; "Rename"])
 		

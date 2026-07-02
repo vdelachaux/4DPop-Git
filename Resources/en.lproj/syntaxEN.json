@@ -24,10 +24,10 @@
 		},
 		"_gravatarRequest": {
 			"new()": {
-				"Syntax": "**.new**( *headers* : Object; *target* : 4D.Function )",
+				"Syntax": "**.new**( *info* : Object; *target* : 4D.Function )",
 				"Params": [
 					[
-						"headers",
+						"info",
 						"Object",
 						"->"
 					],
@@ -688,14 +688,20 @@
 			],
 			"Summary": ""
 		},
+		"body": {
+			"Syntax": "body : Text"
+		},
+		"hash": {
+			"Syntax": "hash : Text"
+		},
+		"mail": {
+			"Syntax": "mail : Text"
+		},
 		"target": {
 			"Syntax": "target : 4D.Function"
 		},
 		"headers": {
 			"Syntax": "headers : Object"
-		},
-		"body": {
-			"Syntax": "body : Text"
 		},
 		"method": {
 			"Syntax": "method : Text"

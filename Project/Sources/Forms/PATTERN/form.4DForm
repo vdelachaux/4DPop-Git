@@ -53,7 +53,7 @@
 					"top": 296,
 					"left": 473,
 					"width": 121,
-					"height": 22,
+					"height": 23,
 					"events": [
 						"onClick"
 					],
@@ -66,7 +66,7 @@
 					"top": 296,
 					"left": 372,
 					"width": 81,
-					"height": 22,
+					"height": 23,
 					"events": [
 						"onClick"
 					],
@@ -140,7 +140,7 @@
 					"top": 145,
 					"width": 256,
 					"height": 15,
-					"dataSource": "Replace string:C233(Get localized string:C991(\"filesMatches\"); \"{count}\"; String:C10(Form:C1466.preview.length))",
+					"dataSource": "Replace string:C233(Localized string:C991(\"filesMatches\"); \"{count}\"; String:C10(Form:C1466.preview.length))",
 					"contextMenu": "none",
 					"enterable": false,
 					"borderStyle": "none",
@@ -168,7 +168,7 @@
 	"method": "formMethod",
 	"width": 630,
 	"height": 338,
-	"geometryStamp": 23,
+	"geometryStamp": 24,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
