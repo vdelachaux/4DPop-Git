@@ -48,7 +48,7 @@
 					"top": 198,
 					"left": 389,
 					"width": 78,
-					"height": 22,
+					"height": 23,
 					"events": [
 						"onClick"
 					],
@@ -83,7 +83,7 @@
 					"top": 198,
 					"left": 291,
 					"width": 78,
-					"height": 22,
+					"height": 23,
 					"events": [
 						"onClick"
 					],
@@ -133,7 +133,7 @@
 					"left": 187,
 					"width": 22,
 					"height": 21,
-					"picture": "/RESOURCES/Images/Widget/branch.png"
+					"picture": "/RESOURCES/Images/Widget/branch.svg"
 				}
 			},
 			"entryOrder": [
@@ -144,7 +144,7 @@
 			]
 		}
 	],
-	"geometryStamp": 182,
+	"geometryStamp": 183,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

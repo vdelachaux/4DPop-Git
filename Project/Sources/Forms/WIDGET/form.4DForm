@@ -35,7 +35,7 @@
 					"left": 108,
 					"width": 16,
 					"height": 16,
-					"picture": "/RESOURCES/Images/Widget/swap.png",
+					"picture": "/RESOURCES/Images/Widget/swap.svg",
 					"pictureFormat": "scaled",
 					"visibility": "visible"
 				},
@@ -62,7 +62,7 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/Widget/git.png",
+					"icon": "/RESOURCES/Images/Widget/git.svg",
 					"style": "toolbar",
 					"visibility": "visible",
 					"iconFrames": 1
@@ -113,7 +113,7 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/Widget/branch.png",
+					"icon": "/RESOURCES/Images/Widget/branch.svg",
 					"textPlacement": "right",
 					"style": "custom"
 				},
@@ -126,7 +126,7 @@
 					"events": [
 						"onClick"
 					],
-					"icon": "/RESOURCES/Images/Widget/changes.png",
+					"icon": "/RESOURCES/Images/Widget/changes.svg",
 					"textPlacement": "right",
 					"style": "custom",
 					"class": "mini",
