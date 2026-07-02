@@ -1,5 +1,0 @@
-{
-	"commandLine": "/usr/local/Cellar/gh/2.33.0/bin/gh repo create test-repo --public",
-	"response": "",
-	"responseError": "GraphQL: Name already exists on this account (createRepository)\n"
-}

@@ -1,0 +1,9 @@
+{
+	"clients": {
+		"macOS": [
+			"GitHub Desktop.app",
+			"Fork.app",
+			"SourceTree.app"
+		]	
+	}
+}

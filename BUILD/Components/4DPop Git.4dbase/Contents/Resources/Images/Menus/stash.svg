@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="16px" height="16px" viewBox="0 0 24 24">
+  <defs>
+    <style>
+    :root { color-scheme: light dark; }
+    .st0 { stroke: #3a3a3c; }
+    @media (prefers-color-scheme: dark) {
+      .st0 { stroke: #f5f5f5; }
+    }
+    </style>
+  </defs>
+  <g class="st0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></g>
+</svg>

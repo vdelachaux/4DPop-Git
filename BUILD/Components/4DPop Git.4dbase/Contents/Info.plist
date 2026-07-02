@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+
+  <dict>
+    <key>CFBundleName</key>
+    <string>4DPop Git</string>
+    <key>CFBundleShortVersionString</key>
+    <string/>
+    <key>CFBundleLongVersionString</key>
+    <string>21.1 (191)</string>
+    <key>CFBundleGetInfoString</key>
+    <string>21.1</string>
+    <key>CFBundleDisplayName</key>
+    <string>4DPop Git</string>
+    <key>CFBundleVersion</key>
+    <string/>
+    <key>NSHumanReadableCopyright</key>
+    <string/>
+    <key>CFBundlePackageType</key>
+    <string>BNDL</string>
+  </dict>
+
+
+</plist>

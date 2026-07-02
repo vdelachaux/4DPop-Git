@@ -1,0 +1,8 @@
+{
+  "name": "Git",
+  "handler": "_4DPopGit",
+  "widget": {
+    "name": "WIDGET",
+    "width": 160
+  }
+}

@@ -77,27 +77,39 @@ If you are not using project dependencies (for example in older or binary databa
 
 Open the 4DPop **Git** entry to display the main window for the current project's working copy. From there you can review your changes, stage and commit them, and synchronize with your remotes.
 
+---- 
+
 ### Main window
 
 <img src="./Documentation/main.png">
+
+---- 
 
 ### Commit history
 
 <img src="./Documentation/commits.png">
 
+---- 
+
 ### Commit graph
 
 A full branch graph is drawn next to the history, in the style of dedicated Git clients such as Fork: each branch and merge gets its own colour-coded lane, and reference labels (branches, remotes with their GitHub icon, tags and stashes) are tinted to match the lane they belong to.
 
-<img src="./Documentation/commitGraph.png" width="518">
+<img src="./Documentation/commitGraph.png">
+
+---- 
 
 ### File menu
 
-<img src="./Documentation/fileMenu.png" width="518">
+<img src="./Documentation/fileMenu.png">
+
+---- 
 
 ### Open menu
 
-<img src="./Documentation/openMenu.png" width="184">
+<img src="./Documentation/openMenu.png" >
+
+---- 
 
 ## Scripting API
 
