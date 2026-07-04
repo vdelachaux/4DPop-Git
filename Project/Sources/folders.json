@@ -41,6 +41,8 @@
 	"📦 MAIN": {
 		"methods": [
 			"_gitLogRefresh",
+			"GIT CLOSE",
+			"GIT HISTORY",
 			"GIT MENU",
 			"GIT SETTINGS",
 			"GIT UPDATE",
@@ -53,6 +55,7 @@
 			"DEVICE ACTIVATION",
 			"EMBEDDED BACK",
 			"GIT",
+			"HISTORY",
 			"NEW BRANCH",
 			"PATTERN",
 			"PULL",
@@ -64,6 +67,7 @@
 			"_GIT_Controller",
 			"_gravatarRequest",
 			"_gravatars",
+			"_HISTORY_Controller",
 			"_PATTERN_Controller"
 		]
 	},

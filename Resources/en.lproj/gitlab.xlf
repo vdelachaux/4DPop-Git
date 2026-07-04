@@ -435,6 +435,52 @@ with 4D "{version}"</target>
           <target>Push failed.</target>
         </trans-unit>
       </group>
+      <group resname="HISTORY">
+        <trans-unit id="hIsT0ryW1nd0wT1tL3AaBg" resname="methodHistory">
+          <source>Git history</source>
+          <target>Git history</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryF1l3N0tF0undQaBg" resname="methodFileNotFound">
+          <source>The file for this method could not be found.</source>
+          <target>The file for this method could not be found.</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryC0mm1tt3rC0lAaBg" resname="committer">
+          <source>Author</source>
+          <target>Author</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryD4t3C0lumnHhAaBg" resname="date">
+          <source>Date</source>
+          <target>Date</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryHashC0lumnHhAaBg" resname="hash">
+          <source>Hash</source>
+          <target>Hash</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryChangesC0lHhAaBg" resname="changes">
+          <source>±</source>
+          <target>±</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryUnc0mm1tt3dHhAaBg" resname="uncommittedChanges">
+          <source>Uncommitted changes</source>
+          <target>Uncommitted changes</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryNewF1l3HhAaBgQw" resname="newFile">
+          <source>New file (uncommitted)</source>
+          <target>New file (uncommitted)</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryN0H1st0ryHhAaBg" resname="noHistoryYet">
+          <source>No history for this method yet.</source>
+          <target>No history for this method yet.</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryC0pyShaHhAaBgQw" resname="copySha">
+          <source>Copy SHA</source>
+          <target>Copy SHA</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryCr34t3P4tchHhAaBg" resname="createPatch">
+          <source>Create patch…</source>
+          <target>Create patch…</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
 

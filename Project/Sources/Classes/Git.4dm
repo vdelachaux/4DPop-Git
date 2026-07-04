@@ -1094,6 +1094,58 @@ Function getTarget($path : Text; $root : 4D:C1709.Folder) : Variant
 			//———————————————————————————————————————————
 	End case 
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Resolves a 4D internal method path (as returned by the `<method_path/>` macro tag)
+	/// to its source `.4dm` File in the host database. Handles project methods, classes,
+	/// database methods, triggers, form methods and form object methods.
+Function sourceFile($path : Text) : 4D:C1709.File
+	
+	var $root:=This:C1470.PACKAGE
+	var $rel : Text
+	
+	Case of 
+			
+			//———————————————————————————————————————————
+		: (Position:C15("[class]/"; $path)=1)
+			
+			$rel:="Classes/"+Delete string:C232($path; 1; 8)
+			
+			//———————————————————————————————————————————
+		: (Position:C15("[databaseMethod]/"; $path)=1)
+			
+			$rel:="DatabaseMethods/"+Delete string:C232($path; 1; 17)
+			
+			//———————————————————————————————————————————
+		: (Position:C15("[trigger]/"; $path)=1)
+			
+			$rel:="Triggers/"+Delete string:C232($path; 1; 10)
+			
+			//———————————————————————————————————————————
+		: (Position:C15("[projectForm]/"; $path)=1)
+			
+			$path:=Delete string:C232($path; 1; 14)
+			
+			If (Position:C15("/{formMethod}"; $path)>0)  // Form method
+				
+				$rel:="Forms/"+Replace string:C233($path; "/{formMethod}"; "/method")
+				
+			Else   // Form object method
+				
+				var $pos:=Position:C15("/"; $path)
+				$rel:="Forms/"+Substring:C12($path; 1; $pos)+"ObjectMethods/"+Substring:C12($path; $pos+1)
+				
+			End if 
+			
+			//———————————————————————————————————————————
+		Else   // Project method (no tag)
+			
+			$rel:="Methods/"+(Position:C15("[projectMethod]/"; $path)=1 ? Delete string:C232($path; 1; 16) : $path)
+			
+			//———————————————————————————————————————————
+	End case 
+	
+	return $root.file("Project/Sources/"+$rel+".4dm")
+	
 	//MARK:-[PRIVATE]
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 	// Search for the .git folder in the package or in a parent directory 

@@ -2,7 +2,6 @@
 // Runs in a background worker (CALL WORKER): fetch the full `git log` without
 // freezing the UI, cache the raw output, then ask the dialog to rebuild its
 // commit list (CALL FORM → Form.__DIALOG__.onCommitsRefreshed).
-
 #DECLARE($caller : Integer)
 
 var $git:=cs:C1710.Git.me

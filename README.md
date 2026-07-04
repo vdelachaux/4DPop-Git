@@ -32,6 +32,7 @@ It also exposes a scriptable API (the [`Git`](Documentation/Classes/Git.md) and 
 	- Stash: save, snapshot, pop
 	- Diff files with your external diff tool
 - Commit history with author avatars (Gravatar) and asynchronous, non-blocking loading.
+- **Per-method history from the code editor**: while editing a method or class, open the full Git history of *that* file — every commit that touched it (subject, author, date, short hash, ± line counts and rename tracking), the diff against the previous commit, plus a top entry for uncommitted changes (or a brand-new, not-yet-committed file).
 - **Fork-style commit graph**: colour-coded lanes for branches and merges, with reference labels — local branches, remotes (with their GitHub icon), tags and stashes — tinted to match their lane, in both light and dark mode.
 - **Publish to GitHub** in one step, using the GitHub CLI (`gh`) with device-flow authentication — no manual token handling.
 - Git LFS support.
@@ -108,6 +109,20 @@ A full branch graph is drawn next to the history, in the style of dedicated Git 
 ### Open menu
 
 <img src="./Documentation/openMenu.png" >
+
+---- 
+
+### Method history (from the code editor)
+
+A **Git history…** entry is added to the 4D method editor's macro menu. While editing a method or class, it opens a dedicated window showing the Git history of *that* file:
+
+- on the left, every commit that modified the file — commit subject, author, date, short hash, ± line counts, and rename tracking (`--follow`);
+- on the right, the diff of the selected commit against its parent;
+- a top entry for the file's **uncommitted changes**, or, for a brand-new file, its **not-yet-committed content**.
+
+The window opens a single instance per file (re-invoking brings it to front) and closes automatically when you close the corresponding method editor.
+
+<img src="./Documentation/history.png">
 
 ---- 
 

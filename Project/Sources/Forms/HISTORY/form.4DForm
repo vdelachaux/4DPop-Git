@@ -1,0 +1,245 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 640,
+	"windowMinHeight": 360,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"events": [
+		"onLoad",
+		"onClick",
+		"onUnload",
+		"onTimer",
+		"onResize",
+		"onSelectionChange"
+	],
+	"windowTitle": ":xliff:methodHistory",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"path": {
+					"type": "input",
+					"left": 52,
+					"top": 11,
+					"width": 1601,
+					"height": 17,
+					"dataSource": "Form:C1466.relativePath",
+					"class": "infos",
+					"sizingX": "grow",
+					"enterable": false,
+					"focusable": false,
+					"fontTheme": "main"
+				},
+				"commits": {
+					"type": "listbox",
+					"left": 0,
+					"top": 40,
+					"width": 438,
+					"height": 502,
+					"events": [
+						"onClick",
+						"onSelectionChange"
+					],
+					"listboxType": "collection",
+					"dataSource": "Form:C1466.commits",
+					"currentItemSource": "formGetInstance.commits.item",
+					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
+					"selectedItemsSource": "formGetInstance.commits.items",
+					"rowHeight": "23px",
+					"class": "flat",
+					"sizingY": "grow",
+					"bottom": 542,
+					"hideFocusRing": true,
+					"scrollbarHorizontal": "hidden",
+					"sizingX": "grow",
+					"resizingMode": "rightToLeft",
+					"showHeaders": true,
+					"verticalLineStroke": "automatic",
+					"staticColumnCount": 5,
+					"columns": [
+						{
+							"header": {
+								"name": "HeaderAuthor",
+								"text": ":xliff:committer"
+							},
+							"name": "author",
+							"dataSource": "This:C1470.author",
+							"dataSourceTypeHint": "text",
+							"resizable": true,
+							"enterable": false,
+							"width": 100,
+							"footer": {
+								"name": "FooterAuthor"
+							},
+							"minWidth": 100,
+							"maxWidth": 150
+						},
+						{
+							"header": {
+								"name": "HeaderStamp",
+								"text": ":xliff:date"
+							},
+							"name": "stamp",
+							"dataSource": "This:C1470.stamp",
+							"dataSourceTypeHint": "text",
+							"resizable": false,
+							"enterable": false,
+							"width": 120,
+							"footer": {
+								"name": "FooterStamp"
+							},
+							"textAlign": "center"
+						},
+						{
+							"header": {
+								"name": "HeaderStat",
+								"text": ":xliff:changes"
+							},
+							"name": "stat",
+							"dataSource": "This:C1470.stat",
+							"dataSourceTypeHint": "text",
+							"enterable": false,
+							"width": 80,
+							"textAlign": "center",
+							"footer": {
+								"name": "FooterStat"
+							},
+							"resizable": false
+						},
+						{
+							"header": {
+								"name": "HeaderShort",
+								"text": ":xliff:hash"
+							},
+							"name": "short",
+							"dataSource": "This:C1470.short",
+							"dataSourceTypeHint": "text",
+							"resizable": false,
+							"enterable": false,
+							"width": 80,
+							"footer": {
+								"name": "FooterShort"
+							},
+							"textAlign": "center"
+						},
+						{
+							"header": {
+								"name": "HeaderSubject",
+								"text": ":xliff:commit"
+							},
+							"name": "subject",
+							"dataSource": "This:C1470.subject",
+							"resizable": true,
+							"enterable": false,
+							"width": 122,
+							"footer": {
+								"name": "FooterSubject"
+							}
+						}
+					]
+				},
+				"verticalSeparatorLine": {
+					"type": "line",
+					"top": 40,
+					"left": 440,
+					"width": 0,
+					"height": 502,
+					"startPoint": "topLeft",
+					"sizingY": "grow",
+					"stroke": "automatic",
+					"bottom": 542
+				},
+				"diff": {
+					"type": "input",
+					"left": 448,
+					"top": 38,
+					"width": 435,
+					"height": 488,
+					"dataSource": "Form:C1466.diff",
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"scrollbarHorizontal": "automatic",
+					"scrollbarVertical": "automatic",
+					"styledText": true,
+					"storeDefaultStyle": true,
+					"class": "infos",
+					"enterable": false,
+					"hideFocusRing": true,
+					"contextMenu": "none"
+				},
+				"airBagList": {
+					"type": "button",
+					"top": 550,
+					"left": 2,
+					"width": 417,
+					"height": 15,
+					"events": [
+						"onClick"
+					],
+					"display": false,
+					"sizingY": "move"
+				},
+				"verticalSeparator": {
+					"type": "button",
+					"top": 33,
+					"left": 439,
+					"width": 3,
+					"height": 534,
+					"events": [],
+					"display": false,
+					"style": "regular",
+					"action": "automaticSplitter",
+					"sizingY": "grow"
+				},
+				"airBagDiff": {
+					"type": "button",
+					"top": 552,
+					"left": 540,
+					"width": 360,
+					"height": 15,
+					"events": [
+						"onClick"
+					],
+					"display": false,
+					"sizingY": "move",
+					"sizingX": "move"
+				},
+				"Line": {
+					"type": "line",
+					"top": 40,
+					"left": 0,
+					"width": 898,
+					"height": 0,
+					"sizingX": "grow"
+				},
+				"Static Picture1": {
+					"type": "picture",
+					"top": 3,
+					"left": 7,
+					"width": 32,
+					"height": 32,
+					"picture": "/RESOURCES/Images/git.svg"
+				}
+			}
+		}
+	],
+	"method": "formMethod",
+	"width": 900,
+	"height": 544,
+	"geometryStamp": 157,
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
+}
