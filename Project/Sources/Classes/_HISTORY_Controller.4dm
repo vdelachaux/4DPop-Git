@@ -53,11 +53,24 @@ Function handleEvents($e : cs:C1710.ui.evt)
 				// ==============================================
 			: (This:C1470.commits.catch($e; On Clicked:K2:4))
 				
-				If (Contextual click:C713)
-					
-					This:C1470._commitMenu()
-					
-				End if 
+				Case of 
+						
+						// ______________________________________________________
+					: ($e.code=On Clicked:K2:4)
+						
+						If (Contextual click:C713)
+							
+							This:C1470._commitMenu()
+							
+						End if 
+						
+						// ______________________________________________________
+					: ($e.code=On Selection Change:K2:29)
+						
+						This:C1470._showDiffFor(This:C1470.commits.item)
+						
+						// ______________________________________________________
+				End case 
 				
 				// ==============================================
 			: (This:C1470.commits.catch($e; On Selection Change:K2:29))
