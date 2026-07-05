@@ -480,6 +480,22 @@ with 4D "{version}"</target>
           <source>Create patch…</source>
           <target>Create patch…</target>
         </trans-unit>
+        <trans-unit id="hIsT0ryBl4m3S3l3ctHhAaBg" resname="selectLinesFirst">
+          <source>Select one or more lines first.</source>
+          <target>Select one or more lines first.</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryBl4m3NotFndHhAaBg" resname="selectionNotFound">
+          <source>The selection could not be located in the file.</source>
+          <target>The selection could not be located in the file.</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryBl4m3LastHhAaBgQw" resname="lastCommitForSelection">
+          <source>Last commit that modified the selection</source>
+          <target>Last commit that modified the selection</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryBl4m3NotCmtHhAaBg" resname="selectionNotCommitted">
+          <source>The selected line(s) are not committed yet.</source>
+          <target>The selected line(s) are not committed yet.</target>
+        </trans-unit>
       </group>
     </body>
   </file>

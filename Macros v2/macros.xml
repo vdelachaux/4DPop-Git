@@ -17,6 +17,13 @@
         <text><method>GIT HISTORY("<method_path/>")</method></text>
     </macro>
 
+    <macro name="Last commit for selection…"
+        in_menu="true"
+        type_ahead="false"
+        version="2">
+        <text><method>GIT BLAME("<method_path/>")</method></text>
+    </macro>
+
     <macro name=""
         in_menu="false"
         type_ahead="false"

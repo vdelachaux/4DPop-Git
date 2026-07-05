@@ -41,6 +41,7 @@
 	"📦 MAIN": {
 		"methods": [
 			"_gitLogRefresh",
+			"GIT BLAME",
 			"GIT CLOSE",
 			"GIT HISTORY",
 			"GIT MENU",

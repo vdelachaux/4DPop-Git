@@ -33,6 +33,7 @@ It also exposes a scriptable API (the [`Git`](Documentation/Classes/Git.md) and 
 	- Diff files with your external diff tool
 - Commit history with author avatars (Gravatar) and asynchronous, non-blocking loading.
 - **Per-method history from the code editor**: while editing a method or class, open the full Git history of *that* file — every commit that touched it (subject, author, date, short hash, ± line counts and rename tracking), the diff against the previous commit, plus a top entry for uncommitted changes (or a brand-new, not-yet-committed file).
+- **Blame a selection**: select one or more lines of a method in the code editor and instantly see the last commit that modified them.
 - **Fork-style commit graph**: colour-coded lanes for branches and merges, with reference labels — local branches, remotes (with their GitHub icon), tags and stashes — tinted to match their lane, in both light and dark mode.
 - **Publish to GitHub** in one step, using the GitHub CLI (`gh`) with device-flow authentication — no manual token handling.
 - Git LFS support.
@@ -123,6 +124,12 @@ A **Git history…** entry is added to the 4D method editor's macro menu. While 
 The window opens a single instance per file (re-invoking brings it to front) and closes automatically when you close the corresponding method editor.
 
 <img src="./Documentation/history.png">
+
+---- 
+
+### Last commit for a selection
+
+Select one or more lines of a method or class in the code editor and run the **Last commit for selection…** macro: 4DPop Git reports the most recent commit that modified those lines — short hash, author, date and subject — using `git blame` behind the scenes.
 
 ---- 
 
