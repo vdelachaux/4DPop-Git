@@ -1,27 +1,45 @@
 {
-	"_method_": {},
+	"_method_": {
+		"GIT BLAME": {
+			"Syntax": "**GIT BLAME**( *path* : Text )",
+			"Params": [
+				[
+					"path",
+					"Text",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"GIT HISTORY": {
+			"Syntax": "**GIT HISTORY**( *target* : Variant; *run* : Boolean )",
+			"Params": [
+				[
+					"target",
+					"Variant",
+					"->"
+				],
+				[
+					"run",
+					"Boolean",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"GIT CLOSE": {
+			"Syntax": "**GIT CLOSE**( *target* : Text )",
+			"Params": [
+				[
+					"target",
+					"Text",
+					"->"
+				]
+			],
+			"Summary": ""
+		}
+	},
 	"cs.git": {
-		"_WINDOW_FRAME_Controller": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
-		"_commitsCache": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
-		"_GIT_Controller": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
 		"_gravatarRequest": {
 			"new()": {
 				"Syntax": "**.new**( *info* : Object; *target* : 4D.Function )",
@@ -40,7 +58,42 @@
 				"Summary": ""
 			}
 		},
+		"_GIT_Controller": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
 		"_WIDGET_Controller": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"_WINDOW_FRAME_Controller": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"_commitsCache": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"_PATTERN_Controller": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"_HISTORY_Controller": {
 			"new()": {
 				"Syntax": "**.new**()",
 				"Params": [],
@@ -73,152 +126,58 @@
 				],
 				"Summary": ""
 			}
-		},
-		"_PATTERN_Controller": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
 		}
 	},
-	"_WINDOW_FRAME_Controller": {
-		"miniaturiseOrNot()": {
-			"Syntax": "**.miniaturiseOrNot**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"get zoomDisabled()": {
-			"Syntax": "**.get zoomDisabled**() : Boolean",
+	"_gravatarRequest": {
+		"onError()": {
+			"Syntax": "**.onError**( *request* : 4D.HTTPRequest; *event* : Object )",
 			"Params": [
 				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"get reduceDisabled()": {
-			"Syntax": "**.get reduceDisabled**() : Boolean",
-			"Params": [
+					"request",
+					"4D.HTTPRequest",
+					"->"
+				],
 				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"get closeDisabled()": {
-			"Syntax": "**.get closeDisabled**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"get documentModified()": {
-			"Syntax": "**.get documentModified**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"onLoad()": {
-			"Syntax": "**.onLoad**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"handleEvents()": {
-			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
-			"Params": [
-				[
-					"e",
-					"cs.ui.evt",
+					"event",
+					"Object",
 					"->"
 				]
 			],
 			"Summary": ""
 		},
-		"update()": {
-			"Syntax": "**.update**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"init()": {
-			"Syntax": "**.init**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"actionOnDoubleClick": {
-			"Syntax": "actionOnDoubleClick : Text"
-		},
-		"isModal": {
-			"Syntax": "isModal : Boolean"
-		},
-		"close": {
-			"Syntax": "close : cs.ui.button"
-		},
-		"zoom": {
-			"Syntax": "zoom : cs.ui.button"
-		},
-		"options": {
-			"Syntax": "options : Integer"
-		},
-		"drag": {
-			"Syntax": "drag : cs.ui.button"
-		},
-		"toBeInitialized": {
-			"Syntax": "toBeInitialized : Boolean"
-		},
-		"reduce": {
-			"Syntax": "reduce : cs.ui.button"
-		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
-		},
-		"form": {
-			"Syntax": "form : cs.ui.form"
-		}
-	},
-	"_commitsCache": {
-		"abortLoading()": {
-			"Syntax": "**.abortLoading**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"setLoading()": {
-			"Syntax": "**.setLoading**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"store()": {
-			"Syntax": "**.store**( *raw* : Text )",
+		"onResponse()": {
+			"Syntax": "**.onResponse**( *request* : 4D.HTTPRequest; *event* : Object )",
 			"Params": [
 				[
-					"raw",
-					"Text",
+					"request",
+					"4D.HTTPRequest",
+					"->"
+				],
+				[
+					"event",
+					"Object",
 					"->"
 				]
 			],
 			"Summary": ""
 		},
-		"loading": {
-			"Syntax": "loading : Boolean"
+		"body": {
+			"Syntax": "body : Text"
 		},
-		"version": {
-			"Syntax": "version : Integer"
+		"hash": {
+			"Syntax": "hash : Text"
 		},
-		"raw": {
-			"Syntax": "raw : Text"
+		"mail": {
+			"Syntax": "mail : Text"
+		},
+		"target": {
+			"Syntax": "target : 4D.Function"
+		},
+		"headers": {
+			"Syntax": "headers : Object"
+		},
+		"method": {
+			"Syntax": "method : Text"
 		}
 	},
 	"_GIT_Controller": {
@@ -655,58 +614,6 @@
 			"Syntax": "currentPath : cs.ui.input"
 		}
 	},
-	"_gravatarRequest": {
-		"onError()": {
-			"Syntax": "**.onError**( *request* : 4D.HTTPRequest; *event* : Object )",
-			"Params": [
-				[
-					"request",
-					"4D.HTTPRequest",
-					"->"
-				],
-				[
-					"event",
-					"Object",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"onResponse()": {
-			"Syntax": "**.onResponse**( *request* : 4D.HTTPRequest; *event* : Object )",
-			"Params": [
-				[
-					"request",
-					"4D.HTTPRequest",
-					"->"
-				],
-				[
-					"event",
-					"Object",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"body": {
-			"Syntax": "body : Text"
-		},
-		"hash": {
-			"Syntax": "hash : Text"
-		},
-		"mail": {
-			"Syntax": "mail : Text"
-		},
-		"target": {
-			"Syntax": "target : 4D.Function"
-		},
-		"headers": {
-			"Syntax": "headers : Object"
-		},
-		"method": {
-			"Syntax": "method : Text"
-		}
-	},
 	"_WIDGET_Controller": {
 		"onLoad()": {
 			"Syntax": "**.onLoad**()",
@@ -808,6 +715,241 @@
 		},
 		"alpha": {
 			"Syntax": "alpha : Boolean"
+		}
+	},
+	"_WINDOW_FRAME_Controller": {
+		"miniaturiseOrNot()": {
+			"Syntax": "**.miniaturiseOrNot**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"get zoomDisabled()": {
+			"Syntax": "**.get zoomDisabled**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get reduceDisabled()": {
+			"Syntax": "**.get reduceDisabled**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get closeDisabled()": {
+			"Syntax": "**.get closeDisabled**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get documentModified()": {
+			"Syntax": "**.get documentModified**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"handleEvents()": {
+			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+			"Params": [
+				[
+					"e",
+					"cs.ui.evt",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"update()": {
+			"Syntax": "**.update**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"actionOnDoubleClick": {
+			"Syntax": "actionOnDoubleClick : Text"
+		},
+		"isModal": {
+			"Syntax": "isModal : Boolean"
+		},
+		"close": {
+			"Syntax": "close : cs.ui.button"
+		},
+		"zoom": {
+			"Syntax": "zoom : cs.ui.button"
+		},
+		"options": {
+			"Syntax": "options : Integer"
+		},
+		"drag": {
+			"Syntax": "drag : cs.ui.button"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
+		},
+		"reduce": {
+			"Syntax": "reduce : cs.ui.button"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		},
+		"form": {
+			"Syntax": "form : cs.ui.form"
+		}
+	},
+	"_commitsCache": {
+		"abortLoading()": {
+			"Syntax": "**.abortLoading**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"setLoading()": {
+			"Syntax": "**.setLoading**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"store()": {
+			"Syntax": "**.store**( *raw* : Text )",
+			"Params": [
+				[
+					"raw",
+					"Text",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"loading": {
+			"Syntax": "loading : Boolean"
+		},
+		"version": {
+			"Syntax": "version : Integer"
+		},
+		"raw": {
+			"Syntax": "raw : Text"
+		}
+	},
+	"_PATTERN_Controller": {
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"handleEvents()": {
+			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+			"Params": [
+				[
+					"e",
+					"cs.ui.evt",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"update()": {
+			"Syntax": "**.update**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"help": {
+			"Syntax": "help : cs.ui.button"
+		},
+		"cancel": {
+			"Syntax": "cancel : cs.ui.button"
+		},
+		"pattern": {
+			"Syntax": "pattern : cs.ui.input"
+		},
+		"done": {
+			"Syntax": "done : cs.ui.button"
+		},
+		"form": {
+			"Syntax": "form : cs.ui.form"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
+		},
+		"preview": {
+			"Syntax": "preview : cs.ui.listbox"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		}
+	},
+	"_HISTORY_Controller": {
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"handleEvents()": {
+			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+			"Params": [
+				[
+					"e",
+					"cs.ui.evt",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"relativePath": {
+			"Syntax": "relativePath : Text"
+		},
+		"diff": {
+			"Syntax": "diff : cs.ui.input"
+		},
+		"commits": {
+			"Syntax": "commits : cs.ui.listbox"
+		},
+		"form": {
+			"Syntax": "form : cs.ui.form"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		},
+		"Git": {
+			"Syntax": "Git : cs.git.Git"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
 		}
 	},
 	"gh": {
@@ -1012,12 +1154,28 @@
 		}
 	},
 	"Git": {
-		"installLFS()": {
-			"Syntax": "**.installLFS**() : Boolean",
+		"set token()": {
+			"Syntax": "**.set token**( *token* : Text )",
 			"Params": [
 				[
+					"token",
+					"Text",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"sourceFile()": {
+			"Syntax": "**.sourceFile**( *path* : Text ) : 4D.File",
+			"Params": [
+				[
+					"path",
+					"Text",
+					"->"
+				],
+				[
 					"",
-					"Boolean",
+					"4D.File",
 					"<-"
 				]
 			],
@@ -1484,6 +1642,17 @@
 			],
 			"Summary": ""
 		},
+		"installLFS()": {
+			"Syntax": "**.installLFS**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
 		"getVersion()": {
 			"Syntax": "**.getVersion**( *type* : Text ) : Text",
 			"Params": [
@@ -1563,17 +1732,6 @@
 			],
 			"Summary": ""
 		},
-		"set token()": {
-			"Syntax": "**.set token**( *token* : Text )",
-			"Params": [
-				[
-					"token",
-					"Text",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
 		"DEBUG": {
 			"Syntax": "DEBUG : Boolean"
 		},
@@ -1645,58 +1803,6 @@
 		},
 		"error": {
 			"Syntax": "error : Text"
-		}
-	},
-	"_PATTERN_Controller": {
-		"onLoad()": {
-			"Syntax": "**.onLoad**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"handleEvents()": {
-			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
-			"Params": [
-				[
-					"e",
-					"cs.ui.evt",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"update()": {
-			"Syntax": "**.update**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"init()": {
-			"Syntax": "**.init**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"help": {
-			"Syntax": "help : cs.ui.button"
-		},
-		"cancel": {
-			"Syntax": "cancel : cs.ui.button"
-		},
-		"pattern": {
-			"Syntax": "pattern : cs.ui.input"
-		},
-		"done": {
-			"Syntax": "done : cs.ui.button"
-		},
-		"form": {
-			"Syntax": "form : cs.ui.form"
-		},
-		"toBeInitialized": {
-			"Syntax": "toBeInitialized : Boolean"
-		},
-		"preview": {
-			"Syntax": "preview : cs.ui.listbox"
-		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
 		}
 	}
 }

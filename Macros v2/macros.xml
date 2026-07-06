@@ -24,7 +24,7 @@
         <text><method>GIT BLAME("<method_path/>")</method></text>
     </macro>
 
-    <macro name=""
+    <macro name="-"
         in_menu="false"
         type_ahead="false"
         method_event="on_close"
