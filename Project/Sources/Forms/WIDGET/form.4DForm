@@ -89,7 +89,7 @@
 						"onClick"
 					],
 					"style": "custom",
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagTodo.png"
+					"icon": "/RESOURCES/Images/TagTodo.png"
 				},
 				"fixme": {
 					"type": "button",
@@ -101,7 +101,7 @@
 						"onClick"
 					],
 					"style": "custom",
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/development.4dbase/Resources/images/methodEditor/prototypeList/TagFixMe.png"
+					"icon": "/RESOURCES/Images/TagFixMe.png"
 				},
 				"branch": {
 					"type": "button",
@@ -148,7 +148,7 @@
 			}
 		}
 	],
-	"geometryStamp": 935,
+	"geometryStamp": 937,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

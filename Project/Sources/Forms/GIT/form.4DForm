@@ -527,7 +527,7 @@
 					"shortcutKey": "s",
 					"sizingX": "move",
 					"visibility": "hidden",
-					"icon": "/.PRODUCT_RESOURCES/Internal Components/runtime.4dbase/Contents/Resources/images/common/more.png",
+					"icon": "/RESOURCES/Images/more.png",
 					"iconFrames": 4,
 					"style": "custom"
 				},
@@ -1079,5 +1079,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2515
+	"geometryStamp": 2517
 }

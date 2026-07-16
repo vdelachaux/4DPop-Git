@@ -75,13 +75,13 @@
 					"left": 68,
 					"width": 64,
 					"height": 64,
-					"picture": "/.PRODUCT_RESOURCES/Images/alert.png",
+					"picture": "/RESOURCES/Images/alert.png",
 					"pictureFormat": "scaled"
 				}
 			}
 		}
 	],
-	"geometryStamp": 152,
+	"geometryStamp": 153,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

@@ -198,7 +198,7 @@
 					"width": 64,
 					"height": 64,
 					"pictureFormat": "scaled",
-					"picture": "/.PRODUCT_RESOURCES/Images/alert.png"
+					"picture": "/RESOURCES/Images/alert.png"
 				},
 				"badge": {
 					"type": "picture",
@@ -217,7 +217,7 @@
 		"version": "1",
 		"kind": "form"
 	},
-	"geometryStamp": 35,
+	"geometryStamp": 36,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
