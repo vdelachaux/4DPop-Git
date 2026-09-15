@@ -113,6 +113,16 @@ A full branch graph is drawn next to the history, in the style of dedicated Git 
 
 ---- 
 
+## Method Editor macros
+
+Installing the component automatically registers macros in 4D's Method Editor contextual menu (Design > Method > right-click) — no extra setup needed. They only appear while editing a method or class file:
+
+- **Git history…** — opens the full Git history of the file being edited.
+- **Last commit for selection…** — reports the last commit that touched the selected line(s).
+- A third, hidden macro (not shown in the menu) fires when the method editor closes, to clean up the per-file history window's state.
+
+---- 
+
 ### Method history (from the code editor)
 
 A **Git history…** entry is added to the 4D method editor's macro menu. While editing a method or class, it opens a dedicated window showing the Git history of *that* file:
