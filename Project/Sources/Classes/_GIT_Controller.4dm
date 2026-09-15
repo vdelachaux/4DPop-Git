@@ -58,7 +58,7 @@ property windowFrame : cs:C1710.ui.subform
 property icons : Object
 
 property _tagCache : Object
-property _commitsVersion : Integer
+property _commitsVersion : Integer:=0
 
 property _worker:="_gitLogRefresh"
 
@@ -1563,7 +1563,9 @@ Function updateCommits()
 	
 	var $cache:=cs:C1710._commitsCache.me
 	
-	If ($cache.version>0)
+	// Rebuild only when the cached log is newer than the one already displayed
+	// (avoids the costly graph/SVG rebuild on every activation/page change)
+	If ($cache.version>This:C1470._commitsVersion)
 		
 		This:C1470._buildCommits($cache.raw)
 		This:C1470._commitsVersion:=$cache.version
@@ -2504,23 +2506,28 @@ Function _loadScheme()
 	
 	var $key : Text
 	var $icon : Picture
+	var $dark:=This:C1470.form.darkScheme ? This:C1470.form._darkExtension : ""
 	For each ($key; ["tag"; "stash"])
 		
-		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Main/"+$key+".svg")).platformPath; $icon)
+		var $file:=File:C1566("/RESOURCES/Images/Main/"+$key+$dark+".svg")
+		READ PICTURE FILE:C678($file.platformPath; $icon)
 		This:C1470.icons[Lowercase:C14($key)]:=$icon
 		
 	End for each 
 	
 	// GitHub octocat: load both variants explicitly. Media queries are ignored when an
 	// SVG is rasterised via READ PICTURE FILE, so the renderer picks the right one by scheme.
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/github.svg").platformPath; $icon)
+	$file:=File:C1566("/RESOURCES/Images/Main/github.svg")
+	READ PICTURE FILE:C678($file.platformPath; $icon)
 	This:C1470.icons.github:=$icon
-	READ PICTURE FILE:C678(File:C1566("/RESOURCES/Images/Main/github_dark.svg").platformPath; $icon)
+	$file:=File:C1566("/RESOURCES/Images/Main/github_dark.svg")
+	READ PICTURE FILE:C678($file.platformPath; $icon)
 	This:C1470.icons.githubDark:=$icon
 	
 	For each ($key; ["Add"; "Remove"; "Edit"; "Rename"])
 		
-		READ PICTURE FILE:C678(File:C1566(This:C1470.form.resourceFromScheme("/RESOURCES/Images/Status/"+$key+".svg")).platformPath; $icon)
+		$file:=File:C1566("/RESOURCES/Images/Status/"+$key+$dark+".svg")
+		READ PICTURE FILE:C678($file.platformPath; $icon)
 		This:C1470.icons[Lowercase:C14($key)]:=$icon
 		
 	End for each 

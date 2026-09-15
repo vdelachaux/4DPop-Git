@@ -27,6 +27,7 @@ Preferences/
 
 #Settings/
 !Settings/buildApp.4DSettings
+Settings/webUsageMetrics.json
 
 userPreferences.*/
 
