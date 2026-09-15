@@ -1600,7 +1600,9 @@ Function _kickCommitsRefresh()
 	
 	var $cache:=cs:C1710._commitsCache.me
 	
-	If ($cache.loading)
+	// A "loading" flag stuck for too long (e.g. the dialog that kicked it was
+	// closed before the worker finished) must not block refreshes forever
+	If ($cache.loading) && (Not:C34($cache.isLoadingStale()))
 		
 		return 
 		

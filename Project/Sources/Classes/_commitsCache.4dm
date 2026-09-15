@@ -8,6 +8,7 @@ property raw : Text:=""
 property builtCommits : Collection
 property version : Integer:=0
 property loading : Boolean:=False
+property loadingSince : Real:=0
 
 shared singleton Class constructor
 	
@@ -41,10 +42,18 @@ shared Function store($raw : Text; $commits : Collection)
 	This:C1470.loading:=False
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// True when a refresh is flagged loading but has been stuck for too long (e.g.
+	// the dialog that kicked it was closed before the worker could clear the flag)
+Function isLoadingStale() : Boolean
+	
+	return This:C1470.loading && ((Milliseconds:C459-This:C1470.loadingSince)>120000)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Flag a background refresh as started (prevents concurrent workers)
 shared Function setLoading()
 	
 	This:C1470.loading:=True
+	This:C1470.loadingSince:=Milliseconds:C459
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Clear the loading flag without bumping the version (refresh failed/aborted/unchanged)
