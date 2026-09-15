@@ -876,6 +876,17 @@
 		}
 	},
 	"_commitsCache": {
+		"isLoadingStale()": {
+			"Syntax": "**.isLoadingStale**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
 		"store()": {
 			"Syntax": "**.store**( *raw* : Text; *commits* : Collection )",
 			"Params": [
@@ -923,6 +934,9 @@
 		},
 		"version": {
 			"Syntax": "version : Integer"
+		},
+		"loadingSince": {
+			"Syntax": "loadingSince : Real"
 		},
 		"builtCommits": {
 			"Syntax": "builtCommits : Collection"
