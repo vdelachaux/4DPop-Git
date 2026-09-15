@@ -301,10 +301,7 @@ avec 4D "{version}"</target>
           <source>Modified file</source>
           <target>Fichier modifié</target>
         </trans-unit>
-        <trans-unit id="zKOZOTTl853p25Dr_P9mZw" resname="newFile">
-          <source>New file</source>
-          <target>Nouveau fichier</target>
-        </trans-unit><trans-unit id="+za1OrqoL57PkN28OtwcrA" resname="fileRemoved">
+        <trans-unit id="+za1OrqoL57PkN28OtwcrA" resname="fileRemoved">
           <source>File deleted</source>
           <target>Fichier supprimé</target>
         </trans-unit>

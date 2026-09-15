@@ -51,6 +51,28 @@ Function preload($mails : Collection)
 	End for each 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Extract author mails from a raw `git log` output, then preload them (see preload).
+	// Meant to be called from a background worker, so the HTTP wait never runs on a form process.
+Function preloadFromLog($raw : Text)
+	
+	var $mails:=[]
+	var $line : Text
+	
+	For each ($line; Split string:C1554($raw; "\n"; sk ignore empty strings:K86:1))
+		
+		var $c:=Split string:C1554($line; "|")
+		
+		If ($c.length>=8)
+			
+			$mails.push($c[7])
+			
+		End if 
+		
+	End for each 
+	
+	This:C1470.preload($mails)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Store a fetched picture (called from the async _gravatarRequest callbacks)
 shared Function store($hash : Text; $picture : Picture)
 	

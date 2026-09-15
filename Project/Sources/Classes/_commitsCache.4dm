@@ -1,27 +1,43 @@
-// Shared singleton cache of the raw `git log` output used to build the commit
-// list. Persists across dialog re-opens and is refreshed in the background by
-// the _gitLogRefresh worker, so the UI shows the cached list instantly and the
-// slow `git log` never freezes the interface.
+// Shared singleton cache of the built commit list (raw `git log` output +
+// ready-to-display collection with graph/label pictures already computed).
+// Both are built OFF the form process (in the _gitLogRefresh worker), so the
+// UI shows the cached list instantly and neither `git log` nor the CPU-heavy
+// graph/SVG rendering ever freezes the interface.
 
 property raw : Text:=""
+property builtCommits : Collection
 property version : Integer:=0
 property loading : Boolean:=False
 
 shared singleton Class constructor
 	
+	This:C1470.builtCommits:=New shared collection:C1527
+	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Store a freshly fetched git log output and bump the version counter
-shared Function store($raw : Text)
+	// True when $raw differs from the cached log (cheap check, run BEFORE the
+	// costly graph/SVG build so an unchanged periodic poll can skip it entirely)
+Function hasChanged($raw : Text) : Boolean
 	
-	// Bump the version only when the log actually changed, so consumers rebuild
-	// the list only when needed (the periodic refresh polls without any change).
-	If ($raw#This:C1470.raw)
-		
-		This:C1470.raw:=$raw
-		This:C1470.version:=This:C1470.version+1
-		
-	End if 
+	return ($raw#This:C1470.raw)
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Store a freshly built commit list (raw log + ready collection) and bump the version
+shared Function store($raw : Text; $commits : Collection)
+	
+	This:C1470.raw:=$raw
+	
+	// A plain (non-shared) collection can't be assigned/pushed as-is into a shared
+	// object — each item must be OB Copy'd into THIS singleton's shared group first
+	This:C1470.builtCommits:=New shared collection:C1527
+	
+	var $item : Object
+	For each ($item; $commits)
+		
+		This:C1470.builtCommits.push(OB Copy:C1225($item; ck shared:K85:29; This:C1470))
+		
+	End for each 
+	
+	This:C1470.version:=This:C1470.version+1
 	This:C1470.loading:=False
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -31,7 +47,7 @@ shared Function setLoading()
 	This:C1470.loading:=True
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Clear the loading flag without bumping the version (refresh failed/aborted)
+	// Clear the loading flag without bumping the version (refresh failed/aborted/unchanged)
 shared Function abortLoading()
 	
 	This:C1470.loading:=False

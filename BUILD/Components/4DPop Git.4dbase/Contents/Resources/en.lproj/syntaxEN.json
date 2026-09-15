@@ -58,6 +58,19 @@
 				"Summary": ""
 			}
 		},
+		"_commitsBuilder": {
+			"new()": {
+				"Syntax": "**.new**( *darkScheme* : Boolean )",
+				"Params": [
+					[
+						"darkScheme",
+						"Boolean",
+						"->"
+					]
+				],
+				"Summary": ""
+			}
+		},
 		"_GIT_Controller": {
 			"new()": {
 				"Syntax": "**.new**()",
@@ -180,6 +193,61 @@
 			"Syntax": "method : Text"
 		}
 	},
+	"_commitsBuilder": {
+		"getLabelTag()": {
+			"Syntax": "**.getLabelTag**( *what* : Text; *text* : Text; *style* : Object ) : Picture",
+			"Params": [
+				[
+					"what",
+					"Text",
+					"->"
+				],
+				[
+					"text",
+					"Text",
+					"->"
+				],
+				[
+					"style",
+					"Object",
+					"->"
+				],
+				[
+					"",
+					"Picture",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"build()": {
+			"Syntax": "**.build**( *raw* : Text; *git* : cs.git.Git ) : Collection",
+			"Params": [
+				[
+					"raw",
+					"Text",
+					"->"
+				],
+				[
+					"git",
+					"cs.git.Git",
+					"->"
+				],
+				[
+					"",
+					"Collection",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"icons": {
+			"Syntax": "icons : Object"
+		},
+		"darkScheme": {
+			"Syntax": "darkScheme : Boolean"
+		}
+	},
 	"_GIT_Controller": {
 		"onDialogRequest()": {
 			"Syntax": "**.onDialogRequest**( *data* : Object )",
@@ -263,32 +331,6 @@
 					"page",
 					"Integer",
 					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"getLabelTag()": {
-			"Syntax": "**.getLabelTag**( *what* : Text; *text* : Text; *style* : Object ) : Picture",
-			"Params": [
-				[
-					"what",
-					"Text",
-					"->"
-				],
-				[
-					"text",
-					"Text",
-					"->"
-				],
-				[
-					"style",
-					"Object",
-					"->"
-				],
-				[
-					"",
-					"Picture",
-					"<-"
 				]
 			],
 			"Summary": ""
@@ -430,6 +472,9 @@
 		"authorAvatar": {
 			"Syntax": "authorAvatar : cs.ui.picture"
 		},
+		"historySpinner": {
+			"Syntax": "historySpinner : cs.ui.static"
+		},
 		"title": {
 			"Syntax": "title : cs.ui.static"
 		},
@@ -514,12 +559,6 @@
 		"groupDiff": {
 			"Syntax": "groupDiff : cs.ui.group"
 		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
-		},
-		"toolbarButtons": {
-			"Syntax": "toolbarButtons : cs.ui.group"
-		},
 		"fetch": {
 			"Syntax": "fetch : cs.ui.button"
 		},
@@ -528,6 +567,12 @@
 		},
 		"detail": {
 			"Syntax": "detail : cs.ui.group"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		},
+		"toolbarButtons": {
+			"Syntax": "toolbarButtons : cs.ui.group"
 		},
 		"fileMore": {
 			"Syntax": "fileMore : cs.ui.button"
@@ -540,6 +585,9 @@
 		},
 		"pushDialog": {
 			"Syntax": "pushDialog : cs.ui.onBoard"
+		},
+		"loading": {
+			"Syntax": "loading : cs.ui.group"
 		},
 		"MOVED_FILE": {
 			"Syntax": "MOVED_FILE : Text"
@@ -609,6 +657,9 @@
 		},
 		"MODIFIED_FILE": {
 			"Syntax": "MODIFIED_FILE : Text"
+		},
+		"historyLoadingLabel": {
+			"Syntax": "historyLoadingLabel : cs.ui.static"
 		},
 		"currentPath": {
 			"Syntax": "currentPath : cs.ui.input"
@@ -825,6 +876,22 @@
 		}
 	},
 	"_commitsCache": {
+		"store()": {
+			"Syntax": "**.store**( *raw* : Text; *commits* : Collection )",
+			"Params": [
+				[
+					"raw",
+					"Text",
+					"->"
+				],
+				[
+					"commits",
+					"Collection",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
 		"abortLoading()": {
 			"Syntax": "**.abortLoading**()",
 			"Params": [],
@@ -835,13 +902,18 @@
 			"Params": [],
 			"Summary": ""
 		},
-		"store()": {
-			"Syntax": "**.store**( *raw* : Text )",
+		"hasChanged()": {
+			"Syntax": "**.hasChanged**( *raw* : Text ) : Boolean",
 			"Params": [
 				[
 					"raw",
 					"Text",
 					"->"
+				],
+				[
+					"",
+					"Boolean",
+					"<-"
 				]
 			],
 			"Summary": ""
@@ -851,6 +923,9 @@
 		},
 		"version": {
 			"Syntax": "version : Integer"
+		},
+		"builtCommits": {
+			"Syntax": "builtCommits : Collection"
 		},
 		"raw": {
 			"Syntax": "raw : Text"
@@ -1131,6 +1206,17 @@
 				[
 					"mails",
 					"Collection",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"preloadFromLog()": {
+			"Syntax": "**.preloadFromLog**( *raw* : Text )",
+			"Params": [
+				[
+					"raw",
+					"Text",
 					"->"
 				]
 			],

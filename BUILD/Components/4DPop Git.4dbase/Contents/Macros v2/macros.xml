@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE macros SYSTEM "http://www.4d.com/dtd/2007/macros.dtd" >
+
+<!--
+    4DPop Git
+    vincent@de-lachaux.net
+-->
+
+<macros>
+
+    <macro name="-" in_menu="true" type_ahead="false"><text/></macro>
+
+    <macro name="Git history…"
+        in_menu="true"
+        type_ahead="false"
+        version="2">
+        <text><method>GIT HISTORY("<method_path/>")</method></text>
+    </macro>
+
+    <macro name="Last commit for selection…"
+        in_menu="true"
+        type_ahead="false"
+        version="2">
+        <text><method>GIT BLAME("<method_path/>")</method></text>
+    </macro>
+
+    <macro name="-"
+        in_menu="false"
+        type_ahead="false"
+        method_event="on_close"
+        version="2">
+        <text><method>GIT CLOSE("<method_path/>")</method></text>
+    </macro>
+
+</macros>

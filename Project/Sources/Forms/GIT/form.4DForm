@@ -919,9 +919,9 @@
 				"commits": {
 					"type": "listbox",
 					"left": 0,
-					"top": 62,
+					"top": 55,
 					"width": 1123,
-					"height": 456,
+					"height": 463,
 					"events": [
 						"onSelectionChange"
 					],
@@ -1019,6 +1019,18 @@
 						}
 					]
 				},
+				"historyLoadingLabel": {
+					"type": "text",
+					"text": "Loading commit history…",
+					"top": 298,
+					"left": 378,
+					"width": 366,
+					"height": 22,
+					"textAlign": "center",
+					"stroke": "#c0c0c0",
+					"fontSize": 18,
+					"visibility": "hidden"
+				},
 				"commitsBottomSeparatorLine": {
 					"type": "line",
 					"top": 519,
@@ -1064,6 +1076,15 @@
 					"right": 479,
 					"bottom": 910,
 					"sizingY": "grow"
+				},
+				"historySpinner": {
+					"type": "picture",
+					"top": 240,
+					"left": 538,
+					"width": 48,
+					"height": 48,
+					"picture": "/RESOURCES/Images/octocat-spinner-128.gif",
+					"pictureFormat": "scaled"
 				}
 			}
 		}
@@ -1079,5 +1100,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2517
+	"geometryStamp": 2560
 }

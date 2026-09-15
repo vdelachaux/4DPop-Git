@@ -27,17 +27,12 @@ property MODIFIED_FILE:=Localized string:C991("modifiedFile")
 property DELETED_FILE:=Localized string:C991("fileRemoved")
 property BINARY_FILE:=Localized string:C991("binaryFile")
 
-// MARK: FEATURES
-property _FEATURES:={\
-displayStashInCommitList: True:C214\
-}
-
 // MARK:Delegates 📦
 property form : cs:C1710.ui.form
 property Git:=cs:C1710.Git.me
 
 // MARK: UI 🖥️
-property toolbarButtons; commitment; detail; groupDiff : cs:C1710.ui.group
+property toolbarButtons; commitment; detail; groupDiff; loading : cs:C1710.ui.group
 
 property pullDialog; pushDialog; checkoutDialog; newBranchDialog : cs:C1710.ui.onBoard
 
@@ -49,7 +44,8 @@ property menu; unstaged; staged; commits; detailCommit : cs:C1710.ui.listbox
 property diff; subject; description; parent; detailDiff; currentPath : cs:C1710.ui.input
 
 property authorLabel; authorName; authorMail; stamp; shaLabe; sha; shaLabel; \
-parentLabel; titleTop; title; titleBottom; emptyIndex; noCommitSelected : cs:C1710.ui.static
+parentLabel; titleTop; title; titleBottom; emptyIndex; noCommitSelected; \
+historyLoadingLabel; historySpinner : cs:C1710.ui.static
 
 property authorAvatar : cs:C1710.ui.picture
 
@@ -57,7 +53,6 @@ property windowFrame : cs:C1710.ui.subform
 
 property icons : Object
 
-property _tagCache : Object
 property _commitsVersion : Integer:=0
 
 property _worker:="_gitLogRefresh"
@@ -148,9 +143,13 @@ Function init()
 	
 	This:C1470.noCommitSelected:=This:C1470.form.Static("noCommitSelected")
 	
+	This:C1470.loading:=This:C1470.form.Group()
+	This:C1470.historySpinner:=This:C1470.form.Static("historySpinner").addToGroup(This:C1470.loading)
+	This:C1470.historyLoadingLabel:=This:C1470.form.Static("historyLoadingLabel").addToGroup(This:C1470.loading)
+	
 	// MARK:- [Constraints]
-	// -> The fetch/pull/push buttons must remain centred on the background.
-	//This.form.constraints.new(This.toolbarButtons).centerHorizontally.with("_background")
+	This:C1470.form.constraints.new(This:C1470.historySpinner).centerHorizontally.with("commits")
+	This:C1470.form.constraints.new(This:C1470.historyLoadingLabel).centerHorizontally.with("commits")
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function handleEvents($e : cs:C1710.ui.evt)
@@ -166,11 +165,13 @@ Function handleEvents($e : cs:C1710.ui.evt)
 			: ($e.load)
 				
 				This:C1470.form.onLoad()
+				This:C1470.form.constraints.apply()
 				
 				//______________________________________________________
 			: ($e.timer)
 				
 				This:C1470.form.update()
+				This:C1470.updateCommits()
 				
 				If (This:C1470.form.page=This:C1470.pages.history)
 					
@@ -192,6 +193,7 @@ Function handleEvents($e : cs:C1710.ui.evt)
 						
 					End if 
 					
+					This:C1470._updateHistoryLoadingIndicator()
 					This:C1470.updateCommits()
 					This:C1470._scheduleCommitsRefresh()
 					
@@ -525,9 +527,13 @@ Function onLoad()
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
 	
 	This:C1470._loadScheme()
-	This:C1470.updateCommits()
+	
+	// Deferred to On Timer: building the commit list (graph/SVG/avatars) can block,
+	// and must not delay this page's (local changes) first paint
+	This:C1470.form.setTimer(-1)
 	
 	This:C1470.GoToPage(This:C1470.pages.local)
+	This:C1470.update()
 	
 	This:C1470.form.refresh()
 	
@@ -1239,6 +1245,14 @@ Function GetStyledDiffText($item : Object) : Text
 		
 	End if 
 	
+	// Defensive: the regex component crashes ("Object or Collection Expected") if
+	// its target isn't Text/File/BLOB — bail out rather than propagate a crash
+	If (Value type:C1509($git.result)#Is text:K8:3)
+		
+		return 
+		
+	End if 
+	
 	// MARK: Remove tokens
 	var $code:=cs:C1710.rgx.regex.new($git.result; "(?m-si):[CK]:?\\d+(?::\\d+)?").substitute("")
 	
@@ -1564,15 +1578,21 @@ Function updateCommits()
 	var $cache:=cs:C1710._commitsCache.me
 	
 	// Rebuild only when the cached log is newer than the one already displayed
-	// (avoids the costly graph/SVG rebuild on every activation/page change)
 	If ($cache.version>This:C1470._commitsVersion)
 		
-		This:C1470._buildCommits($cache.raw)
+		This:C1470._buildCommits($cache.builtCommits)
 		This:C1470._commitsVersion:=$cache.version
 		
 	End if 
 	
 	This:C1470._kickCommitsRefresh()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Show a spinner + message on the history page while the FIRST commit list build
+	// hasn't completed yet (avoids the "nothing is happening" impression on click)
+Function _updateHistoryLoadingIndicator()
+	
+	This:C1470.loading.show(This:C1470._commitsVersion=0)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Launch the background git log worker (unless one is already running)
@@ -1587,7 +1607,7 @@ Function _kickCommitsRefresh()
 	End if 
 	
 	$cache.setLoading()
-	CALL WORKER:C1389(This:C1470._worker; Formula:C1597(_gitLogRefresh); Current form window:C827)
+	CALL WORKER:C1389(This:C1470._worker; Formula:C1597(_gitLogRefresh); {caller: Current form window:C827; darkScheme: This:C1470.form.darkScheme})
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// (Re)arm the periodic auto-refresh while on the history page (self-re-arming
@@ -1608,249 +1628,27 @@ Function onCommitsRefreshed()
 	
 	If ($cache.version>This:C1470._commitsVersion)
 		
-		This:C1470._buildCommits($cache.raw)
+		This:C1470._buildCommits($cache.builtCommits)
 		This:C1470._commitsVersion:=$cache.version
 		
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Build the commit list (and update the UI) from a raw `git log` output
-Function _buildCommits($raw : Text)
+	// Display the pre-built commit list (graph/labels already rendered off-process
+	// in the worker; see _gitLogRefresh / _commitsBuilder) and update the UI
+Function _buildCommits($commits : Collection)
 	
-	ARRAY LONGINT:C221($len; 0)
-	ARRAY LONGINT:C221($pos; 0)
+	This:C1470.loading.hide()
 	
-	var $empty; $separator : Picture
-	CREATE THUMBNAIL:C679($separator; $separator; 5)
-	CREATE THUMBNAIL:C679($empty; $empty; 5)
-	
-	var $o:={\
-		colors: ["orange"; "green"; "blue"; "red"]; \
-		stashes: []\
-		}
-	
-	var $git:=This:C1470.Git
-	var $notPushed : Integer:=$git.branchPushNumber($git.currentBranch)
-	
-	var $today:=Current date:C33
-	var $yesterday : Date:=$today-1
-	
-/*
-0 = message
-1 = author name
-2 = short sha
-3 = time stamp
-4 = sha
-5 = parent short sha
-6 = parent sha
-7 = author mail
-8 = shortened reflog
-9 = ref names
-*/
-	
-	// Preload author avatars in parallel: fire all gravatar requests, then a
-	// single blocking wait instead of one synchronous round-trip per author
-	This:C1470._preloadAvatars($raw)
-	
-	// One commit per line
-	var $commits:=[]
-	var $line; $style : Text
-	var $i : Integer
-	
-	For each ($line; Split string:C1554($raw; "\n"; sk ignore empty strings:K86:1))
-		
-		var $c:=Split string:C1554($line; "|")
-		
-		If (Match regex:C1019("index\\son\\s"; $line; 1; *))
-			
-			continue
-			
-		End if 
-		
-		If (Match regex:C1019("^untracked files"; $line; 1; *))
-			
-			continue
-			
-		End if 
-		
-		CLEAR VARIABLE:C89($style)
-		
-		var $tags:=[Null:C1517; Null:C1517; Null:C1517]
-		
-		$i+=1
-		
-		If ($i<=$notPushed)
-			
-			$tags[0]:={what: "toPush"}
-			
-		End if 
-		
-		var $metas:=$c.length>=10 ? Split string:C1554($c[9]; ","; sk ignore empty strings:K86:1+sk trim spaces:K86:2) : []
-		
-		If ($metas.length>0)
-			
-			var $meta : Text
-			For each ($meta; $metas)
-				
-				Case of 
-						
-						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-					: ($meta="HEAD -> @")  // HEAD current branch
-						
-						$style:="bold"
-						
-						If ($metas.includes("origin/HEAD"))
-							
-							$tags[0]:={what: "origin"}
-							
-						End if 
-						
-						$tags[1]:={what: "current branch"; text: Replace string:C233($meta; "HEAD ->"; "")}
-						
-						var $branch : Text:=$git.workingBranch.name
-						var $main:=$branch
-						
-						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-					: ($meta="tag: @")  // Tag
-						
-						$tags[2]:={what: "tag"; text: Replace string:C233($meta; "tag: "; "")}
-						
-						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-					: ($meta="origin/HEAD")  // Checked out branch
-						
-						If ($tags[0]#Null:C1517)\
-							 | ($metas.includes("HEAD -> @"))
-							
-							continue
-							
-						End if 
-						
-						$tags[0]:={what: "origin"}
-						
-						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-					: ($meta="refs/stash")\
-						 && (Match regex:C1019("(?mi-s)On\\s([^:]*):\\s(.*)"; $c[0]; 1; $pos; $len; *))
-						
-						If (Not:C34(Bool:C1537(This:C1470._FEATURES.displayStashInCommitList)))
-							
-							continue
-							
-						End if 
-						
-						var $stash:={\
-							on: Substring:C12($c[0]; $pos{1}; $len{1}); \
-							index: Split string:C1554($c[5]; " ")[1]; \
-							ref: "stash@{"+String:C10($o.stashes.length)+"}"\
-							}
-						
-						$tags[0]:={what: "stash"; text: $stash.ref}
-						
-						$o.stashes.push($stash)
-						
-						$c[0]:=Substring:C12($c[0]; $pos{2}; $len{2})
-						
-						$branch:=$stash.ref
-						
-						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-					: ($meta="origin/@")  // Origin branch
-						
-						If ($tags[0]#Null:C1517)
-							
-							continue
-							
-						End if 
-						
-						If ($metas.includes(Replace string:C233($meta; "origin/"; "")))
-							
-							$tags[0]:={what: "origin"}
-							
-						Else 
-							
-							$tags[0]:={what: "origin"; text: Replace string:C233($meta; "origin/"; "")}
-							
-						End if 
-						
-						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-					Else   // Branch
-						
-						$branch:=$meta
-						$tags[1]:={what: "branch"; text: $branch}
-						
-						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-				End case 
-			End for each 
-			
-		Else 
-			
-			$branch:=$main
-			
-		End if 
-		
-		var $date:=Try(Date:C102($c[3]))
-		var $desc:=Split string:C1554($c[0]; "\r"; sk ignore empty strings:K86:1)
-		
-		If ($desc.length>1)
-			
-			$desc.shift()
-			var $description:=$desc.join("\r")
-			
-		Else 
-			
-			$description:=""
-			
-		End if 
-		
-		// The label shows only the subject (first line); rendered after the graph is known
-		var $title : Text:=$desc[0]
-		
-		Try($commits.push({\
-			title: $title; \
-			description: $description; \
-			author: {name: $c[1]; mail: $c[7]; avatar: This:C1470.getAvatar($c[7])}; \
-			stamp: ($date=$today ? Localized string:C991("today") : $date=$yesterday ? Localized string:C991("yesterday") : String:C10($date; 2))+", "+String:C10(Time:C179($c[3])+?00:00:00?); \
-			fingerprint: {short: $c[2]; long: $c[4]}; \
-			parent: {short: $c[5]; long: $c[6]}; \
-			notPushed: $i<=$notPushed; \
-			origin: $i=($notPushed+1); \
-			branch: $branch; \
-			date: $date; \
-			time: $c[3]; \
-			__tags: $tags; \
-			__title: $title; \
-			__bold: ($style="bold"); \
-			__main: ($branch=$main)\
-			}))
-		
-	End for each 
-	
-	Form:C1466.commits:=$commits.orderBy([\
-		{propertyPath: "date"; descending: True:C214}; \
-		{propertyPath: "time"; descending: True:C214}])
-	
-	// Mark:Branch graph
-	// Assign lanes, then render each label (branch tags coloured to their lane) + graph
-	This:C1470._computeGraph(Form:C1466.commits)
-	var $gc; $spec : Object
-	var $graphPic; $lbl : Picture
-	For each ($gc; Form:C1466.commits)
-		
-		$lbl:=$empty
-		For each ($spec; $gc.__tags)
-			If ($spec#Null:C1517)
-				$lbl:=$lbl+This:C1470.getLabelTag($spec.what; String:C10($spec.text); {color: $gc.graph.color})+$separator
-			End if 
-		End for each 
-		
-		$graphPic:=This:C1470._graphPicture($gc.graph)
-		$gc._:={normal: ($graphPic+$lbl+This:C1470.getLabelTag("title"; $gc.__title; {bold: $gc.__bold; main: $gc.__main})); selected: ($graphPic+$lbl+This:C1470.getLabelTag("title"; $gc.__title; {bold: $gc.__bold; selected: True:C214}))}
-		$gc.label:=$gc._.normal
-		
-	End for each 
+	// Deep-copy out of the cache's SHARED collection: the UI freely mutates
+	// individual commit properties (label swap on selection, etc.), which a
+	// shared object only allows inside a "Use" block
+	Form:C1466.commits:=$commits.copy()
 	
 	// Restore selection, if any
 	If (This:C1470.commits.item#Null:C1517)
 		
-		$c:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)
+		var $c : Collection:=Form:C1466.commits.indices("fingerprint.short = :1 "; This:C1470.commits.item.fingerprint.short)
 		
 		If ($c.length>0)
 			
@@ -1860,368 +1658,6 @@ Function _buildCommits($raw : Text)
 	End if 
 	
 	This:C1470.form.update()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Assign a lane (column) + colour to every commit so the list can draw a branch
-	// graph. Commits must be in display order (a parent always comes after its
-	// children). Fills each commit's `.graph` and returns the max number of lanes.
-Function _computeGraph($commits : Collection) : Integer
-	
-	var $palette:=["#E8710A"; "#1E8E3E"; "#1A73E8"; "#D93025"; "#9334E6"; "#12A4AF"; "#7CB342"; "#F439A0"]
-	var $lanes:=[]  // active lanes: {hash; color} (commit each lane routes to) or Null
-	var $colorIndex; $cols; $node; $k; $j; $free; $used; $m; $idx : Integer
-	var $color; $hash; $newColor : Text
-	var $commit; $pc : Object
-	var $parents; $above; $parentCols : Collection
-	$cols:=1
-	
-	For each ($commit; $commits)
-		
-		$hash:=String:C10($commit.fingerprint.long)
-		$parents:=Split string:C1554(String:C10($commit.parent.long); " "; sk ignore empty strings:K86:1)
-		$above:=$lanes.copy()
-		
-		// The node sits in the first lane already routing to it (else a new lane)
-		$node:=This:C1470._laneIndexOf($lanes; $hash)
-		
-		If ($node=-1)  // branch tip
-			
-			$node:=This:C1470._firstFreeLane($lanes)
-			$color:=$palette[$colorIndex%$palette.length]
-			$colorIndex+=1
-			
-		Else 
-			
-			$color:=$lanes[$node].color
-			
-		End if 
-		
-		// Close the other lanes that were routing to this commit (children merging in)
-		For ($k; 0; $lanes.length-1)
-			
-			If (($k#$node) && ($lanes[$k]#Null:C1517) && ($lanes[$k].hash=$hash))
-				
-				$lanes[$k]:=Null:C1517
-				
-			End if 
-		End for 
-		
-		// Route the parents downward and record the column each one lands in
-		$parentCols:=[]
-		If ($parents.length=0)  // root
-			
-			$lanes[$node]:=Null:C1517
-			
-		Else 
-			
-			$lanes[$node]:={hash: $parents[0]; color: $color}  // first parent continues the lane
-			$parentCols.push({col: $node; color: $color})
-			
-			For ($j; 1; $parents.length-1)  // extra parents (merge)
-				
-				$idx:=This:C1470._laneIndexOf($lanes; $parents[$j])
-				
-				If ($idx=-1)
-					
-					$free:=This:C1470._firstFreeLane($lanes)
-					$newColor:=$palette[$colorIndex%$palette.length]
-					$colorIndex+=1
-					$lanes[$free]:={hash: $parents[$j]; color: $newColor}
-					$parentCols.push({col: $free; color: $newColor})
-					
-				Else 
-					
-					$parentCols.push({col: $idx; color: $lanes[$idx].color})
-					
-				End if 
-			End for 
-			
-		End if 
-		
-		// Width actually used on this row (highest lane), for a tight layout
-		$used:=$node+1
-		For ($m; 0; $above.length-1)
-			If (($above[$m]#Null:C1517) && (($m+1)>$used))
-				$used:=$m+1
-			End if 
-		End for 
-		For each ($pc; $parentCols)
-			If (($pc.col+1)>$used)
-				$used:=$pc.col+1
-			End if 
-		End for each 
-		
-		If ($used>$cols)
-			$cols:=$used
-		End if 
-		
-		$commit.graph:={hash: $hash; col: $node; color: $color; width: $used; above: $above; parentCols: $parentCols}
-		
-	End for each 
-	
-	return $cols
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// First lane routing to $hash, or -1
-Function _laneIndexOf($lanes : Collection; $hash : Text) : Integer
-	
-	var $k : Integer
-	For ($k; 0; $lanes.length-1)
-		
-		If (($lanes[$k]#Null:C1517) && ($lanes[$k].hash=$hash))
-			
-			return $k
-			
-		End if 
-	End for 
-	
-	return -1
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// First free lane index (extends the collection if none)
-Function _firstFreeLane($lanes : Collection) : Integer
-	
-	var $k : Integer
-	For ($k; 0; $lanes.length-1)
-		
-		If ($lanes[$k]=Null:C1517)
-			
-			return $k
-			
-		End if 
-	End for 
-	
-	$lanes.push(Null:C1517)
-	
-	return $lanes.length-1
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Horizontal centre of a lane column
-Function _laneX($col : Integer; $w : Integer) : Real
-	
-	return ($col*$w)+($w/2)+1
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Render the branch-graph picture for one commit row
-Function _graphPicture($graph : Object) : Picture
-	
-	var $dark : Boolean:=Form:C1466.darkScheme
-	var $w; $h; $node; $k : Integer
-	var $mid; $r : Real
-	var $pc : Object
-	var $above : Collection
-	var $svg : cs:C1710.svgx.svg
-	$w:=12
-	$h:=23
-	$mid:=11.5
-	$r:=3
-	$svg:=cs:C1710.svgx.svg.new()
-	$svg.width(($graph.width*$w)+2).height($h)
-	$above:=$graph.above
-	$node:=$graph.col
-	
-	// Lines coming from the row above
-	For ($k; 0; $above.length-1)
-		
-		If ($above[$k]=Null:C1517)
-			continue
-		End if 
-		
-		If ($above[$k].hash=$graph.hash)  // a child converges into this node
-			
-			$svg.line(This:C1470._laneX($k; $w); 0; This:C1470._laneX($node; $w); $mid).stroke({color: $above[$k].color; width: 2})
-			
-		Else   // the lane passes straight through
-			
-			$svg.line(This:C1470._laneX($k; $w); 0; This:C1470._laneX($k; $w); $h).stroke({color: $above[$k].color; width: 2})
-			
-		End if 
-	End for 
-	
-	// Lines going down to the parents
-	For each ($pc; $graph.parentCols)
-		
-		$svg.line(This:C1470._laneX($node; $w); $mid; This:C1470._laneX($pc.col; $w); $h).stroke({color: $pc.color; width: 2})
-		
-	End for each 
-	
-	// Commit node
-	$svg.circle($r; This:C1470._laneX($node; $w); $mid).fill($graph.color).stroke({color: ($dark ? "black" : "white"); width: 1})
-	
-	return $svg.picture()
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function getLabelTag($what : Text; $text : Text; $style : Object) : Picture
-	
-	This:C1470._tagCache:=This:C1470._tagCache || {}
-	
-	// "title" is unique per commit → not cached (avoids unbounded cache growth)
-	If ($what="title")
-		
-		return This:C1470._renderLabelTag($what; $text; $style)
-		
-	End if 
-	
-	var $key : Text:=$what+Char:C90(1)+String:C10($text)+Char:C90(1)+String:C10($style.color)+Char:C90(1)+String:C10(Num:C11(Form:C1466.darkScheme))
-	This:C1470._tagCache[$key]:=This:C1470._tagCache[$key] || This:C1470._renderLabelTag($what; $text; $style)
-	
-	return This:C1470._tagCache[$key]
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _renderLabelTag($what : Text; $text : Text; $style : Object) : Picture
-	
-	var $dark : Boolean:=Form:C1466.darkScheme
-	var $svg:=cs:C1710.svgx.svg.new()
-	var $col : Text:=String:C10($style.color)
-	var $w : Real
-	
-	// Every badge sets an explicit width & height (like _graphPicture) so the export
-	// viewport is fixed and the rounded rectangle's bottom border is never clipped.
-	
-	Case of 
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="graph")
-			
-			$svg.width(10).height(30).color($text).stroke(2)
-			$svg.line(5; 0; 5; 24)
-			$svg.circle(3; 5; 10)
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="title")
-			
-			$svg.text($text).position(2; 15)\
-				.fontStyle($style.bold ? Bold:K14:2 : Plain:K14:1)
-			
-			If (Bool:C1537($style.selected))
-				
-				$svg.color("white")
-				
-			Else 
-				
-				$svg.color($style.main ? ($dark ? "white" : "black") : ($dark ? "silver" : "darkgray"))
-				
-			End if 
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="branch")
-			
-			$w:=$svg.getTextWidth($text)*1.2
-			$svg.width($w+1).height(21)
-			
-			$svg.rect($w; 20)\
-				.radius(4).position(0.5; 0.5)\
-				.stroke($col).fill($col).opacity($dark ? 0.8 : 0.3)
-			
-			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="current branch")
-			
-			$text:="🚧 "+$text  //✔️
-			$w:=$svg.getTextWidth($text)+10
-			$svg.width($w+1).height(21)
-			
-			$svg.rect($w; 20)\
-				.radius(4).position(0.5; 0.5)\
-				.stroke($col).fill($col).opacity($dark ? 0.8 : 0.3)
-			
-			$svg.text($text).position(4; 15).fontStyle(Bold:K14:2).color($dark ? "white" : "black")
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="origin")
-			
-			If (Length:C16($text)>0)
-				
-				$text:="origin/"+$text
-				$w:=$svg.getTextWidth($text)+8
-				$svg.width($w+24).height(22)
-				
-				// Leading solid chip for the GitHub icon (kept legible on any lane colour)
-				$svg.rect(21; 20)\
-					.radius(4).position(0.5; 0.5)\
-					.fill($dark ? "#2b2b30" : "white")
-				
-				// Trailing coloured pill with the remote branch name (kept separate to avoid overlap)
-				$svg.group().translate(3)
-				$svg.rect($w; 20)\
-					.radius(4).position(23; 0.5)\
-					.stroke($col).fill($col).opacity($dark ? 0.8 : 0.3)
-				
-				$svg.text($text).position(27; 15).color($dark ? "white" : "black")
-				$svg.goUp()
-				
-			Else 
-				
-				$svg.width(22).height(22)
-				
-				$svg.rect(21; 20)\
-					.radius(4).position(0.5; 0.5)\
-					.stroke($col).fill($dark ? "#2b2b30" : "white")
-				
-			End if 
-			
-			$svg.image($dark ? This:C1470.icons.githubDark : This:C1470.icons.github).attachTo("root")\
-				.position(2.5; 2).width(16).height(16)
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="tag")
-			
-			$w:=$svg.getTextWidth($text)+28
-			$svg.width($w+1).height(21)
-			
-			$svg.rect($w; 20)\
-				.radius(4).position(0.5; 0.5)\
-				.stroke("blue").fill($dark ? "fuchsia" : "lavender").opacity($dark ? 0.8 : 0.3)
-			
-			$svg.image(This:C1470.icons.tag)
-			
-			$svg.line(21; 0.5; 21; 20.5).stroke("blue").opacity(0.5)
-			
-			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="stash")
-			
-			$w:=$svg.getTextWidth($text)+28
-			$svg.width($w+1).height(22)
-			
-			$svg.rect($w; 20)\
-				.radius(4).position(0.5; 0.5)\
-				.stroke("grey").fill($dark ? "darkgray" : "lightgray").opacity($dark ? 0.8 : 0.3)
-			
-			$svg.image(This:C1470.icons.stash)
-			
-			$svg.line(21; 0.5; 21; 20.5).stroke("grey").opacity(0.5)
-			
-			$svg.text($text).position(25; 15).color($dark ? "white" : "black")
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-		: ($what="toPush")
-			
-			$svg.circle(3).position(10; 10)\
-				.color("orangered")
-			
-			return $svg.picture()
-			
-			//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-	End case 
-	
-	$svg.close()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _handleMenus($what : Text; $data : Object)
@@ -2448,28 +1884,6 @@ Function getAvatar($mail : Text) : Picture
 	return cs:C1710._gravatars.me.avatar($mail)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _preloadAvatars($log : Text)
-	
-	// Extract author mails from the log and hand them to the shared gravatar
-	// cache, which fetches the missing ones in parallel (single blocking wait).
-	var $mails:=[]
-	
-	var $line : Text
-	For each ($line; Split string:C1554($log; "\n"; sk ignore empty strings:K86:1))
-		
-		var $c:=Split string:C1554($line; "|")
-		
-		If ($c.length>=8)
-			
-			$mails.push($c[7])
-			
-		End if 
-		
-	End for each 
-	
-	cs:C1710._gravatars.me.preload($mails)
-	
-	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function metaCommits($item : Object) : Object
 	
 	If ($item=This:C1470.commits.item)  // Selected
@@ -2502,28 +1916,13 @@ Function _loadScheme()
 	This:C1470.commits.selectionHighlight:=This:C1470.form.lightScheme
 	
 	This:C1470.icons:={}
-	This:C1470._tagCache:={}
 	
 	var $key : Text
 	var $icon : Picture
+	var $file : 4D:C1709.File
 	var $dark:=This:C1470.form.darkScheme ? This:C1470.form._darkExtension : ""
-	For each ($key; ["tag"; "stash"])
-		
-		var $file:=File:C1566("/RESOURCES/Images/Main/"+$key+$dark+".svg")
-		READ PICTURE FILE:C678($file.platformPath; $icon)
-		This:C1470.icons[Lowercase:C14($key)]:=$icon
-		
-	End for each 
 	
-	// GitHub octocat: load both variants explicitly. Media queries are ignored when an
-	// SVG is rasterised via READ PICTURE FILE, so the renderer picks the right one by scheme.
-	$file:=File:C1566("/RESOURCES/Images/Main/github.svg")
-	READ PICTURE FILE:C678($file.platformPath; $icon)
-	This:C1470.icons.github:=$icon
-	$file:=File:C1566("/RESOURCES/Images/Main/github_dark.svg")
-	READ PICTURE FILE:C678($file.platformPath; $icon)
-	This:C1470.icons.githubDark:=$icon
-	
+	// tag/stash/github icons moved to _commitsBuilder (commit-graph labels, built off-process)
 	For each ($key; ["Add"; "Remove"; "Edit"; "Rename"])
 		
 		$file:=File:C1566("/RESOURCES/Images/Status/"+$key+$dark+".svg")
