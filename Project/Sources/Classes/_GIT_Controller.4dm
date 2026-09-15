@@ -818,7 +818,9 @@ Function _openManager()
 	var $hasRemote:=$git.execute("config --get remote.origin.url")
 	$hasRemote:=$hasRemote ? Position:C15("github.com"; String:C10($git.result))>0 : $hasRemote
 	
-	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
+	// iconAccessor: resolve "/RESOURCES/" against THIS component's own bundle,
+	// not the host database (the default when embedded, breaks icons once installed)
+	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214; iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
 	
 	$menu.append(Localized string:C991("openInTerminal"); "terminal").icon("/RESOURCES/Images/Menus/terminal.svg")\
 		.append(Localized string:C991("showOnDisk"); "show").icon("/RESOURCES/Images/Menus/disk.svg")\

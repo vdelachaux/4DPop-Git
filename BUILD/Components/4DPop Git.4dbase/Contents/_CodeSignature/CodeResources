@@ -286,11 +286,11 @@
 		</data>
 		<key>Resources/InfoPlist.strings</key>
 		<data>
-		smJFy8kHF1Cs4iTOJnRliS1bdRg=
+		y7Q5hmE/kY4rKrA2lXLeaWnoB98=
 		</data>
 		<key>Resources/bin/gh</key>
 		<data>
-		VbGTGzD1ZPAljPPrR/j6X+8LEvw=
+		SbblYg2tPREMHTNjfLShnX4rmNQ=
 		</data>
 		<key>Resources/bin/gh.exe</key>
 		<data>
@@ -346,7 +346,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			HRp9iLnBPvhuk37QQ7v4/Cd2H9Y=
+			hKisvcfEtYZPNg/onCgVAf48lzI=
 			</data>
 			<key>requirement</key>
 			<string>identifier "4DPop Git.4DZ" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = DYRKW64QA9</string>
@@ -411,7 +411,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			8ucKkYtgtfedzYq6Z8JvSLBd2rQHVE212SSOe0g5l5c=
+			wjALLeU2NQk0p8QqsngVyY907VBT253tEFsCqSHc5Gw=
 			</data>
 		</dict>
 		<key>Resources/4DPop.json</key>
@@ -908,14 +908,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			sLal+qZrGEVQdLJBd4041WdlurlEwbPYZwELmC1iRm4=
+			D6raQpNKzOQSswNHH3X71tu/U9sfSikuXfA3ZuskaFQ=
 			</data>
 		</dict>
 		<key>Resources/bin/gh</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			d9Q6QDDK00IYDotmDvE4wOfp/vD7P/0gvwCpbZ0ZQQg=
+			OttL+oMPRZN2I9LU9zdRp74S0Im6jxSBjuEQt0B2UI0=
 			</data>
 		</dict>
 		<key>Resources/bin/gh.exe</key>

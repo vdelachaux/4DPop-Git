@@ -298,13 +298,13 @@ Function _doChangesMenu()
 				//______________________________________________________
 			: ($c.indexOf("Classes")=2)
 				
-				$classes:=$classes || cs:C1710.ui.menu.new({embedded: True:C214})
+				$classes:=$classes || cs:C1710.ui.menu.new({embedded: True:C214; iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
 				$classes.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			: ($c.indexOf("Forms")=2)
 				
-				$forms:=$forms || cs:C1710.ui.menu.new({embedded: True:C214})
+				$forms:=$forms || cs:C1710.ui.menu.new({embedded: True:C214; iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
 				
 				Case of 
 						
@@ -329,13 +329,13 @@ Function _doChangesMenu()
 				//______________________________________________________
 			: ($c.indexOf("Methods")=2)
 				
-				$methods:=$methods || cs:C1710.ui.menu.new({embedded: True:C214})
+				$methods:=$methods || cs:C1710.ui.menu.new({embedded: True:C214; iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
 				$methods.append(Replace string:C233($c.remove(0; 3).join("/"); ".4dm"; ""); $o.path).icon($icon)
 				
 				//______________________________________________________
 			Else 
 				
-				$others:=$others || cs:C1710.ui.menu.new({embedded: True:C214})
+				$others:=$others || cs:C1710.ui.menu.new({embedded: True:C214; iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
 				$others.append($c.join("/"); $o.path).icon($icon)
 				
 				//______________________________________________________
@@ -503,7 +503,9 @@ Function _doMoreMenu()
 	
 	var $available : Boolean:=$git.branches.length>0
 	
-	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214})
+	// iconAccessor: resolve "/RESOURCES/" against THIS component's own bundle,
+	// not the host database (the default when embedded, breaks icons once installed)
+	var $menu:=cs:C1710.ui.menu.new({embedded: True:C214; iconAccessor: Formula:C1597(SET MENU ITEM ICON:C984($1; $2; $3))})
 	$menu.append(Localized string:C991("repoManager"); "tool").icon("/RESOURCES/Images/Menus/git.svg")
 	$menu.line()
 	$menu.append(Localized string:C991("saveSnapshot"); "snapshot").icon("/RESOURCES/Images/Menus/stash.svg")
