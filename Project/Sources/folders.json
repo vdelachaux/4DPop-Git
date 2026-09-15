@@ -64,6 +64,7 @@
 			"SETTINGS"
 		],
 		"classes": [
+			"_commitsBuilder",
 			"_commitsCache",
 			"_GIT_Controller",
 			"_gravatarRequest",
