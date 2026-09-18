@@ -844,11 +844,17 @@
 			"Params": [],
 			"Summary": ""
 		},
-		"actionOnDoubleClick": {
-			"Syntax": "actionOnDoubleClick : Text"
+		"proxyMacOS": {
+			"Syntax": "proxyMacOS : Text"
 		},
 		"isModal": {
 			"Syntax": "isModal : Boolean"
+		},
+		"zoomMedia": {
+			"Syntax": "zoomMedia : cs.ui.static"
+		},
+		"closeMedia": {
+			"Syntax": "closeMedia : cs.ui.static"
 		},
 		"close": {
 			"Syntax": "close : cs.ui.button"
@@ -856,23 +862,29 @@
 		"zoom": {
 			"Syntax": "zoom : cs.ui.button"
 		},
-		"options": {
-			"Syntax": "options : Integer"
-		},
-		"drag": {
-			"Syntax": "drag : cs.ui.button"
-		},
-		"toBeInitialized": {
-			"Syntax": "toBeInitialized : Boolean"
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
 		},
 		"reduce": {
 			"Syntax": "reduce : cs.ui.button"
 		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
-		},
 		"form": {
 			"Syntax": "form : cs.ui.form"
+		},
+		"actionOnDoubleClick": {
+			"Syntax": "actionOnDoubleClick : Text"
+		},
+		"reduceMedia": {
+			"Syntax": "reduceMedia : cs.ui.static"
+		},
+		"drag": {
+			"Syntax": "drag : cs.ui.button"
+		},
+		"options": {
+			"Syntax": "options : Real"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
 		}
 	},
 	"_commitsCache": {

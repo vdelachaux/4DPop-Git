@@ -1,11 +1,21 @@
-property form : cs:C1710.ui.form
+// MARK: Default values ⚙️
 property isSubform:=True:C214
 property toBeInitialized:=False:C215
 
+property options:=0
+property actionOnDoubleClick:="Maximize"
+
+// MARK: Delegates 📦
+property form : cs:C1710.ui.form
+
+// MARK: Widgets 🧱
 property drag; reduce; zoom; close : cs:C1710.ui.button
+
+property closeMedia; reduceMedia; zoomMedia : cs:C1710.ui.static
+
+// MARK: Other 💾
 property isModal : Boolean
-property options : Integer
-property actionOnDoubleClick : Text
+property proxyMacOS : Text:="path:/FORM/Images/macOS/"
 
 Class constructor
 	
@@ -13,9 +23,6 @@ Class constructor
 	This:C1470.form:=cs:C1710.ui.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
 	
 	This:C1470.isModal:=This:C1470.form.window.type=Modal dialog:K27:2
-	This:C1470.options:=0
-	
-	This:C1470.actionOnDoubleClick:="Maximize"
 	
 	If (Is Windows:C1573)
 		
@@ -25,7 +32,6 @@ Class constructor
 	Else 
 		
 		// The double-click action can be configured in the system preferences
-		
 		var $in; $out : Text
 		LAUNCH EXTERNAL PROCESS:C811("defaults read NSGlobalDomain"; $in; $out)
 		
@@ -44,7 +50,7 @@ Class constructor
 	
 	This:C1470.form.init()
 	
-	// MARK:-[STANDARD SUITE]
+	// MARK:-[Standard Suite]
 	// === === === === === === === === === === === === === === === === === === === === === === === ===
 Function init()
 	
@@ -52,15 +58,19 @@ Function init()
 	
 	If (Is macOS:C1572)
 		
+		This:C1470.close:=This:C1470.form.Button("closeMac")
 		This:C1470.reduce:=This:C1470.form.Button("minusMac")
 		This:C1470.zoom:=This:C1470.form.Button("plusMac")
-		This:C1470.close:=This:C1470.form.Button("closeMac")
+		
+		This:C1470.closeMedia:=This:C1470.form.Static("closeMacIcon")
+		This:C1470.reduceMedia:=This:C1470.form.Static("minusMacIcon")
+		This:C1470.zoomMedia:=This:C1470.form.Static("plusMacIcon")
 		
 	Else 
 		
+		This:C1470.close:=This:C1470.form.Button("closeWin")
 		This:C1470.reduce:=This:C1470.form.Button("minusWin")
 		This:C1470.zoom:=This:C1470.form.Button("plusWin")
-		This:C1470.close:=This:C1470.form.Button("closeWin")
 		
 	End if 
 	
@@ -83,7 +93,6 @@ Function handleEvents($e : cs:C1710.ui.evt)
 			: ($e.boundVariableChange)
 				
 				// ⚠️ The container must be of numeric type
-				
 				This:C1470.options:=OBJECT Get subform container value:C1785
 				This:C1470.form.update()
 				
@@ -91,6 +100,11 @@ Function handleEvents($e : cs:C1710.ui.evt)
 			: ($e.timer)
 				
 				This:C1470.form.update()
+				
+				//______________________________________________________
+			: ($e.activate) || ($e.deactivate)
+				
+				This:C1470.update()
 				
 				//______________________________________________________
 		End case 
@@ -101,6 +115,49 @@ Function handleEvents($e : cs:C1710.ui.evt)
 	
 	// MARK: Widget Methods
 	Case of 
+			
+			// The rollover animation is managed by the button icon, which has 4 states
+			//______________________________________________________
+		: (Is macOS:C1572 && $e.mouseEnter)
+			
+			If (Not:C34(This:C1470.closeDisabled))
+				
+				This:C1470.closeMedia.setPicture(This:C1470.proxyMacOS+"closeOver.png")
+				
+			End if 
+			
+			If (Not:C34(This:C1470.reduceDisabled))
+				
+				This:C1470.reduceMedia.setPicture(This:C1470.proxyMacOS+"minimizeOver.png")
+				
+			End if 
+			
+			If (Not:C34(This:C1470.zoomDisabled))
+				
+				This:C1470.zoomMedia.setPicture(This:C1470.proxyMacOS+(Is window maximized:C1830(This:C1470.form.window.ref) ? "zoomRestoreOver.png" : "zoomEnlargeOver.png"))
+				
+			End if 
+			
+			//______________________________________________________
+		: (Is macOS:C1572 && $e.mouseLeave)
+			
+			If (Not:C34(This:C1470.closeDisabled))
+				
+				This:C1470.closeMedia.setPicture(This:C1470.proxyMacOS+(This:C1470.documentModified ? "closeModified.png" : "close.png"))
+				
+			End if 
+			
+			If (Not:C34(This:C1470.reduceDisabled))
+				
+				This:C1470.reduceMedia.setPicture(This:C1470.proxyMacOS+"minimize.png")
+				
+			End if 
+			
+			If (Not:C34(This:C1470.zoomDisabled))
+				
+				This:C1470.zoomMedia.setPicture(This:C1470.proxyMacOS+"zoom.png")
+				
+			End if 
 			
 			//______________________________________________________
 		: (This:C1470.drag.catch($e))
@@ -114,6 +171,7 @@ Function handleEvents($e : cs:C1710.ui.evt)
 						 || (This:C1470.actionOnDoubleClick="none")
 						
 						// <NOTHING MORE TO DO>
+						
 						//………………………………………………………………………………………………………………
 					: (This:C1470.actionOnDoubleClick="Minimize")
 						
@@ -161,62 +219,6 @@ Function handleEvents($e : cs:C1710.ui.evt)
 			This:C1470.miniaturiseOrNot()
 			
 			//______________________________________________________
-		: ($e.mouseEnter)
-			
-			If (Is Windows:C1573)
-				
-				// The rollover animation is managed by the button icon, which has 4 states
-				return 
-				
-			End if 
-			
-			If (Not:C34(This:C1470.closeDisabled))
-				
-				This:C1470.close.setPicture("Images/macOS/closeOver.png")
-				
-			End if 
-			
-			If (Not:C34(This:C1470.zoomDisabled))
-				
-				This:C1470.zoom.setPicture(Is window maximized:C1830(This:C1470.form.window.ref) ? "Images/macOS/zoomRestoreOver.png" : "Images/macOS/zoomEnlargeOver.png")
-				
-			End if 
-			
-			If (Not:C34(This:C1470.reduceDisabled))
-				
-				This:C1470.reduce.setPicture("Images/macOS/minimizeOver.png")
-				
-			End if 
-			
-			//______________________________________________________
-		: ($e.mouseLeave)
-			
-			If (Is Windows:C1573)
-				
-				// The rollover animation is managed by the button icon, which has 4 states
-				return 
-				
-			End if 
-			
-			If (Not:C34(This:C1470.closeDisabled))
-				
-				This:C1470.close.setPicture(This:C1470.documentModified ? "Images/macOS/closeModified.png" : "Images/macOS/close.png")
-				
-			End if 
-			
-			If (Not:C34(This:C1470.zoomDisabled))
-				
-				This:C1470.zoom.setPicture("Images/macOS/zoom.png")
-				
-			End if 
-			
-			If (Not:C34(This:C1470.reduceDisabled))
-				
-				This:C1470.reduce.setPicture("Images/macOS/minimize.png")
-				
-			End if 
-			
-			//______________________________________________________
 	End case 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -231,34 +233,38 @@ Function update()
 		
 		If (This:C1470.form.window.isFrontmost())
 			
-			If (This:C1470.closeDisabled)
+			If (Not:C34(This:C1470.closeDisabled))
 				
-				This:C1470.close.setPicture("Images/macOS/disabled.png")
-				
-			Else 
-				
-				This:C1470.close.setPicture(This:C1470.documentModified ? "Images/macOS/closeModified.png" : "Images/macOS/close.png")
+				This:C1470.closeMedia.setPicture(This:C1470.proxyMacOS+(This:C1470.documentModified ? "closeModified.png" : "close.png"))
 				
 			End if 
 			
-			This:C1470.reduce.setPicture(This:C1470.reduceDisabled ? "Images/macOS/disabled.png" : "Images/macOS/minimize.png")
+			If (Not:C34(This:C1470.reduceDisabled))
+				
+				This:C1470.reduceMedia.setPicture(This:C1470.proxyMacOS+"minimize.png")
+				
+			End if 
 			
-			This:C1470.zoom.setPicture(This:C1470.zoomDisabled ? "Images/macOS/disabled.png" : "Images/macOS/zoom.png")
+			If (Not:C34(This:C1470.zoomDisabled))
+				
+				This:C1470.zoomMedia.setPicture(This:C1470.proxyMacOS+"zoom.png")
+				
+			End if 
 			
 		Else 
 			
 			If (This:C1470.closeDisabled)
 				
-				This:C1470.close.setPicture("Images/macOS/disabled.png")
+				This:C1470.closeMedia.setPicture(This:C1470.proxyMacOS+"disabled.png")
 				
 			Else 
 				
-				This:C1470.close.setPicture(This:C1470.documentModified ? "Images/macOS/disabledModified.png" : "Images/macOS/disabled.png")
+				This:C1470.closeMedia.setPicture(This:C1470.proxyMacOS+(This:C1470.documentModified ? "disabledModified.png" : "disabled.png"))
 				
 			End if 
 			
-			This:C1470.zoom.setPicture("Images/macOS/disabled.png")
-			This:C1470.reduce.setPicture("Images/macOS/disabled.png")
+			This:C1470.zoomMedia.setPicture(This:C1470.proxyMacOS+"disabled.png")
+			This:C1470.reduceMedia.setPicture(This:C1470.proxyMacOS+"disabled.png")
 			
 		End if 
 		

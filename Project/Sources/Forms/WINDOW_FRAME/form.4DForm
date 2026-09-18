@@ -20,25 +20,62 @@
 		"onMouseLeave",
 		"onBoundVariableChange"
 	],
-	"windowTitle": "window title",
 	"destination": "detailScreen",
 	"pages": [
 		{
 			"objects": {
 				"Line": {
 					"type": "line",
-					"top": 28,
+					"top": 30,
 					"left": 0,
 					"width": 120,
 					"height": 0,
 					"class": "dev",
 					"visibility": "hidden",
-					"startPoint": "topLeft"
+					"startPoint": "topLeft",
+					"stroke": "#1e90ff",
+					"strokeDashArray": [
+						1,
+						3
+					]
 				}
 			}
 		},
 		{
 			"objects": {
+				"plusMacIcon": {
+					"type": "picture",
+					"top": 20,
+					"left": 58,
+					"width": 20,
+					"height": 20,
+					"picture": "Images/macOS/Zoom.png",
+					"pictureFormat": "scaled",
+					"visibility": "visible",
+					"class": "mac"
+				},
+				"closeMacIcon": {
+					"type": "picture",
+					"top": 20,
+					"left": 12,
+					"width": 20,
+					"height": 20,
+					"picture": "Images/macOS/close.png",
+					"pictureFormat": "scaled",
+					"visibility": "visible",
+					"class": "mac"
+				},
+				"minusMacIcon": {
+					"type": "picture",
+					"top": 20,
+					"left": 35,
+					"width": 20,
+					"height": 20,
+					"picture": "Images/macOS/minimize.png",
+					"pictureFormat": "scaled",
+					"visibility": "visible",
+					"class": "mac"
+				},
 				"dragWindow": {
 					"type": "button",
 					"text": "",
@@ -107,55 +144,55 @@
 				},
 				"closeMac": {
 					"type": "button",
-					"text": "",
 					"top": 20,
-					"left": 18,
-					"width": 16,
-					"height": 16,
+					"left": 12,
+					"width": 20,
+					"height": 20,
 					"events": [
-						"onClick"
+						"onClick",
+						"onMouseEnter",
+						"onMouseLeave"
 					],
-					"style": "custom",
-					"icon": "Images/macOS/close.png",
 					"shortcutAccel": true,
 					"shortcutControl": false,
 					"shortcutShift": false,
 					"shortcutAlt": false,
 					"shortcutKey": "w",
-					"class": "mac"
+					"class": "mac",
+					"display": false
 				},
 				"minusMac": {
 					"type": "button",
-					"text": "",
 					"top": 20,
-					"left": 38,
-					"width": 16,
-					"height": 16,
+					"left": 35,
+					"width": 20,
+					"height": 20,
 					"events": [
-						"onClick"
+						"onClick",
+						"onMouseEnter",
+						"onMouseLeave"
 					],
-					"style": "custom",
-					"icon": "Images/macOS/minimize.png",
-					"class": "mac"
+					"class": "mac",
+					"display": false
 				},
 				"plusMac": {
 					"type": "button",
-					"text": "",
 					"top": 20,
 					"left": 58,
-					"width": 16,
-					"height": 16,
+					"width": 20,
+					"height": 20,
 					"events": [
-						"onClick"
+						"onClick",
+						"onMouseEnter",
+						"onMouseLeave"
 					],
-					"style": "custom",
-					"icon": "Images/macOS/zoom.png",
-					"class": "mac"
+					"class": "mac",
+					"display": false
 				}
 			}
 		}
 	],
-	"geometryStamp": 327,
+	"geometryStamp": 662,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
