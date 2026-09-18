@@ -110,6 +110,11 @@ jobs:
           }
           Remove-Item -Path $zip -Force -ErrorAction SilentlyContinue
         }
+    - name: Remove packaged component from build inputs
+      shell: bash
+      run: |
+        rm -rf "BUILD/Components/4DPop Git.4dbase"
+
     - name: Build
       uses: 4d/build4d-action@main
       with:
