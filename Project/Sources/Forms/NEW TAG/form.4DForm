@@ -16,7 +16,7 @@
 			"objects": {
 				"title": {
 					"type": "text",
-					"text": "New Tag",
+					"text": ":xliff:newTag",
 					"top": 22,
 					"left": 48,
 					"width": 240,
@@ -34,7 +34,7 @@
 				},
 				"tagLabel": {
 					"type": "text",
-					"text": "Name:",
+					"text": ":xliff:name",
 					"top": 56,
 					"left": 18,
 					"width": 64,
@@ -48,11 +48,11 @@
 					"width": 238,
 					"height": 17,
 					"dataSource": "Form:C1466.tag",
-					"placeholder": "Enter Tag Name"
+					"placeholder": ":xliff:enterTagName"
 				},
 				"atLabel": {
 					"type": "text",
-					"text": "At:",
+					"text": ":xliff:at",
 					"top": 84,
 					"left": 18,
 					"width": 64,
@@ -71,7 +71,7 @@
 				},
 				"cancel": {
 					"type": "button",
-					"text": "Cancel",
+					"text": ":xliff:cancel",
 					"top": 118,
 					"left": 162,
 					"width": 78,
@@ -82,7 +82,7 @@
 				},
 				"ok": {
 					"type": "button",
-					"text": "Create",
+					"text": ":xliff:create",
 					"top": 118,
 					"left": 251,
 					"width": 78,

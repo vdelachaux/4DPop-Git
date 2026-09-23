@@ -611,7 +611,7 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 			//———————————————————————————————————
 		: ($whatToDo="create")  // Create a new branch
 			
-			If (This:C1470.execute("branch "+$name))
+			If (This:C1470.execute("branch "+$name+Choose:C955(Count parameters:C259>2; " "+$newName; "")))
 				
 				This:C1470.branch()
 				
@@ -620,7 +620,7 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 			//———————————————————————————————————
 		: ($whatToDo="createAndUse")  // Create a new branch and select it
 			
-			If (This:C1470.execute("checkout -b "+$name))
+			If (This:C1470.execute("checkout -b "+$name+Choose:C955(Count parameters:C259>2; " "+$newName; "")))
 				
 				This:C1470.branch()
 				

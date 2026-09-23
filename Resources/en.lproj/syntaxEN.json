@@ -319,22 +319,6 @@
 			],
 			"Summary": ""
 		},
-		"updateCommits()": {
-			"Syntax": "**.updateCommits**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"GoToPage()": {
-			"Syntax": "**.GoToPage**( *page* : Integer )",
-			"Params": [
-				[
-					"page",
-					"Integer",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
 		"onActivate()": {
 			"Syntax": "**.onActivate**()",
 			"Params": [],
@@ -367,6 +351,28 @@
 			],
 			"Summary": ""
 		},
+		"Unstage()": {
+			"Syntax": "**.Unstage**( *items* : Collection )",
+			"Params": [
+				[
+					"items",
+					"Collection",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"get isInIndex()": {
+			"Syntax": "**.get isInIndex**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
 		"DoDiff()": {
 			"Syntax": "**.DoDiff**( *item* : Object )",
 			"Params": [
@@ -376,6 +382,27 @@
 					"->"
 				]
 			],
+			"Summary": ""
+		},
+		"updateCommits()": {
+			"Syntax": "**.updateCommits**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"GoToPage()": {
+			"Syntax": "**.GoToPage**( *page* : Integer )",
+			"Params": [
+				[
+					"page",
+					"Integer",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"UnstageAll()": {
+			"Syntax": "**.UnstageAll**()",
+			"Params": [],
 			"Summary": ""
 		},
 		"onLoad()": {
@@ -431,33 +458,6 @@
 			],
 			"Summary": ""
 		},
-		"Unstage()": {
-			"Syntax": "**.Unstage**( *items* : Collection )",
-			"Params": [
-				[
-					"items",
-					"Collection",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"get isInIndex()": {
-			"Syntax": "**.get isInIndex**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"UnstageAll()": {
-			"Syntax": "**.UnstageAll**()",
-			"Params": [],
-			"Summary": ""
-		},
 		"StageAll()": {
 			"Syntax": "**.StageAll**()",
 			"Params": [],
@@ -502,6 +502,9 @@
 		"subject": {
 			"Syntax": "subject : cs.ui.input"
 		},
+		"detailCommit": {
+			"Syntax": "detailCommit : cs.ui.listbox"
+		},
 		"staged": {
 			"Syntax": "staged : cs.ui.listbox"
 		},
@@ -520,9 +523,6 @@
 		"stage": {
 			"Syntax": "stage : cs.ui.button"
 		},
-		"detailCommit": {
-			"Syntax": "detailCommit : cs.ui.listbox"
-		},
 		"open": {
 			"Syntax": "open : cs.ui.button"
 		},
@@ -531,6 +531,9 @@
 		},
 		"push": {
 			"Syntax": "push : cs.ui.button"
+		},
+		"changes": {
+			"Syntax": "changes : cs.ui.button"
 		},
 		"toBeInitialized": {
 			"Syntax": "toBeInitialized : Boolean"
@@ -541,8 +544,8 @@
 		"pull": {
 			"Syntax": "pull : cs.ui.button"
 		},
-		"changes": {
-			"Syntax": "changes : cs.ui.button"
+		"newTagDialog": {
+			"Syntax": "newTagDialog : cs.ui.onBoard"
 		},
 		"checkoutDialog": {
 			"Syntax": "checkoutDialog : cs.ui.onBoard"

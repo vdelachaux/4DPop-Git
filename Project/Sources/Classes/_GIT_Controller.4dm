@@ -34,7 +34,7 @@ property Git:=cs:C1710.Git.me
 // MARK: UI 🖥️
 property toolbarButtons; commitment; detail; groupDiff; loading : cs:C1710.ui.group
 
-property pullDialog; pushDialog; checkoutDialog; newBranchDialog : cs:C1710.ui.onBoard
+property pullDialog; pushDialog; checkoutDialog; newBranchDialog; newTagDialog : cs:C1710.ui.onBoard
 
 property changes; history; fetch; pull; push; open; \
 stage; unstage; diffTool; commit; amend; fileStage; fileMore : cs:C1710.ui.button
@@ -410,9 +410,39 @@ Function handleEvents($e : cs:C1710.ui.evt)
 			This:C1470.onActivate()
 			
 			//==============================================
-		: (This:C1470.commits.catch($e; On Selection Change:K2:29))
+		: (This:C1470.commits.catch($e))
 			
-			This:C1470._commitsManager()
+			This:C1470._commitsManager($e)
+			//Case of 
+			////______________________________________________________
+			//: ($e.code=On Clicked)
+			
+			//  //If (Contextual click)
+			
+			//  //This._commitMenu()
+			
+			//  //End if 
+			//  ////______________________________________________________
+			//  //: ($e.code=On Selection Change)
+			
+			
+			//  ////______________________________________________________
+			//  //Else 
+			
+			//  //// A "Case of" statement should never omit "Else"
+			
+			//  ////______________________________________________________
+			//  //            End case
+			//  //If (Contextual click)
+			
+			//  //This._commitMenu()
+			
+			//  //End if 
+			
+			//  ////==============================================
+			//  //: (This.commits.catch($e; On Selection Change))
+			
+			//  //This._commitsManager()
 			
 			//==============================================
 		: (This:C1470.parent.catch($e; On Clicked:K2:4))
@@ -525,6 +555,8 @@ Function onLoad()
 	
 	This:C1470.newBranchDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "NEW BRANCH")
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
+	This:C1470.newTagDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "NEW TAG")
+	This:C1470.newTagDialog.me:=This:C1470.newTagDialog
 	
 	This:C1470._loadScheme()
 	
@@ -1016,7 +1048,124 @@ Function _stageUnstageButtonUpdate()
 	This:C1470.emptyIndex.show((Form:C1466.staged=Null:C1517) || (Form:C1466.staged.length=0))
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-Function _commitsManager()
+	// Contextual menu on the selected commit.
+Function _commitMenu()
+	
+	var $commit:=This:C1470.commits.item
+	
+	If ($commit=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	var $sha:=String:C10($commit.fingerprint.long)
+	var $menu:=cs:C1710.ui.menu.new()\
+		.append(Localized string:C991("newBranch"); "createBranch")\
+		.append(Localized string:C991("newTag"); "createTag")\
+		.append(Localized string:C991("createPatch"); "createPatch")\
+		.line()\
+		.append(Localized string:C991("copySha"); "copySha")
+	
+	If (Not:C34($menu.popup().selected))
+		
+		return 
+		
+	End if 
+	
+	Case of 
+			
+			//______________________________________________________
+		: ($menu.choice="createBranch")
+			
+			This:C1470.newBranchDialog.show({\
+				at: $sha; \
+				label: $commit.title; \
+				branch: ""; \
+				checkout: True:C214; \
+				stash: This:C1470.checkout.stash; \
+				noChange: This:C1470.checkout.noChange; \
+				discard: This:C1470.checkout.discard\
+				})
+			
+			//______________________________________________________
+		: ($menu.choice="createTag")
+			
+			This:C1470.newTagDialog.show({at: $sha; tag: ""})
+			
+			//______________________________________________________
+		: ($menu.choice="createPatch")
+			
+			This:C1470._createPatch($commit)
+			
+			//______________________________________________________
+		: ($menu.choice="copySha")
+			
+			SET TEXT TO PASTEBOARD:C523($sha)
+			
+			//______________________________________________________
+	End case 
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Saves the selected commit as an mbox patch.
+Function _createPatch($commit : Object)
+	
+	var $git:=This:C1470.Git
+	var $sha : Text:=String:C10($commit.fingerprint.long)
+	var $worker:=4D:C1709.SystemWorker.new($git.command+"format-patch -1 --stdout "+$sha; {currentDirectory: $git.workspace; dataType: "text"})
+	
+	If ($worker=Null:C1517)
+		
+		return 
+		
+	End if 
+	
+	$worker.wait()
+	
+	var $patch : Text:=String:C10($worker.response)
+	
+	If (Length:C16($patch)=0)
+		
+		return 
+		
+	End if 
+	
+	var $dir : Text:=String:C10(Storage:C1525.gitPatchFolder.directory)
+	
+	If (Length:C16($dir)=0)
+		
+		$dir:=Folder:C1567(fk documents folder:K87:21).platformPath
+		
+	End if 
+	
+	var $name : Text:=$commit.fingerprint.short+"-"+cs:C1710.rgx.regex.new($commit.title; "[^\\w.-]+").substitute("-")
+	$name:=Substring:C12($name; 1; 60)+".patch"
+	$name:=Select document:C905($dir+$name; "save patch as:"; ".patch"; File name entry:K24:17)
+	
+	If (OK=0)
+		
+		return 
+		
+	End if 
+	
+	var $file : 4D:C1709.File:=File:C1566(DOCUMENT; fk platform path:K87:2)
+	
+	Use (Storage:C1525)
+		
+		Storage:C1525.gitPatchFolder:=Storage:C1525.gitPatchFolder || New shared object:C1526
+		
+	End use 
+	
+	Use (Storage:C1525.gitPatchFolder)
+		
+		Storage:C1525.gitPatchFolder.directory:=$file.parent.platformPath
+		
+	End use 
+	
+	$file.setText($patch)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+Function _commitsManager($e : cs:C1710.ui.evt)
 	
 	var $t : Text
 	
@@ -1041,6 +1190,13 @@ Function _commitsManager()
 		
 		return 
 		
+	Else 
+		
+		If (Contextual click:C713)
+			
+			This:C1470._commitMenu()
+			
+		End if 
 	End if 
 	
 	$commit.label:=$commit._.selected
@@ -1090,7 +1246,7 @@ Function _commitsManager()
 		
 	End if 
 	
-	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== 
+	// <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <== <==
 Function get isInIndex() : Boolean
 	
 	return This:C1470.form.focused=This:C1470.staged.name

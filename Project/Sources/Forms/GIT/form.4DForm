@@ -714,6 +714,7 @@
 					"width": 477,
 					"height": 255,
 					"events": [
+						"onClick",
 						"onSelectionChange"
 					],
 					"listboxType": "collection",
@@ -919,10 +920,11 @@
 				"commits": {
 					"type": "listbox",
 					"left": 0,
-					"top": 55,
+					"top": 62,
 					"width": 1123,
-					"height": 463,
+					"height": 456,
 					"events": [
+						"onClick",
 						"onSelectionChange"
 					],
 					"listboxType": "collection",
@@ -930,7 +932,7 @@
 					"currentItemSource": "formGetInstance.commits.item",
 					"currentItemPositionSource": "formGetInstance.commits.itemPosition",
 					"selectedItemsSource": "formGetInstance.commits.items",
-					"rowHeight": "23px",
+					"rowHeight": "24px",
 					"class": "flat",
 					"right": 1123,
 					"sizingY": "grow",
@@ -1100,5 +1102,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2560
+	"geometryStamp": 2575
 }

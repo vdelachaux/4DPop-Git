@@ -435,6 +435,44 @@ with 4D "{version}"</target>
           <target>Push failed.</target>
         </trans-unit>
       </group>
+      <group resname="NEW_REF">
+        <trans-unit id="n3wR3fBr4nchHhAaBgQw" resname="newBranch">
+          <source>New Branch…</source>
+          <target>New Branch…</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fT4gHhAaBgQw" resname="newTag">
+          <source>New Tag…</source>
+          <target>New Tag…</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fBr4nchN4m3" resname="branch">
+          <source>Branch</source>
+          <target>Branch</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fN4m3HhAaBg" resname="name">
+          <source>Name:</source>
+          <target>Name:</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fAtHhAaBgQw" resname="at">
+          <source>At:</source>
+          <target>At:</target>
+        </trans-unit>
+        <trans-unit id="n3wR3f3nt3rBr4nch" resname="enterBranchName">
+          <source>Enter branch name</source>
+          <target>Enter branch name</target>
+        </trans-unit>
+        <trans-unit id="n3wR3f3nt3rT4gHhA" resname="enterTagName">
+          <source>Enter tag name</source>
+          <target>Enter tag name</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fCr34t3HhAaB" resname="create">
+          <source>Create</source>
+          <target>Create</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fCr34t3Ch3ck" resname="createAndCheckout">
+          <source>Create and checkout</source>
+          <target>Create and checkout</target>
+        </trans-unit>
+      </group>
       <group resname="HISTORY">
         <trans-unit id="hIsT0ryW1nd0wT1tL3AaBg" resname="methodHistory">
           <source>Git history</source>
