@@ -1,0 +1,101 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"events": [
+		"onLoad",
+		"onClick"
+	],
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"title": {
+					"type": "text",
+					"text": "New Tag",
+					"top": 22,
+					"left": 48,
+					"width": 240,
+					"height": 18,
+					"fontTheme": "main"
+				},
+				"icon": {
+					"type": "picture",
+					"top": 17,
+					"left": 14,
+					"width": 24,
+					"height": 24,
+					"picture": "/RESOURCES/Images/git.svg",
+					"pictureFormat": "scaled"
+				},
+				"tagLabel": {
+					"type": "text",
+					"text": "Name:",
+					"top": 56,
+					"left": 18,
+					"width": 64,
+					"height": 16,
+					"textAlign": "right"
+				},
+				"tag": {
+					"type": "input",
+					"top": 55,
+					"left": 91,
+					"width": 238,
+					"height": 17,
+					"dataSource": "Form:C1466.tag",
+					"placeholder": "Enter Tag Name"
+				},
+				"atLabel": {
+					"type": "text",
+					"text": "At:",
+					"top": 84,
+					"left": 18,
+					"width": 64,
+					"height": 16,
+					"textAlign": "right"
+				},
+				"at": {
+					"type": "input",
+					"top": 83,
+					"left": 91,
+					"width": 238,
+					"height": 17,
+					"dataSource": "Form:C1466.at",
+					"focusable": false,
+					"class": "infos"
+				},
+				"cancel": {
+					"type": "button",
+					"text": "Cancel",
+					"top": 118,
+					"left": 162,
+					"width": 78,
+					"height": 23,
+					"events": [
+						"onClick"
+					]
+				},
+				"ok": {
+					"type": "button",
+					"text": "Create",
+					"top": 118,
+					"left": 251,
+					"width": 78,
+					"height": 23,
+					"events": [
+						"onClick"
+					],
+					"defaultButton": true
+				}
+			}
+		}
+	],
+	"method": "method",
+	"width": 346,
+	"height": 158
+}
