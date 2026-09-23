@@ -1355,6 +1355,22 @@
 			],
 			"Summary": ""
 		},
+		"isValidRefName()": {
+			"Syntax": "**.isValidRefName**( *name* : Text ) : Boolean",
+			"Params": [
+				[
+					"name",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
 		"updateTags()": {
 			"Syntax": "**.updateTags**() : cs.git.Git",
 			"Params": [
@@ -1595,6 +1611,22 @@
 				[
 					"force",
 					"Boolean",
+					"->"
+				],
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"tagExists()": {
+			"Syntax": "**.tagExists**( *name* : Text ) : Boolean",
+			"Params": [
+				[
+					"name",
+					"Text",
 					"->"
 				],
 				[

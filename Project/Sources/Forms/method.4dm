@@ -1,43 +1,38 @@
 var $e:=FORM Event:C1606
 
-Case of 
-		
+Case of
+
 		// ______________________________________________________
 	: ($e.code=On Load:K2:1)
-		
+
 		cs:C1710.ui.input.new("tag").focus()
-		
-		// ______________________________________________________
-	: ($e.code=On Resize:K2:27)
-		
-		Form:C1466.me.onResize()
-		
+
 		// ______________________________________________________
 	: ($e.code=On Clicked:K2:4)
-		
-		Case of 
-				
+
+		Case of
+
 				// ______________________________________________________
 			: ($e.objectName="cancel")
-				
+
 				Form:C1466.me.cancel()
-				
+
 				// ______________________________________________________
 			: ($e.objectName="ok")
-				
+
 				If (Length:C16(Form:C1466.tag)>0)
-					
+
 					Form:C1466.newTag:=True:C214
 					Form:C1466.me.accept()
-					
-				Else 
-					
+
+				Else
+
 					BEEP:C151
-					
-				End if 
-				
+
+				End if
+
 				// ______________________________________________________
-		End case 
-		
+		End case
+
 		// ______________________________________________________
-End case 
+End case

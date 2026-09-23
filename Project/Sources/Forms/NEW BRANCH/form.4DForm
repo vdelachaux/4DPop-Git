@@ -51,7 +51,7 @@
 					"height": 21,
 					"fill": "automatic"
 				},
-				"Group Box1": {
+				"checkOutOptions": {
 					"type": "groupBox",
 					"text": ":xliff:localChanges",
 					"top": 146,
@@ -131,7 +131,7 @@
 					"picture": "/RESOURCES/Images/Main/branch.svg",
 					"pictureFormat": "scaled"
 				},
-				"Input": {
+				"branchName": {
 					"type": "input",
 					"left": 226,
 					"top": 91,
@@ -146,7 +146,7 @@
 						"onAfterEdit"
 					]
 				},
-				"Radio Button": {
+				"noChange": {
 					"type": "radio",
 					"text": ":xliff:noChange",
 					"top": 165,
@@ -160,7 +160,7 @@
 					"dataSource": "Form:C1466.noChange",
 					"dataSourceTypeHint": "boolean"
 				},
-				"Radio Button1": {
+				"stashReaply": {
 					"type": "radio",
 					"text": ":xliff:stashAndReaply",
 					"top": 192,
@@ -174,7 +174,7 @@
 					"dataSource": "Form:C1466.stash",
 					"dataSourceTypeHint": "boolean"
 				},
-				"Radio Button2": {
+				"discard": {
 					"type": "radio",
 					"text": ":xliff:discard",
 					"top": 219,
@@ -207,11 +207,11 @@
 					"picture": "/RESOURCES/Images/Main/master.svg",
 					"pictureFormat": "scaled"
 				},
-				"Input1": {
+				"sha": {
 					"type": "input",
 					"left": 224,
 					"top": 64,
-					"width": 59,
+					"width": 57,
 					"height": 17,
 					"dataSource": "Form:C1466.at",
 					"class": "infos",
@@ -230,30 +230,30 @@
 					"dataSourceTypeHint": "boolean",
 					"dataSource": "Form:C1466.checkout"
 				},
-				"Input2": {
+				"label": {
 					"type": "input",
-					"left": 282,
+					"left": 287,
 					"top": 64,
-					"width": 169,
+					"width": 164,
 					"height": 17,
 					"dataSource": "Form:C1466.label",
 					"class": "infos"
 				}
 			},
 			"entryOrder": [
-				"Input",
-				"Radio Button",
-				"Radio Button1",
-				"Radio Button2",
+				"branchName",
+				"noChange",
+				"stashReaply",
+				"discard",
 				"cancel",
 				"ok",
 				"checkout",
-				"Input2",
-				"Input1"
+				"label",
+				"sha"
 			]
 		}
 	],
-	"geometryStamp": 508,
+	"geometryStamp": 525,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",

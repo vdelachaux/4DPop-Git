@@ -828,6 +828,90 @@ shared Function updateTags() : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Checks a tag/branch name against git's ref-name rules (see `git check-ref-format`).
+Function isValidRefName($name : Text) : Boolean
+	
+	If (Length:C16($name)=0) || (Substring:C12($name; 1; 1)="-")
+		
+		return False:C215
+		
+	End if 
+	
+	If ((Length:C16($name)=1) && (Position:C15("@"; $name)=1))  // Lone "@" is forbidden
+		
+		return False:C215
+		
+	End if 
+	
+	If (Substring:C12($name; 1; 1)="/")\
+		 || (Substring:C12($name; Length:C16($name); 1)="/")\
+		 || (Substring:C12($name; Length:C16($name); 1)=".")
+		
+		return False:C215
+		
+	End if 
+	
+	If (Position:C15(".."; $name)>0)\
+		 || (Position:C15("@{"; $name)>0)\
+		 || (Position:C15("//"; $name)>0)\
+		 || (Position:C15(" "; $name)>0)\
+		 || (Position:C15("~"; $name)>0)\
+		 || (Position:C15("^"; $name)>0)\
+		 || (Position:C15(":"; $name)>0)\
+		 || (Position:C15("?"; $name)>0)\
+		 || (Position:C15("*"; $name)>0)\
+		 || (Position:C15("["; $name)>0)\
+		 || (Position:C15("\\"; $name)>0)
+		
+		return False:C215
+		
+	End if 
+	
+	var $part : Text
+	
+	For each ($part; Split string:C1554($name; "/"))
+		
+		If (Length:C16($part)=0)\
+			 || (Substring:C12($part; 1; 1)=".")\
+			 || ((Length:C16($part)>=5) && (Substring:C12($part; Length:C16($part)-4; 5)=".lock"))
+			
+			return False:C215
+			
+		End if 
+	End for each 
+	
+	return True:C214
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// True if `$name` already exists as a tag, locally or on any configured remote.
+Function tagExists($name : Text) : Boolean
+	
+	If (Length:C16($name)=0)
+		
+		return False:C215
+		
+	End if 
+	
+	If (This:C1470.execute("tag -l "+$name)) && (Length:C16(This:C1470.result)>0)
+		
+		return True:C214
+		
+	End if 
+	
+	var $remote : Object
+	
+	For each ($remote; This:C1470.remotes)
+		
+		If (This:C1470.execute("ls-remote --tags "+$remote.name+" refs/tags/"+$name)) && (Length:C16(This:C1470.result)>0)
+			
+			return True:C214
+			
+		End if 
+	End for each 
+	
+	return False:C215
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Parses .git/FETCH_HEAD for the given ref type (e.g. "branch").
 Function FETCH_HEAD($type : Text) : Collection
 	

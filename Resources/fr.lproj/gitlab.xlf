@@ -468,6 +468,14 @@ avec 4D "{version}"</target>
           <source>Create and checkout</source>
           <target>Créer et checkout</target>
         </trans-unit>
+        <trans-unit id="n3wR3fInv4l1dT4gN4m3" resname="invalidTagName">
+          <source>This tag name is not valid.</source>
+          <target>Ce nom de tag n'est pas valide.</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fT4gAlr34dyEx1st" resname="tagAlreadyExists">
+          <source>This tag already exists locally or on a remote.</source>
+          <target>Ce tag existe déjà en local ou sur un dépôt distant.</target>
+        </trans-unit>
       </group>
       <group resname="HISTORY">
         <trans-unit id="hIsT0ryW1nd0wT1tL3AaBg" resname="methodHistory">

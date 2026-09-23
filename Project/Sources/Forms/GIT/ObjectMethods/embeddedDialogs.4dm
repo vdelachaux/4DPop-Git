@@ -179,6 +179,20 @@ If ($e.code<0)
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 		: (Bool:C1537($data.newTag))
 			
+			If (Not:C34($git.isValidRefName($data.tag)))
+				
+				$form.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: Localized string:C991("invalidTagName")})
+				return 
+				
+			End if 
+			
+			If ($git.tagExists($data.tag))
+				
+				$form.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: Localized string:C991("tagAlreadyExists")})
+				return 
+				
+			End if 
+			
 			If (Not:C34($git.execute("tag "+$data.tag+" "+$data.at)))
 				
 				$form.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})

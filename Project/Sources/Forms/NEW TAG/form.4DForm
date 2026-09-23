@@ -5,7 +5,8 @@
 	},
 	"events": [
 		"onLoad",
-		"onClick"
+		"onClick",
+		"onResize"
 	],
 	"destination": "detailScreen",
 	"pages": [
@@ -14,19 +15,30 @@
 		},
 		{
 			"objects": {
+				"main": {
+					"type": "rectangle",
+					"top": 60,
+					"left": 100,
+					"width": 353,
+					"height": 166,
+					"borderRadius": 10,
+					"fill": "automatic",
+					"stroke": "automatic",
+					"bottom": 226
+				},
 				"title": {
 					"type": "text",
 					"text": ":xliff:newTag",
-					"top": 22,
-					"left": 48,
+					"top": 82,
+					"left": 148,
 					"width": 240,
 					"height": 18,
 					"fontTheme": "main"
 				},
 				"icon": {
 					"type": "picture",
-					"top": 17,
-					"left": 14,
+					"top": 77,
+					"left": 114,
 					"width": 24,
 					"height": 24,
 					"picture": "/RESOURCES/Images/git.svg",
@@ -35,16 +47,16 @@
 				"tagLabel": {
 					"type": "text",
 					"text": ":xliff:name",
-					"top": 56,
-					"left": 18,
+					"top": 116,
+					"left": 118,
 					"width": 64,
 					"height": 16,
 					"textAlign": "right"
 				},
 				"tag": {
 					"type": "input",
-					"top": 55,
-					"left": 91,
+					"top": 115,
+					"left": 191,
 					"width": 238,
 					"height": 17,
 					"dataSource": "Form:C1466.tag",
@@ -53,16 +65,16 @@
 				"atLabel": {
 					"type": "text",
 					"text": ":xliff:at",
-					"top": 84,
-					"left": 18,
+					"top": 144,
+					"left": 118,
 					"width": 64,
 					"height": 16,
 					"textAlign": "right"
 				},
 				"at": {
 					"type": "input",
-					"top": 83,
-					"left": 91,
+					"top": 143,
+					"left": 191,
 					"width": 238,
 					"height": 17,
 					"dataSource": "Form:C1466.at",
@@ -72,30 +84,54 @@
 				"cancel": {
 					"type": "button",
 					"text": ":xliff:cancel",
-					"top": 118,
-					"left": 162,
-					"width": 78,
-					"height": 23,
-					"events": [
-						"onClick"
-					]
-				},
-				"ok": {
-					"type": "button",
-					"text": ":xliff:create",
-					"top": 118,
-					"left": 251,
+					"top": 178,
+					"left": 262,
 					"width": 78,
 					"height": 23,
 					"events": [
 						"onClick"
 					],
-					"defaultButton": true
+					"action": ""
+				},
+				"ok": {
+					"type": "button",
+					"text": ":xliff:create",
+					"top": 178,
+					"left": 351,
+					"width": 78,
+					"height": 23,
+					"events": [
+						"onClick"
+					],
+					"defaultButton": true,
+					"action": ""
 				}
 			}
 		}
 	],
-	"method": "method",
-	"width": 346,
-	"height": 158
+	"method": "method.4dm",
+	"editor": {
+		"groups": {
+			"Group": [
+				"title",
+				"icon",
+				"tagLabel",
+				"tag",
+				"atLabel",
+				"at",
+				"cancel",
+				"ok",
+				"main"
+			]
+		},
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"inheritedForm": "EMBEDDED BACK",
+	"geometryStamp": 15,
+	"rightMargin": 0,
+	"bottomMargin": 0
 }
