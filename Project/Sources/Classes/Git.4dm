@@ -139,7 +139,7 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 			// —————————————————————— ⚠️ In some cases, the result can be found in the error stream
 		: ($command="@checkout@")
 			
-			This:C1470.success:=(($errorStream="Switched to branch @") && ($outputStream="Your branch is up to date with @"))\
+			This:C1470.success:=(($errorStream="Switched to @")/* && ($outputStream="Your branch is up to date with @")*/)\
 				 || ($errorStream="@switched to branch@")\
 				 || ($errorStream="Already on @")
 			

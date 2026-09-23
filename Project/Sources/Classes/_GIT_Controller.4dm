@@ -795,12 +795,12 @@ Function onActivate()
 	
 	This:C1470._updateScheme()
 	
-	If (This:C1470.form.page=This:C1470.pages.history)
-		
-		This:C1470.updateCommits()
-		This:C1470._scheduleCommitsRefresh()
-		
-	End if 
+	//If (This.form.page=This.pages.history)
+	
+	This:C1470.updateCommits()
+	This:C1470._scheduleCommitsRefresh()
+	
+	//End if 
 	
 	If ($git.status()>0)
 		
