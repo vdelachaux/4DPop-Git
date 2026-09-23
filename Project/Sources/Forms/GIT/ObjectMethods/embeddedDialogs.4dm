@@ -89,6 +89,52 @@ If ($e.code<0)
 			
 			$form.onActivate()
 			
+			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+		: (Bool:C1537($data.newBranch))
+			
+			Case of 
+					
+					// ______________________________________________________
+				: ($form.checkout.noChange)
+					
+					$t:=Replace string:C233(Localized string:C991("autostash"); "{date}"; String:C10(Current date:C33; Internal date long:K1:5))
+					$git.stash("save"; Replace string:C233($t; "{time}"; String:C10(Current time:C178; HH MM:K7:2)))
+					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch; $data.at).success
+					
+					// ______________________________________________________
+				: ($form.checkout.stash)
+					
+					$form.autostash:=True:C214
+					
+					$git.stash("save")
+					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch; $data.at).success
+					$git.stash("pop")
+					
+					// ______________________________________________________
+				: ($form.checkout.discard)
+					
+					$form.Discard(Form:C1466.unstaged)
+					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch; $data.at).success
+					
+					// ______________________________________________________
+			End case 
+			
+			RELOAD PROJECT:C1739
+			
+			If ($success)
+				
+				$form.updateCommits()
+				
+			End if 
+			
+			$form.onActivate()
+			
+			If (Not:C34($success))
+				
+				$form.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})
+				
+			End if 
+			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 		: (Bool:C1537($data.checkout))
 			
@@ -135,49 +181,18 @@ If ($e.code<0)
 			End if 
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
-		: (Bool:C1537($data.newBranch))
+		: (Bool:C1537($data.newTag))
 			
-			Case of 
-					
-					// ______________________________________________________
-				: (Length:C16(String:C10($data.branch))=0)
-					
-					BEEP:C151
-					
-					// ______________________________________________________
-				: ($form.checkout.noChange)
-					
-					$t:=Replace string:C233(Localized string:C991("autostash"); "{date}"; String:C10(Current date:C33; Internal date long:K1:5))
-					$git.stash("save"; Replace string:C233($t; "{time}"; String:C10(Current time:C178; HH MM:K7:2)))
-					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch).success
-					
-					// ______________________________________________________
-				: ($form.checkout.stash)
-					
-					$form.autostash:=True:C214
-					
-					$git.stash("save")
-					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch).success
-					$git.stash("pop")
-					
-					// ______________________________________________________
-				: ($form.checkout.discard)
-					
-					$form.Discard(Form:C1466.unstaged)
-					$success:=$git.branch($data.checkout ? "createAndUse" : "create"; $data.branch).success
-					
-					// ______________________________________________________
-			End case 
-			
-			RELOAD PROJECT:C1739
-			
-			$form.onActivate()
-			
-			If (Not:C34($success))
+			If (Not:C34($git.execute("tag "+$data.tag+" "+$data.at)))
 				
 				$form.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})
+				return 
 				
 			End if 
+			
+			$git.updateTags()
+			$form.updateCommits()
+			$form.onActivate()
 			
 			//╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
 	End case 

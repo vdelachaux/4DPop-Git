@@ -923,6 +923,7 @@
 					"width": 1123,
 					"height": 463,
 					"events": [
+						"onClick",
 						"onSelectionChange"
 					],
 					"listboxType": "collection",

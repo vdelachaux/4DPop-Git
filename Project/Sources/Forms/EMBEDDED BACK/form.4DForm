@@ -11,23 +11,7 @@
 	"windowMaxHeight": 32767,
 	"rightMargin": 0,
 	"bottomMargin": 0,
-	"events": [
-		"onLoad",
-		"onPageChange",
-		"onValidate",
-		"onClick",
-		"onDoubleClick",
-		"onOutsideCall",
-		"onBeginDragOver",
-		"onDragOver",
-		"onDrop",
-		"onAfterKeystroke",
-		"onMenuSelect",
-		"onPluginArea",
-		"onAfterEdit",
-		"onTimer",
-		"onBoundVariableChange"
-	],
+	"events": [],
 	"destination": "detailScreen",
 	"pages": [
 		{
