@@ -127,6 +127,12 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 		// it wins over any stale/wrong-arch tool a user may have under /usr/local/bin
 		SET ENVIRONMENT VARIABLE:C812("PATH"; (This:C1470.BIN#Null:C1517 ? String:C10(This:C1470.BIN.path)+":" : "")+"/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
 		
+		// ⚠️ Setting ANY real environment variable above makes 4D stop inheriting the
+		// rest of the process environment for this LAUNCH EXTERNAL PROCESS call, so
+		// HOME is otherwise silently dropped — breaking global git config lookups
+		// ("fatal: $HOME not set"), user.name/email among them
+		SET ENVIRONMENT VARIABLE:C812("HOME"; String:C10(Folder:C1567(fk home folder:K87:24).path))
+		
 	End if 
 	
 	If (This:C1470.workspace#Null:C1517)

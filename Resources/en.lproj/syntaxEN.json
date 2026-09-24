@@ -1057,22 +1057,6 @@
 		}
 	},
 	"gh": {
-		"deleteRepo()": {
-			"Syntax": "**.deleteRepo**( *name* : Text ) : Boolean",
-			"Params": [
-				[
-					"name",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
 		"onTerminate()": {
 			"Syntax": "**.onTerminate**( *worker* : 4D.SystemWorker )",
 			"Params": [
@@ -1100,20 +1084,14 @@
 			],
 			"Summary": ""
 		},
-		"login()": {
-			"Syntax": "**.login**() : Boolean",
+		"deleteRepo()": {
+			"Syntax": "**.deleteRepo**( *name* : Text ) : Boolean",
 			"Params": [
 				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"checkToken()": {
-			"Syntax": "**.checkToken**() : Boolean",
-			"Params": [
+					"name",
+					"Text",
+					"->"
+				],
 				[
 					"",
 					"Boolean",
@@ -1148,9 +1126,15 @@
 			],
 			"Summary": ""
 		},
-		"logout()": {
-			"Syntax": "**.logout**()",
-			"Params": [],
+		"token()": {
+			"Syntax": "**.token**() : Text",
+			"Params": [
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
 			"Summary": ""
 		},
 		"getStatus()": {
@@ -1159,6 +1143,44 @@
 				[
 					"",
 					"Object",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"logout()": {
+			"Syntax": "**.logout**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"setupGit()": {
+			"Syntax": "**.setupGit**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"checkToken()": {
+			"Syntax": "**.checkToken**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"login()": {
+			"Syntax": "**.login**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
 					"<-"
 				]
 			],
@@ -1299,54 +1321,6 @@
 		"REMOTE_ORIGIN()": {
 			"Syntax": "**.REMOTE_ORIGIN**() : Collection",
 			"Params": [
-				[
-					"",
-					"Collection",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"userName()": {
-			"Syntax": "**.userName**() : Text",
-			"Params": [
-				[
-					"",
-					"Text",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"getTarget()": {
-			"Syntax": "**.getTarget**( *path* : Text; *root* : 4D.Folder ) : Variant",
-			"Params": [
-				[
-					"path",
-					"Text",
-					"->"
-				],
-				[
-					"root",
-					"4D.Folder",
-					"->"
-				],
-				[
-					"",
-					"Variant",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"FETCH_HEAD()": {
-			"Syntax": "**.FETCH_HEAD**( *type* : Text ) : Collection",
-			"Params": [
-				[
-					"type",
-					"Text",
-					"->"
-				],
 				[
 					"",
 					"Collection",
@@ -1506,17 +1480,102 @@
 			],
 			"Summary": ""
 		},
-		"execute()": {
-			"Syntax": "**.execute**( *command* : Text; *inputStream* : Text ) : Boolean",
+		"getConfig()": {
+			"Syntax": "**.getConfig**( *what* : Text ) : Text",
 			"Params": [
 				[
-					"command",
+					"what",
 					"Text",
 					"->"
 				],
 				[
-					"inputStream",
+					"",
 					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"revert()": {
+			"Syntax": "**.revert**( *sha* : Text ) : Boolean",
+			"Params": [
+				[
+					"sha",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"userName()": {
+			"Syntax": "**.userName**() : Text",
+			"Params": [
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"getTarget()": {
+			"Syntax": "**.getTarget**( *path* : Text; *root* : 4D.Folder ) : Variant",
+			"Params": [
+				[
+					"path",
+					"Text",
+					"->"
+				],
+				[
+					"root",
+					"4D.Folder",
+					"->"
+				],
+				[
+					"",
+					"Variant",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"FETCH_HEAD()": {
+			"Syntax": "**.FETCH_HEAD**( *type* : Text ) : Collection",
+			"Params": [
+				[
+					"type",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Collection",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"push()": {
+			"Syntax": "**.push**( *origin* : Text; *branch* : Text; *force* : Boolean ) : Boolean",
+			"Params": [
+				[
+					"origin",
+					"Text",
+					"->"
+				],
+				[
+					"branch",
+					"Text",
+					"->"
+				],
+				[
+					"force",
+					"Boolean",
 					"->"
 				],
 				[
@@ -1590,32 +1649,6 @@
 				[
 					"",
 					"cs.git.Git",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"push()": {
-			"Syntax": "**.push**( *origin* : Text; *branch* : Text; *force* : Boolean ) : Boolean",
-			"Params": [
-				[
-					"origin",
-					"Text",
-					"->"
-				],
-				[
-					"branch",
-					"Text",
-					"->"
-				],
-				[
-					"force",
-					"Boolean",
-					"->"
-				],
-				[
-					"",
-					"Boolean",
 					"<-"
 				]
 			],
@@ -1832,6 +1865,27 @@
 			],
 			"Summary": ""
 		},
+		"execute()": {
+			"Syntax": "**.execute**( *command* : Text; *inputStream* : Text ) : Boolean",
+			"Params": [
+				[
+					"command",
+					"Text",
+					"->"
+				],
+				[
+					"inputStream",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
 		"update()": {
 			"Syntax": "**.update**()",
 			"Params": [],
@@ -1863,24 +1917,11 @@
 			"Params": [],
 			"Summary": ""
 		},
-		"getConfig()": {
-			"Syntax": "**.getConfig**( *what* : Text ) : Text",
-			"Params": [
-				[
-					"what",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Text",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
 		"DEBUG": {
 			"Syntax": "DEBUG : Boolean"
+		},
+		"BIN": {
+			"Syntax": "BIN : 4D.Folder"
 		},
 		"PACKAGE": {
 			"Syntax": "PACKAGE : 4D.Folder"
