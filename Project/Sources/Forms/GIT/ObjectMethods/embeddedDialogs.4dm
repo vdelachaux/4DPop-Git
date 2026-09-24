@@ -166,6 +166,7 @@ If ($e.code<0)
 					// ______________________________________________________
 			End case 
 			
+			$git.update()  // Refresh cached HEAD, else currentBranch/windowTitle stay on the old branch
 			RELOAD PROJECT:C1739
 			
 			$form.onActivate()

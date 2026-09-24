@@ -1812,10 +1812,11 @@ Function _checkoutBranch($name : Text)
 	End if 
 	
 	$git.checkout($name)
+	$git.update()  // Refresh cached HEAD, else currentBranch/windowTitle stay on the old branch
 	
 	RELOAD PROJECT:C1739
 	
-	This:C1470.form.refresh()
+	This:C1470.onActivate()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Checkout($branch : Object)
