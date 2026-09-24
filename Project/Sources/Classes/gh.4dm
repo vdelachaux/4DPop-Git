@@ -169,6 +169,22 @@ Function checkToken() : Boolean
 		
 	End if 
 	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the current `gh` OAuth token, or "" when unavailable.
+Function token() : Text
+	
+	var $error; $in; $out : Text
+	
+	If (This:C1470.exe=Null:C1517)
+		
+		return ""
+		
+	End if 
+	
+	LAUNCH EXTERNAL PROCESS:C811(This:C1470.exe+" auth token"; $in; $out; $error)
+	
+	return Bool:C1537(OK) ? Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first() || "" : ""
+	
 	//MARK:- [repo]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Create a new GitHub repository.

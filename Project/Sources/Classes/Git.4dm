@@ -125,7 +125,7 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 		// pre-push hook) run as a shell script and need a tool to be found on it.
 		// Our own embedded (universal arm64+x86_64) Resources/bin is prepended FIRST so
 		// it wins over any stale/wrong-arch tool a user may have under /usr/local/bin
-		SET ENVIRONMENT VARIABLE:C812("PATH"; String:C10(This:C1470.BIN.path)+":/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
+		SET ENVIRONMENT VARIABLE:C812("PATH"; (This:C1470.BIN#Null:C1517 ? String:C10(This:C1470.BIN.path)+":" : "")+"/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
 		
 	End if 
 	
@@ -153,6 +153,12 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 			This:C1470.success:=(($errorStream="Switched to @")/* && ($outputStream="Your branch is up to date with @")*/)\
 				 || ($errorStream="@switched to branch@")\
 				 || ($errorStream="Already on @")
+			
+			// —————————————————————— ⚠️ e.g. "current Git remote contains credentials" when
+			// pushing to a URL with an embedded token (our own auth retry) — not a real failure
+		: (Bool:C1537(OK)) && (Length:C16($errorStream)>0) && (Not:C34(Match regex:C1019("(?mi-s)^(?!warning:).+$"; $errorStream; 1)))
+			
+			This:C1470.success:=True:C214
 			
 			// ——————————————————————
 	End case 
@@ -561,19 +567,88 @@ Function _push($target : Text; $flag : Text) : Boolean
 	End if 
 	
 	// HTTPS push can't prompt for credentials in a headless launch ("could not read
-	// Username..."); wire git to use gh's stored token instead, then retry once
+	// Username..."). Best-effort wire git to gh's credential helper (also fixes a
+	// plain Terminal `git push` afterwards), then retry with the token embedded
+	// directly in the remote URL — this bypasses the credential-helper CHAIN
+	// entirely, so a pre-existing helper (e.g. Git Credential Manager) that fails
+	// first can't block our own gh-backed retry
 	If (Match regex:C1019("(?i)could not read username|terminal prompts disabled"; This:C1470.error; 1))
 		
 		var $gh:=cs:C1710.gh.me
 		
-		If ($gh.available) && ($gh.login()) && ($gh.setupGit())
+		If ($gh.available) && ($gh.login())
 			
-			return This:C1470.execute($c.join(" "))
+			$gh.setupGit()
 			
+			var $remoteName : Text:=Split string:C1554($target; " ")[0]
+			var $auth : Object:=This:C1470._authenticatedRemoteURL($remoteName; $gh)
+			
+			If ($auth#Null:C1517)
+				
+				var $retryTarget : Text:=$auth.url+Substring:C12($target; Length:C16($remoteName)+1)
+				var $retryC:=["push"; $retryTarget]
+				
+				If (Length:C16($flag)>0)
+					
+					$retryC.push($flag)
+					
+				End if 
+				
+				$retryC.push("--tags")
+				$retryC.push("--quiet")
+				
+				var $retrySuccess:=This:C1470.execute($retryC.join(" "))
+				This:C1470._redactHistory($auth.token)
+				
+				return $retrySuccess
+				
+			End if 
 		End if 
 	End if 
 	
 	return False:C215
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Rewrites a remote's URL to embed a fresh gh token (github.com HTTPS remotes only)
+Function _authenticatedRemoteURL($remoteName : Text; $gh : cs:C1710.gh) : Object
+	
+	If (Not:C34(This:C1470.execute("remote get-url "+$remoteName)))
+		
+		return Null:C1517
+		
+	End if 
+	
+	var $url : Text:=This:C1470.result
+	
+	If (Position:C15("https://github.com/"; $url)#1)
+		
+		return Null:C1517  // only plain github.com HTTPS remotes are supported by this fallback
+		
+	End if 
+	
+	var $token : Text:=$gh.token()
+	
+	If (Length:C16($token)=0)
+		
+		return Null:C1517
+		
+	End if 
+	
+	return {url: Replace string:C233($url; "https://github.com/"; "https://x-access-token:"+$token+"@github.com/"); token: $token}
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Scrubs a secret (e.g. an embedded push token) from the most recent history entry
+Function _redactHistory($secret : Text)
+	
+	If (Length:C16($secret)=0) || (This:C1470.history.length=0)
+		
+		return 
+		
+	End if 
+	
+	Use (This:C1470.history[0])
+		This:C1470.history[0].cmd:=Replace string:C233(This:C1470.history[0].cmd; $secret; "***")
+	End use 
 	
 	//MARK:-branch
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
