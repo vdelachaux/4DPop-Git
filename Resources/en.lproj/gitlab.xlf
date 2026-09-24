@@ -526,6 +526,26 @@ with 4D "{version}"</target>
           <source>Create patch…</source>
           <target>Create patch…</target>
         </trans-unit>
+        <trans-unit id="hIsT0ryR3v3rtC0mm1tHhAaBg" resname="revertCommit">
+          <source>Revert commit…</source>
+          <target>Revert commit…</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryR3v3rtC0nf1rmHhAaBg" resname="areYouSureYouWantToRevertThisCommit">
+          <source>Are you sure you want to revert commit "{title}"?</source>
+          <target>Are you sure you want to revert commit "{title}"?</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryApplyStashHhAaBg" resname="applyStash">
+          <source>Apply stash</source>
+          <target>Apply stash</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryDr0pStashHhAaBg" resname="dropStash">
+          <source>Delete stash…</source>
+          <target>Delete stash…</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryDr0pStashC0nfHhAaBg" resname="areYouSureYouWantToDropThisStash">
+          <source>Are you sure you want to delete this stash?</source>
+          <target>Are you sure you want to delete this stash?</target>
+        </trans-unit>
         <trans-unit id="hIsT0ryBl4m3S3l3ctHhAaBg" resname="selectLinesFirst">
           <source>Select one or more lines first.</source>
           <target>Select one or more lines first.</target>

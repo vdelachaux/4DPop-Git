@@ -702,6 +702,12 @@ Function checkout($what) : cs:C1710.Git
 	return This:C1470
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Reverts a single commit into a new commit (`git revert --no-edit`).
+Function revert($sha : Text) : Boolean
+	
+	return This:C1470.execute("revert --no-edit "+$sha)
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Number of commits available to fetch/pull on the given branch.
 Function branchFetchNumber($branch : Text) : Integer
 	
@@ -1083,6 +1089,16 @@ shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 		: ($action="pop")
 			
 			This:C1470.execute("stash pop --quiet")
+			
+			//———————————————————————————————————
+		: ($action="apply")
+			
+			This:C1470.execute("stash apply --quiet "+This:C1470._quoted($name))
+			
+			//———————————————————————————————————
+		: ($action="drop")
+			
+			This:C1470.execute("stash drop --quiet "+This:C1470._quoted($name))
 			
 			//________________________________________
 		Else 

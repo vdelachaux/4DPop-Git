@@ -522,6 +522,26 @@ avec 4D "{version}"</target>
           <source>Create patch…</source>
           <target>Créer un patch…</target>
         </trans-unit>
+        <trans-unit id="hIsT0ryR3v3rtC0mm1tHhAaBg" resname="revertCommit">
+          <source>Revert commit…</source>
+          <target>Annuler ce commit…</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryR3v3rtC0nf1rmHhAaBg" resname="areYouSureYouWantToRevertThisCommit">
+          <source>Are you sure you want to revert commit "{title}"?</source>
+          <target>Voulez-vous vraiment annuler le commit "{title}" ?</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryApplyStashHhAaBg" resname="applyStash">
+          <source>Apply stash</source>
+          <target>Appliquer le stash</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryDr0pStashHhAaBg" resname="dropStash">
+          <source>Delete stash…</source>
+          <target>Supprimer le stash…</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryDr0pStashC0nfHhAaBg" resname="areYouSureYouWantToDropThisStash">
+          <source>Are you sure you want to delete this stash?</source>
+          <target>Voulez-vous vraiment supprimer ce stash ?</target>
+        </trans-unit>
         <trans-unit id="hIsT0ryBl4m3S3l3ctHhAaBg" resname="selectLinesFirst">
           <source>Select one or more lines first.</source>
           <target>Sélectionnez d'abord une ou plusieurs lignes.</target>

@@ -183,21 +183,31 @@ Function handleEvents($e : cs:C1710.ui.evt)
 				//______________________________________________________
 			: ($e.pageChange)
 				
-				If (This:C1470.form.page=This:C1470.pages.history)
-					
-					If (Form:C1466.page2Inited=Null:C1517)
+				Case of 
 						
-						// FIXME: TURN AROUND - Force 4D to compute column widths
-						LISTBOX SET COLUMN WIDTH:C833(*; This:C1470.commits.getColumnName(1); This:C1470.form.window.width-550)
-						Form:C1466.page2Inited:=True:C214
+						// ______________________________________________________
+					: (This:C1470.form.page=This:C1470.pages.history)
 						
-					End if 
-					
-					This:C1470._updateHistoryLoadingIndicator()
-					This:C1470.updateCommits()
-					This:C1470._scheduleCommitsRefresh()
-					
-				End if 
+						If (Form:C1466.page2Inited=Null:C1517)
+							
+							// FIXME: TURN AROUND - Force 4D to compute column widths
+							LISTBOX SET COLUMN WIDTH:C833(*; This:C1470.commits.getColumnName(1); This:C1470.form.window.width-550)
+							Form:C1466.page2Inited:=True:C214
+							
+						End if 
+						
+						This:C1470._updateHistoryLoadingIndicator()
+						This:C1470.updateCommits()
+						This:C1470._scheduleCommitsRefresh()
+						
+						// ______________________________________________________
+					: (This:C1470.form.page=This:C1470.pages.local)
+						
+						// The changes list is only rebuilt here; the timer/onActivate path doesn't fire on a plain page switch
+						This:C1470.update()
+						
+						// ______________________________________________________
+				End case 
 				
 				//______________________________________________________
 			: ($e.activate)
@@ -1059,13 +1069,40 @@ Function _commitMenu()
 		
 	End if 
 	
+	var $git:=This:C1470.Git
 	var $sha:=String:C10($commit.fingerprint.long)
-	var $menu:=cs:C1710.ui.menu.new()\
-		.append(Localized string:C991("newBranch"); "createBranch")\
-		.append(Localized string:C991("newTag"); "createTag")\
-		.append(Localized string:C991("createPatch"); "createPatch")\
-		.line()\
-		.append(Localized string:C991("copySha"); "copySha")
+	
+	// A stash entry is a merge commit; branch/tag/patch/revert don't apply to it
+	var $isStash:=False:C215
+	var $stashRef : Text
+	var $spec : Object
+	For each ($spec; $commit.__tags)
+		If ($spec#Null:C1517) && ($spec.what="stash")
+			$isStash:=True:C214
+			$stashRef:=String:C10($spec.text)
+			break
+		End if 
+	End for each 
+	
+	var $menu:=cs:C1710.ui.menu.new()
+	
+	If ($isStash)
+		
+		$menu.append(Localized string:C991("applyStash"); "applyStash")\
+			.append(Localized string:C991("dropStash"); "dropStash")\
+			.line()
+		
+	Else 
+		
+		$menu.append(Localized string:C991("newBranch"); "createBranch")\
+			.append(Localized string:C991("newTag"); "createTag")\
+			.append(Localized string:C991("createPatch"); "createPatch")\
+			.append(Localized string:C991("revertCommit"); "revertCommit")\
+			.line()
+		
+	End if 
+	
+	$menu.append(Localized string:C991("copySha"); "copySha")
 	
 	If (Not:C34($menu.popup().selected))
 		
@@ -1097,6 +1134,63 @@ Function _commitMenu()
 		: ($menu.choice="createPatch")
 			
 			This:C1470._createPatch($commit)
+			
+			//______________________________________________________
+		: ($menu.choice="revertCommit")
+			
+			var $confirm:={main: Replace string:C233(Localized string:C991("areYouSureYouWantToRevertThisCommit"); "{title}"; $commit.title)}
+			
+			This:C1470.onDialogConfirm($confirm)
+			
+			If (Bool:C1537($confirm.action))
+				
+				If ($git.revert($sha))
+					
+					RELOAD PROJECT:C1739
+					This:C1470.updateCommits()
+					This:C1470.onActivate()
+					
+				Else 
+					
+					This:C1470.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})
+					
+				End if 
+			End if 
+			
+			//______________________________________________________
+		: ($menu.choice="applyStash")
+			
+			If ($git.stash("apply"; $stashRef).success)
+				
+				RELOAD PROJECT:C1739
+				This:C1470.DoDiff()
+				This:C1470.onActivate()
+				
+			Else 
+				
+				This:C1470.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})
+				
+			End if 
+			
+			//______________________________________________________
+		: ($menu.choice="dropStash")
+			
+			var $confirm2:={main: Localized string:C991("areYouSureYouWantToDropThisStash")}
+			
+			This:C1470.onDialogConfirm($confirm2)
+			
+			If (Bool:C1537($confirm2.action))
+				
+				If ($git.stash("drop"; $stashRef).success)
+					
+					This:C1470.updateCommits()
+					
+				Else 
+					
+					This:C1470.onDialogAlert({main: Localized string:C991("gitEncounteredAnError"); additional: $git.error})
+					
+				End if 
+			End if 
 			
 			//______________________________________________________
 		: ($menu.choice="copySha")
