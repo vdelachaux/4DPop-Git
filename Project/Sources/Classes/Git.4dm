@@ -30,6 +30,7 @@ property _token:=""
 // MARK: Constants 🧰
 property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
 property SOURCES:=Folder:C1567("/SOURCES/"; *)
+property BIN:=Folder:C1567(Folder:C1567("/RESOURCES/bin"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
 property DEBUG:=Structure file:C489=Structure file:C489(*)
 
 shared singleton Class constructor($folder : 4D:C1709.Folder)
@@ -117,6 +118,16 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 	End if 
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
+	
+	If (Is macOS:C1572)
+		
+		// A GUI-launched 4D only inherits a minimal PATH; git hooks (e.g. the Git LFS
+		// pre-push hook) run as a shell script and need a tool to be found on it.
+		// Our own embedded (universal arm64+x86_64) Resources/bin is prepended FIRST so
+		// it wins over any stale/wrong-arch tool a user may have under /usr/local/bin
+		SET ENVIRONMENT VARIABLE:C812("PATH"; String:C10(This:C1470.BIN.path)+":/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
+		
+	End if 
 	
 	If (This:C1470.workspace#Null:C1517)
 		
@@ -543,7 +554,26 @@ Function _push($target : Text; $flag : Text) : Boolean
 	$c.push("--tags")
 	$c.push("--quiet")
 	
-	return This:C1470.execute($c.join(" "))
+	If (This:C1470.execute($c.join(" ")))
+		
+		return True:C214
+		
+	End if 
+	
+	// HTTPS push can't prompt for credentials in a headless launch ("could not read
+	// Username..."); wire git to use gh's stored token instead, then retry once
+	If (Match regex:C1019("(?i)could not read username|terminal prompts disabled"; This:C1470.error; 1))
+		
+		var $gh:=cs:C1710.gh.me
+		
+		If ($gh.available) && ($gh.login()) && ($gh.setupGit())
+			
+			return This:C1470.execute($c.join(" "))
+			
+		End if 
+	End if 
+	
+	return False:C215
 	
 	//MARK:-branch
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
