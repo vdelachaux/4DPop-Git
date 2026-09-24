@@ -925,7 +925,8 @@
 					"height": 456,
 					"events": [
 						"onClick",
-						"onSelectionChange"
+						"onSelectionChange",
+						"onDoubleClick"
 					],
 					"listboxType": "collection",
 					"dataSource": "Form:C1466.commits",

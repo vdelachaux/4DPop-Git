@@ -1086,6 +1086,10 @@ Function _commitMenu()
 	
 	var $menu:=cs:C1710.ui.menu.new()
 	
+	// A commit whose label carries a branch tag can be checked out directly, unless it's already current
+	var $branchName : Text:=This:C1470._branchOfCommit($commit)
+	var $canCheckoutBranch : Boolean:=(Not:C34($isStash)) && (Length:C16($branchName)>0) && ($branchName#$git.currentBranch)
+	
 	If ($isStash)
 		
 		$menu.append(Localized string:C991("applyStash"); "applyStash")\
@@ -1093,6 +1097,13 @@ Function _commitMenu()
 			.line()
 		
 	Else 
+		
+		If ($canCheckoutBranch)
+			
+			$menu.append(Replace string:C233(Localized string:C991("checkoutBranch"); "{name}"; $branchName); "checkoutBranch")\
+				.line()
+			
+		End if 
 		
 		$menu.append(Localized string:C991("newBranch"); "createBranch")\
 			.append(Localized string:C991("newTag"); "createTag")\
@@ -1111,6 +1122,11 @@ Function _commitMenu()
 	End if 
 	
 	Case of 
+			
+			//______________________________________________________
+		: ($menu.choice="checkoutBranch")
+			
+			This:C1470._checkoutBranch($branchName)
 			
 			//______________________________________________________
 		: ($menu.choice="createBranch")
@@ -1261,6 +1277,8 @@ Function _createPatch($commit : Object)
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function _commitsManager($e : cs:C1710.ui.evt)
 	
+	$e:=$e || cs:C1710.ui.evt.new()
+	
 	var $t : Text
 	
 	This:C1470.detailCommit.unselect()
@@ -1285,6 +1303,13 @@ Function _commitsManager($e : cs:C1710.ui.evt)
 		return 
 		
 	Else 
+		
+		If ($e.doubleClick)
+			
+			This:C1470._checkoutBranch(This:C1470._branchOfCommit($commit))
+			return 
+			
+		End if 
 		
 		If (Contextual click:C713)
 			
@@ -1745,6 +1770,54 @@ Function Discard($items : Collection)
 	This:C1470.onActivate()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Returns the branch name shown on a commit's label (branch/current branch tag), "" if none.
+Function _branchOfCommit($commit : Object) : Text
+	
+	var $spec : Object
+	For each ($spec; $commit.__tags)
+		If ($spec#Null:C1517) && (($spec.what="branch") || ($spec.what="current branch"))
+			// "current branch" text is built as "HEAD -> <name>" with "HEAD ->" stripped, leaving a leading space
+			var $name : Text:=String:C10($spec.text)
+			return Substring:C12($name; 1; 1)=" " ? Substring:C12($name; 2) : $name
+		End if 
+	End for each 
+	
+	return ""
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Checks out a branch by name, handling a dirty working tree via checkoutDialog. No-op on the current branch.
+Function _checkoutBranch($name : Text)
+	
+	var $git:=This:C1470.Git
+	
+	If (Length:C16($name)=0) || ($name=$git.currentBranch)
+		
+		return 
+		
+	End if 
+	
+	Form:C1466.currentBranch:=$name
+	
+	If ($git.status()>0)
+		
+		This:C1470.checkoutDialog.show({\
+			branch: $name; \
+			stash: This:C1470.checkout.stash; \
+			noChange: This:C1470.checkout.noChange; \
+			discard: This:C1470.checkout.discard\
+			})
+		
+		return 
+		
+	End if 
+	
+	$git.checkout($name)
+	
+	RELOAD PROJECT:C1739
+	
+	This:C1470.form.refresh()
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 Function Checkout($branch : Object)
 	
 	This:C1470.Git.branch("use"; $branch.name)
@@ -2087,30 +2160,7 @@ Function _handleMenus($what : Text; $data : Object)
 			//______________________________________________________
 		: ($what="checkout")
 			
-			If ($data.name#Form:C1466.currentBranch)
-				
-				Form:C1466.currentBranch:=$data.name
-				
-				If ($git.status()>0)
-					
-					This:C1470.checkoutDialog.show({\
-						branch: $data.name; \
-						stash: This:C1470.checkout.stash; \
-						noChange: This:C1470.checkout.noChange; \
-						discard: This:C1470.checkout.discard\
-						})
-					
-					return 
-					
-				End if 
-				
-				This:C1470.Git.checkout($data.name)
-				
-				RELOAD PROJECT:C1739
-				
-				This:C1470.form.refresh()
-				
-			End if 
+			This:C1470._checkoutBranch($data.name)
 			//______________________________________________________
 		: ($what="newBranch")
 			

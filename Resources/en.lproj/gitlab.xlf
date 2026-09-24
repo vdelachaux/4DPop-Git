@@ -526,6 +526,10 @@ with 4D "{version}"</target>
           <source>Create patch…</source>
           <target>Create patch…</target>
         </trans-unit>
+        <trans-unit id="hIsT0ryCh3ck0utBr4nchHhAaBg" resname="checkoutBranch">
+          <source>Checkout "{name}"</source>
+          <target>Checkout "{name}"</target>
+        </trans-unit>
         <trans-unit id="hIsT0ryR3v3rtC0mm1tHhAaBg" resname="revertCommit">
           <source>Revert commit…</source>
           <target>Revert commit…</target>
