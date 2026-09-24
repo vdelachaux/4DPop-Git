@@ -66,6 +66,8 @@ On creation, the constructor detects the `gh` executable (`.available`) and, if 
 |.**login** ( ) →`Boolean` | Ensures the user is authenticated (device-flow login when needed)
 |.**logout** ( ) | Removes the stored authentication for the host
 |.**checkToken** ( ) →`Boolean` | **True** when a valid `gh` authentication token is configured
+|.**token** ( ) →`Text` | The current `gh` OAuth token (`""` when unavailable)
+|.**setupGit** ( ) →`Boolean` | Wires `git` to authenticate through `gh` (`git config credential.helper`), so HTTPS pushes no longer prompt for credentials
 |.**get lastError** ( ) →`Text` | The most recent error message (`""` when there is none)
 
 ### Repositories
