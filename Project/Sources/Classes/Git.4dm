@@ -30,6 +30,7 @@ property _token:=""
 // MARK: Constants 🧰
 property PACKAGE:=Folder:C1567(Folder:C1567("/PACKAGE"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
 property SOURCES:=Folder:C1567("/SOURCES/"; *)
+property BIN:=Folder:C1567(Folder:C1567("/RESOURCES/bin"; *).platformPath; fk platform path:K87:2)  // Unsandboxed
 property DEBUG:=Structure file:C489=Structure file:C489(*)
 
 shared singleton Class constructor($folder : 4D:C1709.Folder)
@@ -118,6 +119,16 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
 	
+	If (Is macOS:C1572)
+		
+		// A GUI-launched 4D only inherits a minimal PATH; git hooks (e.g. the Git LFS
+		// pre-push hook) run as a shell script and need a tool to be found on it.
+		// Our own embedded (universal arm64+x86_64) Resources/bin is prepended FIRST so
+		// it wins over any stale/wrong-arch tool a user may have under /usr/local/bin
+		SET ENVIRONMENT VARIABLE:C812("PATH"; (This:C1470.BIN#Null:C1517 ? String:C10(This:C1470.BIN.path)+":" : "")+"/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
+		
+	End if 
+	
 	If (This:C1470.workspace#Null:C1517)
 		
 		SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_CURRENT_DIRECTORY"; String:C10(This:C1470.workspace.platformPath))
@@ -139,9 +150,15 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 			// —————————————————————— ⚠️ In some cases, the result can be found in the error stream
 		: ($command="@checkout@")
 			
-			This:C1470.success:=(($errorStream="Switched to branch @") && ($outputStream="Your branch is up to date with @"))\
+			This:C1470.success:=(($errorStream="Switched to @")/* && ($outputStream="Your branch is up to date with @")*/)\
 				 || ($errorStream="@switched to branch@")\
 				 || ($errorStream="Already on @")
+			
+			// —————————————————————— ⚠️ e.g. "current Git remote contains credentials" when
+			// pushing to a URL with an embedded token (our own auth retry) — not a real failure
+		: (Bool:C1537(OK)) && (Length:C16($errorStream)>0) && (Not:C34(Match regex:C1019("(?mi-s)^(?!warning:).+$"; $errorStream; 1)))
+			
+			This:C1470.success:=True:C214
 			
 			// ——————————————————————
 	End case 
@@ -543,7 +560,95 @@ Function _push($target : Text; $flag : Text) : Boolean
 	$c.push("--tags")
 	$c.push("--quiet")
 	
-	return This:C1470.execute($c.join(" "))
+	If (This:C1470.execute($c.join(" ")))
+		
+		return True:C214
+		
+	End if 
+	
+	// HTTPS push can't prompt for credentials in a headless launch ("could not read
+	// Username..."). Best-effort wire git to gh's credential helper (also fixes a
+	// plain Terminal `git push` afterwards), then retry with the token embedded
+	// directly in the remote URL — this bypasses the credential-helper CHAIN
+	// entirely, so a pre-existing helper (e.g. Git Credential Manager) that fails
+	// first can't block our own gh-backed retry
+	If (Match regex:C1019("(?i)could not read username|terminal prompts disabled"; This:C1470.error; 1))
+		
+		var $gh:=cs:C1710.gh.me
+		
+		If ($gh.available) && ($gh.login())
+			
+			$gh.setupGit()
+			
+			var $remoteName : Text:=Split string:C1554($target; " ")[0]
+			var $auth : Object:=This:C1470._authenticatedRemoteURL($remoteName; $gh)
+			
+			If ($auth#Null:C1517)
+				
+				var $retryTarget : Text:=$auth.url+Substring:C12($target; Length:C16($remoteName)+1)
+				var $retryC:=["push"; $retryTarget]
+				
+				If (Length:C16($flag)>0)
+					
+					$retryC.push($flag)
+					
+				End if 
+				
+				$retryC.push("--tags")
+				$retryC.push("--quiet")
+				
+				var $retrySuccess:=This:C1470.execute($retryC.join(" "))
+				This:C1470._redactHistory($auth.token)
+				
+				return $retrySuccess
+				
+			End if 
+		End if 
+	End if 
+	
+	return False:C215
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Rewrites a remote's URL to embed a fresh gh token (github.com HTTPS remotes only)
+Function _authenticatedRemoteURL($remoteName : Text; $gh : cs:C1710.gh) : Object
+	
+	If (Not:C34(This:C1470.execute("remote get-url "+$remoteName)))
+		
+		return Null:C1517
+		
+	End if 
+	
+	var $url : Text:=This:C1470.result
+	
+	If (Position:C15("https://github.com/"; $url)#1)
+		
+		return Null:C1517  // only plain github.com HTTPS remotes are supported by this fallback
+		
+	End if 
+	
+	var $token : Text:=$gh.token()
+	
+	If (Length:C16($token)=0)
+		
+		return Null:C1517
+		
+	End if 
+	
+	return {url: Replace string:C233($url; "https://github.com/"; "https://x-access-token:"+$token+"@github.com/"); token: $token}
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Scrubs a secret (e.g. an embedded push token) from the most recent history entry
+Function _redactHistory($secret : Text)
+	
+	If (Length:C16($secret)=0) || (This:C1470.history.length=0)
+		
+		return 
+		
+	End if 
+	
+	Use (This:C1470.history[0])
+		This:C1470.history[0].cmd:=Replace string:C233(This:C1470.history[0].cmd; $secret; "***")
+	End use 
 	
 	//MARK:-branch
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -611,7 +716,7 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 			//———————————————————————————————————
 		: ($whatToDo="create")  // Create a new branch
 			
-			If (This:C1470.execute("branch "+$name))
+			If (This:C1470.execute("branch "+$name+Choose:C955(Count parameters:C259>2; " "+$newName; "")))
 				
 				This:C1470.branch()
 				
@@ -620,7 +725,7 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 			//———————————————————————————————————
 		: ($whatToDo="createAndUse")  // Create a new branch and select it
 			
-			If (This:C1470.execute("checkout -b "+$name))
+			If (This:C1470.execute("checkout -b "+$name+Choose:C955(Count parameters:C259>2; " "+$newName; "")))
 				
 				This:C1470.branch()
 				
@@ -700,6 +805,12 @@ Function checkout($what) : cs:C1710.Git
 	End if 
 	
 	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Reverts a single commit into a new commit (`git revert --no-edit`).
+Function revert($sha : Text) : Boolean
+	
+	return This:C1470.execute("revert --no-edit "+$sha)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Number of commits available to fetch/pull on the given branch.
@@ -826,6 +937,90 @@ shared Function updateTags() : cs:C1710.Git
 	End if 
 	
 	return This:C1470
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Checks a tag/branch name against git's ref-name rules (see `git check-ref-format`).
+Function isValidRefName($name : Text) : Boolean
+	
+	If (Length:C16($name)=0) || (Substring:C12($name; 1; 1)="-")
+		
+		return False:C215
+		
+	End if 
+	
+	If ((Length:C16($name)=1) && (Position:C15("@"; $name)=1))  // Lone "@" is forbidden
+		
+		return False:C215
+		
+	End if 
+	
+	If (Substring:C12($name; 1; 1)="/")\
+		 || (Substring:C12($name; Length:C16($name); 1)="/")\
+		 || (Substring:C12($name; Length:C16($name); 1)=".")
+		
+		return False:C215
+		
+	End if 
+	
+	If (Position:C15(".."; $name)>0)\
+		 || (Position:C15("@{"; $name)>0)\
+		 || (Position:C15("//"; $name)>0)\
+		 || (Position:C15(" "; $name)>0)\
+		 || (Position:C15("~"; $name)>0)\
+		 || (Position:C15("^"; $name)>0)\
+		 || (Position:C15(":"; $name)>0)\
+		 || (Position:C15("?"; $name)>0)\
+		 || (Position:C15("*"; $name)>0)\
+		 || (Position:C15("["; $name)>0)\
+		 || (Position:C15("\\"; $name)>0)
+		
+		return False:C215
+		
+	End if 
+	
+	var $part : Text
+	
+	For each ($part; Split string:C1554($name; "/"))
+		
+		If (Length:C16($part)=0)\
+			 || (Substring:C12($part; 1; 1)=".")\
+			 || ((Length:C16($part)>=5) && (Substring:C12($part; Length:C16($part)-4; 5)=".lock"))
+			
+			return False:C215
+			
+		End if 
+	End for each 
+	
+	return True:C214
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// True if `$name` already exists as a tag, locally or on any configured remote.
+Function tagExists($name : Text) : Boolean
+	
+	If (Length:C16($name)=0)
+		
+		return False:C215
+		
+	End if 
+	
+	If (This:C1470.execute("tag -l "+$name)) && (Length:C16(This:C1470.result)>0)
+		
+		return True:C214
+		
+	End if 
+	
+	var $remote : Object
+	
+	For each ($remote; This:C1470.remotes)
+		
+		If (This:C1470.execute("ls-remote --tags "+$remote.name+" refs/tags/"+$name)) && (Length:C16(This:C1470.result)>0)
+			
+			return True:C214
+			
+		End if 
+	End for each 
+	
+	return False:C215
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Parses .git/FETCH_HEAD for the given ref type (e.g. "branch").
@@ -999,6 +1194,16 @@ shared Function stash($action : Text; $name : Text) : cs:C1710.Git
 		: ($action="pop")
 			
 			This:C1470.execute("stash pop --quiet")
+			
+			//———————————————————————————————————
+		: ($action="apply")
+			
+			This:C1470.execute("stash apply --quiet "+This:C1470._quoted($name))
+			
+			//———————————————————————————————————
+		: ($action="drop")
+			
+			This:C1470.execute("stash drop --quiet "+This:C1470._quoted($name))
 			
 			//________________________________________
 		Else 

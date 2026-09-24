@@ -431,6 +431,52 @@ avec 4D "{version}"</target>
           <target>Le push a échoué.</target>
         </trans-unit>
       </group>
+      <group resname="NEW_REF">
+        <trans-unit id="n3wR3fBr4nchHhAaBgQw" resname="newBranch">
+          <source>New Branch…</source>
+          <target>Nouvelle branche…</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fT4gHhAaBgQw" resname="newTag">
+          <source>New Tag…</source>
+          <target>Nouveau tag…</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fBr4nchN4m3" resname="branch">
+          <source>Branch</source>
+          <target>Branche</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fN4m3HhAaBg" resname="name">
+          <source>Name:</source>
+          <target>Nom :</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fAtHhAaBgQw" resname="at">
+          <source>At:</source>
+          <target>À :</target>
+        </trans-unit>
+        <trans-unit id="n3wR3f3nt3rBr4nch" resname="enterBranchName">
+          <source>Enter branch name</source>
+          <target>Saisir un nom de branche</target>
+        </trans-unit>
+        <trans-unit id="n3wR3f3nt3rT4gHhA" resname="enterTagName">
+          <source>Enter tag name</source>
+          <target>Saisir un nom de tag</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fCr34t3HhAaB" resname="create">
+          <source>Create</source>
+          <target>Créer</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fCr34t3Ch3ck" resname="createAndCheckout">
+          <source>Create and checkout</source>
+          <target>Créer et checkout</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fInv4l1dT4gN4m3" resname="invalidTagName">
+          <source>This tag name is not valid.</source>
+          <target>Ce nom de tag n'est pas valide.</target>
+        </trans-unit>
+        <trans-unit id="n3wR3fT4gAlr34dyEx1st" resname="tagAlreadyExists">
+          <source>This tag already exists locally or on a remote.</source>
+          <target>Ce tag existe déjà en local ou sur un dépôt distant.</target>
+        </trans-unit>
+      </group>
       <group resname="HISTORY">
         <trans-unit id="hIsT0ryW1nd0wT1tL3AaBg" resname="methodHistory">
           <source>Git history</source>
@@ -475,6 +521,26 @@ avec 4D "{version}"</target>
         <trans-unit id="hIsT0ryCr34t3P4tchHhAaBg" resname="createPatch">
           <source>Create patch…</source>
           <target>Créer un patch…</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryR3v3rtC0mm1tHhAaBg" resname="revertCommit">
+          <source>Revert commit…</source>
+          <target>Annuler ce commit…</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryR3v3rtC0nf1rmHhAaBg" resname="areYouSureYouWantToRevertThisCommit">
+          <source>Are you sure you want to revert commit "{title}"?</source>
+          <target>Voulez-vous vraiment annuler le commit "{title}" ?</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryApplyStashHhAaBg" resname="applyStash">
+          <source>Apply stash</source>
+          <target>Appliquer le stash</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryDr0pStashHhAaBg" resname="dropStash">
+          <source>Delete stash…</source>
+          <target>Supprimer le stash…</target>
+        </trans-unit>
+        <trans-unit id="hIsT0ryDr0pStashC0nfHhAaBg" resname="areYouSureYouWantToDropThisStash">
+          <source>Are you sure you want to delete this stash?</source>
+          <target>Voulez-vous vraiment supprimer ce stash ?</target>
         </trans-unit>
         <trans-unit id="hIsT0ryBl4m3S3l3ctHhAaBg" resname="selectLinesFirst">
           <source>Select one or more lines first.</source>

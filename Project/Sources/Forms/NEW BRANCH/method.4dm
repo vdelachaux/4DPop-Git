@@ -6,15 +6,22 @@ Case of
 	: ($e.code=On Load:K2:1)
 		
 		Form:C1466.me.onLoad()
+		
 		Form:C1466._buttons:=cs:C1710.ui.group.new()
 		Form:C1466._ok:=cs:C1710.ui.button.new("ok").addToGroup(Form:C1466._buttons)
 		cs:C1710.ui.button.new("cancel").addToGroup(Form:C1466._buttons)
-		
 		Form:C1466._buttons.distributeRigthToLeft()
 		
-		var $adjustGeometry:=True:C214
+		Form:C1466._options:=cs:C1710.ui.group.new("checkOutOptions,noChange,stashReaply,discard")
 		
-		cs:C1710.ui.input.new("Input").focus()
+		var $o:=cs:C1710.ui.input.new("sha")
+		$o.helpTip:=Form:C1466.at
+		
+		$o:=cs:C1710.ui.input.new("label")
+		$o.helpTip:=Form:C1466.label
+		$o.truncateWithEllipsis(Align right:K42:4)
+		
+		cs:C1710.ui.input.new("branchName").focus()
 		
 		// ______________________________________________________
 	: ($e.code=On Resize:K2:27)
@@ -31,7 +38,7 @@ Case of
 				// ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 			: ($e.objectName="checkout")
 				
-				$adjustGeometry:=True:C214
+				// <NOTHING MORE TO DO>
 				
 				// ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 			: ($e.objectName="cancel")
@@ -49,35 +56,36 @@ Case of
 				return 
 				
 				// ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+			Else 
+				
+				return 
+				
+				// ┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 		End case 
 		
 		// ______________________________________________________
 End case 
 
-If ($adjustGeometry)
+var $height : Integer:=cs:C1710.ui.static.new("checkOutOptions").rect.height
+
+If (Form:C1466.checkout)
 	
-	$adjustGeometry:=False:C215
+	Form:C1466._options.show()
+	Form:C1466._ok.title:=Localized string:C991("createAndCheckout")
+	Form:C1466._buttons.distributeRigthToLeft()
 	
-	var $height : Integer:=cs:C1710.ui.static.new("Group Box1").rect.height
-	var $group:=cs:C1710.ui.group.new("Group Box1,Radio Button,Radio Button1,Radio Button2")
-	
-	If (Form:C1466.checkout)
+	If ($e.code=On Clicked:K2:4)
 		
-		$group.show()
-		Form:C1466._ok.title:="Create and checkout"
-		Form:C1466._buttons.distributeRigthToLeft()
-		
-		If ($e.code=On Clicked:K2:4)
-			Form:C1466._buttons.moveVertically($height)
-			cs:C1710.ui.static.new("main").resizeVertically($height)
-		End if 
-		
-	Else 
-		
-		$group.hide()
-		Form:C1466._ok.title:="Create"
-		Form:C1466._buttons.distributeRigthToLeft().moveVertically(-$height)
-		cs:C1710.ui.static.new("main").resizeVertically(-$height)
+		Form:C1466._buttons.moveVertically($height)
+		cs:C1710.ui.static.new("main").resizeVertically($height)
 		
 	End if 
+	
+Else 
+	
+	Form:C1466._options.hide()
+	Form:C1466._ok.title:="Create"
+	Form:C1466._buttons.distributeRigthToLeft().moveVertically(-$height)
+	cs:C1710.ui.static.new("main").resizeVertically(-$height)
+	
 End if 

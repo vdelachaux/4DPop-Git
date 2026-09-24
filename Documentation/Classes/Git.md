@@ -110,6 +110,7 @@ If the optional `folder` parameter points to a git working copy, the instance is
 |.**untrack** ( *what* : `Text` \| `Collection` ) | Removes file(s) from the index (`git rm --cached`), keeping them on disk
 |.**unstage** ( *what* : `Text` \| `Collection` ) | Unstages file(s), a moved `"old -> new"` pair, or `"all"`
 |.**commit** ( *message* : `Text` { ; *amend* : `Boolean` } ) | Commits the staged changes (message via stdin; *amend* to amend the last one)
+|.**revert** ( *sha* : `Text` ) →`Boolean` | Reverts a single commit into a new commit (`git revert --no-edit`)
 |.**diff** ( *pathname* : `Text` { ; *option* : `Text` } ) | Computes the diff of a file (result in `.result`)
 |.**diffList** ( *parent* : `Text` ; *current* : `Text` ) →`Boolean` | Lists changed files between two commits (`git diff --name-status`)
 |.**diffTool** ( *pathname* : `Text` ) | Opens the configured external diff tool for a file
@@ -149,7 +150,7 @@ If the optional `folder` parameter points to a git working copy, the instance is
 
 | Functions | |
 |:-------- |:------ |
-|.**stash** ( { *action* : `Text` { ; *name* : `Text` } } ) →`This` | Stash operations: `list` / `save` / `snapshot` / `pop`. Refreshes `.stashes`
+|.**stash** ( { *action* : `Text` { ; *name* : `Text` } } ) →`This` | Stash operations: `list` / `save` / `snapshot` / `pop` / `apply` / `drop` (*name* is the stash ref, e.g. `"stash@{0}"`, for `apply`/`drop`). Refreshes `.stashes`
 
 ### Miscellaneous
 

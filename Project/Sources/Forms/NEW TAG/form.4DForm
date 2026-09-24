@@ -1,0 +1,137 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"events": [
+		"onLoad",
+		"onClick",
+		"onResize"
+	],
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"main": {
+					"type": "rectangle",
+					"top": 60,
+					"left": 100,
+					"width": 353,
+					"height": 166,
+					"borderRadius": 10,
+					"fill": "automatic",
+					"stroke": "automatic",
+					"bottom": 226
+				},
+				"title": {
+					"type": "text",
+					"text": ":xliff:newTag",
+					"top": 82,
+					"left": 148,
+					"width": 240,
+					"height": 18,
+					"fontTheme": "main"
+				},
+				"icon": {
+					"type": "picture",
+					"top": 77,
+					"left": 114,
+					"width": 24,
+					"height": 24,
+					"picture": "/RESOURCES/Images/git.svg",
+					"pictureFormat": "scaled"
+				},
+				"tagLabel": {
+					"type": "text",
+					"text": ":xliff:name",
+					"top": 116,
+					"left": 118,
+					"width": 64,
+					"height": 16,
+					"textAlign": "right"
+				},
+				"tag": {
+					"type": "input",
+					"top": 115,
+					"left": 191,
+					"width": 238,
+					"height": 17,
+					"dataSource": "Form:C1466.tag",
+					"placeholder": ":xliff:enterTagName"
+				},
+				"atLabel": {
+					"type": "text",
+					"text": ":xliff:at",
+					"top": 144,
+					"left": 118,
+					"width": 64,
+					"height": 16,
+					"textAlign": "right"
+				},
+				"at": {
+					"type": "input",
+					"top": 143,
+					"left": 191,
+					"width": 238,
+					"height": 17,
+					"dataSource": "Form:C1466.at",
+					"focusable": false,
+					"class": "infos"
+				},
+				"cancel": {
+					"type": "button",
+					"text": ":xliff:cancel",
+					"top": 178,
+					"left": 262,
+					"width": 78,
+					"height": 23,
+					"events": [
+						"onClick"
+					],
+					"action": ""
+				},
+				"ok": {
+					"type": "button",
+					"text": ":xliff:create",
+					"top": 178,
+					"left": 351,
+					"width": 78,
+					"height": 23,
+					"events": [
+						"onClick"
+					],
+					"defaultButton": true,
+					"action": ""
+				}
+			}
+		}
+	],
+	"method": "method.4dm",
+	"editor": {
+		"groups": {
+			"Group": [
+				"title",
+				"icon",
+				"tagLabel",
+				"tag",
+				"atLabel",
+				"at",
+				"cancel",
+				"ok",
+				"main"
+			]
+		},
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"inheritedForm": "EMBEDDED BACK",
+	"geometryStamp": 15,
+	"rightMargin": 0,
+	"bottomMargin": 0
+}

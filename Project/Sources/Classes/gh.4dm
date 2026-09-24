@@ -107,6 +107,20 @@ Function login() : Boolean
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Wires `git` to authenticate through `gh` (no more HTTPS username/password prompts).
+Function setupGit() : Boolean
+	
+	If (This:C1470.exe=Null:C1517)
+		
+		return False:C215
+		
+	End if 
+	
+	var $worker:=4D:C1709.SystemWorker.new(This:C1470.exe+" auth setup-git"; This:C1470).wait()
+	
+	return This:C1470.success
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Remove authentication for a GitHub host.
 Function logout()
 	
@@ -154,6 +168,22 @@ Function checkToken() : Boolean
 		return Length:C16($out)>0
 		
 	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the current `gh` OAuth token, or "" when unavailable.
+Function token() : Text
+	
+	var $error; $in; $out : Text
+	
+	If (This:C1470.exe=Null:C1517)
+		
+		return ""
+		
+	End if 
+	
+	LAUNCH EXTERNAL PROCESS:C811(This:C1470.exe+" auth token"; $in; $out; $error)
+	
+	return Bool:C1537(OK) ? Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first() || "" : ""
 	
 	//MARK:- [repo]
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
@@ -297,6 +327,11 @@ Function onTerminate($worker : 4D:C1709.SystemWorker)
 				 && ($worker.responseError#Null:C1517) && (Length:C16($worker.responseError)=0)
 			
 			//______________________________________________________
+		: (Position:C15("auth setup-git"; $worker.commandLine)>0)
+			
+			This:C1470.success:=($worker.responseError#Null:C1517) && (Length:C16($worker.responseError)=0)
+			
+			//______________________________________________________
 		Else 
 			
 			// A "Case of" statement should never omit "Else"
@@ -331,11 +366,15 @@ Function _exe() : Boolean
 			
 		End if 
 		
-		This:C1470.success:=(Bool:C1537(OK)) && (Length:C16($out)>0)
+		var $candidate : Text:=Length:C16($out)>0 ? Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first() : ""
+		
+		// `which`/`find` can return a wrong-arch, corrupted, or unrelated file named "gh";
+		// only trust it once it's proven to actually run
+		This:C1470.success:=(Length:C16($candidate)>0) && This:C1470._works($candidate)
 		
 		If (This:C1470.success)
 			
-			This:C1470.exe:=Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first()
+			This:C1470.exe:=$candidate
 			
 		Else 
 			
@@ -355,6 +394,16 @@ Function _exe() : Boolean
 	End if 
 	
 	return (Length:C16(This:C1470.exe)>0) && File:C1566(This:C1470.exe).exists
+	
+	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+	/// Runs `<exe> --version` to check the candidate executable actually works on this machine
+Function _works($exe : Text) : Boolean
+	
+	var $error; $in; $out : Text
+	
+	LAUNCH EXTERNAL PROCESS:C811(Char:C90(34)+$exe+Char:C90(34)+" --version"; $in; $out; $error)
+	
+	return (Bool:C1537(OK)) && (Length:C16($error)=0)
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 Function _unsanboxed($target : Object) : Object

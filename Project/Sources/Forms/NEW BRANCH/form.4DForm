@@ -14,7 +14,8 @@
 	"events": [
 		"onLoad",
 		"onClick",
-		"onResize"
+		"onResize",
+		"onAfterEdit"
 	],
 	"destination": "detailScreen",
 	"pages": [
@@ -25,51 +26,52 @@
 			"objects": {
 				"main": {
 					"type": "rectangle",
-					"top": 25,
+					"top": 8,
 					"left": 52,
 					"width": 436,
-					"height": 262,
+					"height": 289,
 					"borderRadius": 10,
 					"fill": "automatic",
-					"stroke": "automatic"
+					"stroke": "automatic",
+					"bottom": 297
 				},
 				"Group Box": {
 					"type": "groupBox",
-					"text": "Branch",
-					"top": 62,
+					"text": ":xliff:branch",
+					"top": 45,
 					"left": 108,
 					"width": 359,
-					"height": 89
+					"height": 96
 				},
 				"Rectangle": {
 					"type": "rectangle",
-					"top": 102,
+					"top": 89,
 					"left": 204,
 					"width": 247,
 					"height": 21,
 					"fill": "automatic"
 				},
-				"Group Box1": {
+				"checkOutOptions": {
 					"type": "groupBox",
-					"text": "Local changes",
-					"top": 157,
+					"text": ":xliff:localChanges",
+					"top": 146,
 					"left": 108,
 					"width": 359,
-					"height": 89
+					"height": 100
 				},
 				"title": {
 					"type": "text",
-					"top": 39,
+					"top": 22,
 					"left": 108,
 					"width": 365,
 					"height": 16,
 					"fontTheme": "main",
-					"text": "New Branch"
+					"text": ":xliff:newBranch"
 				},
 				"ok": {
 					"type": "button",
-					"text": "Create and Checkout",
-					"top": 255,
+					"text": ":xliff:createAndCheckout",
+					"top": 258,
 					"left": 309,
 					"width": 158,
 					"height": 23,
@@ -86,7 +88,7 @@
 				},
 				"Static Picture1": {
 					"type": "picture",
-					"top": 43,
+					"top": 26,
 					"left": 68,
 					"width": 32,
 					"height": 32,
@@ -95,9 +97,9 @@
 				},
 				"cancel": {
 					"type": "button",
-					"text": "Cancel",
-					"top": 255,
-					"left": 211,
+					"text": ":xliff:cancel",
+					"top": 258,
+					"left": 171,
 					"width": 78,
 					"height": 23,
 					"events": [
@@ -107,44 +109,47 @@
 					"shortcutControl": false,
 					"shortcutShift": false,
 					"shortcutAlt": false,
-					"shortcutKey": "[Return]",
+					"shortcutKey": "[Esc]",
 					"action": ""
 				},
 				"additional1": {
 					"type": "text",
-					"text": "Name:",
-					"top": 106,
-					"left": 120,
-					"width": 73,
+					"text": ":xliff:name",
+					"top": 93,
+					"left": 113,
+					"width": 80,
 					"height": 13,
 					"fontTheme": "additional",
 					"textAlign": "right"
 				},
 				"Static Picture2": {
 					"type": "picture",
-					"top": 104,
+					"top": 91,
 					"left": 207,
 					"width": 16,
 					"height": 16,
 					"picture": "/RESOURCES/Images/Main/branch.svg",
 					"pictureFormat": "scaled"
 				},
-				"Input": {
+				"branchName": {
 					"type": "input",
 					"left": 226,
-					"top": 104,
+					"top": 91,
 					"width": 223,
 					"height": 17,
 					"dataSource": "Form:C1466.branch",
 					"class": "",
 					"borderStyle": "none",
-					"placeholder": "Enter Branch Name",
-					"hideFocusRing": true
+					"placeholder": ":xliff:enterBranchName",
+					"hideFocusRing": true,
+					"events": [
+						"onAfterEdit"
+					]
 				},
-				"Radio Button": {
+				"noChange": {
 					"type": "radio",
-					"text": "Don't change",
-					"top": 176,
+					"text": ":xliff:noChange",
+					"top": 165,
 					"left": 207,
 					"width": 136,
 					"height": 18,
@@ -155,10 +160,10 @@
 					"dataSource": "Form:C1466.noChange",
 					"dataSourceTypeHint": "boolean"
 				},
-				"Radio Button1": {
+				"stashReaply": {
 					"type": "radio",
-					"text": "Stash and reaply",
-					"top": 199,
+					"text": ":xliff:stashAndReaply",
+					"top": 192,
 					"left": 207,
 					"width": 136,
 					"height": 18,
@@ -169,10 +174,10 @@
 					"dataSource": "Form:C1466.stash",
 					"dataSourceTypeHint": "boolean"
 				},
-				"Radio Button2": {
+				"discard": {
 					"type": "radio",
-					"text": "Discard",
-					"top": 222,
+					"text": ":xliff:discard",
+					"top": 219,
 					"left": 207,
 					"width": 136,
 					"height": 18,
@@ -185,8 +190,8 @@
 				},
 				"additional3": {
 					"type": "text",
-					"text": "At:",
-					"top": 83,
+					"text": ":xliff:at",
+					"top": 66,
 					"left": 113,
 					"width": 78,
 					"height": 13,
@@ -195,18 +200,18 @@
 				},
 				"Static Picture4": {
 					"type": "picture",
-					"top": 81,
+					"top": 64,
 					"left": 207,
 					"width": 16,
 					"height": 16,
 					"picture": "/RESOURCES/Images/Main/master.svg",
 					"pictureFormat": "scaled"
 				},
-				"Input1": {
+				"sha": {
 					"type": "input",
 					"left": 224,
-					"top": 81,
-					"width": 59,
+					"top": 64,
+					"width": 57,
 					"height": 17,
 					"dataSource": "Form:C1466.at",
 					"class": "infos",
@@ -214,8 +219,8 @@
 				},
 				"checkout": {
 					"type": "checkbox",
-					"text": "Check out",
-					"top": 127,
+					"text": ":xliff:checkout",
+					"top": 118,
 					"left": 207,
 					"width": 232,
 					"height": 16,
@@ -225,30 +230,30 @@
 					"dataSourceTypeHint": "boolean",
 					"dataSource": "Form:C1466.checkout"
 				},
-				"Input2": {
+				"label": {
 					"type": "input",
-					"left": 282,
-					"top": 81,
-					"width": 169,
+					"left": 287,
+					"top": 64,
+					"width": 164,
 					"height": 17,
 					"dataSource": "Form:C1466.label",
 					"class": "infos"
 				}
 			},
 			"entryOrder": [
-				"Input",
-				"Radio Button",
-				"Radio Button1",
-				"Radio Button2",
+				"branchName",
+				"noChange",
+				"stashReaply",
+				"discard",
 				"cancel",
 				"ok",
 				"checkout",
-				"Input2",
-				"Input1"
+				"label",
+				"sha"
 			]
 		}
 	],
-	"geometryStamp": 408,
+	"geometryStamp": 525,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
