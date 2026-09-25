@@ -286,21 +286,29 @@
 		</data>
 		<key>Resources/InfoPlist.strings</key>
 		<data>
-		y7Q5hmE/kY4rKrA2lXLeaWnoB98=
+		XCsjU5FDscLEttnfmgs3pzTezqU=
 		</data>
 		<key>Resources/bin/gh</key>
 		<data>
-		SbblYg2tPREMHTNjfLShnX4rmNQ=
+		HDMUBQUX5pCWHYgXP6Wc1GU5kLc=
 		</data>
 		<key>Resources/bin/gh.exe</key>
 		<data>
 		cjgoAMX0VTa19bX9VY74bjzL5D8=
 		</data>
+		<key>Resources/bin/git-lfs</key>
+		<data>
+		yH2/D43ejtLlFm8W7EyPt9LjQUc=
+		</data>
+		<key>Resources/bin/git-lfs.exe</key>
+		<data>
+		BvFM1UvdOgNkrCXVmb+sqtRWkHE=
+		</data>
 		<key>Resources/en.lproj/gitlab.xlf</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			zBX3eF8zji+cUPgqCPXj4rUfyKU=
+			hysUueJH+u3vPc9GlA8vfIIW/E4=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -309,7 +317,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Jhi69fr1DBovrFPqg6z5ucZXJ9Y=
+			Q4STluw1Baj8dk0LiD7b5QkOLVQ=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -318,7 +326,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			bFXjldL7NiIvBhxq30zsr5Mo20o=
+			yIS6t4s6wnobaPMbgUJ0976mLT4=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -346,23 +354,51 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			hKisvcfEtYZPNg/onCgVAf48lzI=
+			6mj266/SAttxY+ZLhRJPBWsBus8=
 			</data>
 			<key>requirement</key>
 			<string>identifier "4DPop Git.4DZ" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = DYRKW64QA9</string>
+		</dict>
+		<key>Documentation/Blog-4DPop-Git.md</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			L3ePGkrjmmw5bHb8Xvn1UAFn1wzTcqB8Cfxrn17yHCM=
+			</data>
 		</dict>
 		<key>Documentation/Classes/Git.md</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			S4CcKtqQ4JRHD0hlFirUx8JQe4z3QM8P+9PP/ycgCDE=
+			GW4izua31htbI0e0wFhPIFc/KV1UouMAO2lK+p7wnkU=
 			</data>
 		</dict>
 		<key>Documentation/Classes/gh.md</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			fht4V/pL3vpRCHbLJ9h7KaIKhKPqOeMYiTXlF73nXjU=
+			JR1pYY+FwmBW2qm+QTy36pesLVecq0/lgfKVDDfs/3M=
+			</data>
+		</dict>
+		<key>Documentation/Guide-utilisateur.md</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			z0cSv3iPNv5A+1n8EkoeEJYBosrxbQHijZV09mBkZYY=
+			</data>
+		</dict>
+		<key>Documentation/User-guide.md</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			dRjv+ZjgQgqQuSrYPVVeMct9wFHSWDWvaDS+YwCH+U0=
+			</data>
+		</dict>
+		<key>Documentation/checkout.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			8qIwYwuxbipCONSIMNY33e3LB7YLK7GTCD8KhO3MhTc=
 			</data>
 		</dict>
 		<key>Documentation/commitGraph.png</key>
@@ -372,11 +408,32 @@
 			14rARJ8HRXwHIzftAiN4PeMfcL6AxZpGHiRVyXxxMk8=
 			</data>
 		</dict>
+		<key>Documentation/commitHistory.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			zcqO8sJYReh+vT8CIQotT0knRHOq5puZObjaH7ttoWE=
+			</data>
+		</dict>
 		<key>Documentation/commits.png</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			ZuK3r5bh/jnl2/oWRGxrKAAnojhjiQJKXwysZWK2nhQ=
+			</data>
+		</dict>
+		<key>Documentation/customizedPattern.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			BJG6Lro8IMeCR+tMIWRL55CbibxTwMoXNKn+WQGRp0w=
+			</data>
+		</dict>
+		<key>Documentation/fielMenu.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			FpdbukWP9LWEG5o31tFfvp0v++J1lRCmLjXd6fFwMQE=
 			</data>
 		</dict>
 		<key>Documentation/fileMenu.png</key>
@@ -390,28 +447,63 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			4NBv0rvxTn6c2R5VfYdZ0XEbmkoRXcE93GM0df9spF8=
+			PYgWEtQwPtbGHDeDMobNCmRKX+HxUcOka6x8ayJCoCQ=
 			</data>
 		</dict>
 		<key>Documentation/main.png</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			J8JkAU4k/qJzRyPkEikESPOxq4g2cITEG3sAAP7vktg=
+			WxIo1OcvqkDokvpNNnqt5ORIIlrr2vuRThIgyYKUEzA=
+			</data>
+		</dict>
+		<key>Documentation/newBranch.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			EwU+MrwKT7s04RDHj+hvlCqPcGWbVDqO3VlGLss3Vj0=
+			</data>
+		</dict>
+		<key>Documentation/newTag.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			tYkbuuSF8Kss/iDPLr2fiV9lfiJfgmRIWxElwO7WVzI=
 			</data>
 		</dict>
 		<key>Documentation/openMenu.png</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			16CwGr23psCmvsWsXr9fmQ+2+43+N8KCgAzdoMnvZo0=
+			LvJHGkVfh6dWcusqwp/xesCx0j8vlxZsCTohvmcUnXU=
+			</data>
+		</dict>
+		<key>Documentation/pull.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			43odsXCRWmLumM4OmaZIAJT+8gveiUd8nzGzIUbRVTc=
+			</data>
+		</dict>
+		<key>Documentation/push.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			H1a2YloOU8+oRBUXaVe014+VVNrgT7+aIVVhYiKLYkI=
+			</data>
+		</dict>
+		<key>Documentation/widget.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			xiMYCopQMdz1xVL7uW2IoCKkVhuBTpcLaWCSrNvXpSQ=
 			</data>
 		</dict>
 		<key>Libraries/lib4d-arm64.dylib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			wjALLeU2NQk0p8QqsngVyY907VBT253tEFsCqSHc5Gw=
+			z/YaD76xzusNehGoYbDHiv/CWdVReAus3kXrOMDRL2w=
 			</data>
 		</dict>
 		<key>Resources/4DPop.json</key>
@@ -908,14 +1000,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			D6raQpNKzOQSswNHH3X71tu/U9sfSikuXfA3ZuskaFQ=
+			ymBzg0HfZd/IzOrefuarkkqA2lvm3bh2iotLb7exMYQ=
 			</data>
 		</dict>
 		<key>Resources/bin/gh</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OttL+oMPRZN2I9LU9zdRp74S0Im6jxSBjuEQt0B2UI0=
+			vM4vnW7qNroJ5A/DFzMkEbpXWvDPkFS9eDmufDg2DqM=
 			</data>
 		</dict>
 		<key>Resources/bin/gh.exe</key>
@@ -925,11 +1017,25 @@
 			z++8cw8u99wDUtalQ1ty/mr85/xW1hyQ63cDzV2XsUk=
 			</data>
 		</dict>
+		<key>Resources/bin/git-lfs</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			tYMRniv7TrdKAZ4L7w5WrJxK/VfcKx1b4dSPdBhlkB8=
+			</data>
+		</dict>
+		<key>Resources/bin/git-lfs.exe</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			0aKyqQo7jVfmjbam0Nrvx8luEqGr0cCEn0HRODklKFc=
+			</data>
+		</dict>
 		<key>Resources/en.lproj/gitlab.xlf</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			75AFfFPl4E9SRvealoxv7cEd1mcDMI3GQ+H9c3+cBjE=
+			SZNBJlY4UN26tu1x/XOhDG/dBBGFAdWBF06B/3Df/Eo=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -938,7 +1044,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			5+OcMwO9nDu0Ly4f+XqCqsEoDTCGN1ETwBvNPhaazAY=
+			bslZ5G41bt+BlsO9pNrmwwcVWi1PE7kZshDHAGezk18=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -947,7 +1053,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			vYajLdlf7kFnQKu9EsRtcyroJq6FBo5Uk7hLcAFEgaY=
+			mDlbuSLbbyTHIiQxVKpBAwFy/Ikk9yLozdE7fPV5tP8=
 			</data>
 			<key>optional</key>
 			<true/>

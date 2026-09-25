@@ -65,6 +65,7 @@ property _delay : Integer:=30
 Class constructor
 	
 	This:C1470.form:=cs:C1710.ui.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
+	
 	This:C1470.form.init()
 	
 	// MARK:-[Standard Suite]
@@ -227,7 +228,7 @@ Function handleEvents($e : cs:C1710.ui.evt)
 				//______________________________________________________
 			: ($e.unload)
 				
-				//This.selector.clear()
+				//
 				
 				//______________________________________________________
 		End case 
@@ -423,36 +424,6 @@ Function handleEvents($e : cs:C1710.ui.evt)
 		: (This:C1470.commits.catch($e))
 			
 			This:C1470._commitsManager($e)
-			//Case of 
-			////______________________________________________________
-			//: ($e.code=On Clicked)
-			
-			//  //If (Contextual click)
-			
-			//  //This._commitMenu()
-			
-			//  //End if 
-			//  ////______________________________________________________
-			//  //: ($e.code=On Selection Change)
-			
-			
-			//  ////______________________________________________________
-			//  //Else 
-			
-			//  //// A "Case of" statement should never omit "Else"
-			
-			//  ////______________________________________________________
-			//  //            End case
-			//  //If (Contextual click)
-			
-			//  //This._commitMenu()
-			
-			//  //End if 
-			
-			//  ////==============================================
-			//  //: (This.commits.catch($e; On Selection Change))
-			
-			//  //This._commitsManager()
 			
 			//==============================================
 		: (This:C1470.parent.catch($e; On Clicked:K2:4))
@@ -561,7 +532,7 @@ Function onLoad()
 	This:C1470.pushDialog.me:=This:C1470.pushDialog
 	
 	This:C1470.checkoutDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "CHECKOUT")
-	This:C1470.checkoutDialog.me:=This:C1470.pushDialog
+	This:C1470.checkoutDialog.me:=This:C1470.checkoutDialog
 	
 	This:C1470.newBranchDialog:=cs:C1710.ui.onBoard.new("embeddedDialogs"; "NEW BRANCH")
 	This:C1470.newBranchDialog.me:=This:C1470.newBranchDialog
@@ -596,7 +567,7 @@ Function update()
 	// MARK: Toolbar buttons
 	This:C1470.fetch.title:=Localized string:C991("fetch")
 	
-	var $number:=$git.branchFetchNumber($git.workingBranch.name)
+	var $number : Integer:=$git.branchFetchNumber($git.workingBranch.name)
 	If ($number>0)
 		
 		This:C1470.fetch.title+=" ("+String:C10($number)+")"
@@ -857,7 +828,7 @@ Function _pageManager($e : cs:C1710.ui.evt; $page : Integer)
 Function _openManager()
 	
 	var $git:=This:C1470.Git
-	var $hasRemote:=$git.execute("config --get remote.origin.url")
+	var $hasRemote : Boolean:=$git.execute("config --get remote.origin.url")
 	$hasRemote:=$hasRemote ? Position:C15("github.com"; String:C10($git.result))>0 : $hasRemote
 	
 	// iconAccessor: resolve "/RESOURCES/" against THIS component's own bundle,
@@ -1729,7 +1700,7 @@ Function Discard($items : Collection)
 		
 		If ($o.status="??")
 			
-			var $tgt:=This:C1470.Git.getTarget($o.path)
+			var $tgt : Variant:=This:C1470.Git.getTarget($o.path)
 			
 			Case of 
 					
@@ -1770,19 +1741,27 @@ Function Discard($items : Collection)
 	This:C1470.onActivate()
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
-	// Returns the branch name shown on a commit's label (branch/current branch tag), "" if none.
+	// Returns a checkout-able branch name from a commit's tags, "" if none. A commit can carry
+	// several branch refs at once; a non-current one is preferred (the current one is a no-op).
 Function _branchOfCommit($commit : Object) : Text
 	
 	var $spec : Object
+	var $currentName : Text
 	For each ($spec; $commit.__tags)
 		If ($spec#Null:C1517) && (($spec.what="branch") || ($spec.what="current branch"))
 			// "current branch" text is built as "HEAD -> <name>" with "HEAD ->" stripped, leaving a leading space
 			var $name : Text:=String:C10($spec.text)
-			return Substring:C12($name; 1; 1)=" " ? Substring:C12($name; 2) : $name
+			$name:=Substring:C12($name; 1; 1)=" " ? Substring:C12($name; 2) : $name
+			
+			If ($spec.what="branch")
+				return $name
+			End if 
+			
+			$currentName:=$name
 		End if 
 	End for each 
 	
-	return ""
+	return $currentName || ""
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Checks out a branch by name, handling a dirty working tree via checkoutDialog. No-op on the current branch.

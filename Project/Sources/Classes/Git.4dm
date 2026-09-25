@@ -748,6 +748,7 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 			
 			If (This:C1470.execute("checkout -b "+$name+Choose:C955(Count parameters:C259>2; " "+$newName; "")))
 				
+				This:C1470.update()  // Refresh cached HEAD, else currentBranch/windowTitle stay on the old branch
 				This:C1470.branch()
 				
 			End if 
@@ -755,8 +756,12 @@ shared Function branch($whatToDo : Text; $name : Text; $newName : Text) : cs:C17
 			//———————————————————————————————————
 		: ($whatToDo="use")  // Select a branch to use
 			
-			If (This:C1470.execute("checkout "+$name+" --no-ff -m Merging branch "+$name))
+			// -m carries over uncommitted local changes via a 3-way merge (no message needed,
+			// unlike "merge"'s -m); the previous "--no-ff -m Merging branch <x>" was invalid
+			// checkout syntax (those are "git merge" flags) and always failed silently
+			If (This:C1470.execute("checkout "+$name+" -m"))
 				
+				This:C1470.update()  // Refresh cached HEAD, else currentBranch/windowTitle stay on the old branch
 				This:C1470.branch()
 				
 			End if 

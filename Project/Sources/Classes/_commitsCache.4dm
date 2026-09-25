@@ -22,6 +22,14 @@ Function hasChanged($raw : Text) : Boolean
 	return ($raw#This:C1470.raw)
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	// Forces the next refresh to rebuild even if the raw `git log` text is unchanged
+	// (e.g. after a branch switch triggered elsewhere: the log content is the same,
+	// but the "current branch" bold label depends on which branch is now checked out)
+shared Function invalidate()
+	
+	This:C1470.raw:=""
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	// Store a freshly built commit list (raw log + ready collection) and bump the version
 shared Function store($raw : Text; $commits : Collection)
 	

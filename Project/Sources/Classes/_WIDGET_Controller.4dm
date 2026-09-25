@@ -33,7 +33,7 @@ property gitItems : cs:C1710.ui.group
 // === === === === === === === === === === === === === === === === === === === === ===
 Class constructor
 	
-	This:C1470.form:=cs:C1710.ui.form.new(This:C1470)
+	This:C1470.form:=cs:C1710.ui.form.new(This:C1470; Try(JSON Parse:C1218(File:C1566("/SOURCES/Forms/"+Current form name:C1298+"/form.4DForm").getText())))
 	This:C1470.form.init()
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
@@ -102,7 +102,7 @@ Function handleEvents($e : cs:C1710.ui.evt)
 	Case of   // <== WIDGETS METHOD
 			
 			//==============================================
-		: (This:C1470.branch.catch($e; [On Clicked:K2:4; On Long Click:K2:37; On Alternative Click:K2:36]))
+		: (This:C1470.branch.catch($e))  //; [On Clicked; On Long Click; On Alternative Click]))
 			
 			This:C1470._doBranchMenu()
 			
@@ -472,26 +472,98 @@ Function _doBranchMenu()
 		
 		var $menu:=cs:C1710.ui.menu.new()
 		var $o : Object
-		var $noChange : Boolean:=$git.status()=0
 		
 		For each ($o; $git.branches)
 			
-			$menu.append($o.name; $o.name).mark($o.current).enable($o.current || $noChange)
+			$menu.append($o.name; $o.name).mark($o.current)
 			
 		End for each 
 		
-		// TODO: Change branch
-		
-		If ($menu.popup().selected)
+		If ($menu.popup().selected) && ($menu.choice#$git.currentBranch)
 			
-			Form:C1466.branch:=$menu.choice
-			$git.stash("autostash "+String:C10(Current date:C33; ISO date:K1:8))
-			$git.checkout(Form:C1466.branch)
-			RELOAD PROJECT:C1739
-			This:C1470.form.refresh()
+			This:C1470._checkoutBranchWithChoice($menu.choice)
 			
 		End if 
 	End if 
+	
+	// === === === === === === === === === === === === === === === === === === === === ===
+	// Checks out $name; if the tree is dirty, asks HOW via a native popup menu first
+	// (same 3 choices as the CHECKOUT dialog in the commit history window).
+Function _checkoutBranchWithChoice($name : Text)
+	
+	var $git:=This:C1470.Git
+	
+	If ($git.status()=0)
+		
+		$git.checkout($name)
+		
+	Else 
+		
+		var $menu:=cs:C1710.ui.menu.new()\
+			.append(Localized string:C991("noChange"); "noChange")\
+			.append(Localized string:C991("stashAndReaply"); "stash")\
+			.append(Localized string:C991("discard"); "discard")
+		
+		If (Not:C34($menu.popup().selected))
+			
+			return 
+			
+		End if 
+		
+		Case of 
+				
+				//______________________________________________________
+			: ($menu.choice="noChange")
+				
+				var $t:=Replace string:C233(Localized string:C991("autostash"); "{date}"; String:C10(Current date:C33; Internal date long:K1:5))
+				$git.stash("save"; Replace string:C233($t; "{time}"; String:C10(Current time:C178; HH MM:K7:2)))
+				$git.checkout($name)
+				
+				//______________________________________________________
+			: ($menu.choice="stash")
+				
+				$git.stash("save")
+				$git.checkout($name)
+				$git.stash("pop")
+				
+				//______________________________________________________
+			: ($menu.choice="discard")
+				
+				CONFIRM:C162(Localized string:C991("doYouWantToDiscardAllChangesInTheSelectedFiles"))
+				
+				If (Not:C34(Bool:C1537(OK)))
+					
+					return 
+					
+				End if 
+				
+				var $c : Object
+				For each ($c; $git.changes)
+					
+					If ($c.status="??")
+						
+						File:C1566($git.workspace.path+$c.path).delete()
+						
+					Else 
+						
+						$git.checkout($c.path)
+						
+					End if 
+				End for each 
+				
+				//______________________________________________________
+		End case 
+		
+	End if 
+	
+	$git.update()  // Refresh cached HEAD, else currentBranch/windowTitle stay on the old branch
+	$git.branch()  // Refresh .branches/.workingBranch so the toolbar reflects the new branch right away
+	
+	RELOAD PROJECT:C1739
+	This:C1470.update()
+	This:C1470.form.refresh()
+	
+	// Cross-window notification of the main Git history window abandoned for now (see _gitMainWindow.4dm)
 	
 	// === === === === === === === === === === === === === === === === === === === === ===
 Function _doMoreMenu()
@@ -538,12 +610,18 @@ Function _doTagMenu($tag : Text)
 	
 	For each ($file; This:C1470.SOURCES.files(fk recursive:K87:7).query("extension = .4dm").orderBy("path"))
 		
-		If (Match regex:C1019("(?mi-s) // \\s*"+$tag+":"; $file.getText(); 1))
+		If (Match regex:C1019("(?mi-s)//\\s*"+$tag+":"; $file.getText(); 1))
 			
 			$todo.push($file)
 			
 		End if 
 	End for each 
+	
+	If ($todo.length=0)
+		
+		return 
+		
+	End if 
 	
 	var $menu:=cs:C1710.ui.menu.new({localize: False:C215; embedded: True:C214})
 	

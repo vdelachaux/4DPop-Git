@@ -20,11 +20,14 @@ End if
 If (Storage:C1525.gitHistoryClose=Null:C1517)
 	
 	Use (Storage:C1525)
+		
 		Storage:C1525.gitHistoryClose:=New shared object:C1526
+		
 	End use 
-	
 End if 
 
 Use (Storage:C1525.gitHistoryClose)
+	
 	Storage:C1525.gitHistoryClose["$githist:"+$file.path]:=Milliseconds:C459
+	
 End use 

@@ -103,13 +103,21 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 		
 		CLEAR VARIABLE:C89($style)
 		
-		var $tags:=[Null:C1517; Null:C1517; Null:C1517]
+		// A commit can carry SEVERAL branch refs at once (e.g. a freshly created branch
+		// still pointing at its parent's tip) — origin/tag stay single slots, branches
+		// accumulate in a collection so none of them get silently overwritten.
+		// ⚠️ `var` alone does NOT reset a value on later loop iterations (only `:=` does),
+		// so origin/tag must be explicitly cleared each time or they leak onto later commits
+		var $originTag; $tagTag : Object
+		CLEAR VARIABLE:C89($originTag)
+		CLEAR VARIABLE:C89($tagTag)
+		var $branchTags : Collection:=[]
 		
 		$i+=1
 		
 		If ($i<=$notPushed)
 			
-			$tags[0]:={what: "toPush"}
+			$originTag:={what: "toPush"}
 			
 		End if 
 		
@@ -129,11 +137,11 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 						
 						If ($metas.includes("origin/HEAD"))
 							
-							$tags[0]:={what: "origin"}
+							$originTag:={what: "origin"}
 							
 						End if 
 						
-						$tags[1]:={what: "current branch"; text: Replace string:C233($meta; "HEAD ->"; "")}
+						$branchTags.push({what: "current branch"; text: Replace string:C233($meta; "HEAD ->"; "")})
 						
 						var $branch : Text:=$git.workingBranch.name
 						var $main:=$branch
@@ -141,19 +149,19 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="tag: @")  // Tag
 						
-						$tags[2]:={what: "tag"; text: Replace string:C233($meta; "tag: "; "")}
+						$tagTag:={what: "tag"; text: Replace string:C233($meta; "tag: "; "")}
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="origin/HEAD")  // Checked out branch
 						
-						If ($tags[0]#Null:C1517)\
+						If ($originTag#Null:C1517)\
 							 | ($metas.includes("HEAD -> @"))
 							
 							continue
 							
 						End if 
 						
-						$tags[0]:={what: "origin"}
+						$originTag:={what: "origin"}
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="refs/stash")\
@@ -171,7 +179,7 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 							ref: "stash@{"+String:C10($o.stashes.length)+"}"\
 							}
 						
-						$tags[0]:={what: "stash"; text: $stash.ref}
+						$originTag:={what: "stash"; text: $stash.ref}
 						
 						$o.stashes.push($stash)
 						
@@ -182,7 +190,7 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 					: ($meta="origin/@")  // Origin branch
 						
-						If ($tags[0]#Null:C1517)
+						If ($originTag#Null:C1517)
 							
 							continue
 							
@@ -190,11 +198,11 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 						
 						If ($metas.includes(Replace string:C233($meta; "origin/"; "")))
 							
-							$tags[0]:={what: "origin"}
+							$originTag:={what: "origin"}
 							
 						Else 
 							
-							$tags[0]:={what: "origin"; text: Replace string:C233($meta; "origin/"; "")}
+							$originTag:={what: "origin"; text: Replace string:C233($meta; "origin/"; "")}
 							
 						End if 
 						
@@ -202,7 +210,7 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 					Else   // Branch
 						
 						$branch:=$meta
-						$tags[1]:={what: "branch"; text: $branch}
+						$branchTags.push({what: "branch"; text: $branch})
 						
 						//┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
 				End case 
@@ -213,6 +221,13 @@ Function build($raw : Text; $git : cs:C1710.Git) : Collection
 			$branch:=$main
 			
 		End if 
+		
+		var $tags:=[$originTag]
+		var $bt : Object
+		For each ($bt; $branchTags)
+			$tags.push($bt)
+		End for each 
+		$tags.push($tagTag)
 		
 		var $date:=Try(Date:C102($c[3]))
 		var $desc:=Split string:C1554($c[0]; "\r"; sk ignore empty strings:K86:1)
