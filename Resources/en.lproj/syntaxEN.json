@@ -249,33 +249,6 @@
 		}
 	},
 	"_GIT_Controller": {
-		"onDialogRequest()": {
-			"Syntax": "**.onDialogRequest**( *data* : Object )",
-			"Params": [
-				[
-					"data",
-					"Object",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"metaCommits()": {
-			"Syntax": "**.metaCommits**( *item* : Object ) : Object",
-			"Params": [
-				[
-					"item",
-					"Object",
-					"->"
-				],
-				[
-					"",
-					"Object",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
 		"getAvatar()": {
 			"Syntax": "**.getAvatar**( *mail* : Text ) : Picture",
 			"Params": [
@@ -304,6 +277,38 @@
 					"data",
 					"Object",
 					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"CreateGithubRepository()": {
+			"Syntax": "**.CreateGithubRepository**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"Checkout()": {
+			"Syntax": "**.Checkout**( *branch* : Object )",
+			"Params": [
+				[
+					"branch",
+					"Object",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"metaCommits()": {
+			"Syntax": "**.metaCommits**( *item* : Object ) : Object",
+			"Params": [
+				[
+					"item",
+					"Object",
+					"->"
+				],
+				[
+					"",
+					"Object",
+					"<-"
 				]
 			],
 			"Summary": ""
@@ -384,6 +389,17 @@
 			],
 			"Summary": ""
 		},
+		"onDialogRequest()": {
+			"Syntax": "**.onDialogRequest**( *data* : Object )",
+			"Params": [
+				[
+					"data",
+					"Object",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
 		"updateCommits()": {
 			"Syntax": "**.updateCommits**()",
 			"Params": [],
@@ -408,22 +424,6 @@
 		"onLoad()": {
 			"Syntax": "**.onLoad**()",
 			"Params": [],
-			"Summary": ""
-		},
-		"CreateGithubRepository()": {
-			"Syntax": "**.CreateGithubRepository**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"Checkout()": {
-			"Syntax": "**.Checkout**( *branch* : Object )",
-			"Params": [
-				[
-					"branch",
-					"Object",
-					"->"
-				]
-			],
 			"Summary": ""
 		},
 		"init()": {

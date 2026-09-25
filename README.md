@@ -19,6 +19,8 @@
 
 No need to read the <a href="https://git-scm.com/docs/git">**git**</a> command-line documentation or to be a Terminal expert: everyday operations — stage, commit, branch, fetch, pull, push, stash, diff — are handled for you, so you can stay focused on your work.
 
+For a step-by-step introduction, see the [English user guide](Documentation/User-guide.md), or the [French user guide](Documentation/Guide-utilisateur.md).
+
 It also exposes a scriptable API (the [`Git`](Documentation/Classes/Git.md) and [`gh`](Documentation/Classes/gh.md) classes) so you can automate Git and GitHub tasks from your own code.
 
 ## Highlights
@@ -68,80 +70,38 @@ Use the 4D Dependencies Manager UI to install the component:
 
 No manual JSON editing is required.
 
-### Fallback for binary databases or legacy setups
-
-If you are not using project dependencies (for example in older or binary database workflows):
-
-1. Copy `4DPop Git.4dbase` (or create an alias) into the `Components` folder next to your structure.
-2. Restart the database.
+4DPop Git is intended for **4D projects**. Git is not useful for binary databases (`.4db` or `.4dc`), whose structure is not managed as a set of project files.
 
 ## Usage
 
-Open the 4DPop **Git** entry to display the main window for the current project's working copy. From there you can review your changes, stage and commit them, and synchronize with your remotes.
+The component has three main entry points. For step-by-step instructions, see the [English user guide](Documentation/User-guide.md) or the [French user guide](Documentation/Guide-utilisateur.md).
 
----- 
+### Widget
+
+The Git widget in the 4DPop toolbar provides a quick overview of the current project: current branch, local changes, commits to pull, and commits to push. It also gives quick access to branch switching, changes, refresh, the repository, and settings.
+
+<img src="./Documentation/widget.png" alt="4DPop Git widget">
 
 ### Main window
 
-<img src="./Documentation/main.png">
+Open the 4DPop **Git** entry to display the main window. 
 
----- 
+* The **Changes** page lets you review diffs, stage files, and create commits.
 
-### Commit history
+<img src="./Documentation/main.png" alt="4DPop Git main window">
 
-<img src="./Documentation/commits.png">
+* The **History** page provides commit details and a colored branch graph for branches, merges, remotes, tags, and stashes.
 
----- 
+<img src="./Documentation/commitHistory.png" alt="4DPop Git commit history">
 
-### Commit graph
+### Method editor macros
 
-A full branch graph is drawn next to the history, in the style of dedicated Git clients such as Fork: each branch and merge gets its own colour-coded lane, and reference labels (branches, remotes with their GitHub icon, tags and stashes) are tinted to match the lane they belong to.
+Installing the component automatically adds macros to the 4D method editor context menu while editing a method or class:
 
-<img src="./Documentation/commitGraph.png">
+- **Insert macro > Git history…** opens the history of the file being edited.
+- **Insert macro > Last commit for selection…** reports the last commit that modified the selected lines.
 
----- 
-
-### File menu
-
-<img src="./Documentation/fileMenu.png">
-
----- 
-
-### Open menu
-
-<img src="./Documentation/openMenu.png" >
-
----- 
-
-## Method Editor macros
-
-Installing the component automatically registers macros in 4D's Method Editor contextual menu (Design > Method > right-click) — no extra setup needed. They only appear while editing a method or class file:
-
-- **Git history…** — opens the full Git history of the file being edited.
-- **Last commit for selection…** — reports the last commit that touched the selected line(s).
-- A third, hidden macro (not shown in the menu) fires when the method editor closes, to clean up the per-file history window's state.
-
----- 
-
-### Method history (from the code editor)
-
-A **Git history…** entry is added to the 4D method editor's macro menu. While editing a method or class, it opens a dedicated window showing the Git history of *that* file:
-
-- on the left, every commit that modified the file — commit subject, author, date, short hash, ± line counts, and rename tracking (`--follow`);
-- on the right, the diff of the selected commit against its parent;
-- a top entry for the file's **uncommitted changes**, or, for a brand-new file, its **not-yet-committed content**.
-
-The window opens a single instance per file (re-invoking brings it to front) and closes automatically when you close the corresponding method editor.
-
-<img src="./Documentation/history.png">
-
----- 
-
-### Last commit for a selection
-
-Select one or more lines of a method or class in the code editor and run the **Last commit for selection…** macro: 4DPop Git reports the most recent commit that modified those lines — short hash, author, date and subject — using `git blame` behind the scenes.
-
----- 
+<img src="./Documentation/history.png" alt="Git history for a file">
 
 ## Scripting API
 

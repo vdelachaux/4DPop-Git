@@ -119,21 +119,36 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 	
 	SET ENVIRONMENT VARIABLE:C812("_4D_OPTION_HIDE_CONSOLE"; "true")
 	
-	If (Is macOS:C1572)
-		
-		// A GUI-launched 4D only inherits a minimal PATH; git hooks (e.g. the Git LFS
-		// pre-push hook) run as a shell script and need a tool to be found on it.
-		// Our own embedded (universal arm64+x86_64) Resources/bin is prepended FIRST so
-		// it wins over any stale/wrong-arch tool a user may have under /usr/local/bin
-		SET ENVIRONMENT VARIABLE:C812("PATH"; (This:C1470.BIN#Null:C1517 ? String:C10(This:C1470.BIN.path)+":" : "")+"/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
-		
-		// ⚠️ Setting ANY real environment variable above makes 4D stop inheriting the
-		// rest of the process environment for this LAUNCH EXTERNAL PROCESS call, so
-		// HOME is otherwise silently dropped — breaking global git config lookups
-		// ("fatal: $HOME not set"), user.name/email among them
-		SET ENVIRONMENT VARIABLE:C812("HOME"; String:C10(Folder:C1567(fk home folder:K87:24).path))
-		
-	End if 
+	Case of 
+			
+			// ⚠️ Setting ANY real environment variable below makes 4D stop inheriting the
+			// rest of the process environment for this LAUNCH EXTERNAL PROCESS call, so
+			// HOME is otherwise silently dropped — breaking global git config lookups
+			// ("fatal: $HOME not set"), user.name/email among them. Both branches below
+			// must re-set a HOME-equivalent for this reason.
+			//——————————————————————
+		: (Is macOS:C1572)
+			
+			// A GUI-launched 4D only inherits a minimal PATH; git hooks (e.g. the Git LFS
+			// pre-push hook) run as a shell script and need a tool to be found on it.
+			// Our own embedded (universal arm64+x86_64) Resources/bin is prepended FIRST so
+			// it wins over any stale/wrong-arch tool a user may have under /usr/local/bin
+			SET ENVIRONMENT VARIABLE:C812("PATH"; (This:C1470.BIN#Null:C1517 ? String:C10(This:C1470.BIN.path)+":" : "")+"/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
+			
+			SET ENVIRONMENT VARIABLE:C812("HOME"; String:C10(Folder:C1567(fk home folder:K87:24).path))
+			
+			//—————————————————————— ⚠️ UNTESTED on a real Windows machine; revert if it causes issues
+		: (Is Windows:C1573)
+			
+			var $gitFolder : 4D:C1709.Folder:=Folder:C1567(fk applications folder:K87:20).parent.folder("Program Files/Git")
+			
+			SET ENVIRONMENT VARIABLE:C812("PATH"; (This:C1470.BIN#Null:C1517 ? String:C10(This:C1470.BIN.platformPath)+";" : "")\
+				+$gitFolder.platformPath+"cmd;"+$gitFolder.platformPath+"bin;"+$gitFolder.platformPath+"mingw64\\bin;"+$gitFolder.platformPath+"usr\\bin")
+			
+			SET ENVIRONMENT VARIABLE:C812("HOME"; String:C10(Folder:C1567(fk home folder:K87:24).platformPath))
+			
+			//——————————————————————
+	End case 
 	
 	If (This:C1470.workspace#Null:C1517)
 		
