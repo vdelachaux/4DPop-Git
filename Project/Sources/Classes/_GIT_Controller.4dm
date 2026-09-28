@@ -455,6 +455,8 @@ Function onLoad()
 	This:C1470.windowFrame.left:=0
 	This:C1470.windowFrame.width:=This:C1470.form.rect.width
 	
+	This:C1470.form.window.title:=File:C1566(Structure file:C489; fk platform path:K87:2).name+" - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
+	
 	If (Is Windows:C1573)/* || (Not(Is compiled mode) && Shift down)*/
 		
 		// FIXME: Re-enable when design mode uses SDI
@@ -477,6 +479,9 @@ Function onLoad()
 			// The window with a title whose ui needs to be adapted
 			This:C1470.form.Group("changes,history,input,commiter").moveHorizontally(-100)
 			
+			This:C1470.form.window.title:=File:C1566(Structure file:C489; fk platform path:K87:2).name
+			Form:C1466.windowTitle:=File:C1566(Structure file:C489(*); fk platform path:K87:2).name
+			
 		End if 
 		
 	Else 
@@ -488,9 +493,9 @@ Function onLoad()
 		This:C1470.windowFrame.left:=0
 		This:C1470.windowFrame.width:=This:C1470.form.window.width
 		
+		Form:C1466.windowTitle:=This:C1470.form.window.title
+		
 	End if 
-	
-	This:C1470.form.window.title:=File:C1566(Structure file:C489; fk platform path:K87:2).name+" - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
 	
 	This:C1470.changes.show()
 	This:C1470.history.show()
@@ -521,7 +526,6 @@ Function onLoad()
 	
 	// Form values
 	Form:C1466.project:=File:C1566(Structure file:C489(*); fk platform path:K87:2)
-	Form:C1466.windowTitle:=This:C1470.form.window.title
 	
 	Form:C1466.version:=This:C1470.Git.getVersion("short")
 	
