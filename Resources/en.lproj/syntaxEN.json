@@ -11,17 +11,6 @@
 			],
 			"Summary": ""
 		},
-		"GIT CLOSE": {
-			"Syntax": "**GIT CLOSE**( *target* : Text )",
-			"Params": [
-				[
-					"target",
-					"Text",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
 		"GIT HISTORY": {
 			"Syntax": "**GIT HISTORY**( *target* : Variant; *run* : Boolean )",
 			"Params": [
@@ -37,23 +26,32 @@
 				]
 			],
 			"Summary": ""
+		},
+		"GIT CLOSE": {
+			"Syntax": "**GIT CLOSE**( *target* : Text )",
+			"Params": [
+				[
+					"target",
+					"Text",
+					"->"
+				]
+			],
+			"Summary": ""
 		}
 	},
 	"cs.git": {
-		"gh": {
+		"_gravatarRequest": {
 			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
-		"Git": {
-			"new()": {
-				"Syntax": "**.new**( *folder* : 4D.Folder )",
+				"Syntax": "**.new**( *info* : Object; *target* : 4D.Function )",
 				"Params": [
 					[
-						"folder",
-						"4D.Folder",
+						"info",
+						"Object",
+						"->"
+					],
+					[
+						"target",
+						"4D.Function",
 						"->"
 					]
 				],
@@ -74,21 +72,51 @@
 				"Summary": ""
 			}
 		},
-		"_gravatarRequest": {
+		"_commitsCache": {
 			"new()": {
-				"Syntax": "**.new**( *info* : Object; *target* : 4D.Function )",
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"_PATTERN_Controller": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"_HISTORY_Controller": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"Git": {
+			"new()": {
+				"Syntax": "**.new**( *folder* : 4D.Folder )",
 				"Params": [
 					[
-						"info",
-						"Object",
-						"->"
-					],
-					[
-						"target",
-						"4D.Function",
+						"folder",
+						"4D.Folder",
 						"->"
 					]
 				],
+				"Summary": ""
+			}
+		},
+		"gh": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
+				"Summary": ""
+			}
+		},
+		"_gravatars": {
+			"new()": {
+				"Syntax": "**.new**()",
+				"Params": [],
 				"Summary": ""
 			}
 		},
@@ -105,35 +133,7 @@
 				"Summary": ""
 			}
 		},
-		"_commitsCache": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
 		"_GIT_Controller": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
-		"_gravatars": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
-		"_HISTORY_Controller": {
-			"new()": {
-				"Syntax": "**.new**()",
-				"Params": [],
-				"Summary": ""
-			}
-		},
-		"_PATTERN_Controller": {
 			"new()": {
 				"Syntax": "**.new**()",
 				"Params": [],
@@ -148,73 +148,233 @@
 			}
 		}
 	},
-	"gh": {
-		"createRepo()": {
-			"Syntax": "**.createRepo**( *name* : Text; *private* : Boolean; *options* : Object ) : Text",
+	"_gravatarRequest": {
+		"onError()": {
+			"Syntax": "**.onError**( *request* : 4D.HTTPRequest; *event* : Object )",
 			"Params": [
 				[
-					"name",
-					"Text",
+					"request",
+					"4D.HTTPRequest",
 					"->"
 				],
 				[
-					"private",
-					"Boolean",
-					"->"
-				],
-				[
-					"options",
+					"event",
 					"Object",
 					"->"
-				],
-				[
-					"",
-					"Text",
-					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"get lastError()": {
-			"Syntax": "**.get lastError**() : Text",
+		"onResponse()": {
+			"Syntax": "**.onResponse**( *request* : 4D.HTTPRequest; *event* : Object )",
 			"Params": [
 				[
-					"",
-					"Text",
-					"<-"
+					"request",
+					"4D.HTTPRequest",
+					"->"
+				],
+				[
+					"event",
+					"Object",
+					"->"
 				]
 			],
 			"Summary": ""
 		},
-		"logout()": {
-			"Syntax": "**.logout**()",
+		"body": {
+			"Syntax": "body : Text"
+		},
+		"hash": {
+			"Syntax": "hash : Text"
+		},
+		"mail": {
+			"Syntax": "mail : Text"
+		},
+		"target": {
+			"Syntax": "target : 4D.Function"
+		},
+		"headers": {
+			"Syntax": "headers : Object"
+		},
+		"method": {
+			"Syntax": "method : Text"
+		}
+	},
+	"_gitMainWindow": {
+		"register()": {
+			"Syntax": "**.register**( *windowRef* : Integer )",
+			"Params": [
+				[
+					"windowRef",
+					"Integer",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"unregister()": {
+			"Syntax": "**.unregister**()",
 			"Params": [],
 			"Summary": ""
 		},
-		"getStatus()": {
-			"Syntax": "**.getStatus**() : Object",
+		"get windowRef()": {
+			"Syntax": "**.get windowRef**() : Integer",
 			"Params": [
 				[
 					"",
-					"Object",
+					"Integer",
 					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"token()": {
-			"Syntax": "**.token**() : Text",
+		"file": {
+			"Syntax": "file : 4D.File"
+		}
+	},
+	"_WINDOW_FRAME_Controller": {
+		"miniaturiseOrNot()": {
+			"Syntax": "**.miniaturiseOrNot**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"get zoomDisabled()": {
+			"Syntax": "**.get zoomDisabled**() : Boolean",
 			"Params": [
 				[
 					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get reduceDisabled()": {
+			"Syntax": "**.get reduceDisabled**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get closeDisabled()": {
+			"Syntax": "**.get closeDisabled**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get documentModified()": {
+			"Syntax": "**.get documentModified**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"handleEvents()": {
+			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+			"Params": [
+				[
+					"e",
+					"cs.ui.evt",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"update()": {
+			"Syntax": "**.update**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"proxyMacOS": {
+			"Syntax": "proxyMacOS : Text"
+		},
+		"isModal": {
+			"Syntax": "isModal : Boolean"
+		},
+		"zoomMedia": {
+			"Syntax": "zoomMedia : cs.ui.static"
+		},
+		"closeMedia": {
+			"Syntax": "closeMedia : cs.ui.static"
+		},
+		"close": {
+			"Syntax": "close : cs.ui.button"
+		},
+		"zoom": {
+			"Syntax": "zoom : cs.ui.button"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		},
+		"reduce": {
+			"Syntax": "reduce : cs.ui.button"
+		},
+		"form": {
+			"Syntax": "form : cs.ui.form"
+		},
+		"actionOnDoubleClick": {
+			"Syntax": "actionOnDoubleClick : Text"
+		},
+		"reduceMedia": {
+			"Syntax": "reduceMedia : cs.ui.static"
+		},
+		"drag": {
+			"Syntax": "drag : cs.ui.button"
+		},
+		"options": {
+			"Syntax": "options : Real"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
+		}
+	},
+	"_commitsCache": {
+		"abortLoading()": {
+			"Syntax": "**.abortLoading**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"hasChanged()": {
+			"Syntax": "**.hasChanged**( *raw* : Text ) : Boolean",
+			"Params": [
+				[
+					"raw",
 					"Text",
+					"->"
+				],
+				[
+					"",
+					"Boolean",
 					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"login()": {
-			"Syntax": "**.login**() : Boolean",
+		"isLoadingStale()": {
+			"Syntax": "**.isLoadingStale**() : Boolean",
 			"Params": [
 				[
 					"",
@@ -224,30 +384,185 @@
 			],
 			"Summary": ""
 		},
-		"checkToken()": {
-			"Syntax": "**.checkToken**() : Boolean",
+		"store()": {
+			"Syntax": "**.store**( *raw* : Text; *commits* : Collection )",
 			"Params": [
 				[
+					"raw",
+					"Text",
+					"->"
+				],
+				[
+					"commits",
+					"Collection",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"invalidate()": {
+			"Syntax": "**.invalidate**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"setLoading()": {
+			"Syntax": "**.setLoading**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"loading": {
+			"Syntax": "loading : Boolean"
+		},
+		"version": {
+			"Syntax": "version : Integer"
+		},
+		"loadingSince": {
+			"Syntax": "loadingSince : Real"
+		},
+		"builtCommits": {
+			"Syntax": "builtCommits : Collection"
+		},
+		"raw": {
+			"Syntax": "raw : Text"
+		}
+	},
+	"_PATTERN_Controller": {
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"handleEvents()": {
+			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+			"Params": [
+				[
+					"e",
+					"cs.ui.evt",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"update()": {
+			"Syntax": "**.update**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"help": {
+			"Syntax": "help : cs.ui.button"
+		},
+		"cancel": {
+			"Syntax": "cancel : cs.ui.button"
+		},
+		"pattern": {
+			"Syntax": "pattern : cs.ui.input"
+		},
+		"done": {
+			"Syntax": "done : cs.ui.button"
+		},
+		"form": {
+			"Syntax": "form : cs.ui.form"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
+		},
+		"preview": {
+			"Syntax": "preview : cs.ui.listbox"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		}
+	},
+	"_HISTORY_Controller": {
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"handleEvents()": {
+			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+			"Params": [
+				[
+					"e",
+					"cs.ui.evt",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"relativePath": {
+			"Syntax": "relativePath : Text"
+		},
+		"diff": {
+			"Syntax": "diff : cs.ui.input"
+		},
+		"commits": {
+			"Syntax": "commits : cs.ui.listbox"
+		},
+		"form": {
+			"Syntax": "form : cs.ui.form"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		},
+		"Git": {
+			"Syntax": "Git : cs.git.Git"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
+		}
+	},
+	"Git": {
+		"set token()": {
+			"Syntax": "**.set token**( *token* : Text )",
+			"Params": [
+				[
+					"token",
+					"Text",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"sourceFile()": {
+			"Syntax": "**.sourceFile**( *path* : Text ) : 4D.File",
+			"Params": [
+				[
+					"path",
+					"Text",
+					"->"
+				],
+				[
 					"",
-					"Boolean",
+					"4D.File",
 					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"setupGit()": {
-			"Syntax": "**.setupGit**() : Boolean",
+		"REMOTE_ORIGIN()": {
+			"Syntax": "**.REMOTE_ORIGIN**() : Collection",
 			"Params": [
 				[
 					"",
-					"Boolean",
+					"Collection",
 					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"deleteRepo()": {
-			"Syntax": "**.deleteRepo**( *name* : Text ) : Boolean",
+		"isValidRefName()": {
+			"Syntax": "**.isValidRefName**( *name* : Text ) : Boolean",
 			"Params": [
 				[
 					"name",
@@ -262,77 +577,77 @@
 			],
 			"Summary": ""
 		},
-		"onDataError()": {
-			"Syntax": "**.onDataError**( *worker* : 4D.SystemWorker; *info* : Object )",
+		"updateTags()": {
+			"Syntax": "**.updateTags**() : cs.git.Git",
 			"Params": [
 				[
-					"worker",
-					"4D.SystemWorker",
+					"",
+					"cs.git.Git",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"addRemote()": {
+			"Syntax": "**.addRemote**( *name* : Text; *url* : Text )",
+			"Params": [
+				[
+					"name",
+					"Text",
 					"->"
 				],
 				[
-					"info",
-					"Object",
+					"url",
+					"Text",
 					"->"
 				]
 			],
 			"Summary": ""
 		},
-		"onTerminate()": {
-			"Syntax": "**.onTerminate**( *worker* : 4D.SystemWorker )",
-			"Params": [
-				[
-					"worker",
-					"4D.SystemWorker",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"dataError": {
-			"Syntax": "dataError : Text"
-		},
-		"data": {
-			"Syntax": "data : Text"
-		},
-		"dataType": {
-			"Syntax": "dataType : Text"
-		},
-		"success": {
-			"Syntax": "success : Boolean"
-		},
-		"errors": {
-			"Syntax": "errors : Collection"
-		},
-		"timeout": {
-			"Syntax": "timeout : Real"
-		},
-		"available": {
-			"Syntax": "available : Boolean"
-		},
-		"authorized": {
-			"Syntax": "authorized : Boolean"
-		},
-		"history": {
-			"Syntax": "history : Collection"
-		},
-		"exe": {
-			"Syntax": "exe : Text"
-		},
-		"remote": {
-			"Syntax": "remote : Text"
-		},
-		"status": {
-			"Syntax": "status : Object"
-		}
-	},
-	"Git": {
 		"get currentBranch()": {
 			"Syntax": "**.get currentBranch**() : Text",
 			"Params": [
 				[
 					"",
 					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"diffTool()": {
+			"Syntax": "**.diffTool**( *pathname* : Text )",
+			"Params": [
+				[
+					"pathname",
+					"Text",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"updateRemotes()": {
+			"Syntax": "**.updateRemotes**() : cs.git.Git",
+			"Params": [
+				[
+					"",
+					"cs.git.Git",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"checkout()": {
+			"Syntax": "**.checkout**( *what* : Variant ) : cs.git.Git",
+			"Params": [
+				[
+					"what",
+					"Variant",
+					"->"
+				],
+				[
+					"",
+					"cs.git.Git",
 					"<-"
 				]
 			],
@@ -354,8 +669,24 @@
 			],
 			"Summary": ""
 		},
-		"fetchCurrent()": {
-			"Syntax": "**.fetchCurrent**() : Boolean",
+		"branchPushNumber()": {
+			"Syntax": "**.branchPushNumber**( *branch* : Text ) : Integer",
+			"Params": [
+				[
+					"branch",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Integer",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"fetchAll()": {
+			"Syntax": "**.fetchAll**() : Boolean",
 			"Params": [
 				[
 					"",
@@ -365,65 +696,17 @@
 			],
 			"Summary": ""
 		},
-		"get token()": {
-			"Syntax": "**.get token**() : Text",
+		"branchFetchNumber()": {
+			"Syntax": "**.branchFetchNumber**( *branch* : Text ) : Integer",
 			"Params": [
 				[
-					"",
-					"Text",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"update()": {
-			"Syntax": "**.update**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"set token()": {
-			"Syntax": "**.set token**( *token* : Text )",
-			"Params": [
-				[
-					"token",
-					"Text",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"execute()": {
-			"Syntax": "**.execute**( *command* : Text; *inputStream* : Text ) : Boolean",
-			"Params": [
-				[
-					"command",
-					"Text",
-					"->"
-				],
-				[
-					"inputStream",
+					"branch",
 					"Text",
 					"->"
 				],
 				[
 					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"getVersion()": {
-			"Syntax": "**.getVersion**( *type* : Text ) : Text",
-			"Params": [
-				[
-					"type",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Text",
+					"Integer",
 					"<-"
 				]
 			],
@@ -445,20 +728,20 @@
 			],
 			"Summary": ""
 		},
-		"version()": {
-			"Syntax": "**.version**() : Text",
+		"revert()": {
+			"Syntax": "**.revert**( *sha* : Text ) : Boolean",
 			"Params": [
 				[
-					"",
+					"sha",
 					"Text",
+					"->"
+				],
+				[
+					"",
+					"Boolean",
 					"<-"
 				]
 			],
-			"Summary": ""
-		},
-		"init()": {
-			"Syntax": "**.init**()",
-			"Params": [],
 			"Summary": ""
 		},
 		"userName()": {
@@ -467,28 +750,6 @@
 				[
 					"",
 					"Text",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"userMail()": {
-			"Syntax": "**.userMail**() : Text",
-			"Params": [
-				[
-					"",
-					"Text",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"installLFS()": {
-			"Syntax": "**.installLFS**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
 					"<-"
 				]
 			],
@@ -515,168 +776,17 @@
 			],
 			"Summary": ""
 		},
-		"unstage()": {
-			"Syntax": "**.unstage**( *what* : Variant )",
+		"FETCH_HEAD()": {
+			"Syntax": "**.FETCH_HEAD**( *type* : Text ) : Collection",
 			"Params": [
 				[
-					"what",
-					"Variant",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"get lfs()": {
-			"Syntax": "**.get lfs**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"status()": {
-			"Syntax": "**.status**( *short* : Boolean ) : Integer",
-			"Params": [
-				[
-					"short",
-					"Boolean",
-					"->"
-				],
-				[
-					"",
-					"Integer",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"add()": {
-			"Syntax": "**.add**( *what* : Variant )",
-			"Params": [
-				[
-					"what",
-					"Variant",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"fetch()": {
-			"Syntax": "**.fetch**( *origin* : Boolean ) : Boolean",
-			"Params": [
-				[
-					"origin",
-					"Boolean",
-					"->"
-				],
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"untrack()": {
-			"Syntax": "**.untrack**( *what* : Variant )",
-			"Params": [
-				[
-					"what",
-					"Variant",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"commit()": {
-			"Syntax": "**.commit**( *message* : Text; *amend* : Boolean )",
-			"Params": [
-				[
-					"message",
-					"Text",
-					"->"
-				],
-				[
-					"amend",
-					"Boolean",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"stash()": {
-			"Syntax": "**.stash**( *action* : Text; *name* : Text ) : cs.git.Git",
-			"Params": [
-				[
-					"action",
-					"Text",
-					"->"
-				],
-				[
-					"name",
+					"type",
 					"Text",
 					"->"
 				],
 				[
 					"",
-					"cs.git.Git",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"diffTool()": {
-			"Syntax": "**.diffTool**( *pathname* : Text )",
-			"Params": [
-				[
-					"pathname",
-					"Text",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"fetchAll()": {
-			"Syntax": "**.fetchAll**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"pull()": {
-			"Syntax": "**.pull**( *rebase* : Boolean; *stash* : Boolean ) : Boolean",
-			"Params": [
-				[
-					"rebase",
-					"Boolean",
-					"->"
-				],
-				[
-					"stash",
-					"Boolean",
-					"->"
-				],
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"updateRemotes()": {
-			"Syntax": "**.updateRemotes**() : cs.git.Git",
-			"Params": [
-				[
-					"",
-					"cs.git.Git",
+					"Collection",
 					"<-"
 				]
 			],
@@ -729,13 +839,23 @@
 			],
 			"Summary": ""
 		},
-		"open()": {
-			"Syntax": "**.open**( *what* : Text )",
+		"diffList()": {
+			"Syntax": "**.diffList**( *parent* : Text; *current* : Text ) : Boolean",
 			"Params": [
 				[
-					"what",
+					"parent",
 					"Text",
 					"->"
+				],
+				[
+					"current",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Boolean",
+					"<-"
 				]
 			],
 			"Summary": ""
@@ -766,22 +886,6 @@
 			],
 			"Summary": ""
 		},
-		"checkout()": {
-			"Syntax": "**.checkout**( *what* : Variant ) : cs.git.Git",
-			"Params": [
-				[
-					"what",
-					"Variant",
-					"->"
-				],
-				[
-					"",
-					"cs.git.Git",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
 		"tagExists()": {
 			"Syntax": "**.tagExists**( *name* : Text ) : Boolean",
 			"Params": [
@@ -798,12 +902,33 @@
 			],
 			"Summary": ""
 		},
-		"revert()": {
-			"Syntax": "**.revert**( *sha* : Text ) : Boolean",
+		"commit()": {
+			"Syntax": "**.commit**( *message* : Text; *amend* : Boolean )",
 			"Params": [
 				[
-					"sha",
+					"message",
 					"Text",
+					"->"
+				],
+				[
+					"amend",
+					"Boolean",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"pull()": {
+			"Syntax": "**.pull**( *rebase* : Boolean; *stash* : Boolean ) : Boolean",
+			"Params": [
+				[
+					"rebase",
+					"Boolean",
+					"->"
+				],
+				[
+					"stash",
+					"Boolean",
 					"->"
 				],
 				[
@@ -814,24 +939,134 @@
 			],
 			"Summary": ""
 		},
-		"sourceFile()": {
-			"Syntax": "**.sourceFile**( *path* : Text ) : 4D.File",
+		"open()": {
+			"Syntax": "**.open**( *what* : Text )",
 			"Params": [
 				[
-					"path",
+					"what",
 					"Text",
 					"->"
-				],
+				]
+			],
+			"Summary": ""
+		},
+		"untrack()": {
+			"Syntax": "**.untrack**( *what* : Variant )",
+			"Params": [
+				[
+					"what",
+					"Variant",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"fetchCurrent()": {
+			"Syntax": "**.fetchCurrent**() : Boolean",
+			"Params": [
 				[
 					"",
-					"4D.File",
+					"Boolean",
 					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"FETCH_HEAD()": {
-			"Syntax": "**.FETCH_HEAD**( *type* : Text ) : Collection",
+		"unstage()": {
+			"Syntax": "**.unstage**( *what* : Variant )",
+			"Params": [
+				[
+					"what",
+					"Variant",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"get token()": {
+			"Syntax": "**.get token**() : Text",
+			"Params": [
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"userMail()": {
+			"Syntax": "**.userMail**() : Text",
+			"Params": [
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"version()": {
+			"Syntax": "**.version**() : Text",
+			"Params": [
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"add()": {
+			"Syntax": "**.add**( *what* : Variant )",
+			"Params": [
+				[
+					"what",
+					"Variant",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"status()": {
+			"Syntax": "**.status**( *short* : Boolean ) : Integer",
+			"Params": [
+				[
+					"short",
+					"Boolean",
+					"->"
+				],
+				[
+					"",
+					"Integer",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get lfs()": {
+			"Syntax": "**.get lfs**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"installLFS()": {
+			"Syntax": "**.installLFS**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"getVersion()": {
+			"Syntax": "**.getVersion**( *type* : Text ) : Text",
 			"Params": [
 				[
 					"type",
@@ -840,55 +1075,18 @@
 				],
 				[
 					"",
-					"Collection",
+					"Text",
 					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"branchFetchNumber()": {
-			"Syntax": "**.branchFetchNumber**( *branch* : Text ) : Integer",
+		"fetch()": {
+			"Syntax": "**.fetch**( *origin* : Boolean ) : Boolean",
 			"Params": [
 				[
-					"branch",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Integer",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"branchPushNumber()": {
-			"Syntax": "**.branchPushNumber**( *branch* : Text ) : Integer",
-			"Params": [
-				[
-					"branch",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Integer",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"diffList()": {
-			"Syntax": "**.diffList**( *parent* : Text; *current* : Text ) : Boolean",
-			"Params": [
-				[
-					"parent",
-					"Text",
-					"->"
-				],
-				[
-					"current",
-					"Text",
+					"origin",
+					"Boolean",
 					"->"
 				],
 				[
@@ -899,193 +1097,19 @@
 			],
 			"Summary": ""
 		},
-		"addRemote()": {
-			"Syntax": "**.addRemote**( *name* : Text; *url* : Text )",
+		"execute()": {
+			"Syntax": "**.execute**( *command* : Text; *inputStream* : Text ) : Boolean",
 			"Params": [
 				[
-					"name",
+					"command",
 					"Text",
 					"->"
 				],
 				[
-					"url",
-					"Text",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"updateTags()": {
-			"Syntax": "**.updateTags**() : cs.git.Git",
-			"Params": [
-				[
-					"",
-					"cs.git.Git",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"isValidRefName()": {
-			"Syntax": "**.isValidRefName**( *name* : Text ) : Boolean",
-			"Params": [
-				[
-					"name",
+					"inputStream",
 					"Text",
 					"->"
 				],
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"REMOTE_ORIGIN()": {
-			"Syntax": "**.REMOTE_ORIGIN**() : Collection",
-			"Params": [
-				[
-					"",
-					"Collection",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"command": {
-			"Syntax": "command : Text"
-		},
-		"workspace": {
-			"Syntax": "workspace : 4D.Folder"
-		},
-		"gitattributes": {
-			"Syntax": "gitattributes : 4D.File"
-		},
-		"local": {
-			"Syntax": "local : Boolean"
-		},
-		"BIN": {
-			"Syntax": "BIN : 4D.Folder"
-		},
-		"root": {
-			"Syntax": "root : 4D.Folder"
-		},
-		"PACKAGE": {
-			"Syntax": "PACKAGE : 4D.Folder"
-		},
-		"branches": {
-			"Syntax": "branches : Collection"
-		},
-		"gitignore": {
-			"Syntax": "gitignore : 4D.File"
-		},
-		"errors": {
-			"Syntax": "errors : Collection"
-		},
-		"success": {
-			"Syntax": "success : Boolean"
-		},
-		"user": {
-			"Syntax": "user : Object"
-		},
-		"result": {
-			"Syntax": "result : Text"
-		},
-		"error": {
-			"Syntax": "error : Text"
-		},
-		"warning": {
-			"Syntax": "warning : Text"
-		},
-		"warnings": {
-			"Syntax": "warnings : Collection"
-		},
-		"workingBranch": {
-			"Syntax": "workingBranch : Object"
-		},
-		"changes": {
-			"Syntax": "changes : Collection"
-		},
-		"history": {
-			"Syntax": "history : Collection"
-		},
-		"remotes": {
-			"Syntax": "remotes : Collection"
-		},
-		"stashes": {
-			"Syntax": "stashes : Collection"
-		},
-		"tags": {
-			"Syntax": "tags : Collection"
-		},
-		"HEAD": {
-			"Syntax": "HEAD : Text"
-		},
-		"SOURCES": {
-			"Syntax": "SOURCES : 4D.Folder"
-		},
-		"DEBUG": {
-			"Syntax": "DEBUG : Boolean"
-		}
-	},
-	"_gitMainWindow": {
-		"get windowRef()": {
-			"Syntax": "**.get windowRef**() : Integer",
-			"Params": [
-				[
-					"",
-					"Integer",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"register()": {
-			"Syntax": "**.register**( *windowRef* : Integer )",
-			"Params": [
-				[
-					"windowRef",
-					"Integer",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"unregister()": {
-			"Syntax": "**.unregister**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"file": {
-			"Syntax": "file : 4D.File"
-		}
-	},
-	"_WINDOW_FRAME_Controller": {
-		"init()": {
-			"Syntax": "**.init**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"handleEvents()": {
-			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
-			"Params": [
-				[
-					"e",
-					"cs.ui.evt",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"onLoad()": {
-			"Syntax": "**.onLoad**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"get zoomDisabled()": {
-			"Syntax": "**.get zoomDisabled**() : Boolean",
-			"Params": [
 				[
 					"",
 					"Boolean",
@@ -1099,161 +1123,343 @@
 			"Params": [],
 			"Summary": ""
 		},
-		"get closeDisabled()": {
-			"Syntax": "**.get closeDisabled**() : Boolean",
+		"stash()": {
+			"Syntax": "**.stash**( *action* : Text; *name* : Text ) : cs.git.Git",
 			"Params": [
 				[
+					"action",
+					"Text",
+					"->"
+				],
+				[
+					"name",
+					"Text",
+					"->"
+				],
+				[
 					"",
-					"Boolean",
+					"cs.git.Git",
 					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"get documentModified()": {
-			"Syntax": "**.get documentModified**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"get reduceDisabled()": {
-			"Syntax": "**.get reduceDisabled**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"miniaturiseOrNot()": {
-			"Syntax": "**.miniaturiseOrNot**()",
+		"init()": {
+			"Syntax": "**.init**()",
 			"Params": [],
 			"Summary": ""
 		},
-		"reduce": {
-			"Syntax": "reduce : cs.ui.button"
+		"DEBUG": {
+			"Syntax": "DEBUG : Boolean"
 		},
-		"drag": {
-			"Syntax": "drag : cs.ui.button"
+		"BIN": {
+			"Syntax": "BIN : 4D.Folder"
 		},
-		"options": {
-			"Syntax": "options : Real"
+		"PACKAGE": {
+			"Syntax": "PACKAGE : 4D.Folder"
 		},
-		"toBeInitialized": {
-			"Syntax": "toBeInitialized : Boolean"
+		"SOURCES": {
+			"Syntax": "SOURCES : 4D.Folder"
 		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
+		"HEAD": {
+			"Syntax": "HEAD : Text"
 		},
-		"actionOnDoubleClick": {
-			"Syntax": "actionOnDoubleClick : Text"
+		"remotes": {
+			"Syntax": "remotes : Collection"
 		},
-		"form": {
-			"Syntax": "form : cs.ui.form"
+		"history": {
+			"Syntax": "history : Collection"
 		},
-		"zoom": {
-			"Syntax": "zoom : cs.ui.button"
+		"workingBranch": {
+			"Syntax": "workingBranch : Object"
 		},
-		"close": {
-			"Syntax": "close : cs.ui.button"
+		"user": {
+			"Syntax": "user : Object"
 		},
-		"closeMedia": {
-			"Syntax": "closeMedia : cs.ui.static"
+		"warnings": {
+			"Syntax": "warnings : Collection"
 		},
-		"reduceMedia": {
-			"Syntax": "reduceMedia : cs.ui.static"
+		"command": {
+			"Syntax": "command : Text"
 		},
-		"zoomMedia": {
-			"Syntax": "zoomMedia : cs.ui.static"
+		"tags": {
+			"Syntax": "tags : Collection"
 		},
-		"isModal": {
-			"Syntax": "isModal : Boolean"
+		"gitattributes": {
+			"Syntax": "gitattributes : 4D.File"
 		},
-		"proxyMacOS": {
-			"Syntax": "proxyMacOS : Text"
+		"local": {
+			"Syntax": "local : Boolean"
+		},
+		"result": {
+			"Syntax": "result : Text"
+		},
+		"stashes": {
+			"Syntax": "stashes : Collection"
+		},
+		"success": {
+			"Syntax": "success : Boolean"
+		},
+		"changes": {
+			"Syntax": "changes : Collection"
+		},
+		"warning": {
+			"Syntax": "warning : Text"
+		},
+		"root": {
+			"Syntax": "root : 4D.Folder"
+		},
+		"branches": {
+			"Syntax": "branches : Collection"
+		},
+		"errors": {
+			"Syntax": "errors : Collection"
+		},
+		"workspace": {
+			"Syntax": "workspace : 4D.Folder"
+		},
+		"gitignore": {
+			"Syntax": "gitignore : 4D.File"
+		},
+		"error": {
+			"Syntax": "error : Text"
 		}
 	},
-	"_gravatarRequest": {
-		"onResponse()": {
-			"Syntax": "**.onResponse**( *request* : 4D.HTTPRequest; *event* : Object )",
+	"gh": {
+		"onTerminate()": {
+			"Syntax": "**.onTerminate**( *worker* : 4D.SystemWorker )",
 			"Params": [
 				[
-					"request",
-					"4D.HTTPRequest",
+					"worker",
+					"4D.SystemWorker",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"onDataError()": {
+			"Syntax": "**.onDataError**( *worker* : 4D.SystemWorker; *info* : Object )",
+			"Params": [
+				[
+					"worker",
+					"4D.SystemWorker",
 					"->"
 				],
 				[
-					"event",
+					"info",
 					"Object",
 					"->"
 				]
 			],
 			"Summary": ""
 		},
-		"onError()": {
-			"Syntax": "**.onError**( *request* : 4D.HTTPRequest; *event* : Object )",
+		"deleteRepo()": {
+			"Syntax": "**.deleteRepo**( *name* : Text ) : Boolean",
 			"Params": [
 				[
-					"request",
-					"4D.HTTPRequest",
+					"name",
+					"Text",
 					"->"
 				],
 				[
-					"event",
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"createRepo()": {
+			"Syntax": "**.createRepo**( *name* : Text; *private* : Boolean; *options* : Object ) : Text",
+			"Params": [
+				[
+					"name",
+					"Text",
+					"->"
+				],
+				[
+					"private",
+					"Boolean",
+					"->"
+				],
+				[
+					"options",
 					"Object",
+					"->"
+				],
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"token()": {
+			"Syntax": "**.token**() : Text",
+			"Params": [
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"getStatus()": {
+			"Syntax": "**.getStatus**() : Object",
+			"Params": [
+				[
+					"",
+					"Object",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"logout()": {
+			"Syntax": "**.logout**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"setupGit()": {
+			"Syntax": "**.setupGit**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"checkToken()": {
+			"Syntax": "**.checkToken**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"login()": {
+			"Syntax": "**.login**() : Boolean",
+			"Params": [
+				[
+					"",
+					"Boolean",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"get lastError()": {
+			"Syntax": "**.get lastError**() : Text",
+			"Params": [
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"status": {
+			"Syntax": "status : Object"
+		},
+		"history": {
+			"Syntax": "history : Collection"
+		},
+		"remote": {
+			"Syntax": "remote : Text"
+		},
+		"errors": {
+			"Syntax": "errors : Collection"
+		},
+		"authorized": {
+			"Syntax": "authorized : Boolean"
+		},
+		"available": {
+			"Syntax": "available : Boolean"
+		},
+		"timeout": {
+			"Syntax": "timeout : Real"
+		},
+		"success": {
+			"Syntax": "success : Boolean"
+		},
+		"dataError": {
+			"Syntax": "dataError : Text"
+		},
+		"data": {
+			"Syntax": "data : Text"
+		},
+		"exe": {
+			"Syntax": "exe : Text"
+		},
+		"dataType": {
+			"Syntax": "dataType : Text"
+		}
+	},
+	"_gravatars": {
+		"store()": {
+			"Syntax": "**.store**( *hash* : Text; *picture* : Picture )",
+			"Params": [
+				[
+					"hash",
+					"Text",
+					"->"
+				],
+				[
+					"picture",
+					"Picture",
 					"->"
 				]
 			],
 			"Summary": ""
 		},
-		"method": {
-			"Syntax": "method : Text"
+		"preload()": {
+			"Syntax": "**.preload**( *mails* : Collection )",
+			"Params": [
+				[
+					"mails",
+					"Collection",
+					"->"
+				]
+			],
+			"Summary": ""
 		},
-		"body": {
-			"Syntax": "body : Text"
-		},
-		"headers": {
-			"Syntax": "headers : Object"
-		},
-		"mail": {
-			"Syntax": "mail : Text"
-		},
-		"target": {
-			"Syntax": "target : 4D.Function"
-		},
-		"hash": {
-			"Syntax": "hash : Text"
-		}
-	},
-	"_commitsBuilder": {
-		"build()": {
-			"Syntax": "**.build**( *raw* : Text; *git* : cs.git.Git ) : Collection",
+		"preloadFromLog()": {
+			"Syntax": "**.preloadFromLog**( *raw* : Text )",
 			"Params": [
 				[
 					"raw",
 					"Text",
 					"->"
-				],
-				[
-					"git",
-					"cs.git.Git",
-					"->"
-				],
-				[
-					"",
-					"Collection",
-					"<-"
 				]
 			],
 			"Summary": ""
 		},
+		"avatar()": {
+			"Syntax": "**.avatar**( *mail* : Text ) : Picture",
+			"Params": [
+				[
+					"mail",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Picture",
+					"<-"
+				]
+			],
+			"Summary": ""
+		}
+	},
+	"_commitsBuilder": {
 		"getLabelTag()": {
 			"Syntax": "**.getLabelTag**( *what* : Text; *text* : Text; *style* : Object ) : Picture",
 			"Params": [
@@ -1280,107 +1486,58 @@
 			],
 			"Summary": ""
 		},
-		"darkScheme": {
-			"Syntax": "darkScheme : Boolean"
+		"build()": {
+			"Syntax": "**.build**( *raw* : Text; *git* : cs.git.Git ) : Collection",
+			"Params": [
+				[
+					"raw",
+					"Text",
+					"->"
+				],
+				[
+					"git",
+					"cs.git.Git",
+					"->"
+				],
+				[
+					"",
+					"Collection",
+					"<-"
+				]
+			],
+			"Summary": ""
 		},
 		"icons": {
 			"Syntax": "icons : Object"
-		}
-	},
-	"_commitsCache": {
-		"hasChanged()": {
-			"Syntax": "**.hasChanged**( *raw* : Text ) : Boolean",
-			"Params": [
-				[
-					"raw",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
 		},
-		"invalidate()": {
-			"Syntax": "**.invalidate**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"store()": {
-			"Syntax": "**.store**( *raw* : Text; *commits* : Collection )",
-			"Params": [
-				[
-					"raw",
-					"Text",
-					"->"
-				],
-				[
-					"commits",
-					"Collection",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"isLoadingStale()": {
-			"Syntax": "**.isLoadingStale**() : Boolean",
-			"Params": [
-				[
-					"",
-					"Boolean",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"abortLoading()": {
-			"Syntax": "**.abortLoading**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"setLoading()": {
-			"Syntax": "**.setLoading**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"loadingSince": {
-			"Syntax": "loadingSince : Real"
-		},
-		"builtCommits": {
-			"Syntax": "builtCommits : Collection"
-		},
-		"raw": {
-			"Syntax": "raw : Text"
-		},
-		"version": {
-			"Syntax": "version : Integer"
-		},
-		"loading": {
-			"Syntax": "loading : Boolean"
+		"darkScheme": {
+			"Syntax": "darkScheme : Boolean"
 		}
 	},
 	"_GIT_Controller": {
-		"init()": {
-			"Syntax": "**.init**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"handleEvents()": {
-			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+		"getAvatar()": {
+			"Syntax": "**.getAvatar**( *mail* : Text ) : Picture",
 			"Params": [
 				[
-					"e",
-					"cs.ui.evt",
+					"mail",
+					"Text",
 					"->"
+				],
+				[
+					"",
+					"Picture",
+					"<-"
 				]
 			],
 			"Summary": ""
 		},
-		"onDialogAlert()": {
-			"Syntax": "**.onDialogAlert**( *data* : Object )",
+		"onCommitsRefreshed()": {
+			"Syntax": "**.onCommitsRefreshed**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"onDialogConfirm()": {
+			"Syntax": "**.onDialogConfirm**( *data* : Object )",
 			"Params": [
 				[
 					"data",
@@ -1390,19 +1547,90 @@
 			],
 			"Summary": ""
 		},
-		"onLoad()": {
-			"Syntax": "**.onLoad**()",
+		"CreateGithubRepository()": {
+			"Syntax": "**.CreateGithubRepository**()",
 			"Params": [],
 			"Summary": ""
 		},
-		"update()": {
-			"Syntax": "**.update**()",
-			"Params": [],
+		"Checkout()": {
+			"Syntax": "**.Checkout**( *branch* : Object )",
+			"Params": [
+				[
+					"branch",
+					"Object",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"metaCommits()": {
+			"Syntax": "**.metaCommits**( *item* : Object ) : Object",
+			"Params": [
+				[
+					"item",
+					"Object",
+					"->"
+				],
+				[
+					"",
+					"Object",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"Discard()": {
+			"Syntax": "**.Discard**( *items* : Collection )",
+			"Params": [
+				[
+					"items",
+					"Collection",
+					"->"
+				]
+			],
 			"Summary": ""
 		},
 		"onActivate()": {
 			"Syntax": "**.onActivate**()",
 			"Params": [],
+			"Summary": ""
+		},
+		"Stage()": {
+			"Syntax": "**.Stage**( *items* : Collection )",
+			"Params": [
+				[
+					"items",
+					"Collection",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"GetStyledDiffText()": {
+			"Syntax": "**.GetStyledDiffText**( *item* : Object ) : Text",
+			"Params": [
+				[
+					"item",
+					"Object",
+					"->"
+				],
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
+		"Unstage()": {
+			"Syntax": "**.Unstage**( *items* : Collection )",
+			"Params": [
+				[
+					"items",
+					"Collection",
+					"->"
+				]
+			],
 			"Summary": ""
 		},
 		"get isInIndex()": {
@@ -1427,25 +1655,20 @@
 			],
 			"Summary": ""
 		},
-		"StageAll()": {
-			"Syntax": "**.StageAll**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"GetStyledDiffText()": {
-			"Syntax": "**.GetStyledDiffText**( *item* : Object ) : Text",
+		"onDialogRequest()": {
+			"Syntax": "**.onDialogRequest**( *data* : Object )",
 			"Params": [
 				[
-					"item",
+					"data",
 					"Object",
 					"->"
-				],
-				[
-					"",
-					"Text",
-					"<-"
 				]
 			],
+			"Summary": ""
+		},
+		"updateCommits()": {
+			"Syntax": "**.updateCommits**()",
+			"Params": [],
 			"Summary": ""
 		},
 		"GoToPage()": {
@@ -1459,46 +1682,28 @@
 			],
 			"Summary": ""
 		},
-		"Stage()": {
-			"Syntax": "**.Stage**( *items* : Collection )",
-			"Params": [
-				[
-					"items",
-					"Collection",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"Unstage()": {
-			"Syntax": "**.Unstage**( *items* : Collection )",
-			"Params": [
-				[
-					"items",
-					"Collection",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
 		"UnstageAll()": {
 			"Syntax": "**.UnstageAll**()",
 			"Params": [],
 			"Summary": ""
 		},
-		"Discard()": {
-			"Syntax": "**.Discard**( *items* : Collection )",
-			"Params": [
-				[
-					"items",
-					"Collection",
-					"->"
-				]
-			],
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
+			"Params": [],
 			"Summary": ""
 		},
-		"onDialogConfirm()": {
-			"Syntax": "**.onDialogConfirm**( *data* : Object )",
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"update()": {
+			"Syntax": "**.update**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"onDialogAlert()": {
+			"Syntax": "**.onDialogAlert**( *data* : Object )",
 			"Params": [
 				[
 					"data",
@@ -1508,339 +1713,230 @@
 			],
 			"Summary": ""
 		},
-		"CreateGithubRepository()": {
-			"Syntax": "**.CreateGithubRepository**()",
+		"handleEvents()": {
+			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
+			"Params": [
+				[
+					"e",
+					"cs.ui.evt",
+					"->"
+				]
+			],
+			"Summary": ""
+		},
+		"StageAll()": {
+			"Syntax": "**.StageAll**()",
 			"Params": [],
 			"Summary": ""
 		},
-		"updateCommits()": {
-			"Syntax": "**.updateCommits**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"onDialogRequest()": {
-			"Syntax": "**.onDialogRequest**( *data* : Object )",
-			"Params": [
-				[
-					"data",
-					"Object",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"Checkout()": {
-			"Syntax": "**.Checkout**( *branch* : Object )",
-			"Params": [
-				[
-					"branch",
-					"Object",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"onCommitsRefreshed()": {
-			"Syntax": "**.onCommitsRefreshed**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"getAvatar()": {
-			"Syntax": "**.getAvatar**( *mail* : Text ) : Picture",
-			"Params": [
-				[
-					"mail",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Picture",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"metaCommits()": {
-			"Syntax": "**.metaCommits**( *item* : Object ) : Object",
-			"Params": [
-				[
-					"item",
-					"Object",
-					"->"
-				],
-				[
-					"",
-					"Object",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"shaLabel": {
-			"Syntax": "shaLabel : cs.ui.static"
-		},
-		"toolbarButtons": {
-			"Syntax": "toolbarButtons : cs.ui.group"
-		},
-		"darkMode": {
-			"Syntax": "darkMode : Boolean"
-		},
-		"title": {
-			"Syntax": "title : cs.ui.static"
-		},
-		"toBeInitialized": {
-			"Syntax": "toBeInitialized : Boolean"
-		},
-		"checkoutDialog": {
-			"Syntax": "checkoutDialog : cs.ui.onBoard"
-		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
-		},
-		"autostash": {
-			"Syntax": "autostash : Boolean"
-		},
-		"MODIFIED_FILE": {
-			"Syntax": "MODIFIED_FILE : Text"
-		},
-		"checkout": {
-			"Syntax": "checkout : Object"
-		},
-		"pages": {
-			"Syntax": "pages : Object"
-		},
-		"currentPath": {
-			"Syntax": "currentPath : cs.ui.input"
-		},
-		"detailDiff": {
-			"Syntax": "detailDiff : cs.ui.input"
-		},
-		"helptip": {
-			"Syntax": "helptip : cs.ui.tips"
-		},
-		"shaLabe": {
-			"Syntax": "shaLabe : cs.ui.static"
-		},
-		"staged": {
-			"Syntax": "staged : cs.ui.listbox"
-		},
-		"UNSTAGED_STATUS": {
-			"Syntax": "UNSTAGED_STATUS : Collection"
-		},
-		"STAGED_STATUS": {
-			"Syntax": "STAGED_STATUS : Collection"
-		},
-		"MOVED_FILE": {
-			"Syntax": "MOVED_FILE : Text"
-		},
-		"NEW_FILE": {
-			"Syntax": "NEW_FILE : Text"
-		},
-		"subject": {
-			"Syntax": "subject : cs.ui.input"
-		},
-		"stage": {
-			"Syntax": "stage : cs.ui.button"
-		},
-		"fetch": {
-			"Syntax": "fetch : cs.ui.button"
-		},
-		"DELETED_FILE": {
-			"Syntax": "DELETED_FILE : Text"
-		},
-		"newTagDialog": {
-			"Syntax": "newTagDialog : cs.ui.onBoard"
-		},
-		"loading": {
-			"Syntax": "loading : cs.ui.group"
-		},
-		"BINARY_FILE": {
-			"Syntax": "BINARY_FILE : Text"
-		},
-		"form": {
-			"Syntax": "form : cs.ui.form"
-		},
-		"Git": {
-			"Syntax": "Git : cs.git.Git"
-		},
-		"amend": {
-			"Syntax": "amend : cs.ui.button"
-		},
-		"commitment": {
-			"Syntax": "commitment : cs.ui.group"
-		},
-		"detail": {
-			"Syntax": "detail : cs.ui.group"
-		},
-		"sha": {
-			"Syntax": "sha : cs.ui.static"
-		},
-		"history": {
-			"Syntax": "history : cs.ui.button"
-		},
-		"groupDiff": {
-			"Syntax": "groupDiff : cs.ui.group"
-		},
-		"diffTool": {
-			"Syntax": "diffTool : cs.ui.button"
-		},
-		"pullDialog": {
-			"Syntax": "pullDialog : cs.ui.onBoard"
-		},
-		"pushDialog": {
-			"Syntax": "pushDialog : cs.ui.onBoard"
-		},
-		"newBranchDialog": {
-			"Syntax": "newBranchDialog : cs.ui.onBoard"
-		},
-		"changes": {
-			"Syntax": "changes : cs.ui.button"
-		},
-		"pull": {
-			"Syntax": "pull : cs.ui.button"
-		},
-		"push": {
-			"Syntax": "push : cs.ui.button"
-		},
-		"open": {
-			"Syntax": "open : cs.ui.button"
-		},
-		"unstage": {
-			"Syntax": "unstage : cs.ui.button"
-		},
-		"noCommitSelected": {
-			"Syntax": "noCommitSelected : cs.ui.static"
-		},
-		"commit": {
-			"Syntax": "commit : cs.ui.button"
-		},
-		"parentLabel": {
-			"Syntax": "parentLabel : cs.ui.static"
-		},
-		"fileStage": {
-			"Syntax": "fileStage : cs.ui.button"
-		},
-		"stamp": {
-			"Syntax": "stamp : cs.ui.static"
-		},
-		"fileMore": {
-			"Syntax": "fileMore : cs.ui.button"
-		},
-		"unstaged": {
-			"Syntax": "unstaged : cs.ui.listbox"
-		},
-		"menu": {
-			"Syntax": "menu : cs.ui.listbox"
-		},
-		"commits": {
-			"Syntax": "commits : cs.ui.listbox"
-		},
-		"detailCommit": {
-			"Syntax": "detailCommit : cs.ui.listbox"
-		},
-		"diff": {
-			"Syntax": "diff : cs.ui.input"
-		},
-		"description": {
-			"Syntax": "description : cs.ui.input"
-		},
-		"parent": {
-			"Syntax": "parent : cs.ui.input"
-		},
-		"authorLabel": {
-			"Syntax": "authorLabel : cs.ui.static"
-		},
-		"authorName": {
-			"Syntax": "authorName : cs.ui.static"
-		},
-		"authorMail": {
-			"Syntax": "authorMail : cs.ui.static"
-		},
-		"titleTop": {
-			"Syntax": "titleTop : cs.ui.static"
-		},
-		"titleBottom": {
-			"Syntax": "titleBottom : cs.ui.static"
-		},
-		"emptyIndex": {
-			"Syntax": "emptyIndex : cs.ui.static"
-		},
-		"historyLoadingLabel": {
-			"Syntax": "historyLoadingLabel : cs.ui.static"
-		},
-		"historySpinner": {
-			"Syntax": "historySpinner : cs.ui.static"
-		},
-		"authorAvatar": {
-			"Syntax": "authorAvatar : cs.ui.picture"
+		"icons": {
+			"Syntax": "icons : Object"
 		},
 		"windowFrame": {
 			"Syntax": "windowFrame : cs.ui.subform"
 		},
-		"icons": {
-			"Syntax": "icons : Object"
+		"authorAvatar": {
+			"Syntax": "authorAvatar : cs.ui.picture"
+		},
+		"historySpinner": {
+			"Syntax": "historySpinner : cs.ui.static"
+		},
+		"title": {
+			"Syntax": "title : cs.ui.static"
+		},
+		"shaLabel": {
+			"Syntax": "shaLabel : cs.ui.static"
+		},
+		"shaLabe": {
+			"Syntax": "shaLabe : cs.ui.static"
+		},
+		"authorName": {
+			"Syntax": "authorName : cs.ui.static"
+		},
+		"stamp": {
+			"Syntax": "stamp : cs.ui.static"
+		},
+		"authorLabel": {
+			"Syntax": "authorLabel : cs.ui.static"
+		},
+		"detailDiff": {
+			"Syntax": "detailDiff : cs.ui.input"
+		},
+		"description": {
+			"Syntax": "description : cs.ui.input"
+		},
+		"subject": {
+			"Syntax": "subject : cs.ui.input"
+		},
+		"detailCommit": {
+			"Syntax": "detailCommit : cs.ui.listbox"
+		},
+		"staged": {
+			"Syntax": "staged : cs.ui.listbox"
+		},
+		"fileStage": {
+			"Syntax": "fileStage : cs.ui.button"
+		},
+		"sha": {
+			"Syntax": "sha : cs.ui.static"
+		},
+		"diffTool": {
+			"Syntax": "diffTool : cs.ui.button"
+		},
+		"unstage": {
+			"Syntax": "unstage : cs.ui.button"
+		},
+		"stage": {
+			"Syntax": "stage : cs.ui.button"
+		},
+		"open": {
+			"Syntax": "open : cs.ui.button"
+		},
+		"BINARY_FILE": {
+			"Syntax": "BINARY_FILE : Text"
+		},
+		"push": {
+			"Syntax": "push : cs.ui.button"
+		},
+		"changes": {
+			"Syntax": "changes : cs.ui.button"
+		},
+		"toBeInitialized": {
+			"Syntax": "toBeInitialized : Boolean"
+		},
+		"commit": {
+			"Syntax": "commit : cs.ui.button"
+		},
+		"pull": {
+			"Syntax": "pull : cs.ui.button"
+		},
+		"newTagDialog": {
+			"Syntax": "newTagDialog : cs.ui.onBoard"
+		},
+		"checkoutDialog": {
+			"Syntax": "checkoutDialog : cs.ui.onBoard"
+		},
+		"titleTop": {
+			"Syntax": "titleTop : cs.ui.static"
+		},
+		"menu": {
+			"Syntax": "menu : cs.ui.listbox"
+		},
+		"pullDialog": {
+			"Syntax": "pullDialog : cs.ui.onBoard"
+		},
+		"groupDiff": {
+			"Syntax": "groupDiff : cs.ui.group"
+		},
+		"fetch": {
+			"Syntax": "fetch : cs.ui.button"
+		},
+		"pages": {
+			"Syntax": "pages : Object"
+		},
+		"detail": {
+			"Syntax": "detail : cs.ui.group"
+		},
+		"isSubform": {
+			"Syntax": "isSubform : Boolean"
+		},
+		"toolbarButtons": {
+			"Syntax": "toolbarButtons : cs.ui.group"
+		},
+		"fileMore": {
+			"Syntax": "fileMore : cs.ui.button"
+		},
+		"DELETED_FILE": {
+			"Syntax": "DELETED_FILE : Text"
+		},
+		"commitment": {
+			"Syntax": "commitment : cs.ui.group"
+		},
+		"pushDialog": {
+			"Syntax": "pushDialog : cs.ui.onBoard"
+		},
+		"loading": {
+			"Syntax": "loading : cs.ui.group"
+		},
+		"MOVED_FILE": {
+			"Syntax": "MOVED_FILE : Text"
+		},
+		"amend": {
+			"Syntax": "amend : cs.ui.button"
+		},
+		"NEW_FILE": {
+			"Syntax": "NEW_FILE : Text"
+		},
+		"newBranchDialog": {
+			"Syntax": "newBranchDialog : cs.ui.onBoard"
+		},
+		"titleBottom": {
+			"Syntax": "titleBottom : cs.ui.static"
+		},
+		"parentLabel": {
+			"Syntax": "parentLabel : cs.ui.static"
+		},
+		"parent": {
+			"Syntax": "parent : cs.ui.input"
+		},
+		"autostash": {
+			"Syntax": "autostash : Boolean"
+		},
+		"noCommitSelected": {
+			"Syntax": "noCommitSelected : cs.ui.static"
+		},
+		"STAGED_STATUS": {
+			"Syntax": "STAGED_STATUS : Collection"
+		},
+		"unstaged": {
+			"Syntax": "unstaged : cs.ui.listbox"
+		},
+		"history": {
+			"Syntax": "history : cs.ui.button"
+		},
+		"authorMail": {
+			"Syntax": "authorMail : cs.ui.static"
+		},
+		"UNSTAGED_STATUS": {
+			"Syntax": "UNSTAGED_STATUS : Collection"
+		},
+		"helptip": {
+			"Syntax": "helptip : cs.ui.tips"
+		},
+		"diff": {
+			"Syntax": "diff : cs.ui.input"
+		},
+		"checkout": {
+			"Syntax": "checkout : Object"
+		},
+		"form": {
+			"Syntax": "form : cs.ui.form"
+		},
+		"Git": {
+			"Syntax": "Git : cs.git.Git"
+		},
+		"commits": {
+			"Syntax": "commits : cs.ui.listbox"
+		},
+		"emptyIndex": {
+			"Syntax": "emptyIndex : cs.ui.static"
+		},
+		"darkMode": {
+			"Syntax": "darkMode : Boolean"
+		},
+		"MODIFIED_FILE": {
+			"Syntax": "MODIFIED_FILE : Text"
+		},
+		"historyLoadingLabel": {
+			"Syntax": "historyLoadingLabel : cs.ui.static"
+		},
+		"currentPath": {
+			"Syntax": "currentPath : cs.ui.input"
 		}
 	},
-	"_gravatars": {
-		"preload()": {
-			"Syntax": "**.preload**( *mails* : Collection )",
-			"Params": [
-				[
-					"mails",
-					"Collection",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"avatar()": {
-			"Syntax": "**.avatar**( *mail* : Text ) : Picture",
-			"Params": [
-				[
-					"mail",
-					"Text",
-					"->"
-				],
-				[
-					"",
-					"Picture",
-					"<-"
-				]
-			],
-			"Summary": ""
-		},
-		"preloadFromLog()": {
-			"Syntax": "**.preloadFromLog**( *raw* : Text )",
-			"Params": [
-				[
-					"raw",
-					"Text",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"store()": {
-			"Syntax": "**.store**( *hash* : Text; *picture* : Picture )",
-			"Params": [
-				[
-					"hash",
-					"Text",
-					"->"
-				],
-				[
-					"picture",
-					"Picture",
-					"->"
-				]
-			],
-			"Summary": ""
-		}
-	},
-	"_HISTORY_Controller": {
-		"init()": {
-			"Syntax": "**.init**()",
+	"_WIDGET_Controller": {
+		"onLoad()": {
+			"Syntax": "**.onLoad**()",
 			"Params": [],
 			"Summary": ""
 		},
@@ -1855,19 +1951,48 @@
 			],
 			"Summary": ""
 		},
-		"onLoad()": {
-			"Syntax": "**.onLoad**()",
+		"update()": {
+			"Syntax": "**.update**()",
 			"Params": [],
 			"Summary": ""
 		},
-		"toBeInitialized": {
-			"Syntax": "toBeInitialized : Boolean"
+		"init()": {
+			"Syntax": "**.init**()",
+			"Params": [],
+			"Summary": ""
+		},
+		"todo": {
+			"Syntax": "todo : cs.ui.button"
+		},
+		"more": {
+			"Syntax": "more : cs.ui.button"
+		},
+		"SOURCES": {
+			"Syntax": "SOURCES : 4D.Folder"
+		},
+		"fetch": {
+			"Syntax": "fetch : cs.ui.input"
+		},
+		"initRepository": {
+			"Syntax": "initRepository : cs.ui.button"
+		},
+		"PACKAGE": {
+			"Syntax": "PACKAGE : 4D.Folder"
+		},
+		"swap": {
+			"Syntax": "swap : cs.ui.static"
+		},
+		"version": {
+			"Syntax": "version : Text"
+		},
+		"localChanges": {
+			"Syntax": "localChanges : cs.ui.button"
+		},
+		"currentBranch": {
+			"Syntax": "currentBranch : Text"
 		},
 		"isSubform": {
 			"Syntax": "isSubform : Boolean"
-		},
-		"commits": {
-			"Syntax": "commits : cs.ui.listbox"
 		},
 		"Git": {
 			"Syntax": "Git : cs.git.Git"
@@ -1875,106 +2000,29 @@
 		"form": {
 			"Syntax": "form : cs.ui.form"
 		},
-		"diff": {
-			"Syntax": "diff : cs.ui.input"
+		"push": {
+			"Syntax": "push : cs.ui.input"
 		},
-		"relativePath": {
-			"Syntax": "relativePath : Text"
-		}
-	},
-	"_PATTERN_Controller": {
-		"init()": {
-			"Syntax": "**.init**()",
-			"Params": [],
-			"Summary": ""
+		"branch": {
+			"Syntax": "branch : cs.ui.button"
 		},
-		"handleEvents()": {
-			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
-			"Params": [
-				[
-					"e",
-					"cs.ui.evt",
-					"->"
-				]
-			],
-			"Summary": ""
+		"minor": {
+			"Syntax": "minor : Text"
 		},
-		"onLoad()": {
-			"Syntax": "**.onLoad**()",
-			"Params": [],
-			"Summary": ""
+		"icon": {
+			"Syntax": "icon : cs.ui.button"
 		},
-		"update()": {
-			"Syntax": "**.update**()",
-			"Params": [],
-			"Summary": ""
+		"timer": {
+			"Syntax": "timer : Real"
 		},
-		"done": {
-			"Syntax": "done : cs.ui.button"
-		},
-		"pattern": {
-			"Syntax": "pattern : cs.ui.input"
+		"lts": {
+			"Syntax": "lts : Boolean"
 		},
 		"toBeInitialized": {
 			"Syntax": "toBeInitialized : Boolean"
 		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
-		},
-		"cancel": {
-			"Syntax": "cancel : cs.ui.button"
-		},
-		"form": {
-			"Syntax": "form : cs.ui.form"
-		},
-		"preview": {
-			"Syntax": "preview : cs.ui.listbox"
-		},
-		"help": {
-			"Syntax": "help : cs.ui.button"
-		}
-	},
-	"_WIDGET_Controller": {
-		"init()": {
-			"Syntax": "**.init**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"handleEvents()": {
-			"Syntax": "**.handleEvents**( *e* : cs.ui.evt )",
-			"Params": [
-				[
-					"e",
-					"cs.ui.evt",
-					"->"
-				]
-			],
-			"Summary": ""
-		},
-		"onLoad()": {
-			"Syntax": "**.onLoad**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"update()": {
-			"Syntax": "**.update**()",
-			"Params": [],
-			"Summary": ""
-		},
-		"initRepository": {
-			"Syntax": "initRepository : cs.ui.button"
-		},
-		"toBeInitialized": {
-			"Syntax": "toBeInitialized : Boolean"
-		},
-		"todo": {
-			"Syntax": "todo : cs.ui.button"
-		},
-		"isSubform": {
-			"Syntax": "isSubform : Boolean"
-		},
-		"currentBranch": {
-			"Syntax": "currentBranch : Text"
+		"fixme": {
+			"Syntax": "fixme : cs.ui.button"
 		},
 		"release": {
 			"Syntax": "release : Boolean"
@@ -1982,59 +2030,11 @@
 		"major": {
 			"Syntax": "major : Text"
 		},
-		"lts": {
-			"Syntax": "lts : Boolean"
+		"gitItems": {
+			"Syntax": "gitItems : cs.ui.group"
 		},
 		"alpha": {
 			"Syntax": "alpha : Boolean"
-		},
-		"minor": {
-			"Syntax": "minor : Text"
-		},
-		"version": {
-			"Syntax": "version : Text"
-		},
-		"form": {
-			"Syntax": "form : cs.ui.form"
-		},
-		"Git": {
-			"Syntax": "Git : cs.git.Git"
-		},
-		"PACKAGE": {
-			"Syntax": "PACKAGE : 4D.Folder"
-		},
-		"push": {
-			"Syntax": "push : cs.ui.input"
-		},
-		"SOURCES": {
-			"Syntax": "SOURCES : 4D.Folder"
-		},
-		"timer": {
-			"Syntax": "timer : Real"
-		},
-		"icon": {
-			"Syntax": "icon : cs.ui.button"
-		},
-		"more": {
-			"Syntax": "more : cs.ui.button"
-		},
-		"branch": {
-			"Syntax": "branch : cs.ui.button"
-		},
-		"localChanges": {
-			"Syntax": "localChanges : cs.ui.button"
-		},
-		"fixme": {
-			"Syntax": "fixme : cs.ui.button"
-		},
-		"fetch": {
-			"Syntax": "fetch : cs.ui.input"
-		},
-		"swap": {
-			"Syntax": "swap : cs.ui.static"
-		},
-		"gitItems": {
-			"Syntax": "gitItems : cs.ui.group"
 		}
 	}
 }

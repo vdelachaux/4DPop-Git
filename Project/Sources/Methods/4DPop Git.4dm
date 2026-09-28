@@ -4,7 +4,7 @@
 // ID[52DD5F426D1647FF837AF213147FFC6B]
 // Created 4-3-2020 by Vincent de Lachaux
 // ----------------------------------------------------
-#DECLARE($run : Boolean)
+#DECLARE($dummy)
 
 If (Count parameters:C259=0)
 	

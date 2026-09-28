@@ -286,11 +286,11 @@
 		</data>
 		<key>Resources/InfoPlist.strings</key>
 		<data>
-		XCsjU5FDscLEttnfmgs3pzTezqU=
+		x/Yccy3r1y5CZdKILQDMF3UlWUc=
 		</data>
 		<key>Resources/bin/gh</key>
 		<data>
-		HDMUBQUX5pCWHYgXP6Wc1GU5kLc=
+		lMlJ5eAsgMulU5F437yDmp2rt7g=
 		</data>
 		<key>Resources/bin/gh.exe</key>
 		<data>
@@ -298,7 +298,7 @@
 		</data>
 		<key>Resources/bin/git-lfs</key>
 		<data>
-		yH2/D43ejtLlFm8W7EyPt9LjQUc=
+		1BcbEHRlV7N8R/KfT63TSaGpuv0=
 		</data>
 		<key>Resources/bin/git-lfs.exe</key>
 		<data>
@@ -343,6 +343,10 @@
 		<data>
 		Ip94flxcLcL0xa6FemDjfRbAVkQ=
 		</data>
+		<key>Resources/php.ini</key>
+		<data>
+		mzIVgDcTm3FXX+JCz+HOScp9z1w=
+		</data>
 		<key>Resources/resources.json</key>
 		<data>
 		nz6xKgykMQMfJ/JdtZolp3do0iM=
@@ -354,7 +358,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			6mj266/SAttxY+ZLhRJPBWsBus8=
+			N1ehpdiDJKTg5n4wel2YBLTx8PY=
 			</data>
 			<key>requirement</key>
 			<string>identifier "4DPop Git.4DZ" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = DYRKW64QA9</string>
@@ -503,7 +507,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			z/YaD76xzusNehGoYbDHiv/CWdVReAus3kXrOMDRL2w=
+			85IkzmnNk+WlrcXjUM9aJXpv5vXWWz2WxKo+iIVQHaM=
 			</data>
 		</dict>
 		<key>Resources/4DPop.json</key>
@@ -1000,14 +1004,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ymBzg0HfZd/IzOrefuarkkqA2lvm3bh2iotLb7exMYQ=
+			zqqUYS99Kk9VJ24t+gN2ZyEw6WZx+XsJIxm8+rpEMdQ=
 			</data>
 		</dict>
 		<key>Resources/bin/gh</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			vM4vnW7qNroJ5A/DFzMkEbpXWvDPkFS9eDmufDg2DqM=
+			9zIuZNtT4+tuvljwD40I+3w9L/lT01csiaJIAu4x9g4=
 			</data>
 		</dict>
 		<key>Resources/bin/gh.exe</key>
@@ -1021,7 +1025,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			tYMRniv7TrdKAZ4L7w5WrJxK/VfcKx1b4dSPdBhlkB8=
+			kY9uG9X3zgB+vx8EvnGzMn0GVOczARHly5d6tPhsdk8=
 			</data>
 		</dict>
 		<key>Resources/bin/git-lfs.exe</key>
@@ -1077,6 +1081,13 @@
 			<key>hash2</key>
 			<data>
 			urBLDGW9K7AA36SyYl+fKaaA7QxBN0FKa/wYEgfrk1E=
+			</data>
+		</dict>
+		<key>Resources/php.ini</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			x08pJaj7w4MA7IDoQrutpHUD8j1R1Zap+anJildkiOY=
 			</data>
 		</dict>
 		<key>Resources/resources.json</key>
