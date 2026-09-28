@@ -100,7 +100,7 @@
 					"text": ":xliff:rebaseInsteadOfMerge",
 					"top": 127,
 					"left": 157,
-					"width": 234,
+					"width": 274,
 					"height": 24,
 					"events": [
 						"onClick"
@@ -114,7 +114,7 @@
 					"text": ":xliff:stashAndReapply",
 					"top": 155,
 					"left": 157,
-					"width": 234,
+					"width": 274,
 					"height": 24,
 					"events": [
 						"onClick"
@@ -132,7 +132,7 @@
 			]
 		}
 	],
-	"geometryStamp": 137,
+	"geometryStamp": 139,
 	"editor": {
 		"activeView": "View 1",
 		"defaultView": "View 1",
