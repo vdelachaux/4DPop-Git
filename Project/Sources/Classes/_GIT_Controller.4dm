@@ -455,10 +455,38 @@ Function onLoad()
 	This:C1470.windowFrame.left:=0
 	This:C1470.windowFrame.width:=This:C1470.form.rect.width
 	
-	If (Is Windows:C1573)
+	If (Is Windows:C1573)/* || (Not(Is compiled mode) && Shift down)*/
 		
-		This:C1470.form.Group("changes,history,input,commiter").moveHorizontally(-100)
-		This:C1470.toolbarButtons.moveHorizontally(-120)
+		// FIXME: Re-enable when design mode uses SDI
+		If (False:C215)
+			
+			// Show the window frame widget (hidden by default)
+			This:C1470.windowFrame.show()
+			
+			// Force resize the window frame widget
+			This:C1470.windowFrame.left:=0
+			This:C1470.windowFrame.width:=This:C1470.form.window.width
+			
+			// Moving toolbar buttons
+			This:C1470.form.Group("changes,history,input,commiter").moveHorizontally(-100)
+			This:C1470.toolbarButtons.moveHorizontally(-120)
+			
+		Else 
+			
+			// MARK: Windows-MDI
+			// The window with a title whose ui needs to be adapted
+			This:C1470.form.Group("changes,history,input,commiter").moveHorizontally(-100)
+			
+		End if 
+		
+	Else 
+		
+		// Show the window frame widget (hidden by default)
+		This:C1470.windowFrame.show()
+		
+		// Force resize the window frame widget
+		This:C1470.windowFrame.left:=0
+		This:C1470.windowFrame.width:=This:C1470.form.window.width
 		
 	End if 
 	
@@ -2211,7 +2239,7 @@ Function _loadScheme()
 	var $key : Text
 	var $icon : Picture
 	var $file : 4D:C1709.File
-	var $dark:=This:C1470.form.darkScheme ? This:C1470.form._darkExtension : ""
+	var $dark:=This:C1470.form.darkScheme ? This:C1470.form.darkSuffix : ""
 	
 	// tag/stash/github icons moved to _commitsBuilder (commit-graph labels, built off-process)
 	For each ($key; ["Add"; "Remove"; "Edit"; "Rename"])

@@ -93,7 +93,8 @@
 					],
 					"sizingX": "grow",
 					"hideFocusRing": true,
-					"focusable": false
+					"focusable": false,
+					"visibility": "hidden"
 				},
 				"changes": {
 					"type": "radio",
@@ -1103,5 +1104,5 @@
 			"View 1": {}
 		}
 	},
-	"geometryStamp": 2580
+	"geometryStamp": 2583
 }
