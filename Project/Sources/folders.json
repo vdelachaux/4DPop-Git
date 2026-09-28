@@ -5,6 +5,7 @@
 	"(SETTINGS)": {},
 	"# 🚧 DEV": {
 		"methods": [
+			"_notifyBranchChanged",
 			"_test API",
 			"00_TEST"
 		],
@@ -69,6 +70,7 @@
 			"_commitsBuilder",
 			"_commitsCache",
 			"_GIT_Controller",
+			"_gitMainWindow",
 			"_gravatarRequest",
 			"_gravatars",
 			"_HISTORY_Controller",
