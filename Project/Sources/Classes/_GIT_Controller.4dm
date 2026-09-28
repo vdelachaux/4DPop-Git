@@ -455,6 +455,13 @@ Function onLoad()
 	This:C1470.windowFrame.left:=0
 	This:C1470.windowFrame.width:=This:C1470.form.rect.width
 	
+	If (Is Windows:C1573)
+		
+		This:C1470.form.Group("changes,history,input,commiter").moveHorizontally(-100)
+		This:C1470.toolbarButtons.moveHorizontally(-120)
+		
+	End if 
+	
 	This:C1470.form.window.title:=File:C1566(Structure file:C489; fk platform path:K87:2).name+" - "+File:C1566(Structure file:C489(*); fk platform path:K87:2).name
 	
 	This:C1470.changes.show()
