@@ -1875,32 +1875,54 @@ Function CreateGithubRepository()
 		
 	End if 
 	
-	var $remote : Text:=$gh.createRepo($name; True:C214)  // private
+	// A repository with the same name may already exist on the account
+	var $remote : Text:=$gh.repoURL($name)
+	var $existing:=Length:C16($remote)>0
 	
-	If (Length:C16($remote)=0)
+	If ($existing)
 		
-		This:C1470.onDialogAlert({main: $gh.lastError || Localized string:C991("githubRepoCreationFailed")})
-		return 
+		$confirm:={main: Replace string:C233(Localized string:C991("useExistingGithubRepoConfirm"); "{url}"; $remote)}
+		This:C1470.onDialogConfirm($confirm)
 		
+		If (Not:C34(Bool:C1537($confirm.action)))
+			
+			return 
+			
+		End if 
+		
+	Else 
+		
+		$remote:=$gh.createRepo($name; True:C214)  // private
+		
+		If (Length:C16($remote)=0)
+			
+			This:C1470.onDialogAlert({main: $gh.lastError || Localized string:C991("githubRepoCreationFailed")})
+			return 
+			
+		End if 
 	End if 
 	
-	// Make sure we are on a "main" branch and wire the created remote
+	// Make sure we are on a "main" branch and wire the remote
 	$git.execute("branch -M main")
 	$git.execute("remote add origin "+$remote)
 	
-	// Ensure at least a README so the first push isn't empty
-	var $file:=File:C1566("/PACKAGE/README.md"; *)
-	
-	If (Not:C34($file.exists))
+	If (Not:C34($existing))
 		
-		$file.setText("# Welcome to "+$name)
+		// Ensure at least a README so the first push isn't empty
+		var $file:=File:C1566("/PACKAGE/README.md"; *)
+		
+		If (Not:C34($file.exists))
+			
+			$file.setText("# Welcome to "+$name)
+			
+		End if 
+		
+		$git.add("README.md")
+		$git.add(".gitignore")
+		$git.add(".gitattributes")
+		$git.commit()
 		
 	End if 
-	
-	$git.add("README.md")
-	$git.add(".gitignore")
-	$git.add(".gitattributes")
-	$git.commit()
 	
 	// Push and set the upstream
 	If ($git.execute("push -u origin main"))

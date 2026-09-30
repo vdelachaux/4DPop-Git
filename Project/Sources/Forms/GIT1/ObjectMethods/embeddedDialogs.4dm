@@ -20,50 +20,20 @@ If ($e.code<0)
 			
 			If ($git.remotes.length=0)
 				
-				var $gh:=cs:C1710.gh.me
+				// Handles its own alerts and refresh
+				$form.CreateGithubRepository()
+				return   // 📌 Avoid executing code that follows
 				
-				If (Not:C34($gh.available))
-					
-					$form.onDialogAlert({\
-						title: $gh.lastError; \
-						additional: "Installation instructions can be found at:\n\nhttps://github.com/cli/cli#installation"})
-					
-					//$form.alertDialog.show({\
-						title: $gh.lastError; \
-						additional: "Installation instructions can be found at:\n\nhttps://github.com/cli/cli#installation"})
-					
-					return   // 📌 Avoid executing code that follows
-					
-				End if 
+			End if 
+			
+			If ($this.force)
 				
-				If (Not:C34($gh.login()))
-					
-					return 
-					
-				End if 
-				
-				// Create remote
-				var $remote:=$gh.createRepo($git.workspace.name)
-				
-				// Add the remote
-				If ($git.execute("remote add -m -t origin "+$remote))
-					
-					$git.addRemote($git.currentBranch; $remote)
-					$git.push("origin"; $git.currentBranch)
-					
-				End if 
+				$git.forcePush()
 				
 			Else 
 				
-				If ($this.force)
-					
-					$git.forcePush()
-					
-				Else 
-					
-					$git.push()
-					
-				End if 
+				$git.push()
+				
 			End if 
 			
 			If ($git.success)

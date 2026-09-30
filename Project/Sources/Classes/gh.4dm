@@ -212,6 +212,22 @@ Function createRepo($name : Text; $private : Boolean; $options : Object) : Text
 	End if 
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
+	/// Returns the URL of the authenticated user's repository `$name`, or "" if it doesn't exist.
+Function repoURL($name : Text) : Text
+	
+	var $error; $in; $out : Text
+	
+	If (This:C1470.exe=Null:C1517)
+		
+		return ""
+		
+	End if 
+	
+	LAUNCH EXTERNAL PROCESS:C811(This:C1470.exe+" repo view "+This:C1470._compliantRepositoryName($name)+" --json url -q .url"; $in; $out; $error)
+	
+	return Bool:C1537(OK) && (Length:C16($error)=0) ? Split string:C1554($out; "\n"; sk ignore empty strings:K86:1).first() || "" : ""
+	
+	// === === === === === === === === === === === === === === === === === === === === === === === === === ===
 	/// Delete a GitHub repository.
 Function deleteRepo($name : Text) : Boolean
 	

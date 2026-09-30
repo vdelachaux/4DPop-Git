@@ -422,6 +422,10 @@ with 4D "{version}"</target>
           <source>The repository "{name}" is not on GitHub yet. Create a private repository and push it?</source>
           <target>The repository "{name}" is not on GitHub yet. Create a private repository and push it?</target>
         </trans-unit>
+        <trans-unit id="Uq7kR2xVTm6pYw3nE9bL4g" resname="useExistingGithubRepoConfirm">
+          <source>A repository with this name already exists on your GitHub account ({url}). Use it as the remote and push?</source>
+          <target>A repository with this name already exists on your GitHub account ({url}). Use it as the remote and push?</target>
+        </trans-unit>
         <trans-unit id="aFa4dv2PTBelDAtM6nz3-A" resname="githubAuthorizationFailed">
           <source>GitHub authorization failed.</source>
           <target>GitHub authorization failed.</target>

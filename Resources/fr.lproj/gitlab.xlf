@@ -418,6 +418,10 @@ avec 4D "{version}"</target>
           <source>The repository "{name}" is not on GitHub yet. Create a private repository and push it?</source>
           <target>Le dépôt « {name} » n'existe pas encore sur GitHub. Créer un dépôt privé et le pousser ?</target>
         </trans-unit>
+        <trans-unit id="Uq7kR2xVTm6pYw3nE9bL4g" resname="useExistingGithubRepoConfirm">
+          <source>A repository with this name already exists on your GitHub account ({url}). Use it as the remote and push?</source>
+          <target>Un dépôt portant ce nom existe déjà sur votre compte GitHub ({url}). L'utiliser comme remote et pousser ?</target>
+        </trans-unit>
         <trans-unit id="aFa4dv2PTBelDAtM6nz3-A" resname="githubAuthorizationFailed">
           <source>GitHub authorization failed.</source>
           <target>L'autorisation GitHub a échoué.</target>
