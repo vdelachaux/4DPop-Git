@@ -137,7 +137,7 @@ shared Function execute($command : Text; $inputStream : Text) : Boolean
 			
 			SET ENVIRONMENT VARIABLE:C812("HOME"; String:C10(Folder:C1567(fk home folder:K87:24).path))
 			
-			//—————————————————————— ⚠️ UNTESTED on a real Windows machine; revert if it causes issues
+			//——————————————————————
 		: (Is Windows:C1573)
 			
 			var $gitFolder : 4D:C1709.Folder:=Folder:C1567(fk applications folder:K87:20).parent.folder("Program Files/Git")
@@ -1423,11 +1423,27 @@ Function _command() : Text
 			//______________________________________________________
 		: (Is Windows:C1573)
 			
-			var $exe : 4D:C1709.File:=Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
+			var $exe : 4D:C1709.File
+			var $worker : 4D:C1709.SystemWorker
+			var $result : Object
+			var $gitPath : Text
+			
+			//check location using 'where git' command
+			$worker:=4D:C1709.SystemWorker.new("where git")
+			$result:=$worker.wait()
+			
+			If ($result.exitCode=0)
+				$gitPath:=Trim:C1853($result.response)
+				$exe:=File:C1566($gitPath; fk platform path:K87:2)
+			End if 
+			
+			//check common locations
+			$exe:=($exe.exists) ? $exe : Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
+			$exe:=($exe.exists) ? $exe : Folder:C1567(fk home folder:K87:24).file("Documents/Programs/Git/cmd/git.exe")
 			
 			If ($exe.exists)
 				
-				return $exe.path+" "
+				return "\""+$exe.path+"\" "  //quote the path to account for spaces
 				
 			Else 
 				
