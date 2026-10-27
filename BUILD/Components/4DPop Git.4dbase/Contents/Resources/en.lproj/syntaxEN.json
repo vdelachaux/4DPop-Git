@@ -1253,6 +1253,22 @@
 			],
 			"Summary": ""
 		},
+		"repoURL()": {
+			"Syntax": "**.repoURL**( *name* : Text ) : Text",
+			"Params": [
+				[
+					"name",
+					"Text",
+					"->"
+				],
+				[
+					"",
+					"Text",
+					"<-"
+				]
+			],
+			"Summary": ""
+		},
 		"deleteRepo()": {
 			"Syntax": "**.deleteRepo**( *name* : Text ) : Boolean",
 			"Params": [

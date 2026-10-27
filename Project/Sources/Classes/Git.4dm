@@ -1415,52 +1415,54 @@ Function _command() : Text
 	
 	Case of 
 			
-			//______________________________________________________
+			// ______________________________________________________
 		: (Is macOS:C1572 ? File:C1566("/usr/local/bin/git").exists : False:C215)
 			
 			return "/usr/local/bin/git "
 			
-			//______________________________________________________
+			// ______________________________________________________
 		: (Is Windows:C1573)
 			
-			var $exe : 4D:C1709.File
-			var $worker : 4D:C1709.SystemWorker
-			var $result : Object
-			var $gitPath : Text
+			var $exe:={exists: False:C215}
 			
-			//check location using 'where git' command
-			$worker:=4D:C1709.SystemWorker.new("where git")
-			$result:=$worker.wait()
+			// Check location using 'where git' command
+			var $worker:=4D:C1709.SystemWorker.new("where git")
+			var $result : Object:=$worker.wait()
 			
 			If ($result.exitCode=0)
-				$gitPath:=Trim:C1853($result.response)
+				
+				var $gitPath:=Trim:C1853($result.response)
 				$exe:=File:C1566($gitPath; fk platform path:K87:2)
+				
 			End if 
 			
-			//check common locations
+			// Check common locations
 			$exe:=($exe.exists) ? $exe : Folder:C1567(fk applications folder:K87:20).parent.file("Program Files/Git/bin/git.exe")
 			$exe:=($exe.exists) ? $exe : Folder:C1567(fk home folder:K87:24).file("Documents/Programs/Git/cmd/git.exe")
 			
 			If ($exe.exists)
 				
-				return "\""+$exe.path+"\" "  //quote the path to account for spaces
+				return "\""+$exe.path+"\" "  // Quote the path to account for spaces
 				
 			Else 
 				
-				// NOTE: We deliberately do NOT bundle git for Windows. MinGit (~50 MB
-				// unzipped, GPLv2 + maintenance) would bloat the distributed component.
-				// Instead the UI reports "Git not installed" and offers the download
-				// (git-scm.com) — a `winget install Git.Git` shortcut could be added.
+/* ⚠️
+We deliberately do NOT bundle git for Windows. MinGit (~50 MB
+unzipped, GPLv2 + maintenance) would bloat the distributed component.
+Instead the UI reports "Git not installed" and offers the download
+(git-scm.com) — a `winget install Git.Git` shortcut could be added.
+*/
+				
 				This:C1470._pushError("Git not installed")
 				
 			End if 
 			
-			//______________________________________________________
+			// ______________________________________________________
 		Else 
 			
 			return "git "
 			
-			//______________________________________________________
+			// ______________________________________________________
 	End case 
 	
 	// *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
